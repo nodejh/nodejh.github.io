@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ubuntu on nodejh</title>
+    <link>http://nodejh.com/tags/ubuntu/</link>
+    <description>Recent content in Ubuntu on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 07 Feb 2017 13:08:16 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Change Source List in Ubuntu</title>
+      <link>http://nodejh.com/post/Change-Source-List-in-Ubuntu/</link>
+      <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Change-Source-List-in-Ubuntu/</guid>
+      <description>
+
+&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
+
+&lt;p&gt;上面命令中提到的 &lt;code&gt;apt-get&lt;/code&gt; 则是 Ubuntu 系统中的一个包管理工具，其常用的几个命令如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;安装软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-cache search &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;卸载软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get remove &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;只卸载软件，不删除配置文件等。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;完全卸载&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get purge &amp;lt;package-name&amp;gt;
+# 或
+$ sudo apt-get remove &amp;lt;package-name&amp;gt; --purge
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;删除包括配置文件在内的所有文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;搜索软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-cache &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;更多的关于 &lt;code&gt;apt-get&lt;/code&gt; 的用法可使用 &lt;code&gt;man apt-get&lt;/code&gt; 命令查看。&lt;/p&gt;
+
+&lt;h2 id=&#34;2-软件源的分类&#34;&gt;2. 软件源的分类&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源分为两种：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ubuntu 官方软件源&lt;/li&gt;
+&lt;li&gt;PPA 软件源&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ubuntu 官方软件源中包含了 Ubuntu 系统中所用到的绝大部分的软件，它对应的源列表是 &lt;code&gt;/etc/apt/sources.list&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;PPA 软件源即 Personal Package Archives（个人软件包档案）。有些软件没有被选入 UBuntu 官方软件仓库，为了方便Ubuntu用户使用，&lt;a href=&#34;https://launchpad.net&#34;&gt;Launchpad&lt;/a&gt; 提供了 PPA，允许用户建立自己的软件仓库，自由的上传软件。PPA也被用来对一些打算进入Ubuntu官方仓库的软件，或者某些软件的新版本进行测试。&lt;/p&gt;
+
+&lt;p&gt;Launchpad 是 Ubuntu 母公司 Canonical 有限公司所架设的网站，是一个提供维护、支援或联络 Ubuntu 开发者的平台。&lt;/p&gt;
+
+&lt;h2 id=&#34;3-修改官方软件源&#34;&gt;3. 修改官方软件源&lt;/h2&gt;
+
+&lt;p&gt;由于在国内从 Ubuntu 官方源下载软件比较慢，所以我们通常需要更换软件源来加快下载速度。互联网上有很多开源镜像站点，下面列出了一些网站。&lt;/p&gt;
+
+&lt;p&gt;选择源列表的时候，可以先使用 &lt;code&gt;ping&lt;/code&gt; 命令测试一下网络速度，选择最快的源。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-源列表&#34;&gt;3.1 源列表&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Ubuntu Sources List Generator&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://repogen.simplylinux.ch&#34;&gt;Ubuntu Sources List Generator&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以在该网站上根据所处地区、Ubuntu发行版本等条件自动生成 Ubuntu 源。如我的 Ubuntu 版本号是 16.04，生成的源列表是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#------------------------------------------------------------------------------#
+#                            OFFICIAL UBUNTU REPOS                             #
+#------------------------------------------------------------------------------#
+
+
+###### Ubuntu Main Repos
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
+
+###### Ubuntu Update Repos
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;顺便给出查看 Ubuntu 版本号的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.04 LTS
+Release:	16.04
+Codename:	xenial
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Ubuntu Wiki 源列表&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://wiki.ubuntu.org.cn/源列表&#34;&gt;Ubuntu Wiki 源列表&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;该站点提供了大量的开源镜像，可以先根据自己的版本号，点击版本号后面的 &lt;code&gt;[详细]&lt;/code&gt; 链接进入 &lt;code&gt;模板: Ubuntu source&lt;/code&gt; 页面，该页面提供了很多可用的服务器列表&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-修改源列表&#34;&gt;3.2 修改源列表&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先备份源列表(for sure)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo cp /etc/apt/sources.list /etc/apt/sources.list_backup
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;而后用gedit或其他编辑器打开&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo gedit /etc/apt/sources.list
+# 或 vim
+$ sudo vim /etc/apt/sources.list
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;从上面的列表中选择合适的源，替换掉文件中所有的内容，保存编辑好的文件。&lt;strong&gt;注意：一定要选对版&lt;/strong&gt;本&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;然后，刷新列表&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;注意：一定要执行刷新&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;4-修改-ppa-源&#34;&gt;4. 修改 PPA 源&lt;/h2&gt;
+
+&lt;p&gt;添加 PPA 软件源的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo add-apt-repository ppa:user/ppa-name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;删除 PPA 软件源的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo add-apt-repository --remove ppa:user/ppa-name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;比如 FireFox PPA 源，&lt;a href=&#34;https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa&#34;&gt;https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa&lt;/a&gt; ，我们可以在这里找到 &lt;code&gt;ppa:ubuntu-mozilla-daily/ppa&lt;/code&gt; 的字样，然后我们通过以下命令把这个源加入到 source list 中：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-add-repository ppa:ubuntu-mozilla-daily/ppa
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于 PPA 的源，可以通过 Google 搜索，也可以在 &lt;a href=&#34;https://launchpad.net&#34;&gt;https://launchpad.net&lt;/a&gt; 网站搜索（可能效率比较低）。有的软件可能在官网提供了 PPA 源名称。&lt;/p&gt;
+
+&lt;p&gt;添加完成之后，就会在 &lt;code&gt;/etc/apt/sources.list.d/&lt;/code&gt; 里面创建一个文件：&lt;code&gt;ubuntu-mozilla-daily-ubuntu-ppa-xenial.list&lt;/code&gt;。现在来看看里面的内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat /etc/apt/sources.list.d/ubuntu-mozilla-daily-ubuntu-ppa-xenial.list
+deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu xenial main
+# deb-src http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu xenial main
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以发现其源列表格式其实和官方源一模一样。之所以把 PPA 和官方源区分开来，是因为第三方源可能没有十足的保障。&lt;/p&gt;
+
+&lt;p&gt;添加完成之后，依旧需要使用 &lt;code&gt;sudo apt-get update&lt;/code&gt; 来刷新。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Fix Locale Setting Warning From Perl</title>
+      <link>http://nodejh.com/post/Fix-Locale-Setting-Warning-From-Perl/</link>
+      <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Fix-Locale-Setting-Warning-From-Perl/</guid>
+      <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = &amp;quot;en_US:&amp;quot;,
+	LC_ALL = (unset),
+	LC_CTYPE = &amp;quot;zh_CN.UTF-8&amp;quot;,
+	LANG = &amp;quot;en_US&amp;quot;
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale (&amp;quot;en_US&amp;quot;).
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_ALL to default locale: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;那是因为安装软件时，都会去执行一个 &lt;code&gt;update-locale&lt;/code&gt; 的命令，用来更新 &lt;code&gt;locale&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;这个命令是一个脚本，用 perl 写的，可以用 &lt;code&gt;whereis update-locale&lt;/code&gt; 查到，位置在 &lt;code&gt;/usr/sbin/update-locale&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;上述报错并不是因为 &lt;code&gt;update-locale&lt;/code&gt; 命令而引起，&lt;code&gt;update-locale&lt;/code&gt; 这段脚本没有问题，而是因为perl。&lt;/p&gt;
+
+&lt;p&gt;可以使用以下命令测试：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;perl -e exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其实，真正的原因是 perl 为系统使用 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt;，但系统并没有安装 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;这种情况一般是vps比较常见，因为一般都是用 ssh 的方式连接到 vps 上的 &lt;code&gt;sshd&lt;/code&gt; 有这个机制，会把客户机上的语言环境带到远程的机器上。&lt;/p&gt;
+
+&lt;p&gt;客户机一般都会设置 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt; 语言，用来显示中文，而远端的vps一般就只有en_US.UTF-8，zh_CN.UTF-8一旦带过去就会报找不到的错误。&lt;/p&gt;
+
+&lt;p&gt;所以安装一个中文语言，perl就不会报错了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo locale-gen zh_CN zh_CN.UTF-8
+Generating locales...
+  zh_CN.GB2312... done
+  zh_CN.UTF-8... done
+Generation complete.
+$ sudo dpkg-reconfigure locales
+Generating locales...
+  en_US.UTF-8... done
+  zh_CN.GB2312... up-to-date
+  zh_CN.UTF-8... up-to-date
+Generation complete.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个时候，还可以使用 &lt;code&gt;locale&lt;/code&gt; 当前有哪些语言：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ locale
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://stackoverflow.com/questions/2499794/how-to-fix-a-locale-setting-warning-from-perl&#34;&gt;How to fix a locale setting warning from Perl&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ubuntuforums.org/showthread.php?t=1346581&#34;&gt;perl: warning: Setting locale failed.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Install Eclipse/JSP/Servlet Develop Environment</title>
+      <link>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</link>
+      <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
+      <description>
+
+&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
+
+&lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;1-踩过的坑&#34;&gt;1. 踩过的坑&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-tomcat-版本过新&#34;&gt;1) Tomcat 版本过新&lt;/h4&gt;
+
+&lt;p&gt;最近 Tomcat 更新到了 9.0，为了求新我们安装了 Tomcat 9.0，但 Eclipse 目前最高只能识别 Tomcat 8 的版本。如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-1.png&#34; alt=&#34;ubuntu-eclipse-1.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;所以为了解决问题，我们就只能再安装一个 Tomcat 8.0 了。因为 Tomcat 的安装只需要解压到指定目录即可，所以安装多少个版本都是互不影响的。如果你还不知道怎么安装，请参考：&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;安装 8.0 和 9.0 的唯一区别是，下载的源码版本不同，即 &lt;code&gt;wget&lt;/code&gt; 这一步不一样，安装 8.0 可以在链接下载：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget http://mirrors.cnnic.cn/apache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下载后可以解压到 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 这个目录，以便和之前的 &lt;code&gt;/opt/tomcat&lt;/code&gt; 作区分。然后启动 Tomcat 8 当然就使用 &lt;code&gt;sudo /opt/tomcat8/bin/catalina.sh start&lt;/code&gt; 这个命令了。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-eclispe-运行权限不够无法识别或执行-tomcat-服务器&#34;&gt;2) Eclispe 运行权限不够无法识别或执行 Tomcat 服务器&lt;/h4&gt;
+
+&lt;p&gt;假设我们已经将 Tomcat 8.0 安装到了 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 这个目录。&lt;/p&gt;
+
+&lt;p&gt;由于最开始我们这个目录给除了 &lt;code&gt;tomcat&lt;/code&gt; 用户外的其它用户的权限很小，也就是除了 &lt;code&gt;tomcat&lt;/code&gt; 用户，其它用户都不能执行 Tomcat 甚至不能读取该目录。&lt;/p&gt;
+
+&lt;p&gt;所以如果我们的 Eclipse 是以普通用户权限运行的，那么它是没办法正确使用 Tomcat 的。&lt;/p&gt;
+
+&lt;p&gt;解决问题的办法有两个，第一种是更改 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 的权限，让普通用户能够访问并执行它；第二种是使用 root 权限来运行 Eclipse。这里把两种方法都写上。任选一种即可。&lt;/p&gt;
+
+&lt;h5 id=&#34;方法一-更改-opt-tomcat8-的权限&#34;&gt;方法一：更改 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 的权限&lt;/h5&gt;
+
+&lt;p&gt;打开终端，执行下面的命了即可，就是这么简单！也推荐就用这种做法：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /opt/
+sudo chmod -R 775 tomcat8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-2.gif&#34; alt=&#34;ubuntu-eclipse-2.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&#34;方法二-使用-root-权限运行-eclipse&#34;&gt;方法二：使用 root 权限运行 Eclipse&lt;/h5&gt;
+
+&lt;p&gt;为什么把这个方法也写上呢？是因为使用 root 权限运行 Eclipse 的时候也会遇到问题：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-3.gif&#34; alt=&#34;ubuntu-eclipse-3.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用 root 运行 Eclispe 的时候，Eclispe 找不到 JAVA 运行环境了，也就是找不到 JRE 了。这和我们最初的环境变量设置有关。&lt;/p&gt;
+
+&lt;p&gt;那么如何解决问题呢？其实方法也有很多，可以修改环境变量，也可以用一种更巧妙的方式，就是将解压后的 &lt;code&gt;jre/&lt;/code&gt; 目录放在 &lt;code&gt;eclipse.ini&lt;/code&gt; 所在的目录，也就是 &lt;code&gt;/opt/eclipse/&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;我们之前已经安装过了 JDK，JDK 的安装目录是 &lt;code&gt;/opt/java&lt;/code&gt;，里面就包含了 JRE，也就是 JRE 的目录是 &lt;code&gt;/opt/java/jre&lt;/code&gt;。好了，下面就将 &lt;code&gt;jre/&lt;/code&gt; 复制过去试试。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-4.gif&#34; alt=&#34;ubuntu-eclipse-4.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;好了，可以看到现在 Eclipse 已经正常启动了。&lt;/p&gt;
+
+&lt;p&gt;更多方法可参考：&lt;a href=&#34;http://stackoverflow.com/questions/2030434/eclipse-no-java-jre-jdk-no-virtual-machine&#34;&gt;Eclipse - no Java (JRE) / (JDK) … no virtual machine&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;之所以举这两个例子，还有一点就是说明，解决一个问题的方法可能有很多种，仁者见仁，智者见智。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-关联-eclispe-和-tomcat&#34;&gt;2. 关联 Eclispe 和 Tomcat&lt;/h3&gt;
+
+&lt;p&gt;假设我们上面是通过第一种方法解决的 Eclispe 不能使用 Tomcat 的问题。&lt;/p&gt;
+
+&lt;p&gt;接下来启动 Tomcat&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/opt/eclispe/eclipse
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后选择菜单栏 &lt;code&gt;Windows--&amp;gt;preferences&lt;/code&gt;，弹出如下界面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-5.gif&#34; alt=&#34;ubuntu-eclipse-5.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图中，点击&amp;rdquo;add&amp;rdquo;的添加按钮，弹出选择 Tomcat 版本的界面。之前说到的 Eclipse 不能识别 Tomcat 9.0 就是这一步不能识别。我们已经又安装了 Tomcat 8.0，所以这里选择 Tomcat 8.0。&lt;/p&gt;
+
+&lt;p&gt;接着点击 &lt;code&gt;Next&lt;/code&gt;，选择 Tomcat 的安装目录，并选择我们安装的 Java 环境：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-6.gif&#34; alt=&#34;ubuntu-eclipse-6.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-使用-eclipse-创建第一个项目&#34;&gt;3. 使用 Eclipse 创建第一个项目&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-新建动态网站项目&#34;&gt;1) 新建动态网站项目&lt;/h4&gt;
+
+&lt;p&gt;选择 &lt;code&gt;File--&amp;gt;New--&amp;gt;Dynamic Web Project&lt;/code&gt;，创建 &lt;code&gt;TomcatTest&lt;/code&gt; 项目：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-7.gif&#34; alt=&#34;ubuntu-eclipse-7.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Eclipse 会自动选择默认的 Tomcat 版本。如果没有默认选择 Tomcat 的版本，则需求点击 &lt;code&gt;New Runtime&lt;/code&gt; 按钮，选择我们刚才设置的 Tomcat 版本。&lt;/p&gt;
+
+&lt;p&gt;在Eclipse中只要创建一个Dynamic Web Project，就可以根据创建向导创建出一个典型 Java Web 站点的目录结构。除非有特殊需要，在大多数情况下都没有必要修改这个目录结构，这也是 Web 容器的缺省目录结构，我们只要直接使用即可。一般的目录结构如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-8.png&#34; alt=&#34;ubuntu-eclipse-8.png&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Deployment Descriptor：部署描述符。部署描述符描述了组件、模块或应用程序（如Web应用程序或企业级软件）应该如何部署。&lt;/li&gt;
+&lt;li&gt;JAX-WS Web Services：Java API for XML Web Services（JAX-WS）是 Java 程序设计语言一个用来创建 Web 服务的 API。&lt;/li&gt;
+&lt;li&gt;build：放入编译之后的文件。&lt;/li&gt;
+&lt;li&gt;WebContent：站点根目录。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;WebContent (站点根目录) 
+     |----META-INF (META-INF文件夹) 
+     |----|---MANIFEST.MF (MANIFEST.MF配置清单文件) 
+     |----WEB-INF (WEB-INF文件夹) 
+     |----|----web.xml (站点配置web.xml) 
+     |----|----lib (第三方库文件夹) 
+
+WEB-INF:是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件   对要访问的文件进行相应映射才能访问。
+
+META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Java 2平台的认可与解释，用来配置应用程序、扩展程序、类加载器和服务。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;2-新建一个-jsp-文件&#34;&gt;2). 新建一个 JSP 文件&lt;/h4&gt;
+
+&lt;p&gt;接下来在 &lt;code&gt;WebContent&lt;/code&gt; 文件夹下新建一个 &lt;code&gt;test.jsp&lt;/code&gt; 文件：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-9.gif&#34; alt=&#34;ubuntu-eclipse-9.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接着我们修改下 &lt;code&gt;test.jsp&lt;/code&gt; 文件。代码如下所示：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page language=&amp;quot;java&amp;quot; contentType=&amp;quot;text/html; charset=UTF-8&amp;quot;
+    pageEncoding=&amp;quot;UTF-8&amp;quot;%&amp;gt;
+&amp;lt;!DOCTYPE html PUBLIC &amp;quot;-//W3C//DTD HTML 4.01 Transitional//EN&amp;quot; &amp;quot;http://www.w3.org/TR/html4/loose.dtd&amp;quot;&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;meta http-equiv=&amp;quot;Content-Type&amp;quot; content=&amp;quot;text/html; charset=UTF-8&amp;quot;&amp;gt;
+&amp;lt;title&amp;gt;Tomcat Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;%
+	out.println(&amp;quot;世界,你好!&amp;quot;);
+%&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-10.gif&#34; alt=&#34;ubuntu-eclipse-10.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后运行该项目：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-11.gif&#34; alt=&#34;ubuntu-eclipse-11.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-新建一个-servlet-文件&#34;&gt;3). 新建一个 Servlet 文件&lt;/h4&gt;
+
+&lt;p&gt;我们也可以使用以上环境创建 Servlet 文件，选择 &lt;code&gt;File--&amp;gt;New--&amp;gt;Servlet&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-12.gif&#34; alt=&#34;ubuntu-eclipse-12.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;文件路径位于 TomcatTest项目的 /TomcatTest/src 目录下创建 &amp;ldquo;HelloServlet&amp;rdquo; 类，包为 &amp;ldquo;com.runoob.test&amp;rdquo;。&lt;/p&gt;
+
+&lt;p&gt;HelloServlet.java 代码如下所示：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package com.test.test;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class HelloWorld
+ */
+@WebServlet(&amp;quot;/HelloWorld&amp;quot;)
+public class HelloWorld extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public HelloWorld() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append(&amp;quot;Served at: &amp;quot;).append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于 JSP 和 Servlet 的关系，这里简单作几点说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;JSP 是 HTML 内嵌 JAVA 代码。从本质上讲，JSP 是 Servlet 的扩展，是简易版的 Servlet。Servlet 则完全和 HTML 分离开来，只运用在 JAVA 文件中。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;JSP引擎从磁盘中载入JSP文件，然后将它们转化为servlet。这种转化只是简单地将所有模板文本改用println()语句，并且将所有的JSP元素转化成Java代码。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;JSP引擎将servlet编译成可执行类。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然后我们在运行一下 &lt;code&gt;HelloWorld.java&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-13.gif&#34; alt=&#34;ubuntu-eclipse-13.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/19&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/19&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Install Java On Ubuntu</title>
+      <link>http://nodejh.com/post/how-to-install-java-on-ubuntu/</link>
+      <pubDate>Sat, 12 Mar 2016 16:06:40 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/how-to-install-java-on-ubuntu/</guid>
+      <description>
+
+&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
+
+&lt;p&gt;建JAVA开发环境，第一步就是要安装JDK。在这里下载：&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&#34;&gt;Java SE Development Kit 8 - Downloads&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-1.png&#34; alt=&#34;下载 JDK&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-解压-jdk-压缩文件&#34;&gt;2. 解压 JDK 压缩文件&lt;/h3&gt;
+
+&lt;p&gt;首先在 &lt;code&gt;/opt&lt;/code&gt; 新建 &lt;code&gt;java&lt;/code&gt; 目录，并进入该目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mkdir /opt/java &amp;amp;&amp;amp; cd /opt/java
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后将下载的软件移动到 &lt;code&gt;/opt/java&lt;/code&gt; 目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mv ~/Downloads/jdk-8u73-linux-x64.tar.gz .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再然后解压压缩包：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; sudo tar xvf jdk-8u73-linux-x64.tar.gz --strip-components=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;完整命令截图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-2.png&#34; alt=&#34;how-to-install-java-on-ubuntu-2&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;解压后大概是这样的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-3.png&#34; alt=&#34;how-to-install-java-on-ubuntu-3&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-配置环境变量&#34;&gt;3. 配置环境变量&lt;/h3&gt;
+
+&lt;p&gt;Ubuntu 系统环境变量的配置方法有很多种。而 JAVA 的环境变量一般情况下是需要对系统的每个用户都要生效。所以我们选择对 &lt;code&gt;/etc/profile&lt;/code&gt; 文件进行配置。&lt;/p&gt;
+
+&lt;p&gt;在终端输入：&lt;code&gt;sudo vim /etc/profile&lt;/code&gt;，使用 vim 对该文件进行编辑。注意这里需要 root 权限。如果你的 Ubuntu 还没有安装 vim，那么可以通过命令 &lt;code&gt;sudo apt-get install vim&lt;/code&gt; 进行安装。&lt;/p&gt;
+
+&lt;p&gt;如图所示，需要在 &lt;code&gt;/etc/profile&lt;/code&gt; 的末尾加入下面几行(其中&lt;code&gt;#&lt;/code&gt;后面是注释)：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export JAVA_HOME=/opt/java
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.:$CLASS_PATH:$JAVA_HOME/lib:$JRE_HOME/lib
+export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-4.png&#34; alt=&#34;how-to-install-java-on-ubuntu-4&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后 &lt;code&gt;:wq&lt;/code&gt; 保存修改并退出 vim。&lt;/p&gt;
+
+&lt;p&gt;最后需要使用 &lt;code&gt;source /etc/profile&lt;/code&gt; 使变量设置在当前窗口立即生效。需注销/重启之后，才能对每个新终端窗口都生效。然后输入 &lt;code&gt;java -version&lt;/code&gt; 命令，如图所示，如果出现 JAVA 的版本号，则说明安装成功。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-5.png&#34; alt=&#34;how-to-install-java-on-ubuntu-5&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;4-安装-eclipse&#34;&gt;4. 安装 Eclipse&lt;/h3&gt;
+
+&lt;p&gt;下载 Eclipse： &lt;a href=&#34;http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/mars2&#34;&gt;Eclipse IDE for Java EE Developers&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;然后同样在 &lt;code&gt;/opt/&lt;/code&gt; 目录下新建一个 &lt;code&gt;eclipse&lt;/code&gt; 的子目录，并将 Eclispe 解压到该目录。命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mkdir /opt/eclipse
+sudo tar zxvf ~/Downloads/eclipse-jee-mars-2-linux-gtk-x86_64.tar.gz -C /opt/eclipse/ --strip-components=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-6.png&#34; alt=&#34;how-to-install-java-on-ubuntu-6&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Eclipse 解压后即可使用。启动命令为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/opt/eclispe/eclipse
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;敲下回车后如果出现 eclispe 启动界面，则安装成功。如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-7.png&#34; alt=&#34;how-to-install-java-on-ubuntu-7&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/16&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/16&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Install Tomcat on Ubuntu</title>
+      <link>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</link>
+      <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
+      <description>
+
+&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
+
+&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。
+JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
+Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。&lt;/p&gt;
+
+&lt;p&gt;简单来说，假设 &lt;code&gt;http://xxx.com&lt;/code&gt; 是一个 Java 写的网站，那么当在浏览器输入网址并敲下回车后，Tomcat 会得到一个希望访问 &lt;code&gt;/&lt;/code&gt;（根目录资源）的请求。然后它去配置文件里查根目录对应的模块是什么。假设查到的模块是 &lt;code&gt;root&lt;/code&gt; 这个类，那么它会去调用 &lt;code&gt;root.doGet()&lt;/code&gt; 方法。而你写一个 Servlet 的时候，必须实现 &lt;code&gt;doGet()&lt;/code&gt;方法，此时你的方法被调用，那么你写的代码就运行了。&lt;/p&gt;
+
+&lt;p&gt;当然，实际情况会比这个更复杂。&lt;/p&gt;
+
+&lt;p&gt;如果还没有安装 JAVA 开发环境，可参考：&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-创建-tomcat-用户&#34;&gt;2. 创建 &lt;code&gt;tomcat&lt;/code&gt; 用户&lt;/h3&gt;
+
+&lt;p&gt;为了安全考虑，Tomcat 需要以普通用户的权限来运行。所以我们将创建一个用户和用户组，来运行 Tomcat 服务。&lt;/p&gt;
+
+&lt;p&gt;首先，创建一个 &lt;code&gt;tomcat&lt;/code&gt; 用户组：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo groupadd tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后我们再创建一个 &lt;code&gt;tomcat&lt;/code&gt; 用户，该用户有如下条件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 用户属于 &lt;code&gt;tomcat&lt;/code&gt; 用户组；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 用户主目录为 &lt;code&gt;/opt/tomcat&lt;/code&gt;，这个目录也是我们将用来安装 tomcat 的目录（当然也可以是你喜欢的其他目录）；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 不能登录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所创建 &lt;code&gt;tomcat&lt;/code&gt; 用户的命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-安装-tomcat&#34;&gt;3. 安装 Tomcat&lt;/h3&gt;
+
+&lt;h4 id=&#34;下载-tomcat-二进制文件&#34;&gt;下载 Tomcat 二进制文件&lt;/h4&gt;
+
+&lt;p&gt;首先下载 Tomcat。目前 Tomcat 的最新版本是 9.0.0.M3。可以在 &lt;a href=&#34;http://tomcat.apache.org&#34;&gt;http://tomcat.apache.org&lt;/a&gt; 找到最新版本的 Tomcat，然后拷贝其二进制链接地址，在终端使用 &lt;code&gt;wget&lt;/code&gt; 命令进行下载：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd ~
+wget http://apache.fayea.com/tomcat/tomcat-9/v9.0.0.M3/bin/apache-tomcat-9.0.0.M3.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-1.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后我们需要将 Tomcat 安装到 &lt;code&gt;/opt/tomcat&lt;/code&gt; 目录下面。&lt;/p&gt;
+
+&lt;p&gt;接下来创建安装目录，并将下载的二进制包解压到该目录。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mkdir /opt/tomcat
+sudo tar zxvf apache-tomcat-9.0.0.M3.tar.gz -C /opt/tomcat --strip-components=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;设置-tomcat-用户权限&#34;&gt;设置 Tomcat 用户权限&lt;/h4&gt;
+
+&lt;p&gt;用户 &lt;code&gt;tomcat&lt;/code&gt; 需要有合适的权限来运行 Tomcat 服务，所以接下来需要设置用户权限。&lt;/p&gt;
+
+&lt;p&gt;首先进入到 Tomcat 的安装目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /opt/tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后设置 &lt;code&gt;tomcat&lt;/code&gt; 用户对 &lt;code&gt;conf&lt;/code&gt; 目录的写权限，以及对其子目录的读权限：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo chgrp -R tomcat conf
+sudo chmod g+rwx conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来需要设置 &lt;code&gt;tomcat&lt;/code&gt; 用户对 &lt;code&gt;work/&lt;/code&gt;、&lt;code&gt;temp/&lt;/code&gt; 、&lt;code&gt;logs/&lt;/code&gt; 这几个目录的所有权：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo chown -R tomcat work/ temp/ logs/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;完整命令如下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-2.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-2&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;设置环境变量&#34;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;p&gt;Tomcat 运行的时候依赖于 JDK 或 JRE。所以还需要为 Tomcat 指定 JDK 或 JRE 的路径。按理说只要有 JRE 就够了，但要使用 Tomcat 的更多功能，如 debug，还需要 JDK。所以建议设置 JDK 的路径。&lt;/p&gt;
+
+&lt;p&gt;设置环境变量的方法是在 &lt;code&gt;bin/&lt;/code&gt; 目录下新建一个 &lt;code&gt;setenv.sh&lt;/code&gt; 目录，然后将 &lt;code&gt;JAVA_HOME=/opt/java&lt;/code&gt; 写入到该文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo vim bin/setenv.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-3.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-3&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;环境变量设置完毕后就可以通过 &lt;code&gt;catalina.sh&lt;/code&gt; 命令来启动 Tomcat 了。因为现在是在 &lt;code&gt;/opt/tomcat&lt;/code&gt; 目录下，所以可以使用如图所示的命令来启动 Tomcat：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo bin/catalina.sh start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-4.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-4.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果你是在别的目录下，也可以通过 &lt;code&gt;sudo /opt/tomcat/bin/catalina.sh start&lt;/code&gt; 命令来启动 Tomcat 服务。&lt;/p&gt;
+
+&lt;p&gt;一切正常的话，就会提示 Tomcat 启动成功，那么 Tomcat。然后在浏览器中输入 &lt;code&gt;localhost:8080&lt;/code&gt; 就可以看到 Tomcat 的主界面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-5.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-5.png&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;4-配置-web-管理员接口&#34;&gt;4. 配置 Web 管理员接口&lt;/h3&gt;
+
+&lt;p&gt;Tomcat 提供了一个图形用户界面的管理后台，来方便我们管理使用 Tomcat 的 Web 应用。在 Tomcat 主页点击右上角的 &lt;code&gt;Server Status&lt;/code&gt; 按钮，会弹出一个登录框，输入用户名和密码就可登录。但 Tomcat 安装后是没有默认的管理员帐户的，需要我们自己去配置。&lt;/p&gt;
+
+&lt;p&gt;如果登录的时候密码错误，就会出现一个 &lt;code&gt;401 Unauthorized&lt;/code&gt; 的错误页面，这个页面上有提示信息，告诉我们应该怎么去配置管理员帐户：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-6.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-6.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来就来配置管理员帐户。Tomcat 后台管理员配置文件是 &lt;code&gt;/opt/tomcat/conf/tomcat-users.xml&lt;/code&gt;，所以我们要编辑该文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo vim /opt/tomcat/conf/tomcat-users.xml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后在最后一行的前面加上如下两行，username 和 password 可自行设置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;role rolename=&amp;quot;manager-gui&amp;quot; /&amp;gt;
+&amp;lt;user username=&amp;quot;admin&amp;quot; password=&amp;quot;password&amp;quot; roles=&amp;quot;manager-gui&amp;quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-7.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-7.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;编辑完了后保存，然后再重新启动 Tomcat 服务：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo /opt/tomcat/bin/catalina.sh stop
+sudo /opt/tomcat/bin/catalina.sh start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;重启后，再点击 &lt;code&gt;Server Status&lt;/code&gt; 按钮，输入刚设置的用户名和密码就可以登录到后台：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-8.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-8.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;至此，Tomcat 就安装成功！&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/17&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/17&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Database on nodejh</title>
+    <link>http://nodejh.com/tags/database/</link>
+    <description>Recent content in Database on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 17 Feb 2017 15:03:43 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using SQL Plus on Oracle</title>
+      <link>http://nodejh.com/post/Using-SQL-Plus-on-Oracle/</link>
+      <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Using-SQL-Plus-on-Oracle/</guid>
+      <description>
+
+&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;支持查询、插入和更新数据&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;PL/SQL&lt;/code&gt; 程序&lt;/li&gt;
+&lt;li&gt;查看表和对象的定义&lt;/li&gt;
+&lt;li&gt;开发和执行批处理脚本&lt;/li&gt;
+&lt;li&gt;进行数据库管理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;登录-sql-plus&#34;&gt;登录 SQL *PLUS&lt;/h2&gt;
+
+&lt;p&gt;直接登录，输入命令后会提示输入用户名密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用用户名和密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/[user_password]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;操作系统权限认证的 Oracle SYS 管理员登陆：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;不在终端暴露密码登录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus /nolog
+SQL&amp;gt; conn [username]/[user_password]
+# 或者
+SQL &amp;gt; conn / as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;退出登录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;数据库信息&#34;&gt;数据库信息&lt;/h2&gt;
+
+&lt;h4 id=&#34;查看数据库名&#34;&gt;查看数据库名&lt;/h4&gt;
+
+&lt;p&gt;通常情况了我们称的 &lt;code&gt;数据库&lt;/code&gt;，并不仅指物理的数据集合，而是物理数据、内存、操作系统进程的组合体。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select name from v$database; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;查询当前数据库实例名&#34;&gt;查询当前数据库实例名&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;实例是访问Oracle数据库所需的一部分计算机内存和辅助处理后台进程，是由进程和这些进程所使用的内存(SGA)所构成一个集合。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select instance_name from v$instance;    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;数据库实例名用于对外部连接。在操作系统中要取得与数据库的联系，必须使用数据库实例名。比如我们作开发，要连接数据库，就得连接数据库实例名，&lt;code&gt;orcl&lt;/code&gt; 就为数据库实例名：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;jdbc:oracle:thin:@localhost:1521:orcl
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一个数据库可以有多个实例，在作数据库服务集群的时候可以用到。&lt;/p&gt;
+
+&lt;h2 id=&#34;用户管理&#34;&gt;用户管理&lt;/h2&gt;
+
+&lt;p&gt;Oracle 使用 &lt;code&gt;PROFILE&lt;/code&gt; 文件对用户访问资源的权限进行控制。&lt;/p&gt;
+
+&lt;p&gt;若不做特殊指定，创建用户时用户默认使用的 &lt;code&gt;PROFILE&lt;/code&gt; 就是 &lt;code&gt;DEFAULT&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;查看当前用户：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; show user
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看数据库用户：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select * from dba_users;  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;解锁用户&#34;&gt;解锁用户&lt;/h4&gt;
+
+&lt;p&gt;默认当密码输错 10 次之后，用户就会被锁定：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ORA-28000: the account is locked
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个时候就需要管理员来解锁：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
+SQL&amp;gt; alter user [username] account unlock;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;有解锁肯定就有锁定：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] account lock;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;密码错误次数&#34;&gt;密码错误次数&lt;/h4&gt;
+
+&lt;p&gt;当然，也可以自己修改最大密码错误次数，最大错误次数存储在 &lt;code&gt;dba_profiles&lt;/code&gt; 表中。&lt;/p&gt;
+
+&lt;p&gt;首先根据 username 查看用户使用的 &lt;code&gt;PROFILE&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT PROFILE FROM DBA_USERS WHERE USERNAME=&#39;[username]&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后根据 username 以及查询到的 &lt;code&gt;PROFILE&lt;/code&gt; 查看该用户的最大密码错误次数 &lt;code&gt;FAILED_LOGIN_ATTEMPTS&lt;/code&gt; ：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT * FROM DBA_PROFILES WHERE PROFILE=&#39;DEFAULT&#39; AND RESOURCE_NAME=&#39;FAILED_LOGIN_ATTEMPTS&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将错误次数修改为无限次：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; ALTER PROFILE DEFAULT LIMIT FAILED_LOGIN_ATTEMPTSUNLIMITED;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;密码有效期&#34;&gt;密码有效期&lt;/h4&gt;
+
+&lt;p&gt;Oracle 11g 默认用户每三个月（180 天）就要修改一次密码，快到密码过期时间就会提醒：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ORA-28002: the password will expire within 7 days
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里同样要先查找到 &lt;code&gt;PROFILE&lt;/code&gt; 再查看用户密码剩余过期时间：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT * FROM DBA_PROFILES WHERE PROFILE=&#39;DEFAULT&#39; AND RESOURCE_NAME=&#39;PASSWORD_LIFE_TIME&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改密码有效期（不受限）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIMEUNLIMITED;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;设置密码过期：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] password expire;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;修改密码&#34;&gt;修改密码&lt;/h4&gt;
+
+&lt;p&gt;修改当前登录用户密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; password
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改某个用户的密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] identified by [password];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;表管理&#34;&gt;表管理&lt;/h2&gt;
+
+&lt;p&gt;Oracle 的表都是存储在表空间里面的。创建表之前需要先创建一个表空间。&lt;/p&gt;
+
+&lt;h4 id=&#34;查看用户所拥有的表&#34;&gt;查看用户所拥有的表&lt;/h4&gt;
+
+&lt;p&gt;查看用户所拥有的表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM USER_TABLES; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看用户可存取的表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM ALL_TABLES; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;数据库中所有表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM DBA_TABLES;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;查看表空间&#34;&gt;查看表空间&lt;/h4&gt;
+
+&lt;p&gt;查看表空间详细数据文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT FILE_NAME,TABLESPACE_NAME from DBA_DATA_FILES;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;创建表空间&#34;&gt;创建表空间&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;create tablespace [表空间名称]
+datafile [表空间数据文件路径 ]
+size [表空间大小]
+autoextend on;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; create tablespace SoftwareManagement
+  2  datafile &#39;/data/oracle/oradata/orcl/SoftwareManagement.dbf&#39;
+  3  size 50m
+  4  autoextend on;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;创建新用户&#34;&gt;创建新用户&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE USER [用户名]  
+IDENTIFIED BY [密码]  
+DEFAULT TABLESPACE [表空间] (默认USERS)  
+TEMPORARY TABLESPACE [临时表空间] (默认TEMP)  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; create USER software
+  2  identified by 123456
+  3  default tablespace Softwaremanagement;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;分配权限&#34;&gt;分配权限&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; GRANT CONNECT TO [username];  
+SQL&amp;gt; GRANT RESOURCE TO [username];  
+SQL&amp;gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据库、表等。 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到这里，数据库中的表空间、用户以及用户权限都创建并分配好了，接下来用户就可以在自己的表空间中创建表，然后进行开发。&lt;/p&gt;
+
+&lt;h2 id=&#34;权限管理&#34;&gt;权限管理&lt;/h2&gt;
+
+&lt;p&gt;在给用户分配权限的时候，分配了 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt; 权限给用户。这两个权限到底是什么呢？&lt;/p&gt;
+
+&lt;h4 id=&#34;oracle中的权限&#34;&gt;oracle中的权限&lt;/h4&gt;
+
+&lt;p&gt;Oracle 中的权限分为两类：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;系统权限：系统规定用户使用数据库的权限，系统权限是对用户而言。&lt;/li&gt;
+&lt;li&gt;实体权限：某种权限的用户对其他用户的表或视图的存取权限，是针对表或者视图而言。如 &lt;code&gt;select&lt;/code&gt;、&lt;code&gt;update&lt;/code&gt;、&lt;code&gt;insert&lt;/code&gt;、&lt;code&gt;delete&lt;/code&gt;、&lt;code&gt;alter&lt;/code&gt;、&lt;code&gt;index&lt;/code&gt;、&lt;code&gt;all&lt;/code&gt;，其中 &lt;code&gt;all&lt;/code&gt; 包含所有的实体权限。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;系统权限分类&#34;&gt;系统权限分类&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;DBA：拥有全部特权，是系统最高权限，只有DBA才可以创建数据库结构。&lt;/li&gt;
+&lt;li&gt;RESOURCE：拥有resource权限的用户只可以创建实体，不可以创建数据库结构。&lt;/li&gt;
+&lt;li&gt;CONNECT：拥有connect权限的用户只可以登录oracle，不可以创建实体，不可以创建数据库结构。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;建议：
+对于普通用户，授予 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt; 权限；
+对于 &lt;code&gt;DBA&lt;/code&gt; 管理用户，授予 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt;、&lt;code&gt;DBA&lt;/code&gt; 权限。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;导入导出&#34;&gt;导入导出&lt;/h2&gt;
+
+&lt;p&gt;数据库的导入导出也是一个很常见的需求。&lt;/p&gt;
+
+&lt;h4 id=&#34;导出&#34;&gt;导出&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ exp [username]/[password]@[orcl] file=./database.dmp  full=y
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;username&lt;/code&gt; 是数据库用户名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;password&lt;/code&gt; 是数据库用户密码&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;orcl&lt;/code&gt; 是数据库实例名称&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;file&lt;/code&gt; 后面的参数是导出的数据库文件存放位置及文件名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;full&lt;/code&gt; 其值为 &lt;code&gt;y&lt;/code&gt; 表示全部导出，默认为 &lt;code&gt;no&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果只需导出某几张表，可以指定 &lt;code&gt;tables&lt;/code&gt; 参数：&lt;code&gt;tables=&#39;(tableName, tableName1)&#39;&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;导入&#34;&gt;导入&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ imp [username]/[password]@[orcl] file=./database.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;和导出数据库语法一样，只是关键字不一样。&lt;/p&gt;
+
+&lt;h4 id=&#34;执行-sql-文件&#34;&gt;执行 SQL 文件&lt;/h4&gt;
+
+&lt;p&gt;执行 SQL 文件的方法有很多种。如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用 SQL PLUS 命令&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/password@[orcl] @path/file.name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者远程执行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/password@server_IP/service_name @path/file.name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果sql脚本文件比较复杂，包含了begin end语句，就会不断显示行号，解决办法就是在 sql 脚本的最后用 &lt;code&gt;/&lt;/code&gt; 符号结尾。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;在 SQL PLUS 中执行&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt;start file_path
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt;@ file_path
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;file_path&lt;/code&gt; 是文件路径。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/fnng/archive/2012/08/12/2634485.html&#34;&gt;Oracle表空间（tablespaces）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://zyjustin9.iteye.com/blog/2193804&#34;&gt;Oracle数据库，实例，表空间，用户，表之间的关系&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nvd11.blog.163.com/blog/static/2000183122012111524636835/&#34;&gt;Oracle 在Sqlplus 执行sql脚本文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

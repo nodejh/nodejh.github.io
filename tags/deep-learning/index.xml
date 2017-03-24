@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deep Learning on nodejh</title>
+    <link>http://nodejh.com/tags/deep-learning/</link>
+    <description>Recent content in Deep Learning on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 27 Oct 2016 15:37:29 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/deep-learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Build MXNet on macOS</title>
+      <link>http://nodejh.com/post/Install-MXNet-on-macOS/</link>
+      <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Install-MXNet-on-macOS/</guid>
+      <description>
+
+&lt;p&gt;MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：&lt;a href=&#34;https://github.com/dmlc/mxnet/issues/797&#34;&gt;《MXNet设计和实现简介》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但由于每个人电脑环境不同，所以可能会出现一些依赖库／包的缺失，导致安装失败。&lt;/p&gt;
+
+&lt;h4 id=&#34;安装依赖软件&#34;&gt;安装依赖软件&lt;/h4&gt;
+
+&lt;p&gt;在 macOS 上，首先需要具有以下软件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Homebrew (to install dependencies)&lt;/li&gt;
+&lt;li&gt;Git (to pull code from GitHub)&lt;/li&gt;
+&lt;li&gt;Homebrew/science (for linear algebraic operations)&lt;/li&gt;
+&lt;li&gt;OpenCV (for computer vision operations)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果上述已经安装了，就不需要再安装；如果没有，则按照下面的步骤安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 安装 Homebrew
+$ /usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
+# 安装 Git 和 OpenCV
+$ brew update
+$ brew install git
+$ brew tap homebrew/science
+$ brew info opencv
+$ brew install opencv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;编译-mxnet&#34;&gt;编译 MXNet&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;# 下载源码
+$ git clone --recursive https://github.com/dmlc/mxnet
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后还需要安装 &lt;code&gt;openblas&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 安装 openblas
+$ brew install --fresh -vd openblas
+...
+Generally there are no consequences of this for you. If you build your
+own software and it requires this formula, you&#39;ll need to add to your
+build variables:
+
+    LDFLAGS:  -L/usr/local/opt/openblas/lib
+    CPPFLAGS: -I/usr/local/opt/openblas/include
+
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/openblas/0.2.18_2: 20 files, 41.8M, built in 12 minutes 33 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果没有安装 &lt;code&gt;openblas&lt;/code&gt;，则会有类似 &lt;code&gt;fatal error: &#39;cblas.h&#39; file not found&lt;/code&gt; 的错误，详见 &lt;a href=&#34;https://github.com/dmlc/mxnet/issues/572&#34;&gt;https://github.com/dmlc/mxnet/issues/572&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;接下来修改配置文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd mxnet
+$ cp make/osx.mk ./config.mk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用 vim 或其他编辑器打开 &lt;code&gt;config.mk&lt;/code&gt;，在 &lt;code&gt;USE_BLAS = apple&lt;/code&gt; 下面加入如下 &lt;code&gt;ADD_LDFLAGS = -I/usr/local/opt/openblas/lib&lt;/code&gt; 和 &lt;code&gt;ADD_CFLAGS =  -I/usr/local/opt/openblas/include&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;USE_BLAS = apple
+ADD_LDFLAGS = -I/usr/local/opt/openblas/lib
+ADD_CFLAGS =  -I/usr/local/opt/openblas/include
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后再编译即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ make -j$(sysctl -n hw.ncpu)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;在-python-中使用-mxnet&#34;&gt;在 Python 中使用 MXNet&lt;/h4&gt;
+
+&lt;p&gt;编译安装完成之后，若要使用 MXNet 的 Python 接口，还需要将 mxnet/python 添加到 Python 的包搜索路径。至少有三种方式可以实现。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1. python 代码手动加载&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import os, sys;
+cur_path = os.path.abspath(os.path.dirname(__file__));
+mxnet_lib_path = os.path.join(cur_path, &#39;mxnet/python&#39;);
+sys.path.append(mxnet_lib_path);
+import mxnet as mx;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在没有将 &lt;code&gt;mxnet/python&lt;/code&gt; 添加到 PYTHONPATH 之前，依旧可以运行 &lt;code&gt;/example/image-classification&lt;/code&gt; 里面的一些测试案例，就是因为案例里面有一行 &lt;code&gt;import find_mxnet&lt;/code&gt;，而 &lt;code&gt;find_mxnet&lt;/code&gt; 的作用就是手动加载 &lt;code&gt;mxnet/python&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# find_mxnet.py
+try:
+    import mxnet as mx
+except ImportError:
+    import os, sys
+    curr_path = os.path.abspath(os.path.dirname(__file__))
+    sys.path.append(os.path.join(curr_path, &amp;quot;../../python&amp;quot;))
+    import mxnet as mx
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;2. 将路径加到环境变量 PYTHONPATH 中&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这种方法需要修改 shell 的配置文件。如果使用的 bash，则修改 &lt;code&gt;~/.bashrc&lt;/code&gt;；若使用的是 zsh，则修改 &lt;code&gt;~/.zshrc&lt;/code&gt;；其他类似。&lt;/p&gt;
+
+&lt;p&gt;在 bash 配置文件中加入下面这一行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PYTHONPATH=path_to_mxnet_root/python
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;path_to_mxnet_root&lt;/code&gt; 是下载的 mxnet 源码目录。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3. 全局安装 mxnet&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;直接运行 &lt;code&gt;mxnet/python/setup.py&lt;/code&gt;，将 mxnet 添加到全局路径即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;python setup.py install --user
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;运行上面的命令后，脚本会在 &lt;code&gt;~/.local&lt;/code&gt; 目录下创建一个 &lt;code&gt;lib&lt;/code&gt; 目录，里面有一个 &lt;code&gt;python-2.7/site-packages&lt;/code&gt; 文件夹。&lt;/p&gt;
+
+&lt;p&gt;如果是 &lt;code&gt;sudo python setup.py install&lt;/code&gt;，则上面的目录会在 &lt;code&gt;/usr/lib&lt;/code&gt; 下。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://mxnet.io/get_started/setup.html#build-mxnet-on-os-x-mac&#34;&gt;Build MXNet on OS X (Mac)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/dengdan890730/p/5587542.html&#34;&gt;mxnet的python包导入的前前后后&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/10&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/10&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

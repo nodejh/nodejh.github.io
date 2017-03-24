@@ -14,7 +14,10 @@ hasCJKLanguage = true
 	bio = "To Be A Full Stack Developer"
 	# Enter optionally your twitter account
 	twitter = "nodejh"
-	enableRSS = false
+	enableRSS = true
+
+	# Table of content
+	enableToc = true
 
 	# Disqus comment
 	disqusShortname = "nodejh"
@@ -68,7 +71,6 @@ hasCJKLanguage = true
 	iconFont = "font-awesome"
   # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
   socialIconStyle = ""
-
 
 # Add additional social link entries underneath
 [social]

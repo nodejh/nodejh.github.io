@@ -44,10 +44,10 @@ macOS 默认的是 `Bourne Shell`，其环境变量配置文件及加载顺序�
 ```bash
 /etc/profile
 /etc/bashrc
-/etc/paths 
+/etc/paths
 ~/.bash_profile # macOS
-~/.bash_login 
-~/.profile 
+~/.bash_login
+~/.profile
 ~/.bashrc # linux
 ```
 
@@ -72,7 +72,7 @@ macOS 默认的是 `Bourne Shell`，其环境变量配置文件及加载顺序�
 #### 系统环境变量 `/etc/paths`
 
 
-一般添加系统环境变量，建议通过修改 `/etc/paths` 的方式进行添加。一般不建议直接修改 `/etc/paths` 文件，而是将路径写在 `/etc/paths.d/` 目录下的一个文件里，系统会逐一读取 `/etc/paths.d/` 下的每个文件。 
+一般添加系统环境变量，建议通过修改 `/etc/paths` 的方式进行添加。一般不建议直接修改 `/etc/paths` 文件，而是将路径写在 `/etc/paths.d/` 目录下的一个文件里，系统会逐一读取 `/etc/paths.d/` 下的每个文件。
 
 `Git` 路径就是这样实现的。我们先看看 Git 的例子：
 
@@ -178,7 +178,7 @@ echo $PATH
 # 设置 NODE_ENV 环境变量。退出 SHELL 时失效
 $ export NODE_ENV=development
 # 查看当前所有环境变量
-$ export -p 
+$ export -p
 ...
 typeset -x NODE_ENV=development
 typeset -x USER=jh
@@ -188,14 +188,13 @@ typeset -x USER=jh
 在 Node.js 代码中判断当前环境是开发环境还是生产环境：
 
 ```javascript
-if （process.env.NODE_ENV === 'development'） {
-    console.log（'开发环境'）;
+if(process.env.NODE_ENV === 'development') {
+    console.log('开发环境');
 } else {
-    console.log（'生产环境'）;
+    console.log('生产环境');
 }
 ```
 
---- 
+---
 
 Github Issues [https://github.com/nodejh/nodejh.github.io/issues/34](https://github.com/nodejh/nodejh.github.io/issues/34)
-

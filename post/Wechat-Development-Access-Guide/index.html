@@ -1,0 +1,396 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Wechat Development Access Guide &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="nodejh" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/post'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            微信公众平台开发接入指南
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Dec 4, 2016 19:32
+                    · 1581 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/node.js">Node.js</a>
+                          
+                              <a href="http://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0">微信公众平台</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#tl-dr">TL;DR</a></li>
+<li><a href="#填写服务器配置">填写服务器配置</a></li>
+<li><a href="#验证服务器地址的有效性">验证服务器地址的有效性</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 <a href="http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html">公众平台开发者文档-接入指南</a> 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。</p>
+
+<p>本文主要提供了 Node.js 版本的验证代码，同时把步骤细化，让开发者更方便地了解整个接入过程，对初学者更友好。</p>
+
+<h2 id="tl-dr">TL;DR</h2>
+
+<p>在微信公众平台后台的 <code>开发者中心/填写服务器配置</code> 页面，配置好 URL 和 Token 后，复制下面的代码，修改 Token，在服务器运行，然后再在页面上点击提交即可进行接入验证。</p>
+
+<pre><code>// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require('http');
+const url = require('url');
+const crypto = require('crypto');
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = 'token';
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash('sha1');
+  md5sum.update(str);
+  const ciphertext = md5sum.digest('hex');
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log('Request URL: ', req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log('timestamp: ', timestamp);
+  console.log('nonce: ', nonce);
+  console.log('signature: ', signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(''));
+  console.log('Sha1 String: ', tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log('Check Success');
+  } else {
+    res.end('failed');
+    console.log('Check Failed');
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log('Start Checking...');
+});
+
+</code></pre>
+
+<h2 id="填写服务器配置">填写服务器配置</h2>
+
+<p>登录进入微信公众平台后台管理页面</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-login-1.png" alt="登录" /></p>
+
+<p>然后进入 <code>基本配置</code> 页面</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-index.png" alt="基本配置" /></p>
+
+<p>再然后选择 <code>修改配置</code>，进入到 <code>填写服务器配置</code> 子页面</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-config-page.png" alt="填写服务器配置" /></p>
+
+<ul>
+<li>URL 为已经解析到你的服务器的域名，这里以 <a href="http://wechat.nodejh.com">http://wechat.nodejh.com</a> 这个二级域名为例</li>
+<li>Token 随意填写即可</li>
+</ul>
+
+<h2 id="验证服务器地址的有效性">验证服务器地址的有效性</h2>
+
+<p>验证服务器地址的有效性，需要在域名对应的服务器上运行一段验证程序。该程序会接收上个步骤中的域名所发送的 HTTP 请求。</p>
+
+<p>官方文档提供了 PHP 的示例程序，下面是 Node.js 版本：</p>
+
+<pre><code>// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require('http');
+const url = require('url');
+const crypto = require('crypto');
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = 'token';
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash('sha1');
+  md5sum.update(str);
+  const ciphertext = md5sum.digest('hex');
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log('Request URL: ', req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log('timestamp: ', timestamp);
+  console.log('nonce: ', nonce);
+  console.log('signature: ', signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(''));
+  console.log('Sha1 String: ', tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log('Check Success');
+  } else {
+    res.end('failed');
+    console.log('Check Failed');
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log('Start Checking...');
+});
+</code></pre>
+
+<p>因为验证要使用 80(HTTP) 端口或 443(HTTPS) 端口，而 Node.js 一般不直接监听 80 端口，所以需要使用 Nginx 或其他程序将来自 <code>http://wechat.nodejh.com</code> 的请求转发到 Node.js 程序端口如上面的 3333。关于 Nginx 的配置，可以看我之前写的<a href="http://nodejh.com/post/Use-Nginx-Reverse-Proxy-Nodejs/">《使用 Ngnix 给 Node.js 应用做反向代理》</a>。</p>
+
+<p>这里也顺便给出该程序的 Nginx 配置</p>
+
+<pre><code>upstream nodejs {
+    server 127.0.0.1:3333;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+    server_name wechat.nodejh.com;
+    # 日志
+    access_log /var/log/nginx/wechat.nodejh.com.log;
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host  $http_host;
+        proxy_set_header X-Nginx-Proxy true;
+        proxy_set_header Connection &quot;&quot;;
+        proxy_pass http://nodejs;
+    }
+}
+</code></pre>
+
+<p>配置就绪之后，启动验证程序</p>
+
+<pre><code>$ node checkSignature.js
+Server is runnig ar port 3333
+Start Checking...
+</code></pre>
+
+<p>这样，<code>checkSignature.js</code> 就会创建一个 3333 端口的服务。访问 <code>http://wechat.nodejh.com</code> 这个域名的时候，Nginx 就会将请求转发到 3333 端口。</p>
+
+<p>在微信公众平台后台管理的服务器配置页面，点击提交按钮，就会填写的 URL （这里是 <a href="http://wechat.nodejh.com）发送一个">http://wechat.nodejh.com）发送一个</a> HTTP 请求，并带上 <code>signature,timestamp,nonce,echostr</code> 这四个参数。</p>
+
+<p>启动 <code>checkSignature.js</code> 后，在服务器配置页面，点击提交按钮，就会开启验证。</p>
+
+<p>服务器端出现下面的结果，就说明验证成功。验证成功后，微信公众平台后台会自动跳转到 <code>基本配置</code> 页面。</p>
+
+<pre><code># 服务端响应...
+signature:  8fffb8f011d64819ec61105415114694bb03d392
+Sha1 String:  8fffb8f011d64819ec61105415114694bb03d392
+Check Success
+</code></pre>
+
+<p>然后就可以依据接口文档实现业务逻辑了。</p>
+
+<p>后续我也还会更新一些关于微信公众平台开发的文章，欢迎关注。</p>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/24">https://github.com/nodejh/nodejh.github.io/issues/24</a></p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="http://nodejh.com">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

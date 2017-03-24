@@ -1,0 +1,1039 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Node.js on nodejh</title>
+    <link>http://nodejh.com/categories/node/index.js/</link>
+    <description>Recent content in Node.js on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 30 Dec 2016 18:58:19 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/categories/node.js/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Architecture And Code Analysis Of Teaching Evaluation</title>
+      <link>http://nodejh.com/post/Architecture-And-Code-Analysis-Of-Teaching-Evaluation/</link>
+      <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Architecture-And-Code-Analysis-Of-Teaching-Evaluation/</guid>
+      <description>
+
+&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。如何设计应用逻辑，如何组织代码模块，如何确定目录结构等等， 都需要在编码之前进行考虑。每个人的编码风格不尽相同，写出来的代码也各有千秋。要想得出一个最佳实践，就要不断总结自己的过往经验，学习别人的优秀设计，并再次将其运用于实践才能真正理解其中的奥义。&lt;/p&gt;
+
+&lt;p&gt;本文主要就是介绍一键评教程序的软件结构设计，并对代码进行简要分析，同时也会讲述一些自己遇到的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;1-什么是一键评教&#34;&gt;1. 什么是一键评教&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;首先声明，该程序的本质目的是用于学习交流。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;每学期进行教学评估的时候，都要评很多教师，每个教师都有很多选项，再加上教务系统网站比较老旧，操作不方面，评教总是要花很长时间。&lt;/p&gt;
+
+&lt;p&gt;“一键评教，用过都说好”。线上地址 &lt;a href=&#34;http://pj.fyscu.com&#34;&gt;http://pj.fyscu.com&lt;/a&gt;，源码 &lt;a href=&#34;https://github.com/nodejh/teach_evaluation&#34;&gt;https://github.com/nodejh/teach_evaluation&lt;/a&gt; 。&lt;/p&gt;
+
+&lt;p&gt;爱美之心人皆有之，我也很喜欢好用又好看的事物，所以我在写代码的时候也尽量做到好看又好用。软件截图如下，是不是很好看：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c8.jpg&#34; alt=&#34;输入账号的页面&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c3.jpg&#34; alt=&#34;评估结果页面&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;2-功能分析&#34;&gt;2. 功能分析&lt;/h2&gt;
+
+&lt;p&gt;需求很明确，就是能够在一个网页上实现点击按钮自动评估所有教师。那么要实现这样的需求，该怎么去做呢？&lt;/p&gt;
+
+&lt;p&gt;先来想想我们通常手动评教的步骤：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;登录进入教务系统网站&lt;/li&gt;
+&lt;li&gt;找到教学评估链接并进入，这个时候就能看到所有需要进行评估的教师列表&lt;/li&gt;
+&lt;li&gt;从教师列表中点击某个教师，进入到该教师的教学评估页面&lt;/li&gt;
+&lt;li&gt;填写各种需要填写的表单&lt;/li&gt;
+&lt;li&gt;填写完毕之后，点击提交按钮进行评教&lt;/li&gt;
+&lt;li&gt;一切正常的情况下，则对该教师评教成功&lt;/li&gt;
+&lt;li&gt;然后返回到教师列表页面，选择下一个需要评估的教师&lt;/li&gt;
+&lt;li&gt;重复 &lt;code&gt;3-7&lt;/code&gt; 这五个步骤，直到所有教师评估完毕&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;要用程序实现一键评教，其实就是用程序模拟上面的步骤。所以程序要实现的主要功能有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;模拟登录，获取 cookie&lt;/li&gt;
+&lt;li&gt;获取需要评估的教师列表&lt;/li&gt;
+&lt;li&gt;对列表中的每个教师进行评教&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然后我们需要一个用户界面来让用户进行操作。这个界面可以是 APP，也可以是网页。由于网页更方便更利于传播，所以我选择了网页。所以我们就还需要一个 HTTP 服务器，用来提供静态页面资源，并且接收并响应用户操作后发送的 HTTP 请求。&lt;/p&gt;
+
+&lt;h2 id=&#34;3-软件设计&#34;&gt;3. 软件设计&lt;/h2&gt;
+
+&lt;p&gt;软件设计主要从三个方面来说明。一是技术选择，二是软件架构，三是目录结构。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-技术选择&#34;&gt;3.1 技术选择&lt;/h3&gt;
+
+&lt;p&gt;首先是各种技术的选择，包括前后端编程语言（语法）、第三方模块的选择、和服务器部署。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-1-后端语言&#34;&gt;3.1.1 后端语言&lt;/h4&gt;
+
+&lt;p&gt;该程序后端使用的是 Node.js。我的 Node.js 版本是 7.3。大量使用了 ES6 的语法，比如 Promise、模板字符串、箭头函数。只要你的 Node.js 版本 &amp;gt;= 6.0 应该都是可以运行的。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-2-第三方模块&#34;&gt;3.1.2 第三方模块&lt;/h4&gt;
+
+&lt;p&gt;在开发程序之前，我想要尽量让应用的体积足够小，所以我尽量不使用第三方模块。&lt;/p&gt;
+
+&lt;p&gt;最终我只使用了 &lt;code&gt;cheerio&lt;/code&gt; 和 &lt;code&gt;icon-lite&lt;/code&gt; 这两个第三方包。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cheerio&lt;/code&gt; 主要用来分析抓取到的 HTML 文档。其实最开始也想不用 &lt;code&gt;cheerio&lt;/code&gt;，直接使用正则表达式来分析页面的，但正则表达式编写麻烦，我的能力也有限，所以最终选择了使用 &lt;code&gt;cheerio&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;icon-lite&lt;/code&gt; 则是用来对 &lt;code&gt;GBK&lt;/code&gt; 文本进行解码。因为教务系统网站使用的是 GBK 的编码，所以直接抓取的结果是乱码的。除了 &lt;code&gt;icon-lite&lt;/code&gt; 这个包，我找不到其他的可以解决乱码问题的方案了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;3-1-3-编码规范&#34;&gt;3.1.3 编码规范&lt;/h4&gt;
+
+&lt;p&gt;然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 &lt;code&gt;.eslintrc&lt;/code&gt; 作了配置。具体配置在源码 &lt;a href=&#34;https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc&#34;&gt;.eslintrc&lt;/a&gt; 中可以看到。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-4-前端技术&#34;&gt;3.1.4 前端技术&lt;/h4&gt;
+
+&lt;p&gt;为了减小代码体积，提高加载速度，节省带宽，前端没有使用任何第三方 JS 库。并且这只是一个小应用，有没有必须使用庞大（相比该程序而言显得庞大）的第三方库。&lt;/p&gt;
+
+&lt;p&gt;前端使用的是 ES5 的语法。最开始想用 ES6 来写的，但 ES6 写好的代码还需要编译成 ES5 才能在浏览器运行，并且还需要引入各种 polyfill，最终还是决定使用 ES5。&lt;/p&gt;
+
+&lt;p&gt;前端唯一使用了第三方资源的，只有两个字体图标了。一个是 &lt;code&gt;heart&lt;/code&gt; 的图标 ❤️，毕竟是用心写的代码，&lt;code&gt;Made with ❤️ by nodejh&lt;/code&gt;；还有一个就是“关闭”小图标。图标使用的是 &lt;a href=&#34;https://icomoon.io/&#34;&gt;IcoMoon&lt;/a&gt; 的字体图标库，可以自己在里面找到需要的图标然后下载使用。&lt;/p&gt;
+
+&lt;p&gt;该程序只有 &lt;code&gt;index.html&lt;/code&gt; 这一个 HTML 文件，所以本质上也是一个单页应用。所有的操作和交互都在这一个页面完成。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-5-前端代码压缩&#34;&gt;3.1.5 前端代码压缩&lt;/h4&gt;
+
+&lt;p&gt;为了进一步压缩前端资源文件的体积，所以对静态资源进行了压缩。&lt;/p&gt;
+
+&lt;p&gt;压缩 CSS 使用的是在线压缩工具 &lt;a href=&#34;http://csscompressor.com/&#34;&gt;CSS Compressor&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;压缩 JS 使用的是 &lt;a href=&#34;https://github.com/mishoo/UglifyJS2&#34;&gt;UglifyJS2&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-6-部署&#34;&gt;3.1.6 部署&lt;/h4&gt;
+
+&lt;p&gt;完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 &lt;a href=&#34;https://github.com/Unitech/pm2&#34;&gt;pm2&lt;/a&gt; 进行进程的管理。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-软件架构&#34;&gt;3.2 软件架构&lt;/h3&gt;
+
+&lt;p&gt;程序的整体架构主要分为三层，可以就将其理解为 MVC 的三个层次。&lt;/p&gt;
+
+&lt;p&gt;MVC 是一种设计模式，设计模式不是一层不变的，我们需要根据自己的实际业务灵活运用。MVC 是一个很经典的设计模式，生活中的很多事物，我们也可以根据 MVC 对其进行定义。就拿人来进行类比，大脑就是 C（Controller），控制着人的一切活动。躯体外表就是 V（View） 层，一方面是表现着一个人的外观，另一方面是人的各种活动的外在表现。体内各种器官比如心脏、肺等就相当于 M（Model），从表面可能并不能直观看到 M 层的作用，但它受大脑控制，进行着血液循环呼吸系统等重要功能，而这些器官可能又跟躯体相互作用，比如影响人的精神面貌或高矮胖瘦。&lt;/p&gt;
+
+&lt;p&gt;说正经的。&lt;/p&gt;
+
+&lt;p&gt;首先是该一键评教程序的 M 层，包括页面抓取、页面分析和评教等功能模块。&lt;/p&gt;
+
+&lt;p&gt;然后是 V 层，主要是前端页面，直接给用户使用，与用户交互的界面。比如用户点击“开始”按钮的时候，就向 C 层发送一个 HTTP 请求。&lt;/p&gt;
+
+&lt;p&gt;C 是控制中心，接收 V 层的 HTTP 请求，根据 HTTP 请求决定调用哪些 M 层的模块，然后将模块调用后的处理结果返回给 V。&lt;/p&gt;
+
+&lt;p&gt;这样一个事件的处理流程可能就是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;V(HTTP 请求)---&amp;gt; C (调用 M 的对应模块)---&amp;gt; M(返回处理结果) ---&amp;gt; C(HTTP 响应) ---&amp;gt; V
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-3-目录结构&#34;&gt;3.3 目录结构&lt;/h3&gt;
+
+&lt;p&gt;了解了软件的整体架构之后，就来看看代码的目录结构，代码的目录结构也完美地印证了这三层架构。&lt;/p&gt;
+
+&lt;p&gt;代码的主要目录／子目录及其功能如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|____app.js  # 入口文件
+|____controller  # C 层目录，定义了各种控制器
+| |____evaluate.js  # 评教的控制器
+| |____evaluationList.js  # 获取需要评教列表的控制器
+| |____staticServer.js  # 静态服务器控制器
+|____helper  # 一些自定义的功能模块
+| |____colors.js  # 十六进制颜色代码，主要是为了改变 console.log 的颜色
+| |____dateformat.js  # 时间格式化
+| |____getContentType.js  # 获取文件后缀名对应的 Content-Type，用于静态服务器
+| |____log.js  # 自定义的彩色 console.log() 输出，告别满屏黑白日志
+| |____request.js  # HTTP 请求的封装
+|____models  # M 层目录，定义了各种模块及实现
+| |____evaluate.js  # 评教功能模块
+| |____getEvaluationList.js  # 获取需要评教的教师列表
+| |____loginZhjw.js  # 模拟登录教务系统
+| |____showEvaluatePage.js  # 显示某个具体的评教页面
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;看完目录结构，再回头看看软件的三层架构，肯定就清晰很多了。&lt;/p&gt;
+
+&lt;h2 id=&#34;4-代码分析&#34;&gt;4. 代码分析&lt;/h2&gt;
+
+&lt;p&gt;接下来再对一些重要的功能模块以及涉及到的代码进行简要分析。相信了解完代码的执行流程之后，对软件的整体架构理解，定会再进一步。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-1-app-js&#34;&gt;4.1 app.js&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;app.js&lt;/code&gt; 是整个项目的入口文件，启动项目的时候使用 &lt;code&gt;node app.js&lt;/code&gt; 即可启动。&lt;/p&gt;
+
+&lt;p&gt;在 app.js 里面，主要是创建了 HTTP Server，然后根据请求的路径，调用对应的控制器：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if (method === &#39;POST&#39; &amp;amp;&amp;amp; pathname === &#39;/api/evaluationList&#39;) {
+    // 模拟登录，获取需要评教的老师列表
+    return evaluationListController(req, res);
+  }
+
+  if (method === &#39;POST&#39; &amp;amp;&amp;amp; pathname === &#39;/api/evaluate&#39;) {
+    // 评教
+    return evaluateController(req, res);
+  }
+
+  if (method === &#39;GET&#39;) {
+    // 所有 GET 请求都当作是请求静态资源
+    return staticServerController(req, res);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当请求方法是 &lt;code&gt;POST&lt;/code&gt; 且路径是 &lt;code&gt;/api/evaluationList&lt;/code&gt; 时，就说明前端是发送的一个获取需要评估的教师列表的请求，所以紧接着执行 &lt;code&gt;evaluationListController(req, res);&lt;/code&gt;，调用该控制器，并且使用 &lt;code&gt;return&lt;/code&gt; 来停止代码的执行。&lt;/p&gt;
+
+&lt;p&gt;如果有新的 API 的请求，都可以在这里加。&lt;/p&gt;
+
+&lt;p&gt;如果所有的自定义的请求及路径都不满足，并且请求的方法是 &lt;code&gt;GET&lt;/code&gt;，那就当作是请求静态资源文件，如 HTML、CSS、JS 或图片等。这里就调用 &lt;code&gt;staticServerController(req, res)&lt;/code&gt;。&lt;code&gt;staticServerController&lt;/code&gt; 是在 Controller 里面定义的返回静态文件的方法。&lt;/p&gt;
+
+&lt;p&gt;如果 &lt;code&gt;GET&lt;/code&gt; 请求也不是，则返回 &lt;code&gt;400 Bad Request&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;然后程序监听了 &lt;code&gt;5000&lt;/code&gt; 端口，这样发送请求到 &lt;code&gt;5000&lt;/code&gt; 端口，代码就能接收到请求并进行处理了。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-2-静态资源服务器&#34;&gt;4.2 静态资源服务器&lt;/h3&gt;
+
+&lt;p&gt;前面已经提到了，&lt;code&gt;staticServerController&lt;/code&gt; 是在 Controller 里面定义的返回静态文件的方法，也就是一个静态资源服务器。&lt;/p&gt;
+
+&lt;p&gt;因为我们的软件很简单，所以完全没有必要使用 express 或 koa 等框架，自己写一个简单的静态服务器完全足够应对所有业务需求了。&lt;/p&gt;
+
+&lt;p&gt;主要代码如下，代码优美，注释详尽，通俗易懂：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * 静态服务器
+ * @param  {object} req request
+ * @param  {object} res response
+ * @return {null}   null
+ */
+const staticServerController = (req, res) =&amp;gt; {
+  let pathname = url.parse(req.url).pathname;
+  if (path.extname(pathname) === &#39;&#39;) {
+    // 没有扩展名，则指定访问目录
+    pathname += &#39;/&#39;;
+  }
+
+  if (pathname.charAt(pathname.length - 1) === &#39;/&#39;) {
+    // 如果访问的是目录，则添加默认文件 index.html
+    pathname += &#39;index.html&#39;;
+  }
+  // 拼接实际文件路径
+  const filepath = path.join(__dirname, &#39;./../public&#39;, pathname);
+  fs.access(filepath, fs.F_OK, (error) =&amp;gt; {
+    if (error) {
+      res.writeHead(404);
+      res.end(&#39;&amp;lt;h1&amp;gt;404 Not Found&amp;lt;/h1&amp;gt;&#39;);
+      return false;
+    }
+    const contentType = getContentType(filepath);
+    res.writeHead(200, { &#39;Content-Type&#39;: contentType });
+    // 读取文件流并使用管道将文件流传输到HTTP流返回给页面
+    fs.createReadStream(filepath)
+      .pipe(res);
+  });
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里需要稍微留意的是 &lt;code&gt;getContentType&lt;/code&gt; 这个方法，这个方法的定义和实现被放在了 &lt;code&gt;helper/getContentType.js&lt;/code&gt; 里面，其主要作用，就是根据请求路径的后缀名来确定 HTTP Response 里面的 &lt;code&gt;Content-Type&lt;/code&gt; 类型，以便浏览器或客户端识别：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * 获取 Content-Type
+ * @param  {string} filepath 文件路径
+ * @return {string}          文件对应的 Conent-Type
+ */
+const getContentType = (filepath) =&amp;gt; {
+  let contentType = &#39;&#39;;
+  const ext = path.extname(filepath);
+  switch (ext) {
+    case &#39;.html&#39;:
+      contentType = &#39;text/html&#39;;
+      break;
+    case &#39;.js&#39;:
+      contentType = &#39;text/javascript&#39;;
+      break;
+    case &#39;.css&#39;:
+      contentType = &#39;text/css&#39;;
+      break;
+    case &#39;.gif&#39;:
+      contentType = &#39;image/gif&#39;;
+      break;
+    case &#39;.jpg&#39;:
+      contentType = &#39;image/jpeg&#39;;
+      break;
+    case &#39;.png&#39;:
+      contentType = &#39;image/png&#39;;
+      break;
+    case &#39;.ico&#39;:
+      contentType = &#39;image/icon&#39;;
+      break;
+    case &#39;.manifest&#39;:
+      contentType = &#39;text/cache-manifest&#39;;
+      break;
+    default:
+      contentType = &#39;application/octet-stream&#39;;
+  }
+  return contentType;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样我们的一个简单的静态资源文件服务器就成型了，单独把这两段代码拿出去也是完全可以运行的。&lt;/p&gt;
+
+&lt;p&gt;当用户请求 &lt;code&gt;localhost:5000&lt;/code&gt; 的时候，根据上面的代码，就会去寻找 &lt;code&gt;public/index.html&lt;/code&gt; 这个文件然后返回给客户端。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;index.html&lt;/code&gt; 就是我们的前端页面。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-3-模拟登录&#34;&gt;4.3 模拟登录&lt;/h3&gt;
+
+&lt;p&gt;要想获取评教列表或进行评教，第一步就是登录教务系统。经抓包分析，教务系统使用的是 &lt;code&gt;session&lt;/code&gt; &lt;code&gt;cookie&lt;/code&gt; 的认证机制，关于如何抓包分析，可以看我的另一篇文章《模拟登录某某大学图书馆系统》[&lt;a href=&#34;http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的&#34;&gt;http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的&lt;/a&gt; &lt;code&gt;cookie&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;登录的时候，是向 &lt;code&gt;http://202.115.47.141/loginAction.do&lt;/code&gt; 发送的 POST 请求，请求的 &lt;code&gt;Content-Type&lt;/code&gt; 是 &lt;code&gt;application/x-www-form-urlencoded&lt;/code&gt; ，参数是 &lt;code&gt;zjh=xx&amp;amp;mm=xx&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;曾经教务系统可以使用 GET 方式登录，所有有一种快捷登录方式，就是在浏览器地址栏 &lt;code&gt;http://202.115.47.141/loginAction.do?zjh=[你的学号]&amp;amp;&amp;amp;mm=[你的密码]&lt;/code&gt;。而且这种方法可以绕过“登录人数已满”的限制。这在选课时期，这种强制的登录方式还是很好用的。不过 GET 方法也有缺点就是，你的学号和密码就直接暴露了，不安全。曾经还通过 Google 搜索，搜到了某个同学的账号及密码。现在教务系统估计是升级了禁止了这个方法。&lt;/p&gt;
+
+&lt;p&gt;模拟登录教务系统的程序在 &lt;code&gt;models/loginZhjw.js&lt;/code&gt; 里面，详细代码就不贴了，总的来说，就是通过 Node.js 的 HTTP 模块，设置一个自定义的 HTTP Headers 信息，然后发送 HTTP 请求。当然，其他任何编程语言道理都一样。&lt;/p&gt;
+
+&lt;p&gt;模拟登录后，教务系统会返回 HTTP Response。HTTP Response 的 &lt;code&gt;Content-Type&lt;/code&gt; 都是 &lt;code&gt;text/html&lt;/code&gt;，也就是说返回的始终都是 HTML 文本。所以我们就可以根返回的 HTML 文本的内容判断是否登录成功。&lt;/p&gt;
+
+&lt;p&gt;如果文本包含下面 &lt;code&gt;errorText&lt;/code&gt; 对象的属性字符串之一，都是登录失败：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; const errorText = {
+        number: &#39;你输入的证件号不存在，请您重新输入！&#39;,
+        password: &#39;您的密码不正确，请您重新输入！&#39;,
+        database: &#39;数据库忙请稍候再试&#39;,
+        notLogin: &#39;请您登录后再使用&#39;,
+      };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同时，也经过抓包发现，登录成功后返回的 HTML 文本的 &lt;code&gt;title&lt;/code&gt; 部分是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;title&amp;gt;学分制综合教务&amp;lt;/title&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;而其他情况都不是。所以就可以大致判断，除了上面几种 &lt;code&gt;errorText&lt;/code&gt; 是登录失败之前，只有返回的 HTML 包含 &lt;code&gt;&amp;lt;title&amp;gt;学分制综合教务&amp;lt;/title&amp;gt;&lt;/code&gt; 才是返回成功。&lt;/p&gt;
+
+&lt;p&gt;登录成功后的 HTTP Response Headers 部分含有一个 &lt;code&gt;set-cookie&lt;/code&gt; 属性，而这个属性的值就是登录成功后的 cookie。我们抓那么多包，做了那么多准备，找的就是它。所以最终从登录成功的响应中取出 cookie 的代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const cookie = result.headers[&#39;set-cookie&#39;].join().split(&#39;;&#39;)[0];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之后获取需要评估的教师列表和评教，都需要在发送 HTTP 请求时在 HTTP Headers 里面带上该 cookie。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-3-获取需要评估的教师列表&#34;&gt;4.3 获取需要评估的教师列表&lt;/h3&gt;
+
+&lt;p&gt;获取需要评估的教师列表就简单很多了，发送的是 GET 请求，然后在 HTTP Headers 里面设置 Cookie 即可，其头发送 HTTP 请求的头信息大概如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const options = {
+    hostname: &#39;202.115.47.141&#39;,
+    port: 80,
+    path: &#39;/jxpgXsAction.do?oper=wjShow&#39;,
+    method: &#39;POST&#39;,
+    headers: {
+      Cookie: data.cookie,
+      &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;,
+      &#39;Content-Length&#39;: Buffer.byteLength(postData),
+    },
+  };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;4-4-进行评教&#34;&gt;4.4 进行评教&lt;/h3&gt;
+
+&lt;p&gt;获取到教师列表之后，就可以进行评教了。但这里有一个坑，就是进行评教之前，必须先访问评教页面，再发送评教请求。不然是无法评教成功的。就是这个问题，导致我纠结了好久。&lt;/p&gt;
+
+&lt;p&gt;也就是说，用程序模拟评教的时候，就要发送两个 HTTP 请求了，一是发送请求到某个老师的评教页面，对应的是 &lt;code&gt;models/showEvaluatePage.js&lt;/code&gt; 这个文件；二是发送评教请求，对应的是 &lt;code&gt;models/evaluate.js&lt;/code&gt;。而且这两个请求都是 POST 类型的。所以代码类逻辑似于下面这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 显示评教页面
+showEvalutePage(data)
+    .then(() =&amp;gt; {
+    // 评教
+    return evaluate(data)
+    })
+    .then((result) =&amp;gt; {
+    // 评教结果
+    })
+        .catch((exception) =&amp;gt; {
+            // 捕获异常
+        });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;4-5-public-js-style-js&#34;&gt;4.5 public/js/style.js&lt;/h3&gt;
+
+&lt;p&gt;前端的 JS 代码都在 &lt;code&gt;style.js&lt;/code&gt; 这个文件里面了，主要就是监听了按钮的点击事件，然后发送 HTTP 请求，并根据请求结果增删页面的 DOM。&lt;/p&gt;
+
+&lt;p&gt;前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 &lt;a href=&#34;http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/&#34;&gt;《AJAX: XHR, jQuery and Fetch API》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h2&gt;
+
+&lt;p&gt;到这里，这篇文章就基本完成了。本文讲述的实践，可能也不是最佳的实践，也有很多值得继续商讨和改进之处。只有不断实践，不断总结，才能写出更美的代码。人生不也一样？总结过去的教训，才能更好地前行。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Wechat Development Access Guide</title>
+      <link>http://nodejh.com/post/Wechat-Development-Access-Guide/</link>
+      <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Wechat-Development-Access-Guide/</guid>
+      <description>
+
+&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
+
+&lt;p&gt;本文主要提供了 Node.js 版本的验证代码，同时把步骤细化，让开发者更方便地了解整个接入过程，对初学者更友好。&lt;/p&gt;
+
+&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;在微信公众平台后台的 &lt;code&gt;开发者中心/填写服务器配置&lt;/code&gt; 页面，配置好 URL 和 Token 后，复制下面的代码，修改 Token，在服务器运行，然后再在页面上点击提交即可进行接入验证。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require(&#39;http&#39;);
+const url = require(&#39;url&#39;);
+const crypto = require(&#39;crypto&#39;);
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = &#39;token&#39;;
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash(&#39;sha1&#39;);
+  md5sum.update(str);
+  const ciphertext = md5sum.digest(&#39;hex&#39;);
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log(&#39;Request URL: &#39;, req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log(&#39;timestamp: &#39;, timestamp);
+  console.log(&#39;nonce: &#39;, nonce);
+  console.log(&#39;signature: &#39;, signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(&#39;&#39;));
+  console.log(&#39;Sha1 String: &#39;, tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log(&#39;Check Success&#39;);
+  } else {
+    res.end(&#39;failed&#39;);
+    console.log(&#39;Check Failed&#39;);
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&amp;gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log(&#39;Start Checking...&#39;);
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;填写服务器配置&#34;&gt;填写服务器配置&lt;/h2&gt;
+
+&lt;p&gt;登录进入微信公众平台后台管理页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-login-1.png&#34; alt=&#34;登录&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后进入 &lt;code&gt;基本配置&lt;/code&gt; 页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-index.png&#34; alt=&#34;基本配置&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再然后选择 &lt;code&gt;修改配置&lt;/code&gt;，进入到 &lt;code&gt;填写服务器配置&lt;/code&gt; 子页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-config-page.png&#34; alt=&#34;填写服务器配置&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;URL 为已经解析到你的服务器的域名，这里以 &lt;a href=&#34;http://wechat.nodejh.com&#34;&gt;http://wechat.nodejh.com&lt;/a&gt; 这个二级域名为例&lt;/li&gt;
+&lt;li&gt;Token 随意填写即可&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;验证服务器地址的有效性&#34;&gt;验证服务器地址的有效性&lt;/h2&gt;
+
+&lt;p&gt;验证服务器地址的有效性，需要在域名对应的服务器上运行一段验证程序。该程序会接收上个步骤中的域名所发送的 HTTP 请求。&lt;/p&gt;
+
+&lt;p&gt;官方文档提供了 PHP 的示例程序，下面是 Node.js 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require(&#39;http&#39;);
+const url = require(&#39;url&#39;);
+const crypto = require(&#39;crypto&#39;);
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = &#39;token&#39;;
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash(&#39;sha1&#39;);
+  md5sum.update(str);
+  const ciphertext = md5sum.digest(&#39;hex&#39;);
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log(&#39;Request URL: &#39;, req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log(&#39;timestamp: &#39;, timestamp);
+  console.log(&#39;nonce: &#39;, nonce);
+  console.log(&#39;signature: &#39;, signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(&#39;&#39;));
+  console.log(&#39;Sha1 String: &#39;, tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log(&#39;Check Success&#39;);
+  } else {
+    res.end(&#39;failed&#39;);
+    console.log(&#39;Check Failed&#39;);
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&amp;gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log(&#39;Start Checking...&#39;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;因为验证要使用 80(HTTP) 端口或 443(HTTPS) 端口，而 Node.js 一般不直接监听 80 端口，所以需要使用 Nginx 或其他程序将来自 &lt;code&gt;http://wechat.nodejh.com&lt;/code&gt; 的请求转发到 Node.js 程序端口如上面的 3333。关于 Nginx 的配置，可以看我之前写的&lt;a href=&#34;http://nodejh.com/post/Use-Nginx-Reverse-Proxy-Nodejs/&#34;&gt;《使用 Ngnix 给 Node.js 应用做反向代理》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;这里也顺便给出该程序的 Nginx 配置&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;upstream nodejs {
+    server 127.0.0.1:3333;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+    server_name wechat.nodejh.com;
+    # 日志
+    access_log /var/log/nginx/wechat.nodejh.com.log;
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host  $http_host;
+        proxy_set_header X-Nginx-Proxy true;
+        proxy_set_header Connection &amp;quot;&amp;quot;;
+        proxy_pass http://nodejs;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;配置就绪之后，启动验证程序&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ node checkSignature.js
+Server is runnig ar port 3333
+Start Checking...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样，&lt;code&gt;checkSignature.js&lt;/code&gt; 就会创建一个 3333 端口的服务。访问 &lt;code&gt;http://wechat.nodejh.com&lt;/code&gt; 这个域名的时候，Nginx 就会将请求转发到 3333 端口。&lt;/p&gt;
+
+&lt;p&gt;在微信公众平台后台管理的服务器配置页面，点击提交按钮，就会填写的 URL （这里是 &lt;a href=&#34;http://wechat.nodejh.com）发送一个&#34;&gt;http://wechat.nodejh.com）发送一个&lt;/a&gt; HTTP 请求，并带上 &lt;code&gt;signature,timestamp,nonce,echostr&lt;/code&gt; 这四个参数。&lt;/p&gt;
+
+&lt;p&gt;启动 &lt;code&gt;checkSignature.js&lt;/code&gt; 后，在服务器配置页面，点击提交按钮，就会开启验证。&lt;/p&gt;
+
+&lt;p&gt;服务器端出现下面的结果，就说明验证成功。验证成功后，微信公众平台后台会自动跳转到 &lt;code&gt;基本配置&lt;/code&gt; 页面。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 服务端响应...
+signature:  8fffb8f011d64819ec61105415114694bb03d392
+Sha1 String:  8fffb8f011d64819ec61105415114694bb03d392
+Check Success
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后就可以依据接口文档实现业务逻辑了。&lt;/p&gt;
+
+&lt;p&gt;后续我也还会更新一些关于微信公众平台开发的文章，欢迎关注。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/24&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/24&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Use and Break Promise Chain</title>
+      <link>http://nodejh.com/post/Use-and-Stop-Promise-Break-Chain/</link>
+      <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Use-and-Stop-Promise-Break-Chain/</guid>
+      <description>
+
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+
+&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
+
+&lt;p&gt;在程序中，只要返回了一个 promise 对象，如果 promise 对象不是 Rejected 或 Fulfilled 状态，then 方法就会继续调用。利用这个特性，可以处理多个异步逻辑。但有时候某个 then 方法的执行结果可能会决定是否需要执行下一个 then，这个时候就需中止 promise，主要思想就是使用 reject 来中止 promise 的 then 继续执行。&lt;/p&gt;
+
+&lt;p&gt;“中止”这个词不知道用得是否准确。这里可能还是 &lt;code&gt;break&lt;/code&gt; 的含义更精确，跳出本次 promise，不继续执行后面的 then 方法。但 promise 依旧会继续执行。&lt;/p&gt;
+
+&lt;h2 id=&#34;can-i-use-promises&#34;&gt;Can I use promises&lt;/h2&gt;
+
+&lt;p&gt;当前浏览器对 Promise 的支持情况见下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://caniuse.com/#search=promise&#34;&gt;http://caniuse.com/#search=promise&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163312.jpg&#34; alt=&#34;caniusepromise&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;promise&#34;&gt;Promise&lt;/h2&gt;
+
+&lt;p&gt;先简单复习一下 Promise。Promise 其实很简单，就是一个处理异步的方法。一般可以通过 &lt;code&gt;new&lt;/code&gt; 方法来调用 &lt;code&gt;Promise&lt;/code&gt; 的构造器实例化一个 promise 对象：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var promise = new Promise((resolve, reject) =&amp;gt; {
+    // 异步处理
+    // 处理结束后，调用 resolve 或 reject
+    //      成功时就调用 resolve
+    //      失败时就调用 reject
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用 &lt;code&gt;new Promise&lt;/code&gt; 实例化的 promise 对象有以下三个状态：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&amp;ldquo;has-resolution&amp;rdquo; - Fulfilled。resolve(成功)时，此时会调用 onFulfilled&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&amp;ldquo;has-rejection&amp;rdquo; - Rejected。reject(失败)时，此时会调用 onRejected&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&amp;ldquo;unresolved&amp;rdquo; - Pending。既不是resolve也不是reject的状态，也就是promise对象刚被创建后的初始化状态等&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;关于上面这三种状态的读法，其中左侧为在 ES6 Promises 规范中定义的术语， 而右侧则是在 Promises/A+ 中描述状态的术语。基本上状态在代码中是不会涉及到的，所以名称也无需太在意。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-Use-and-Stop-Promise-Chain-promise-states.png&#34; alt=&#34;promise state&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;promise-chain&#34;&gt;Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;先来假设一个业务需求：在系统中使用教务系统账号进行登录。首先用户在登录页面输入用户名（教务系统账号）和密码（教务系统密码）；然后判断数据库中是否存在该用户；如果不存在则使用用户名和密码模拟登录教务系统，如果模拟登录成功，则存储用户名和密码，并返回登录成功。&lt;/p&gt;
+
+&lt;p&gt;听起来就有点复杂对不对？于是画了个流程图来解释整个业务逻辑：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163823.jpg&#34; alt=&#34;flow char&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图只是一个简化版本，比如密码加密、session设置等没有表现出来，大家知道就好。图中 &lt;code&gt;(1)&lt;/code&gt;、&lt;code&gt;(2)&lt;/code&gt;、&lt;code&gt;(3)&lt;/code&gt; 三个地方就是会进行异步处理的地方，一般数据库操作、网络请求都是异步的。&lt;/p&gt;
+
+&lt;p&gt;如果用传统的回调函数 &lt;code&gt;callback&lt;/code&gt; 来处理上面的逻辑，嵌套的层级就会比较深，上面的业务因为有三个异步操作所以有三层回调，代码大概会是下面的样子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 根据 name 查询用户信息
+findUserByName(name, function(err, userinfo) {
+  if (err) {
+    return res.json({
+      code: 1000,
+      message: &#39;查询用户信息，数据库操作数出现异常&#39;,
+    });
+  }
+
+
+  if (userinfo.length &amp;gt; 0) {
+  // 用户存在
+  if (userinfo[0].pwd === pwd)
+    // 密码正确
+    return res.json({
+      code: 0,
+      message: &#39;登录成功&#39;,
+    });
+  }
+
+  // 数据库中不存在该用户，模拟登录教务系统
+  loginEducationSystem(name, pwd, function(err, result) {
+    if (err) {
+      return res.json({
+        code: 1001,
+        message: &#39;模拟登录教务系统出现异常&#39;,
+      });
+    }
+
+    // 约定正确情况下，code 为 0
+    if (result.code !== 0) {
+      return res.json({
+        code: 1002,
+        message: &#39;模拟登录教务系统失败，可能是用户名或密码错误&#39;,
+      });
+    }
+
+    // 模拟登录成功，将用户名密码存入数据库
+    saveUserToDB(name, pwd, function(err, result) {
+      if (err) {
+        return res.json({
+          code: 1003,
+          message: &#39;将用户名密码存入数据库出现异常&#39;,
+        });
+      }
+      if (result.code !== 0) {
+        return res.json({
+          code: 1004,
+          message: &#39;将用户名密码存入数据库出现异常&#39;,
+        });
+      }
+
+      return res.json({
+        code: 0,
+        message: &#39;登录成功!&#39;,
+      });
+    });
+  });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的代码可能存在的不优雅之处：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;随着业务逻辑变负责，回调层级会越来越深&lt;/li&gt;
+&lt;li&gt;代码耦合度比较高，不易修改&lt;/li&gt;
+&lt;li&gt;每一步操作都需要手动进行异常处理，比较麻烦&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接下来再用 promise 实现此处的业务需求。使用 promise 编码之前，可以先思考两个问题。&lt;/p&gt;
+
+&lt;p&gt;一是如何链式调用，二是如何中止链式调用。&lt;/p&gt;
+
+&lt;h2 id=&#34;how-to-use-promise-chain&#34;&gt;How to Use Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;业务中有三个需要异步处理的功能，所以会分别实例化三个 promise 对象，然后对 promise 进行链式调用。那么，如何进行链式调用？&lt;/p&gt;
+
+&lt;p&gt;其实也很简单，直接在 promise 的 then 方法里面返回另一个 promise 即可。例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function start() {
+  return new Promise((resolve, reject) =&amp;gt; {
+    resolve(&#39;start&#39;);
+  });
+}
+
+start()
+  .then(data =&amp;gt; {
+    // promise start
+    console.log(&#39;result of start: &#39;, data);
+    return Promise.resolve(1); // p1
+  })
+  .then(data =&amp;gt; {
+    // promise p1
+    console.log(&#39;result of p1: &#39;, data);
+    return Promise.reject(2); // p2
+  })
+  .then(data =&amp;gt; {
+    // promise p2
+    console.log(&#39;result of p2: &#39;, data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&amp;gt; {
+    // promise p3
+    console.log(&#39;ex: &#39;, ex);
+    return Promise.resolve(4); // p4
+  })
+  .then(data =&amp;gt; {
+    // promise p4
+    console.log(&#39;result of p4: &#39;, data);
+  });
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的代码最终会输出：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;result of start:  start
+result of p1:  1
+ex:  2
+result of p4:  4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;代码的执行逻辑如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-175131.jpg&#34; alt=&#34;promise chain&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从图中可以看出来，代码的执行逻辑是 &lt;code&gt;promise start --&amp;gt; promise p1 --&amp;gt; promise p3 --&amp;gt; promise p4&lt;/code&gt;。所以结合输出结果和执行逻辑图，总结出以下几点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;promise 的 then 方法里面可以继续返回一个新的 promise 对象&lt;/li&gt;
+&lt;li&gt;下一个 then 方法的参数是上一个 promise 对象的 resolve 参数&lt;/li&gt;
+&lt;li&gt;catch 方法的参数是其之前某个 promise 对象的 rejecte 参数&lt;/li&gt;
+&lt;li&gt;一旦某个 then 方法里面的 promise 状态改变为了 rejected，则promise 方法连会跳过后面的 then 直接执行 catch&lt;/li&gt;
+&lt;li&gt;catch 方法里面依旧可以返回一个新的 promise 对象&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;how-to-break-promise-chain&#34;&gt;How to Break Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;接下来就该讨论如何中止 promise 方法链了。&lt;/p&gt;
+
+&lt;p&gt;通过上面的例子，我们可以知道 promise 的状态改变为 rejected 后，promise 就会跳过后面的 then 方法。&lt;/p&gt;
+
+&lt;p&gt;也就是，某个 then 里面发生异常后，就会跳过 then 方法，直接执行 catch。&lt;/p&gt;
+
+&lt;p&gt;所以，当在构造的 promise 方法链中，如果在某个 then 后面，不需要再执行 then 方法了，就可以把它当作一个异常来处理，返回一个异常信息给 catch，其参数可自定义，比如该异常的参数信息为 &lt;code&gt;{ notRealPromiseException: true}&lt;/code&gt;，然后在 catch 里面判断一下 &lt;code&gt;notRealPromiseException&lt;/code&gt; 是否为 &lt;code&gt;true&lt;/code&gt;，如果为 &lt;code&gt;true&lt;/code&gt;，就说明不是程序出现异常，而是在正常逻辑里面中止 then 方法的执行。&lt;/p&gt;
+
+&lt;p&gt;代码大概就这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;start()
+  .then(data =&amp;gt; {
+    // promise start
+    console.log(&#39;result of start: &#39;, data);
+    return Promise.resolve(1); // p1
+    )
+  .then(data =&amp;gt; {
+    // promise p1
+    console.log(&#39;result of p1: &#39;, data);
+    return Promise.reject({
+      notRealPromiseException: true,
+    }); // p2
+  })
+  .then(data =&amp;gt; {
+    // promise p2
+    console.log(&#39;result of p2: &#39;, data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&amp;gt; {
+    console.log(&#39;ex: &#39;, ex);
+    if (ex.notRealPromiseException) {
+      // 一切正常，只是通过 catch 方法来中止 promise chain
+      // 也就是中止 promise p2 的执行
+      return true;
+    }
+    // 真正发生异常
+    return false;
+  });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样的做法可能不符合 &lt;code&gt;catch&lt;/code&gt; 的语义。不过从某种意义上来说，promise 方法链没有继续执行，也可以算是一种“异常”。&lt;/p&gt;
+
+&lt;h2 id=&#34;refactor-callback-with-promise&#34;&gt;Refactor Callback with Promise&lt;/h2&gt;
+
+&lt;p&gt;讲了那么多道理，现在就改来使用 promise 重构之前用回调函数写的异步逻辑了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 据 name 查询用户信息
+const findUserByName = (name, pwd) =&amp;gt; {
+  return new Promise((resolve, reject) =&amp;gt; {
+    // 数据库查询操作
+    if (dbError) {
+      // 数据库查询出错，将 promise 设置为 rejected
+      reject({
+        code: 1000,
+        message: &#39;查询用户信息，数据库操作数出现异常&#39;,
+      });
+    }
+    // 将查询结果赋给 userinfo 变量
+    if (userinfo.length === 0) {
+      // 数据库中不存在该用户
+      resolve();
+    }
+    // 数据库存在该用户，判断密码是否正确
+    if (pwd === userinfo[0].pwd) {
+      // 密码正确，中止 promise 执行
+      reject({
+        notRealPromiseException: true,
+        data: {
+          code: 0,
+          message: &#39;密码正确，登录成功&#39;,
+        }
+      });
+    }
+    // 密码不正确，登录失败，将 Promise 设置为 Rejected 状态
+    reject({
+      code: 1001,
+      message: &#39;密码不正确，登录失败&#39;,
+    });
+  });
+};
+
+
+// 模拟登录教务系统
+const loginEducationSystem = (name, pwd) =&amp;gt; {
+  // 登录逻辑...
+  // 登录成功
+  resolve();
+  // 登录失败
+  reject({
+    code: 1002,
+    message: &#39;模拟登录教务系统失败&#39;,
+  });
+};
+
+
+// 将用户名密码存入数据库
+const saveUserToDB(name, pwd) =&amp;gt; {
+  // 数据库存储操作
+  if (dbError) {
+    // 数据库存储出错，将 promise 设置为 rejected
+    reject({
+      code: 1004,
+      message: &#39;数据库存储出错，将出现异常&#39;,
+    });
+  }
+  // 数据库存储操作成功
+  resolve();
+};
+
+
+findUserByName(name)
+.then(() =&amp;gt; {
+  return loginEducationSystem(name, pwd);
+})
+.then(() =&amp;gt; {
+  return saveUserToDB(name, pwd);
+})
+.catch(e =&amp;gt; {
+  // 判断异常出现原因
+  if (e.notRealPromiseException) {
+    // 正常中止 promise 而故意设置的异常
+    return res.json(e.data);
+  }
+  // 出现错误或异常
+  return res.json(e);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在上面的代码中，实例化了三个 promise 对象，分别实现业务需求中的三个功能。然后通过 promise 方法链来调用。相比用回调函数而言，代码结构更加清晰，也更易读易懂耦合度更低更易扩展了。&lt;/p&gt;
+
+&lt;h2 id=&#34;promise-all-promise-race&#34;&gt;Promise.all &amp;amp;&amp;amp; Promise.race&lt;/h2&gt;
+
+&lt;p&gt;仔细观察可以发现，在上面的 promise 代码中，&lt;code&gt;loginEducationSystem&lt;/code&gt; 和 &lt;code&gt;saveUserToDB&lt;/code&gt; 两个方法执行有先后顺序要求，但没有数据传递。&lt;/p&gt;
+
+&lt;p&gt;其实 promise 方法链更好用的一点是，当下一个操作依赖于上一个操作的结果的时候，可以很方便地通过 then 方法的参数来传递数据。前面页提到过，下一个 then 方法的参数就是上一个 then 方法里面 &lt;code&gt;resolve&lt;/code&gt; 的参数，所以当然就可以把上一个 then 方法的执行结果作为参数传递给下一个 then 方法了。&lt;/p&gt;
+
+&lt;p&gt;还有些时候，可能 then 方法的执行顺序也没有太多要求，只需要 promise 方法链中的两个或多个 promise 全部都执行正确。这时，如果依旧一个一个去写 then 可能就比较麻烦，比如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function p1() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(1);
+    resolve();
+  });
+}
+
+function p2() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(2);
+    resolve();
+  });
+}
+
+function p3() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(3);
+    resolve();
+  });
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在只需要 &lt;code&gt;p1&lt;/code&gt; &lt;code&gt;p2&lt;/code&gt;  &lt;code&gt;p3&lt;/code&gt; 这三个 promise 都执行，并且 promise 最终状态都是 Fulfilled，那么如果还是使用方法链，这是这样调用：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p1()
+.then(() =&amp;gt; {
+  return p2();
+})
+.then(() =&amp;gt; {
+  return p3();
+})
+.then(() =&amp;gt; {
+  console.log(&#39;all done&#39;);
+})
+.catch(e =&amp;gt; {
+  console.log(&#39;e: &#39;, e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;代码貌似就不那么精炼了。这个时候就有了 &lt;code&gt;Promise.all&lt;/code&gt; 这个方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Promise.all&lt;/code&gt; 接收一个 promise对象的数组作为参数，当这个数组里的所有 promise 对象全部变为 resolve 或 reject 状态的时候，它才会去调用 &lt;code&gt;then&lt;/code&gt; 方法。&lt;/p&gt;
+
+&lt;p&gt;于是，调用这几个 promise 的代码就可以这样写了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p1()
+.then(() =&amp;gt; {
+  return Promise.all([
+    p2(),
+    p3(),
+  ]);
+})
+.then(() =&amp;gt; {
+  console.log(&#39;all done&#39;);
+})
+.catch((e) =&amp;gt; {
+  console.log(&#39;e: &#39;, e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样看起来貌似就精炼些了。&lt;/p&gt;
+
+&lt;p&gt;而对于 &lt;code&gt;Promise.race&lt;/code&gt;，其参数也跟 &lt;code&gt;Promise.all&lt;/code&gt; 一样是一个数组。只是数组中的任何一个 promise 对象如果变为 resolve 或者reject 的话，该函数就会返回，并使用这个 promise 对象的值进行 resolve 或者 reject。&lt;/p&gt;
+
+&lt;p&gt;这里就不举例了。&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;到目前为止，我们就基本了解了 Promise 的用法及特点，并实现用 Promise 重构用回调函数写的异步操作。现在对 Promise 的使用，应该驾轻就熟了。&lt;/p&gt;
+
+&lt;p&gt;完。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/23&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/23&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tomcat on nodejh</title>
+    <link>http://nodejh.com/tags/tomcat/</link>
+    <description>Recent content in Tomcat on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 12 Mar 2016 15:41:58 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/tomcat/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to Install Tomcat on Ubuntu</title>
+      <link>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</link>
+      <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
+      <description>
+
+&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
+
+&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。
+JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
+Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。&lt;/p&gt;
+
+&lt;p&gt;简单来说，假设 &lt;code&gt;http://xxx.com&lt;/code&gt; 是一个 Java 写的网站，那么当在浏览器输入网址并敲下回车后，Tomcat 会得到一个希望访问 &lt;code&gt;/&lt;/code&gt;（根目录资源）的请求。然后它去配置文件里查根目录对应的模块是什么。假设查到的模块是 &lt;code&gt;root&lt;/code&gt; 这个类，那么它会去调用 &lt;code&gt;root.doGet()&lt;/code&gt; 方法。而你写一个 Servlet 的时候，必须实现 &lt;code&gt;doGet()&lt;/code&gt;方法，此时你的方法被调用，那么你写的代码就运行了。&lt;/p&gt;
+
+&lt;p&gt;当然，实际情况会比这个更复杂。&lt;/p&gt;
+
+&lt;p&gt;如果还没有安装 JAVA 开发环境，可参考：&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-创建-tomcat-用户&#34;&gt;2. 创建 &lt;code&gt;tomcat&lt;/code&gt; 用户&lt;/h3&gt;
+
+&lt;p&gt;为了安全考虑，Tomcat 需要以普通用户的权限来运行。所以我们将创建一个用户和用户组，来运行 Tomcat 服务。&lt;/p&gt;
+
+&lt;p&gt;首先，创建一个 &lt;code&gt;tomcat&lt;/code&gt; 用户组：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo groupadd tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后我们再创建一个 &lt;code&gt;tomcat&lt;/code&gt; 用户，该用户有如下条件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 用户属于 &lt;code&gt;tomcat&lt;/code&gt; 用户组；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 用户主目录为 &lt;code&gt;/opt/tomcat&lt;/code&gt;，这个目录也是我们将用来安装 tomcat 的目录（当然也可以是你喜欢的其他目录）；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tomcat&lt;/code&gt; 不能登录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所创建 &lt;code&gt;tomcat&lt;/code&gt; 用户的命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-安装-tomcat&#34;&gt;3. 安装 Tomcat&lt;/h3&gt;
+
+&lt;h4 id=&#34;下载-tomcat-二进制文件&#34;&gt;下载 Tomcat 二进制文件&lt;/h4&gt;
+
+&lt;p&gt;首先下载 Tomcat。目前 Tomcat 的最新版本是 9.0.0.M3。可以在 &lt;a href=&#34;http://tomcat.apache.org&#34;&gt;http://tomcat.apache.org&lt;/a&gt; 找到最新版本的 Tomcat，然后拷贝其二进制链接地址，在终端使用 &lt;code&gt;wget&lt;/code&gt; 命令进行下载：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd ~
+wget http://apache.fayea.com/tomcat/tomcat-9/v9.0.0.M3/bin/apache-tomcat-9.0.0.M3.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-1.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后我们需要将 Tomcat 安装到 &lt;code&gt;/opt/tomcat&lt;/code&gt; 目录下面。&lt;/p&gt;
+
+&lt;p&gt;接下来创建安装目录，并将下载的二进制包解压到该目录。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mkdir /opt/tomcat
+sudo tar zxvf apache-tomcat-9.0.0.M3.tar.gz -C /opt/tomcat --strip-components=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;设置-tomcat-用户权限&#34;&gt;设置 Tomcat 用户权限&lt;/h4&gt;
+
+&lt;p&gt;用户 &lt;code&gt;tomcat&lt;/code&gt; 需要有合适的权限来运行 Tomcat 服务，所以接下来需要设置用户权限。&lt;/p&gt;
+
+&lt;p&gt;首先进入到 Tomcat 的安装目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /opt/tomcat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后设置 &lt;code&gt;tomcat&lt;/code&gt; 用户对 &lt;code&gt;conf&lt;/code&gt; 目录的写权限，以及对其子目录的读权限：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo chgrp -R tomcat conf
+sudo chmod g+rwx conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来需要设置 &lt;code&gt;tomcat&lt;/code&gt; 用户对 &lt;code&gt;work/&lt;/code&gt;、&lt;code&gt;temp/&lt;/code&gt; 、&lt;code&gt;logs/&lt;/code&gt; 这几个目录的所有权：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo chown -R tomcat work/ temp/ logs/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;完整命令如下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-2.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-2&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;设置环境变量&#34;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;p&gt;Tomcat 运行的时候依赖于 JDK 或 JRE。所以还需要为 Tomcat 指定 JDK 或 JRE 的路径。按理说只要有 JRE 就够了，但要使用 Tomcat 的更多功能，如 debug，还需要 JDK。所以建议设置 JDK 的路径。&lt;/p&gt;
+
+&lt;p&gt;设置环境变量的方法是在 &lt;code&gt;bin/&lt;/code&gt; 目录下新建一个 &lt;code&gt;setenv.sh&lt;/code&gt; 目录，然后将 &lt;code&gt;JAVA_HOME=/opt/java&lt;/code&gt; 写入到该文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo vim bin/setenv.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-3.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-3&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;环境变量设置完毕后就可以通过 &lt;code&gt;catalina.sh&lt;/code&gt; 命令来启动 Tomcat 了。因为现在是在 &lt;code&gt;/opt/tomcat&lt;/code&gt; 目录下，所以可以使用如图所示的命令来启动 Tomcat：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo bin/catalina.sh start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-4.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-4.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果你是在别的目录下，也可以通过 &lt;code&gt;sudo /opt/tomcat/bin/catalina.sh start&lt;/code&gt; 命令来启动 Tomcat 服务。&lt;/p&gt;
+
+&lt;p&gt;一切正常的话，就会提示 Tomcat 启动成功，那么 Tomcat。然后在浏览器中输入 &lt;code&gt;localhost:8080&lt;/code&gt; 就可以看到 Tomcat 的主界面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-5.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-5.png&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;4-配置-web-管理员接口&#34;&gt;4. 配置 Web 管理员接口&lt;/h3&gt;
+
+&lt;p&gt;Tomcat 提供了一个图形用户界面的管理后台，来方便我们管理使用 Tomcat 的 Web 应用。在 Tomcat 主页点击右上角的 &lt;code&gt;Server Status&lt;/code&gt; 按钮，会弹出一个登录框，输入用户名和密码就可登录。但 Tomcat 安装后是没有默认的管理员帐户的，需要我们自己去配置。&lt;/p&gt;
+
+&lt;p&gt;如果登录的时候密码错误，就会出现一个 &lt;code&gt;401 Unauthorized&lt;/code&gt; 的错误页面，这个页面上有提示信息，告诉我们应该怎么去配置管理员帐户：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-6.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-6.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来就来配置管理员帐户。Tomcat 后台管理员配置文件是 &lt;code&gt;/opt/tomcat/conf/tomcat-users.xml&lt;/code&gt;，所以我们要编辑该文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo vim /opt/tomcat/conf/tomcat-users.xml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后在最后一行的前面加上如下两行，username 和 password 可自行设置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;role rolename=&amp;quot;manager-gui&amp;quot; /&amp;gt;
+&amp;lt;user username=&amp;quot;admin&amp;quot; password=&amp;quot;password&amp;quot; roles=&amp;quot;manager-gui&amp;quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-7.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-7.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;编辑完了后保存，然后再重新启动 Tomcat 服务：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo /opt/tomcat/bin/catalina.sh stop
+sudo /opt/tomcat/bin/catalina.sh start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;重启后，再点击 &lt;code&gt;Server Status&lt;/code&gt; 按钮，输入刚设置的用户名和密码就可以登录到后台：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-8.png&#34; alt=&#34;how-to-install-tomcat-on-ubuntu-8.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;至此，Tomcat 就安装成功！&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/17&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/17&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

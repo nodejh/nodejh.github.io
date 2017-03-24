@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Algorithm on nodejh</title>
+    <link>http://nodejh.com/tags/algorithm/</link>
+    <description>Recent content in Algorithm on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 29 Oct 2016 00:43:22 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Symmetric Difference</title>
+      <link>http://nodejh.com/post/Symmetric-Difference/</link>
+      <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Symmetric-Difference/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
+
+&lt;p&gt;给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2, 3, 4}), 而数学术语 &amp;ldquo;对等差分&amp;rdquo; 的集合就是指由所有只在两个集合其中之一的元素组成的集合(A △ B = C = {1, 4}). 对于传入的额外集合 (如 D = {2, 3}), 你应该安装前面原则求前两个集合的结果与新集合的对等差分集合 (C △ D = {1, 4} △ {2, 3} = {1, 2, 3, 4}).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;解题思路&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;a href=&#34;https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce&#34;&gt;Array.prototype.reduce&lt;/a&gt; 对数组进行遍历。传入的两个参数分别是 prev (对等差分后数组)，curr（当前数组）&lt;/li&gt;
+&lt;li&gt;将 sym() 的第一个参数作为初始对等差分数组，即第一个 prev&lt;/li&gt;
+&lt;li&gt;对 prev 数组和 curr 数组去重，防止重复元素影响对等差分的结果&lt;/li&gt;
+&lt;li&gt;遍历 curr 数组，以此判断 curr 数组中每个元素是否在 prev 中出现。如果出现，则从 prev 中删除该元素；如果没有出现，则将其加入到 prev 中&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 对等差分
+function sym(args) {
+  var arr = Array.prototype.slice.call(arguments);
+  return arr.reduce(function(prev, curr) {
+      prev = unique(prev);
+      curr = unique(curr);
+      for (var i=0; i&amp;lt;curr.length; i++) {
+          if (prev.indexOf(curr[i]) === -1) {
+             prev.push(curr[i]);
+          } else {
+              prev.splice(prev.indexOf(curr[i]), 1);
+          }
+          console.log(&#39;new: &#39;, prev);
+      }
+      return prev.sort();
+  });
+}
+
+
+// 数组去重
+function unique(arr) {
+    var res = [];
+    for (var i=0; i&amp;lt;arr.length; i++) {
+        if (res.indexOf(arr[i]) === -1) {
+            res.push(arr[i]);
+        }
+    }
+    return res;
+}
+
+
+// sym([1, 2, 3], [5, 2, 1, 4]);
+sym([1, 1, 2, 5], [2, 2, 3, 5], [3, 4, 5, 5])
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;运行效果：&lt;a href=&#34;https://www.freecodecamp.cn/challenges/symmetric-difference&#34;&gt;Symmetric Difference&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/1&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/1&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Get the Max Number in Array</title>
+      <link>http://nodejh.com/post/Get-the-Max-Number-in-Array/</link>
+      <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Get-the-Max-Number-in-Array/</guid>
+      <description>
+
+&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
+
+&lt;h4 id=&#34;使用递归函数&#34;&gt;使用递归函数&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];
+var max = arr[0];
+function findMax( i ){
+  if( i == arr.length ) return max;
+  if( max &amp;lt; arr[i] ) max = arr[i];
+  findMax(i+1);
+}
+
+findMax(1);
+console.log(max);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;使用-for-循环遍历&#34;&gt;使用 for 循环遍历&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];  
+var max = arr[0];
+for(var i = 1; i &amp;lt; arr.length; i++){
+  if( max &amp;lt; arr[i] ){
+    max = arr[i];
+  }
+}
+
+console.log(max);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;使用apply将数组传入max方法中直接返回&#34;&gt;使用apply将数组传入max方法中直接返回&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;Math.max.apply(null,[9,8,55,66,49,68,109,55,33,6,2,1])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;除此之外，还有很多数组排序方式，都可以在排序后，根据新数组索引值获取 最大/最小 值。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var a=[1,2,3,5];
+console.log(Math.max.apply(null, a));//最大值
+console.log(Math.min.apply(null, a));//最小值
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;多维数组可以这么修改：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var a=[1,2,3,[5,6],[1,4,8]];
+var ta=a.join(&amp;quot;,&amp;quot;).split(&amp;quot;,&amp;quot;);//转化为一维数组
+console.log(Math.max.apply(null,ta));//最大值
+console.log(Math.min.apply(null,ta));//最小值
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/9&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/9&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

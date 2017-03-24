@@ -1,0 +1,1326 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Use eslint-config-airbnb in Atom &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="nodejh" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/post'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            在 Atom 中使用 ESlint
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Sep 27, 2016 20:48
+                    · 7945 words
+                    · 16 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/eslint">ESLint</a>
+                          
+                              <a href="http://nodejh.com/tags/atom">Atom</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint</a></li>
+<li><a href="#2-在项目中使用-eslint-config-airbnb">2. 在项目中使用 eslint-config-airbnb</a></li>
+<li><a href="#3-自定义-eslint-规则">3. 自定义 ESLint 规则</a></li>
+<li><a href="#4-eslint-规则说明">4. ESLint 规则说明</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#2017-03-11-更新">2017.03.11 更新</a>
+<ul>
+<li>
+<ul>
+<li><a href="#快速使用">快速使用</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。关于 ESLint 的详细介绍可看<a href="http://eslint.org">官方文档</a>。</p>
+
+<h4 id="1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint</h4>
+
+<pre><code class="language-shell">$ apm install linter linter-eslint
+</code></pre>
+
+<h4 id="2-在项目中使用-eslint-config-airbnb">2. 在项目中使用 eslint-config-airbnb</h4>
+
+<p><a href="https://www.npmjs.com/package/eslint-config-airbnb#improving-this-config">eslint-config-airbnb</a> 是一个基于 <a href="https://github.com/airbnb/javascript"> Airbnb&rsquo;s Javascript styleguide</a> 的 ESLint 配置。安装方法如下：</p>
+
+<pre><code class="language-shell">$ npm install --save-dev eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb
+</code></pre>
+
+<p>然后在项目根目录添加一个 <code>.eslintrc</code> 文件，并在其中添加如下代码：</p>
+
+<pre><code class="language-json">{
+	&quot;extends&quot;: &quot;airbnb&quot;
+}
+</code></pre>
+
+<h4 id="3-自定义-eslint-规则">3. 自定义 ESLint 规则</h4>
+
+<p>eslint-config-airbnb 中的规则，可能并不完全符合自己的编码习惯，我们还可以在 <code>.eslintrc</code> 中添加一些自定义的规则。</p>
+
+<h4 id="4-eslint-规则说明">4. ESLint 规则说明</h4>
+
+<pre><code>&quot;rules&quot;: {
+
+        /*Possible Errors*/
+
+        // 数组和对象键值对最后一个逗号，
+
+        // never参数：不能带末尾的逗号,
+
+        // always参数：必须带末尾的逗号，  
+
+        // always-multiline：多行模式必须带逗号，单行模式不能带逗号  
+
+        &quot;comma-dangle&quot;: [2, &quot;never&quot;],
+
+        //禁止在条件表达式中使用赋值语句
+
+        &quot;no-cond-assign&quot;: 2,
+
+        //禁止使用console
+
+        &quot;no-console&quot;: 2,
+
+        //禁止在条件中使用常量表达式 if(true) if(1)
+
+        &quot;no-constant-condition&quot;: 2,
+
+        //禁止在正则表达式中使用控制符
+
+        &quot;no-control-regex&quot;: 2,
+
+        //禁止使用debugger语句
+
+        &quot;no-debugger&quot;: 2,
+
+        //函数参数禁止重名
+
+        &quot;no-dupe-args&quot;: 2,
+
+        //在创建对象字面量时不允许键重复
+
+        &quot;no-dupe-keys&quot;: 2,
+
+        //在switch语句中禁止重复的case
+
+        &quot;no-duplicate-case&quot;: 2,
+
+        //代码块的内容不能为空，禁止空代码块
+
+        &quot;no-empty&quot;: 2,
+
+        //正则表达式的内容不能为空，禁止使用不匹配任何字符串的正则表达式
+
+        &quot;no-empty-character-class&quot;: 2,
+
+        //禁止对catch语句中的异常进行赋值
+
+        &quot;no-ex-assign&quot;: 2,
+
+        //禁止不必要的bool转换
+
+        &quot;no-extra-boolean-cast&quot;: 2,
+
+        //禁止使用多余的圆括号
+
+        &quot;no-extra-parens&quot;: 2,
+
+        //禁止多余的冒号
+
+        &quot;no-extra-semi&quot;: 2,
+
+        //禁止重复的函数声明
+
+        &quot;no-func-assign&quot;: 2,
+
+        //禁止在块语句中声明变量或函数
+
+        &quot;no-inner-declarations&quot;: 2,
+
+        //禁止使用无效的正则语句
+
+        &quot;no-invalid-regexp&quot;: 2,
+
+        //禁止使用不合法或者不规则的空白符
+
+        &quot;no-irregular-whitespace&quot;: 2,
+
+        //在in操作符左边的操作项不能用! 例如这样写不对的：if ( !a in b) { //dosomething }
+
+        &quot;no-negated-in-lhs&quot;: 2,
+
+        //禁止把全局对象当函数调用，比如下面写法错误的：Math(), JSON()
+
+        &quot;no-obj-calls&quot;: 2,
+
+        //禁止在正则表达式字面量中使用多个空格 /foo bar/
+
+        &quot;no-regex-spaces&quot;: 2,
+
+        //禁止稀疏数组，清除多余的逗号申明  比如[1,,2]
+
+        &quot;no-sparse-arrays&quot;: 2,
+
+        //为了保证两行不相关的代码不会意外的被当做一行代码来解析
+
+        &quot;no-unexpected-multiline&quot;: 2,
+
+        //禁止有执行不到的代码
+
+        &quot;no-unreachable&quot;: 2,
+
+        //禁止和NaN作比较,推荐使用isNaN方法
+
+        &quot;use-isnan&quot;: 2,
+
+        //用来检测JSDoc是否完整和合法
+
+        &quot;valid-jsdoc&quot;: 2,
+
+        //typeof操作符返回的结果会是 &quot;undefined&quot;,  &quot;object&quot;,  &quot;boolean&quot;, &quot;number&quot;, &quot;string&quot;, 和  &quot;function&quot;之一。
+
+        //保证typeof 操作符返回的结果必须和上面六个字符串作比较
+
+        &quot;valid-typeof&quot;: 2,
+
+
+
+        /*Best Practices*/
+
+        //在声明对象时getter和setter需成对出现
+
+        &quot;accessor-pairs&quot;: 2,
+
+        //数值方法的回调函数中强制写return语句
+
+        &quot;array-callback-return&quot;: 2,
+
+        //当在代码块中用var声明变量，并在代码块外使用时报错
+
+        &quot;block-scoped-var&quot;: 0,
+
+        //用来控制函数的复杂度，分支超过5时报错
+
+        &quot;complexity&quot;: [2, 5],
+
+        //不同分支的return语句不能返回不同的类型，要么一致要么都没有  
+
+        &quot;consistent-return&quot;: 0,
+
+        // if else while for do后面的代码块是否需要{ }包围，参数：  
+
+        // multi         只有块中有多行语句时才需要{ }包围  
+
+        // multi-line    只有块中有多行语句时才需要{ }包围, 但是块中的执行语句只有一行时，块中的语句只能跟和if语句在同一行。
+
+        //                if (foo) foo++; else doSomething();  
+
+        // multi-or-nest 只有块中有多行语句时才需要{ }包围, 如果块中的执行语句只有一行，执行语句可以另起一行也可以跟在if语句后面    
+
+        // [2, &quot;multi&quot;, &quot;consistent&quot;] 保持前后语句的{ }一致  
+
+        // default: [2, &quot;all&quot;] 全都需要{ }包围  
+
+        &quot;curly&quot;: 2,
+
+        //所有的switch语句都必须要有一个default分支
+
+        &quot;default-case&quot;: 2,
+
+        // 在书写对象的属性或方法时，新的一行代码可以以. 开头，也可以以. 结束。
+
+        // 强制统一object.key中 . 的位置，参数:  
+
+        //      property，'.'号应与属性在同一行  
+
+        //      object, '.' 号应与对象名在同一行  
+
+        &quot;dot-location&quot;: [2, &quot;property&quot;],
+
+        // 强制使用.号取属性  
+
+        // 参数： allowKeywords：true  使用保留字做属性名时，只能使用.方式取属性  
+
+        //                       false 使用保留字做属性名时, 只能使用[]方式取属性
+
+        //                       e.g [2, {&quot;allowKeywords&quot;: false}]  
+
+        //        allowPattern:  当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值
+
+        //                       e.g [2, {&quot;allowPattern&quot;: &quot;^[a-z]+(_[a-z]+)+$&quot;}]  
+
+        &quot;dot-notation&quot;: [2, { &quot;allowKeywords&quot;: true }],
+
+        //在进行比较时，必须使用全等=== 和完全不等!==
+
+        &quot;eqeqeq&quot;: [2, &quot;allow-null&quot;],
+
+        //在for-in 循环中要使用if语句
+
+        &quot;guard-for-in&quot;: 2,
+
+        //代码中禁止使用alert, confirm, and prompt
+
+        &quot;no-alert&quot;: 2,
+
+        //禁止使用arguments.caller和arguments.callee
+
+        &quot;no-caller&quot;: 2,
+
+        //禁止在case/default语句中使用lexical declarations，例如let, const, function and class
+
+        //因为在case/default中的声明，在整个switch语句中都能够访问到，如果需要声明变量，可以加大括号。
+
+        &quot;no-case-declarations&quot;: 2,
+
+        //不能使用看起来像除法的正则表达式
+
+        //用来消除/ (除号)操作符对程序员的迷惑，比如在正则表达式/=foo/中，我们并不能够确定第一个/是除号还是正则表达式，因此我们需要在等号前面加一个转移符/\=foo/
+
+        &quot;no-div-regex&quot;: 2,
+
+        //在if else语句中，如果else语句中只含有一个return语句，那么完全可以不使用else语句，直接return。
+
+        &quot;no-else-return&quot;: 2,
+
+        //不允许空函数
+
+        &quot;no-empty-function&quot;: 2,
+
+        //在结构赋值时，模式不能为空。在ECMAScript2015的结构赋值中，模式为空是不会报错的，只是这样的结构赋值没有任何效果，该条规则就保证了模式不能为空，也就保证了结构赋值的有效性。
+
+        &quot;no-empty-pattern&quot;: 2,
+
+        //保证了在和null比较时使用===和!==，而不能够使用==和!=
+
+        &quot;no-eq-null&quot;: 2,
+
+        //禁止使用eval函数
+
+        &quot;no-eval&quot;: 2,
+
+        //禁止扩展native对象，不能向native的对象上面添加属性
+
+        &quot;no-extend-native&quot;: 2,
+
+        //保证了调用bind方法的函数体内有this对象。规避了不必要的使用bind方法的情况。
+
+        //箭头函数中没有this对象，也就不能够使用bind()方法。该规则保证了在所有的箭头函数中使用bind方法将被视为错误。
+
+        &quot;no-extra-bind&quot;: 2,
+
+        //如果 loop中没有内嵌的loops或switches, loop标签是不必要的.
+
+        &quot;no-extra-label&quot;: 2,
+
+        //在case语句中尽量加break，避免不必要的fallthrough错误，消除从一个case到另一个case的非故意的「fall through」。
+
+        //如果没有添加break等终止语句或者没有添加注释语句，将会抛出错误
+
+        &quot;no-fallthrough&quot;: 2,
+
+        //在使用浮点小数时，不能够省略小数点前面的数或者后面的数，必须写。比如.2 2. 应该写2.2 2.0
+
+        &quot;no-floating-decimal&quot;: 2,
+
+        //禁止隐式转换，为了消除简写的类型转换
+
+        &quot;no-implicit-coercion&quot;: 2,
+
+        //禁止在全局作用域里声明变量或函数
+
+        &quot;no-implicit-globals&quot;: 2,
+
+        //在setTimeout(), setInterval() or execScript()中消除隐式eval的使用
+
+        &quot;no-implied-eval&quot;: 2,
+
+        //禁止无效的this，只能用在构造器，类，对象字面量
+
+        &quot;no-invalid-this&quot;: 2,
+
+        //禁止使用__iterator__属性
+
+        &quot;no-iterator&quot;: 2,
+
+        //禁止使用label语句，以避免无限循环
+
+        &quot;no-labels&quot;: [2, { &quot;allowLoop&quot;: false, &quot;allowSwitch&quot;: false }],
+
+        //禁止使用不必要的嵌套代码块
+
+        &quot;no-lone-blocks&quot;: 2,
+
+        //禁止在循环体中定义函数并且函数引用了外部变量
+
+        //在循环中定义了函数，但是函数内部没有引用外部变量，或者使用let定义的代码块变量，视为合法
+
+        &quot;no-loop-func&quot;: 2,
+
+        //禁止使用魔法数字，建议使用常量来代替
+
+        &quot;no-magic-numbers&quot;: 2,
+
+        //保证了在逻辑表达式、条件表达式、申明语句、数组元素、对象属性、sequences、函数参数中不使用超过一个的空白符。
+
+        &quot;no-multi-spaces&quot;: 2,
+
+        //该规则保证了字符串不分行书写。
+
+        &quot;no-multi-str&quot;: 2,
+
+        //该规则保证了不重写原生对象。
+
+        &quot;no-native-reassign&quot;: 2,
+
+        //在使用new来调用构造函数后，必须把生成的实例赋值给一个变量
+
+        &quot;no-new&quot;: 2,
+
+        //禁止使用new Function(); 语句。
+
+        &quot;no-new-func&quot;: 2,
+
+        //禁止使用new创建String,Number, and Boolean实例
+
+        &quot;no-new-wrappers&quot;: 2,
+
+        //禁止使用八进制数字
+
+        &quot;no-octal&quot;: 2,
+
+        //禁止使用八进制转义序列，比如 var foo = &quot;Copyright \251&quot;;
+
+        &quot;no-octal-escape&quot;: 2,
+
+        //禁止对函数的参数重新进行无意义的赋值
+
+        &quot;no-param-reassign&quot;: 2,
+
+        //禁止使用__proto__属性
+
+        &quot;no-proto&quot;: 2,
+
+        //避免重复声明一个变量
+
+        &quot;no-redeclare&quot;: [2, { &quot;builtinGlobals&quot;: true }],
+
+        //不要在return语句中使用赋值语句
+
+        &quot;no-return-assign&quot;: [2, &quot;always&quot;],
+
+        //禁止代码中使用类似javascript:void(0)的javascript: urls.
+
+        &quot;no-script-url&quot;: 2,
+
+        //禁止给自身赋值
+
+        &quot;no-self-assign&quot;: 2,
+
+        //禁止和自身作比较
+
+        &quot;no-self-compare&quot;: 2,
+
+        //禁止可能导致结果不明确的逗号操作符
+
+        &quot;no-sequences&quot;: 2,
+
+        //通过throw语句抛出的对象必须是Error对象本身或者通过Error对象定义的对象。有些情况除外，见官网
+
+        &quot;no-throw-literal&quot;: 2,
+
+        //禁止使用不被修改的循环条件
+
+        &quot;no-unmodified-loop-condition&quot;: 2,
+
+        //禁止在代码中出现没有被使用到的表达式或值
+
+        &quot;no-unused-expressions&quot;: [2, { &quot;allowShortCircuit&quot;: true, &quot;allowTernary&quot;: true }],
+
+        //禁止在代码中出现没有被使用到的标签
+
+        &quot;no-unused-labels&quot;: 2,
+
+        //避免使用没有意义的call() 和 apply()
+
+        &quot;no-useless-call&quot;: 2,
+
+        //避免使用不必要的字符串拼接
+
+        &quot;no-useless-concat&quot;: 2,
+
+        //不要使用void操作符
+
+        &quot;no-void&quot;: 2,
+
+        //生产代码中不能出现warning-comments包含的注释
+
+        &quot;no-warning-comments&quot;: [2, { &quot;terms&quot;: [&quot;todo&quot;, &quot;fixme&quot;, &quot;any other term&quot;], &quot;location&quot;: &quot;anywhere&quot; }],
+
+        //不要使用with语句
+
+        &quot;no-with&quot;: 2,
+
+        //在使用parseInt()方法时，必须要传递第二个参数来帮助解析。
+
+        &quot;radix&quot;: 2,
+
+        //在通过var声明变量时，应该放在代码所在作用域的顶部
+
+        &quot;vars-on-top&quot;: 2,
+
+        //立即执行函数需要通过圆括号包围
+
+        &quot;wrap-iife&quot;: 2,
+
+        //yoda条件语句就是对象字面量应该写在比较操作符的左边，而变量应该写在比较操作符的右边
+
+        //默认的规则要求，变量写在左边而字面量写在右边
+
+        &quot;yoda&quot;: 2,
+
+
+
+        /*Strict Mode*/
+
+        //使用严格模式
+
+        &quot;strict&quot;: 2,
+
+
+
+
+
+        /*Variables*/
+
+        //变量声明时必须赋初值
+
+        &quot;init-declarations&quot;: 2,
+
+        //In IE 8 and earlier，禁止catch子句参数与外部作用域变量同名
+
+        &quot;no-catch-shadow&quot;: 2,
+
+        //禁止使用delete删除var声明的变量
+
+        &quot;no-delete-var&quot;: 2,
+
+        //防止label和声明的变量重名
+
+        &quot;no-label-var&quot;: 2,
+
+        //禁止使用某些全局变量
+
+        &quot;no-restricted-globals&quot;: [2, &quot;event&quot;],
+
+        //禁止声明外部作用域中已定义的变量
+
+        &quot;no-shadow&quot;: 2,
+
+        //声明变量时禁止覆盖JavaScript中的一些保留关键字，比如NaN、Infinity、undefined、eval、arguments等。
+
+        &quot;no-shadow-restricted-names&quot;: 2,
+
+        //禁止使用未被定义的变量，除非已在配置文件的global中进行了说明。
+
+        &quot;no-undef&quot;: 2,
+
+        //禁止初始化变量为undefined
+
+        &quot;no-undef-init&quot;: 2,
+
+        //禁止把undefined作为变量名
+
+        &quot;no-undefined&quot;: 2,
+
+        //不允许定义的变量在后面的代码中没有被使用到
+
+        &quot;no-unused-vars&quot;: 2,
+
+        //所有的变量都应该先定义后使用
+
+        &quot;no-use-before-define&quot;: 2,
+
+
+
+
+
+
+
+        /*Node.js and CommonJS*/
+
+        //强制回调后return，避免多次调用回调
+
+        &quot;callback-return&quot;: 2,
+
+        //强制require()出现在模块作用域的顶部
+
+        &quot;global-require&quot;: 2,
+
+        // 如果函数有err入参(err或者error),在函数体内必须进行处理
+
+        &quot;handle-callback-err&quot;: [2, &quot;^(err|error)$&quot;],
+
+        //声明时不能混用声明类型
+
+        &quot;no-mixed-requires&quot;: 2,
+
+        //禁止把require方法和new操作符一起使用。
+
+        &quot;no-new-require&quot;: 2,
+
+        //不能使用__dirname或__filename做路径拼接
+
+        &quot;no-path-concat&quot;: 2,
+
+        //禁止使用process.env
+
+        &quot;no-process-env&quot;: 2,
+
+        //禁止使用process.exit()
+
+        &quot;no-process-exit&quot;: 2,
+
+        //禁用使用指定模块，使用了就会报错
+
+        &quot;no-restricted-modules&quot;: [2, &quot;fs&quot;],
+
+        //禁止使用同步方法，建议使用异步方法
+
+        &quot;no-sync&quot;: 2,
+
+
+
+
+
+        /*Stylistic Issues*/
+
+        // 用数组字面量定义数组时数组元素前后是否加空格，
+
+        // never参数： 数组元素前后不能带空格，
+
+        // always参数：数组元素前后必须留空格  
+
+        &quot;array-bracket-spacing&quot;: [2, &quot;never&quot;],
+
+        //在单行代码块中，代码块前后是否需要留空格
+
+        // always参数：默认，前后必须留空格
+
+        // never参数： 前后不能带空格  
+
+        &quot;block-spacing&quot;: [2, &quot;always&quot;],
+
+        //大括号的样式，比如下面的大括号语法采用『1tbs』,允许单行样式
+
+        &quot;brace-style&quot;: [2, &quot;1tbs&quot;, { &quot;allowSingleLine&quot;: true }],
+
+        //强制使用驼峰命名  
+
+        &quot;camelcase&quot;: 2,
+
+        //规定了逗号前后的空白，默认配置规定逗号前面没有空白，而逗号后面需要留空白
+
+        &quot;comma-spacing&quot;: [2, { &quot;before&quot;: false, &quot;after&quot;: true }],
+
+        //规定了逗号放的位置，默认配置逗号应该放在行末，如果设置为first，逗号就应放在行首
+
+        &quot;comma-style&quot;: [2, &quot;last&quot;],
+
+        //是否在对象的动态属性（computed properties： ES6引入）中添加空白，默认配置不添加空白
+
+        &quot;computed-property-spacing&quot;: [2, &quot;never&quot;],
+
+        //统一this的别名（this赋值的变量名）保证整个应用程序代码的统一。
+
+        //如果一个变量被指定为this对象的别名，那么这个变量就不能够用来赋其他值，只能够用来保存this对象。
+
+        //如果this对象明确被赋值给了一个变量，那么这个变量应该是配置中指定的那个变量名。     
+
+        &quot;consistent-this&quot;: [2, &quot;self&quot;],
+
+        //该规则规定文件最后强制换行，仅需留一空行
+
+        &quot;eol-last&quot;: 2,
+
+        //要求给函数表达式命名，便于debug
+
+        &quot;func-names&quot;: 2,
+
+        //在JavaScript中有两种方式定义函数:函数声明和函数表达式。
+
+        //函数声明就是把function关键词写在最前面，后面跟一个函数名。我们可以在函数申明代码前调用函数
+
+        //函数表达式是通过var等声明变量的关键字开头，然后跟函数名，再后面是function本身。在使用函数表达式定义函数前调用函数会报错
+
+        // 统一定义函数是所采用的方式，参数：  
+
+        //    declaration: 强制使用方法声明的方式，function f(){} e.g [2, &quot;declaration&quot;]  
+
+        //    expression：强制使用方法表达式的方式，默认方式，var f = function() {}  e.g [2, &quot;expression&quot;]  
+
+        //    allowArrowFunctions: declaration风格中允许箭头函数。 e.g [2, &quot;declaration&quot;, {&quot;allowArrowFunctions&quot;:true}]  
+
+        &quot;func-style&quot;: [2, &quot;expression&quot;],
+
+        //规定了标识符命名的黑名单
+
+        &quot;id-blacklist&quot;: [2, &quot;data&quot;, &quot;err&quot;, &quot;e&quot;, &quot;cb&quot;, &quot;callback&quot;],
+
+        //规定标识符的长度，默认配置标识符最少两个字符
+
+        &quot;id-length&quot;: [2, { &quot;min&quot;: 2 }],
+
+        //命名检测，标识符命名需和配置中的正则表达式匹配，但是该规则对函数调用无效。
+
+        &quot;id-match&quot;: [2, &quot;^[a-z]+([A-Z][a-z]+)*$&quot;, { &quot;properties&quot;: false }],
+
+        // 统一代码缩进方式，默认值是4 spaces.
+
+        &quot;indent&quot;: 2,
+
+        //规定了在JSX中的属性值是使用单引号还是双引号,默认使用双引号
+
+        &quot;jsx-quotes&quot;: [2, &quot;prefer-double&quot;],
+
+        //该规则规定了在对象字面量语法中key和value之间的空白，冒号前不要留空格，冒号后面需留一个空格
+
+        &quot;key-spacing&quot;: [2, { &quot;beforeColon&quot;: false, &quot;afterColon&quot;: true }],
+
+        // 规定了keyword前后是否需要留一个空格
+
+        &quot;keyword-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true, &quot;overrides&quot;: {} }],
+
+        //统一换行符，&quot;\n&quot; unix(for LF) and &quot;\r\n&quot; for windows(CRLF)，默认unix
+
+        &quot;linebreak-style&quot;: 2,
+
+        //规定注释和代码块之间是否留空行
+
+        &quot;lines-around-comment&quot;: 2,
+
+        //规定代码最多可以嵌套多少层
+
+        &quot;max-depth&quot;: [2, 4],
+
+        //规定了代码单行的最大长度
+
+        &quot;max-len&quot;: [2, 80, 4],
+
+        //规定了回调的最大嵌套层数
+
+        &quot;max-nested-callbacks&quot;: [2, 10],
+
+        //规定了函数参数的最大个数
+
+        &quot;max-params&quot;: [2, 3],
+
+        //规定了函数中代码不能够超过多少行
+
+        &quot;max-statements&quot;: [2, 10],
+
+        //使用构造函数(new)时首字母需大写，首字母大写的函数需用new操作符
+
+        &quot;new-cap&quot;: 2,
+
+        //使用构造函数(new)时必须圆括号不能省略
+
+        &quot;new-parens&quot;: 2,
+
+        //规定了变量声明后是否需要空行
+
+        &quot;newline-after-var&quot;: 2,
+
+        //规定了return语句前是否是否需要空行
+
+        &quot;newline-before-return&quot;: 2,
+
+        //规定了方法链式调用时是否需换行
+
+        &quot;newline-per-chained-call&quot;: 2,
+
+        //禁止使用Array构造函数
+
+        &quot;no-array-constructor&quot;: 2,
+
+        //禁止使用位操作符
+
+        &quot;no-bitwise&quot;: 2,
+
+        //禁止使用continue
+
+        &quot;no-continue&quot;: 2,
+
+        //禁止使用行内注释
+
+        &quot;no-inline-comments&quot;: 2,
+
+        //禁止在if-else控制语句中，else代码块中仅包含一个if语句
+
+        &quot;no-lonely-if&quot;: 2,
+
+        //禁止混用tab和空格
+
+        &quot;no-mixed-spaces-and-tabs&quot;: 2,
+
+        //不要留超过规定数目的空白行
+
+        &quot;no-multiple-empty-lines&quot;: [2, { &quot;max&quot;: 2 }],
+
+        //在if语句中使用了否定表达式，同时else语句又不为空，那么这样的if-else语句将被视为不合法，为什么不将其反过来这样代码更容易理解，该规则同样适用于三元操作符
+
+        &quot;no-negated-condition&quot;: 2,
+
+        //三元操作符禁止嵌套
+
+        &quot;no-nested-ternary&quot;: 2,
+
+        //禁止使用new Object()来构造对象
+
+        &quot;no-new-object&quot;: 2,
+
+        //禁止使用++，--
+
+        &quot;no-plusplus&quot;: 2,
+
+        //禁止使用某些特定的JavaScript语法，例如FunctionDeclaration 和 WithStatement
+
+        &quot;no-restricted-syntax&quot;: [2, &quot;FunctionExpression&quot;, &quot;WithStatement&quot;],
+
+        //函数调用时，函数名和圆括号之间不能有空格
+
+        &quot;no-spaced-func&quot;: 2,
+
+        //禁止使用三元操作符
+
+        &quot;no-ternary&quot;: 2,
+
+        //禁止行末加空格
+
+        &quot;no-trailing-spaces&quot;: 2,
+
+        //禁止在标识符前后使用下划线
+
+        &quot;no-underscore-dangle&quot;: 2,
+
+        //禁止使用没有必要的三元操作符，因为用有些三元操作符可以使用其他语句替换
+
+        &quot;no-unneeded-ternary&quot;: [2, { &quot;defaultAssignment&quot;: false }],
+
+        //禁止属性操作符.的前后和[之前有空格
+
+        &quot;no-whitespace-before-property&quot;: 2,
+
+        //规定对象字面量中大括号内是否允许加空格，也适用于ES6中的结构赋值和模块import和export
+
+        &quot;object-curly-spacing&quot;: [2, &quot;never&quot;],
+
+        //规定了在每个函数中声明变量是否只使用一次var，该规则同样适用于let和const
+
+        &quot;one-var&quot;: [2, { &quot;initialized&quot;: &quot;never&quot; }],
+
+        //规定了使用赋值操作符的简写形式
+
+        &quot;operator-assignment&quot;: [2, &quot;always&quot;],
+
+        //在换行时操作符应该放在行首还是行尾。还可对某些操作符进行重写。
+
+        &quot;operator-linebreak&quot;: [2, &quot;after&quot;, { &quot;overrides&quot;: { &quot;?&quot;: &quot;before&quot;, &quot;:&quot;: &quot;before&quot; } }],
+
+        //在代码块中，代码块的开始和结尾是否应该留一个空行
+
+        &quot;padded-blocks&quot;: 0,
+
+        //对象的属性名是否强制加双引号
+
+        &quot;quote-props&quot;: [2, &quot;always&quot;],
+
+        //在JavaScript中有三种方式定义字符串，双引号、单引号、反义符（ECMAScript2015）。规定了字符串定义的方式
+
+        &quot;quotes&quot;: [2, &quot;single&quot;, &quot;avoid-escape&quot;],
+
+        //注释格式要求JSDoc格式
+
+        &quot;require-jsdoc&quot;: [2, {
+
+            &quot;require&quot;: {
+
+                &quot;FunctionDeclaration&quot;: true,
+
+                &quot;MethodDefinition&quot;: false,
+
+                &quot;ClassDeclaration&quot;: false
+
+            }
+
+        }],
+
+        //JavaScript不要求在每行末尾加上分号，这是因为JavaScript引擎会决定是否需要在行末加上分号，然后自动帮我们在行末加上分号，这一特性被成为ASI(automatic semicolon insertion)，也是JavaScript语言最富争议的特性之一
+
+        //尽管ASI允许我们使用更加自由的代码风格，但是它也可能使得你的代码并不是按你期许的方式运行
+
+        //两个可选参数，always 和never
+
+        //默认配置always，要求在行末加上分号。
+
+        &quot;semi&quot;: [2, &quot;always&quot;],
+
+        //该规则用来规定分号前后是否加空格，默认配置如下
+
+        &quot;semi-spacing&quot;: [2, { &quot;before&quot;: false, &quot;after&quot;: true }],
+
+        //要求对同一个模块里的import声明按字母排序
+
+        &quot;sort-imports&quot;: 2,
+
+        //规定在同一个变量声明代码块中，要对变量的声明按字母排序
+
+        &quot;sort-vars&quot;: 2,
+
+        //规定了在代码块前是否需要加空格
+
+        &quot;space-before-blocks&quot;: [2, &quot;always&quot;],
+
+        //函数定义时，function关键字后面的小括号前是否需要加空格
+
+        &quot;space-before-function-paren&quot;: [2, &quot;always&quot;],
+
+        //规定圆括号内部的空格。规定是否需要在(右边，或者)左边加空格。
+
+        &quot;space-in-parens&quot;: [2, &quot;never&quot;],
+
+        //中綴操作符左右是否添加空格
+
+        &quot;space-infix-ops&quot;: 2,
+
+        //规定在一元操作符前后是否需要加空格，单词类操作符需要加，而非单词类操作符不用加
+
+        //words - applies to unary word operators such as: new, delete, typeof, void, yield
+
+        //nonwords - applies to unary operators such as: -, +, --, ++, !, !!
+
+        &quot;space-unary-ops&quot;: [2, { &quot;words&quot;: true, &quot;nonwords&quot;: false }],
+
+        //规定是否需要在代码注释起始符// or /*后面至少紧跟一个空格
+
+        &quot;spaced-comment&quot;: [2, &quot;always&quot;, { &quot;markers&quot;: [&quot;global&quot;, &quot;globals&quot;, &quot;eslint&quot;, &quot;eslint-disable&quot;, &quot;*package&quot;, &quot;!&quot;, &quot;,&quot;] }],
+
+        //要求在正则表达式的双斜杠外面加一个圆括号，来消除歧义
+
+        &quot;wrap-regex&quot;: 2,
+
+
+
+
+
+        /*ECMAScript 6*/
+
+        //箭头函数中，如果函数体里只有一句代码时可以省略大括号
+
+        //规定是否可以省略大括号
+
+        &quot;arrow-body-style&quot;: 2,
+
+        //箭头函数中，只有一个参数时可以省略圆括号
+
+        //规定了参数是否需要圆括号包围
+
+        &quot;arrow-parens&quot;: [2, &quot;always&quot;],
+
+        //规定了箭头函数的箭头前后是否加空格
+
+        &quot;arrow-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true }],
+
+        //保证constructor函数中super()应正确出现，比如在继承的classes中（派生类）必须使用super，否则（非派生类）不要使用super。
+
+        &quot;constructor-super&quot;: 2,
+
+        //规定generator函数中星号前后的空白
+
+        &quot;generator-star-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true }],
+
+        //禁止覆盖class命名，也就是说变量名不要和class名重名
+
+        &quot;no-class-assign&quot;: 2,
+
+        //箭头函数的箭头和比较操作符 (&gt;, &lt;, &lt;=, and &gt;=)很相似，该规则要求在和比较操作符容易发生混淆时禁止使用箭头函数语法
+
+        &quot;no-confusing-arrow&quot;: 2,
+
+        //禁止修改const声明的变量
+
+        &quot;no-const-assign&quot;: 2,
+
+        //class中的成员不允许有相同的名字
+
+        &quot;no-dupe-class-members&quot;: 2,
+
+        //禁止在Symbol对象前使用new操作符
+
+        &quot;no-new-symbol&quot;: 2,
+
+        //该规则可以定义不允许在应用中导入的模块
+
+        &quot;no-restricted-imports&quot;: [2,
+
+            &quot;assert&quot;, &quot;buffer&quot;, &quot;child_process&quot;, &quot;cluster&quot;, &quot;crypto&quot;, &quot;dgram&quot;, &quot;dns&quot;, &quot;domain&quot;, &quot;events&quot;, &quot;freelist&quot;, &quot;fs&quot;, &quot;http&quot;, &quot;https&quot;, &quot;module&quot;, &quot;net&quot;, &quot;os&quot;, &quot;path&quot;, &quot;punycode&quot;, &quot;querystring&quot;, &quot;readline&quot;, &quot;repl&quot;, &quot;smalloc&quot;, &quot;stream&quot;, &quot;string_decoder&quot;, &quot;sys&quot;, &quot;timers&quot;, &quot;tls&quot;, &quot;tracing&quot;, &quot;tty&quot;, &quot;url&quot;, &quot;util&quot;, &quot;vm&quot;, &quot;zlib&quot;
+
+        ],
+
+        //在构造函数中，禁止在super()调用前使用this/super对象
+
+        &quot;no-this-before-super&quot;: 2,
+
+        //ES2015提供了默认的空构造函数，禁止使用不必要的空构造函数
+
+        &quot;no-useless-constructor&quot;: 2,
+
+        //禁用var，用let和const代替var
+
+        &quot;no-var&quot;: 2,
+
+        //ES6中提供了定义对象字面量的方法和属性的简写形式。强制要求在对象字面量中使用方法和属性的简写形式
+
+        &quot;object-shorthand&quot;: 2,
+
+        //函数作为函数的参数传入时，传入的函数需要是箭头函数
+
+        //箭头函数中的this对象直接绑定到了其外面包围的函数的this对象。
+
+        &quot;prefer-arrow-callback&quot;: 2,
+
+        //如果一个变量声明后不再被修改，那么应使用const来声明该变量
+
+        &quot;prefer-const&quot;: 2,
+
+        //推荐使用Reflect上的方法替代以前老方法
+
+        &quot;prefer-reflect&quot;: 2,
+
+        // 在ES2015(ES6)中推荐使用剩余参数(...rest)代替arguments变量
+
+        &quot;prefer-rest-params&quot;: 2,
+
+        //在ES2015(ES6)中推荐使用扩展符替代apply()方法
+
+        &quot;prefer-spread&quot;: 2,
+
+        //在ES2015(ES6)中推荐使用模板代替以前的字符串拼接
+
+        &quot;prefer-template &quot;: 2,
+
+        //生成器函数中必须有yield关键字，如果没有会报错。
+
+        &quot;require-yield&quot;: 2,
+
+        //模板字符串中使用${ 和 } 包含的表达式前后是否需要留空格，默认规则禁止花括号内有空格
+
+        &quot;template-curly-spacing&quot;: [2, &quot;never&quot;],
+
+        //yield*表达式中的*号前后是否留空格，默认after，比如yield* other()
+
+        &quot;yield-star-spacing&quot;: [2, &quot;after&quot;],
+
+
+
+
+
+
+
+
+
+        /*eslint-plugin-standard*/
+
+        &quot;standard/object-curly-even-spacing&quot;: [2, &quot;either&quot;],
+
+        &quot;standard/array-bracket-even-spacing&quot;: [2, &quot;either&quot;],
+
+        &quot;standard/computed-property-even-spacing&quot;: [2, &quot;even&quot;],
+
+
+
+
+
+        /* eslint-plugin-promise*/
+
+        &quot;promise/param-names&quot;: 2,
+
+        &quot;promise/always-return&quot;: 2,
+
+        &quot;promise/catch-or-return&quot;: 2,
+
+
+
+        /*eslint-plugin-react*/
+
+        &quot;react/jsx-boolean-value&quot;: 2,
+
+        &quot;react/jsx-quotes&quot;: 2,
+
+        &quot;react/jsx-no-undef&quot;: 2,
+
+        &quot;react/jsx-sort-props&quot;: 0,
+
+        &quot;react/jsx-sort-prop-types&quot;: 0,
+
+        &quot;react/jsx-uses-react&quot;: 2,
+
+        &quot;react/jsx-uses-vars&quot;: 2,
+
+        &quot;react/no-did-mount-set-state&quot;: 2,
+
+        &quot;react/no-did-update-set-state&quot;: 2,
+
+        &quot;react/no-multi-comp&quot;: 2,
+
+        &quot;react/no-unknown-property&quot;: 1,
+
+        &quot;react/prop-types&quot;: 1,
+
+        &quot;react/react-in-jsx-scope&quot;: 2,
+
+        &quot;react/self-closing-comp&quot;: 2,
+
+        &quot;react/wrap-multilines&quot;: 0
+
+    }
+</code></pre>
+
+<h2 id="2017-03-11-更新">2017.03.11 更新</h2>
+
+<h4 id="快速使用">快速使用</h4>
+
+<p>在 Atom 上安装 <code>linter</code> <code>linter-eslint</code> 之后，配置 <code>package.json</code>。</p>
+
+<p>在项目的 <code>package.json</code> 里面添加如下配置：</p>
+
+<pre><code>&quot;devDependencies&quot;: {
+  &quot;webpack&quot;: &quot;^2.2.1&quot;,
+  &quot;babel-eslint&quot;: &quot;^7.1.1&quot;,
+  &quot;eslint&quot;: &quot;^3.14.0&quot;,
+  &quot;eslint-config-airbnb&quot;: &quot;^14.0.0&quot;,
+  &quot;eslint-plugin-import&quot;: &quot;^2.2.0&quot;,
+  &quot;eslint-plugin-jsx-a11y&quot;: &quot;^3.0.2&quot;,
+  &quot;eslint-plugin-react&quot;: &quot;^6.9.0&quot;
+}
+</code></pre>
+
+<p>添加完成之后，整个 <code>package.json</code> 看起来如下：</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;node-translate-cli&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;node-translate-cli&quot;,
+  &quot;repository&quot;: &quot;https://github.com/nodejh/node-translate-cli.git&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;directories&quot;: {
+    &quot;doc&quot;: &quot;doc&quot;
+  },
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;webpack&quot;: &quot;^2.2.1&quot;,
+    &quot;babel-eslint&quot;: &quot;^7.1.1&quot;,
+    &quot;eslint&quot;: &quot;^3.14.0&quot;,
+    &quot;eslint-config-airbnb&quot;: &quot;^14.0.0&quot;,
+    &quot;eslint-plugin-import&quot;: &quot;^2.2.0&quot;,
+    &quot;eslint-plugin-jsx-a11y&quot;: &quot;^3.0.2&quot;,
+    &quot;eslint-plugin-react&quot;: &quot;^6.9.0&quot;
+},
+  &quot;author&quot;: &quot;nodejh&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+}
+</code></pre>
+
+<p>然后执行 <code>npm i</code> 安装依赖包。</p>
+
+<p>安装完成之后，再创建一个 <code>.eslintrc</code>  文件就可以了。下面是我的 <code>.eslintrc</code> 配置。具体规则请参考上文。</p>
+
+<pre><code>{
+  &quot;extends&quot;: &quot;airbnb&quot;,
+  &quot;parser&quot;: &quot;babel-eslint&quot;,
+  &quot;env&quot;: {
+    &quot;browser&quot;: true,
+    &quot;node&quot;: true,
+    &quot;es6&quot;: true,
+    &quot;mocha&quot;: true
+  },
+  &quot;rules&quot;: {
+    &quot;react/jsx-filename-extension&quot;: 0,
+    &quot;valid-jsdoc&quot;: [&quot;error&quot;, {
+      &quot;requireReturn&quot;: true,
+      &quot;requireReturnType&quot;: true,
+      &quot;requireParamDescription&quot;: true,
+      &quot;requireReturnDescription&quot;: true
+    }],
+    &quot;require-jsdoc&quot;: [&quot;error&quot;, {
+        &quot;require&quot;: {
+            &quot;FunctionDeclaration&quot;: true,
+            &quot;MethodDefinition&quot;: false,
+            &quot;ClassDeclaration&quot;: false
+        }
+    }],
+    &quot;consistent-return&quot;: 0,
+    &quot;no-param-reassign&quot;: [&quot;error&quot;, { &quot;props&quot;: false }],
+    &quot;equire-jsdoc&quot;: 0,
+    &quot;class-methods-use-this&quot;: 0,
+    &quot;no-underscore-dangle&quot;: 0,
+    &quot;no-console&quot;: 0,
+    &quot;new-cap&quot;: 0,
+    &quot;arrow-body-style&quot;: 0,
+    &quot;no-plusplus&quot;: 0
+  }
+}
+</code></pre>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/21">https://github.com/nodejh/nodejh.github.io/issues/21</a></p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="http://nodejh.com">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

@@ -1,0 +1,215 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Symmetric Difference &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-light.min.css">
+		
+
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://nodejh.com/post'>Archive</a>
+	
+
+	
+		<a href='http://nodejh.com/tags'>Tags</a>
+	
+
+	
+		<a href='http://nodejh.com/about'>About</a>
+	
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            求给定数组的对等差分(symmetric difference) (△ or ⊕)数组
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Oct 29, 2016 00:43
+                    · 461 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/javascript">JavaScript</a>
+                          
+                              <a href="http://nodejh.com/tags/algorithm">Algorithm</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                <div id="toc" class="well col-md-4 col-sm-6">
+                  
+                </div>
+                <section id="post-body">
+                    <p><strong>题目</strong></p>
+
+<p>创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.</p>
+
+<p>给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2, 3, 4}), 而数学术语 &ldquo;对等差分&rdquo; 的集合就是指由所有只在两个集合其中之一的元素组成的集合(A △ B = C = {1, 4}). 对于传入的额外集合 (如 D = {2, 3}), 你应该安装前面原则求前两个集合的结果与新集合的对等差分集合 (C △ D = {1, 4} △ {2, 3} = {1, 2, 3, 4}).</p>
+
+<p><strong>解题思路</strong></p>
+
+<ul>
+<li>使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce">Array.prototype.reduce</a> 对数组进行遍历。传入的两个参数分别是 prev (对等差分后数组)，curr（当前数组）</li>
+<li>将 sym() 的第一个参数作为初始对等差分数组，即第一个 prev</li>
+<li>对 prev 数组和 curr 数组去重，防止重复元素影响对等差分的结果</li>
+<li>遍历 curr 数组，以此判断 curr 数组中每个元素是否在 prev 中出现。如果出现，则从 prev 中删除该元素；如果没有出现，则将其加入到 prev 中</li>
+</ul>
+
+<p>代码如下：</p>
+
+<pre><code>// 对等差分
+function sym(args) {
+  var arr = Array.prototype.slice.call(arguments);
+  return arr.reduce(function(prev, curr) {
+      prev = unique(prev);
+      curr = unique(curr);
+      for (var i=0; i&lt;curr.length; i++) {
+          if (prev.indexOf(curr[i]) === -1) {
+             prev.push(curr[i]);
+          } else {
+              prev.splice(prev.indexOf(curr[i]), 1);
+          }
+          console.log('new: ', prev);
+      }
+      return prev.sort();
+  });
+}
+
+
+// 数组去重
+function unique(arr) {
+    var res = [];
+    for (var i=0; i&lt;arr.length; i++) {
+        if (res.indexOf(arr[i]) === -1) {
+            res.push(arr[i]);
+        }
+    }
+    return res;
+}
+
+
+// sym([1, 2, 3], [5, 2, 1, 4]);
+sym([1, 1, 2, 5], [2, 2, 3, 5], [3, 4, 5, 5])
+
+</code></pre>
+
+<p>运行效果：<a href="https://www.freecodecamp.cn/challenges/symmetric-difference">Symmetric Difference</a></p>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/1">https://github.com/nodejh/nodejh.github.io/issues/1</a></p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="http://nodejh.com">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

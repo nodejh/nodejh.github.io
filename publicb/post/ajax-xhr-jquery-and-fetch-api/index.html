@@ -1,0 +1,494 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>AJAX: XHR, jQuery and Fetch API &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-light.min.css">
+		
+
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://nodejh.com/post'>Archive</a>
+	
+
+	
+		<a href='http://nodejh.com/tags'>Tags</a>
+	
+
+	
+		<a href='http://nodejh.com/about'>About</a>
+	
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            分别使用 XHR、jQuery 和 Fetch 实现 AJAX
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Sep 26, 2016 19:58
+                    · 2544 words
+                    · 6 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/javascript">JavaScript</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                <div id="toc" class="well col-md-4 col-sm-6">
+                  <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-原生-js-实现-ajax">一、原生 JS 实现 AJAX</a>
+<ul>
+<li>
+<ul>
+<li><a href="#1-获取xmlhttprequest对象">1. 获取XMLHttpRequest对象</a></li>
+<li><a href="#2-发送一个-http-请求">2. 发送一个 HTTP 请求</a></li>
+<li><a href="#3-处理服务器的响应">3. 处理服务器的响应</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#二-jquery-实现-ajax">二、 jQuery 实现 AJAX</a></li>
+<li><a href="#三-fetch-api">三、Fetch API</a>
+<ul>
+<li>
+<ul>
+<li><a href="#1-一个使用-fetch-的例子">1. 一个使用 Fetch 的例子</a></li>
+<li><a href="#2-使用-fetch-的注意事项">2. 使用 Fetch 的注意事项</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                </div>
+                <section id="post-body">
+                    
+
+<p>本文详细讲述如何使用原生 JS、jQuery 和 Fetch 来实现 AJAX。</p>
+
+<p>AJAX 即 Asynchronous JavaScript and XML，异步的 JavaScript 和 XML。使用 AJAX 可以无刷新地向服务端发送请求接收服务端响应，并更新页面。</p>
+
+<h2 id="一-原生-js-实现-ajax">一、原生 JS 实现 AJAX</h2>
+
+<p>JS 实现 AJAX 主要基于浏览器提供的 XMLHttpRequest（XHR）类，所有现代浏览器（IE7+、Firefox、Chrome、Safari 以及 Opera）均内建 XMLHttpRequest 对象。</p>
+
+<h4 id="1-获取xmlhttprequest对象">1. 获取XMLHttpRequest对象</h4>
+
+<pre><code>// 获取XMLHttpRequest对象
+var xhr = new XMLHttpRequest();
+</code></pre>
+
+<p>如果需要兼容老版本的 IE (IE5, IE6) 浏览器，则可以使用 ActiveX 对象：</p>
+
+<pre><code>var xhr;
+if (window.XMLHttpRequest) { // Mozilla, Safari...
+  xhr = new XMLHttpRequest();
+} else if (window.ActiveXObject) { // IE
+  try {
+    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+</code></pre>
+
+<h4 id="2-发送一个-http-请求">2. 发送一个 HTTP 请求</h4>
+
+<p>接下来，我们需要打开一个URL，然后发送这个请求。分别要用到 XMLHttpRequest 的 open() 方法和 send() 方法。</p>
+
+<pre><code>// GET
+var xhr;
+if (window.XMLHttpRequest) { // Mozilla, Safari...
+  xhr = new XMLHttpRequest();
+} else if (window.ActiveXObject) { // IE
+  try {
+    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+if (xhr) {
+  xhr.open('GET', '/api?username=admin&amp;password=root', true);
+  xhr.send(null);
+}
+</code></pre>
+
+<pre><code>// POST
+var xhr;
+if (window.XMLHttpRequest) { // Mozilla, Safari...
+  xhr = new XMLHttpRequest();
+} else if (window.ActiveXObject) { // IE
+  try {
+    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+if (xhr) {
+  xhr.open('POST', '/api', true);
+  // 设置 Content-Type 为 application/x-www-form-urlencoded
+  // 以表单的形式传递数据
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.send('username=admin&amp;password=root');
+}
+</code></pre>
+
+<p><code>open()</code> 方法有三个参数：</p>
+
+<ul>
+<li><code>open()</code> 的第一个参数是 HTTP 请求方式 – GET，POST，HEAD 或任何服务器所支持的您想调用的方式。按照HTTP规范，该参数要大写；否则，某些浏览器(如Firefox)可能无法处理请求。有关HTTP请求方法的详细信息可参考 <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html</a></li>
+<li>第二个参数是请求页面的 URL。由于同源策略（Same origin policy）该页面不能为第三方域名的页面。同时一定要保证在所有的页面中都使用准确的域名，否则调用 <code>open()</code> 会得到 <code>permission denied</code> 的错误提示。</li>
+<li>第三个参数设置请求是否为异步模式。如果是 <code>TRUE</code>，JavaScript 函数将继续执行，而不等待服务器响应。这就是 AJAX 中的 A。</li>
+</ul>
+
+<p>如果第一个参数是 <code>GET</code>，则可以直接将参数放在 url 后面，如：<code>http://nodejh.com/api?name=admint&amp;password=root</code>。</p>
+
+<p>如果第一个参数是 <code>POST</code>，则需要将参数写在 send() 方法里面。send() 方法的参数可以是任何想送给服务器的数据。这时数据要以字符串的形式送给服务器，如：<code>name=admint&amp;password=root</code>。或者也可以传递 JSON 格式的数据：</p>
+
+<pre><code>// 设置 Content-Type 为 application/json
+xhr.setRequestHeader('Content-Type', 'application/json');
+// 传递 JSON 字符串
+xhr.send(JSON.stringify({ username:'admin', password:'root' }));
+</code></pre>
+
+<p>如果不设置请求头，原生 AJAX 会默认使用 Content-Type 是 <code>text/plain;charset=UTF-8</code> 的方式发送数据。</p>
+
+<p>关于 Content-Type 更详细的内容，将在以后的文章中解释说明。</p>
+
+<h4 id="3-处理服务器的响应">3. 处理服务器的响应</h4>
+
+<p>当发送请求时，我们需要指定如何处理服务器的响应，我们需要用到 onreadystatechange 属性来检测服务器的响应状态。使用 onreadystatechange 有两种方式，一是直接 onreadystatechange 属性指定一个可调用的函数名，二是使用一个匿名函数：</p>
+
+<pre><code>// 方法一 指定可调用的函数
+xhr.onreadystatechange = onReadyStateChange;
+function onReadyStateChange() {
+  // do something
+}
+
+// 方法二 使用匿名函数
+xhr.onreadystatechange = function(){
+    // do the thing
+};
+</code></pre>
+
+<p>接下来我们需要在内部利用 readyState 属性来获取当前的状态，当 readyState 的值为 4，就意味着一个完整的服务器响应已经收到了，接下来就可以处理该响应：</p>
+
+<pre><code>// readyState的取值如下
+// 0 (未初始化)
+// 1 (正在装载)
+// 2 (装载完毕)
+// 3 (交互中)
+// 4 (完成)
+if (xhr.readyState === 4) {
+    // everything is good, the response is received
+} else {
+    // still not ready
+}
+</code></pre>
+
+<p>完整代码如下：</p>
+
+<pre><code>// POST
+var xhr;
+if (window.XMLHttpRequest) { // Mozilla, Safari...
+  xhr = new XMLHttpRequest();
+} else if (window.ActiveXObject) { // IE
+  try {
+    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+if (xhr) {
+  xhr.onreadystatechange = onReadyStateChange;
+  xhr.open('POST', '/api', true);
+  // 设置 Content-Type 为 application/x-www-form-urlencoded
+  // 以表单的形式传递数据
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.send('username=admin&amp;password=root');
+}
+
+
+// onreadystatechange 方法
+function onReadyStateChange() {
+  // 该函数会被调用四次
+  console.log(xhr.readyState);
+  if (xhr.readyState === 4) {
+    // everything is good, the response is received
+    if (xhr.status === 200) {
+      console.log(xhr.responseText);
+    } else {
+      console.log('There was a problem with the request.');
+    }
+  } else {
+    // still not ready
+    console.log('still not ready...');
+  }
+}
+</code></pre>
+
+<p>当然我们可以用onload来代替onreadystatechange等于4的情况，因为onload只在状态为4的时候才被调用，代码如下：</p>
+
+<pre><code>xhr.onload = function () {    // 调用onload
+    if (xhr.status === 200) {    // status为200表示请求成功
+        console.log('执行成功');
+    } else {
+        console.log('执行出错');
+    }   
+}
+</code></pre>
+
+<p>然而需要注意的是，IE对 onload 属性的支持并不友好。除了 onload 还有以下几个属性也可以用来监测响应状态：</p>
+
+<ul>
+<li>onloadstart</li>
+<li>onprogress</li>
+<li>onabort</li>
+<li>ontimeout</li>
+<li>onerror</li>
+<li>onloadend</li>
+</ul>
+
+<h2 id="二-jquery-实现-ajax">二、 jQuery 实现 AJAX</h2>
+
+<p>jQuery 作为一个使用人数最多的库，其 AJAX 很好的封装了原生 AJAX 的代码，在兼容性和易用性方面都做了很大的提高，让 AJAX 的调用变得非常简单。下面便是一段简单的 jQuery 的 AJAX 代码：</p>
+
+<pre><code>$.ajax({
+  method: 'POST',
+  url: '/api',
+  data: { username: 'admin', password: 'root' }
+})
+  .done(function(msg) {
+    alert( 'Data Saved: ' + msg );
+  });
+</code></pre>
+
+<p>对比原生 AJAX 的实现，使用 jQuery 就异常简单了。当然我们平时用的最多的，是下面两种更简单的方式：</p>
+
+<pre><code>// GET
+$.get('/api', function(res) {
+  // do something
+});
+
+// POST
+var data = {
+  username: 'admin',
+  password: 'root'
+};
+$.post('/api', data, function(res) {
+  // do something
+});
+</code></pre>
+
+<h2 id="三-fetch-api">三、Fetch API</h2>
+
+<p>使用 jQuery 虽然可以大大简化 XMLHttpRequest 的使用，但 XMLHttpRequest 本质上但并不是一个设计优良的 API：
++ 不符合关注分离（Separation of Concerns）的原则
++ 配置和调用方式非常混乱
++ 使用事件机制来跟踪状态变化
++ 基于事件的异步模型没有现代的 Promise，generator/yield，async/await 友好</p>
+
+<p>Fetch API 旨在修正上述缺陷，它提供了与 HTTP 语义相同的 JS 语法，简单来说，它引入了 <code>fetch()</code> 这个实用的方法来获取网络资源。</p>
+
+<p>Fetch 的浏览器兼容图如下：</p>
+
+<p><img src="/images/ajax-js-jquery-and-fetch-api-0.png" alt="ajax-js-jquery-and-fetch-api-0.png" /></p>
+
+<p>原生支持率并不高，幸运的是，引入下面这些 polyfill 后可以完美支持 IE8+：</p>
+
+<ul>
+<li>由于 IE8 是 ES3，需要引入 ES5 的 polyfill: <a href="https://github.com/es-shims/es5-shim">es5-shim, es5-sham</a></li>
+<li>引入 Promise 的 polyfill: <a href="https://github.com/stefanpenner/es6-promise">es6-promise</a></li>
+<li>引入 fetch 探测库：<a href="https://github.com/camsong/fetch-detector">fetch-detector</a></li>
+<li>引入 fetch 的 polyfill: <a href="https://github.com/camsong/fetch-ie8">fetch-ie8</a></li>
+<li>可选：如果你还使用了 jsonp，引入 <a href="https://github.com/camsong/fetch-jsonp">fetch-jsonp</a></li>
+<li>可选：开启 Babel 的 runtime 模式，现在就使用 async/await</li>
+</ul>
+
+<h4 id="1-一个使用-fetch-的例子">1. 一个使用 Fetch 的例子</h4>
+
+<p>先看一个简单的 Fetch API 的例子 🌰 ：</p>
+
+<pre><code>fetch('/api').then(function(response) {
+  return response.json();
+}).then(function(data) {
+  console.log(data);
+}).catch(function(error) {
+  console.log('Oops, error: ', error);
+});
+</code></pre>
+
+<p>使用 ES6 的箭头函数后：</p>
+
+<pre><code>fetch('/api').then(response =&gt; response.json())
+  .then(data =&gt; console.log(data))
+  .catch(error =&gt; console.log('Oops, error: ', error))
+</code></pre>
+
+<p>可以看出使用Fetch后我们的代码更加简洁和语义化，链式调用的方式也使其更加流畅和清晰。但这种基于 Promise 的写法还是有 Callback 的影子，我们还可以用 <code>async/await</code> 来做最终优化：</p>
+
+<pre><code>async function() {
+  try {
+    let response = await fetch(url);
+    let data = response.json();
+    console.log(data);
+  } catch (error) {
+    console.log('Oops, error: ', error);
+  }
+}
+</code></pre>
+
+<p>使用 <code>await</code> 后，写代码就更跟同步代码一样。<code>await</code> 后面可以跟 Promise 对象，表示等待 Promise <code>resolve()</code> 才会继续向下执行，如果 Promise 被 <code>reject()</code> 或抛出异常则会被外面的 <code>try...catch</code> 捕获。</p>
+
+<p>Promise，generator/yield，await/async 都是现在和未来 JS 解决异步的标准做法，可以完美搭配使用。这也是使用标准 Promise 一大好处。</p>
+
+<h4 id="2-使用-fetch-的注意事项">2. 使用 Fetch 的注意事项</h4>
+
+<ul>
+<li>Fetch 请求默认是不带 cookie，需要设置 <code>fetch(url, {credentials: 'include'})</code>`</li>
+<li>服务器返回 400，500 错误码时并不会 reject，只有网络错误这些导致请求不能完成时，fetch 才会被 reject</li>
+</ul>
+
+<p>接下来将上面基于 XMLHttpRequest 的 AJAX 用 Fetch 改写：</p>
+
+<pre><code>var options = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username: 'admin', password: 'root' }),
+    credentials: 'include'
+  };
+
+fetch('/api', options).then(response =&gt; response.json())
+  .then(data =&gt; console.log(data))
+  .catch(error =&gt; console.log('Oops, error: ', error))
+</code></pre>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/15">https://github.com/nodejh/nodejh.github.io/issues/15</a></p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="http://nodejh.com">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

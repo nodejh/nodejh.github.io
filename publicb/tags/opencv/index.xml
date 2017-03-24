@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>opencv on nodejh</title>
+    <link>http://nodejh.com/tags/opencv/</link>
+    <description>Recent content in opencv on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 01 Aug 2016 21:17:51 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/opencv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Install Opencv3 for Python3.5 on Mac OS X</title>
+      <link>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</link>
+      <pubDate>Mon, 01 Aug 2016 21:17:51 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</guid>
+      <description>
+
+&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
+
+&lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install opencv3 --with-python3
+......
+......
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+opencv3 and opencv install many of the same files.
+
+Generally there are no consequences of this for you. If you build your
+own software and it requires this formula, you&#39;ll need to add to your
+build variables:
+
+    LDFLAGS:  -L/usr/local/opt/opencv3/lib
+    CPPFLAGS: -I/usr/local/opt/opencv3/include
+
+==&amp;gt; Summary
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;安装完成后，会有如上提示。接下来需要做的事，将 &lt;code&gt;opencv3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt; 链接到 &lt;code&gt;Python3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;echo /usr/local/opt/opencv3/lib/python3.5/site-packages &amp;gt;&amp;gt; /usr/local/lib/python3.5/site-packages/opencv3.pth
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;检查是否安装成功&#34;&gt;检查是否安装成功&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;$ python
+&amp;gt;&amp;gt;&amp;gt; import cv2
+&amp;gt;&amp;gt;&amp;gt; cv2.__version__
+&#39;3.1.0&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/20&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/20&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

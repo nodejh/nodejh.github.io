@@ -1,0 +1,3156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nodejh</title>
+    <link>http://nodejh.com/</link>
+    <description>Recent content on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 19 Mar 2017 17:15:37 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting Environmental Variables in MacOS</title>
+      <link>http://nodejh.com/post/Setting-Environmental-Variables-in-MacOS/</link>
+      <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Setting-Environmental-Variables-in-MacOS/</guid>
+      <description>
+
+&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。比如安装完 Atom 之后，就可以使用 &lt;code&gt;atom&lt;/code&gt; 命令打开文件。有时候我们需要自己设置环境变量，MacOS 设置环境变量有很多种方法，最常用的是编辑当前 SHELL 对应的用户级环境变量配置文件，如 &lt;code&gt;bash&lt;/code&gt; 对应的 &lt;code&gt;.bash_profile&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;MacOS 和 Linux 都是类 Unix 系统，它们添加环境变量的方式也是类似的。本文以 macOS 为例。&lt;/p&gt;
+
+&lt;h2 id=&#34;sehll-类型&#34;&gt;SEHLL 类型&lt;/h2&gt;
+
+&lt;p&gt;在添加环境变量之前，首先要知道使用的是什么 SHELL。MacOS 内置了多种 SHELL，可通过 &lt;code&gt;cat /etc/shells&lt;/code&gt; 查看：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/shells
+/bin/bash
+/bin/csh
+/bin/ksh
+/bin/sh
+/bin/tcsh
+/bin/zsh
+$ echo $SHELL
+/bin/zsh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sh&lt;/code&gt;（全称 Bourne Shell）是UNIX最初使用的 shell，而且在每种 UNIX 上都可以使用。Bourne Shell 在 shell 编程方便相当优秀，但在处理与用户的交互方便作得不如其他几种 shell。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bash&lt;/code&gt;（全称 Bourne Again Shell）LinuxOS 默认的，它是 Bourne Shell 的扩展。与 Bourne Shell 完全兼容，并且在 Bourne Shell 的基础上增加了很多特性。可以提供命令补全，命令编辑和命令历史等功能。它还包含了很多 C Shell 和 Korn Shell 中的优点，有灵活和强大的编辑接口，同时又很友好的用户界面。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;csh&lt;/code&gt;（全称 C Shell）是一种比 Bourne Shell更适合的变种 Shell，它的语法与 C 语言很相似。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tcsh&lt;/code&gt; 是 Linux 提供的 C Shell 的一个扩展版本。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tcsh&lt;/code&gt; 包括命令行编辑，可编程单词补全，拼写校正，历史命令替换，作业控制和类似 C 语言的语法，他不仅和 Bash Shell 提示符兼容，而且还提供比 Bash Shell 更多的提示符参数。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ksh&lt;/code&gt;（全称 Korn Shell）集合了 C Shell 和 Bourne Shell 的优点并且和 Bourne Shell 完全兼容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pdksh&lt;/code&gt; 是 Linux 系统提供的 ksh 的扩展。pdksh 支持人物控制，可以在命令行上挂起，后台执行，唤醒或终止程序。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zsh&lt;/code&gt; Zsh 是一款功能强大终端（shell）软件，既可以作为一个交互式终端，也可以作为一个脚本解释器。它在兼容 Bash 的同时 （默认不兼容，除非设置成 emulate sh） 还有提供了很多改进，例如：更高效、更好的自动补全、更好的文件名展开（通配符展开）、更好的数组处理、可定制性高。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;环境变量配置文件&#34;&gt;环境变量配置文件&lt;/h2&gt;
+
+&lt;p&gt;macOS 默认的是 &lt;code&gt;Bourne Shell&lt;/code&gt;，其环境变量配置文件及加载顺序如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/etc/profile
+/etc/bashrc
+/etc/paths 
+~/.bash_profile # macOS
+~/.bash_login 
+~/.profile 
+~/.bashrc # linux
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;/etc/profile&lt;/code&gt; &lt;code&gt;/etc/bashrc&lt;/code&gt; 和 &lt;code&gt;/etc/paths&lt;/code&gt; 是系统级环境变量，对所有用户都有效。但它们的加载时机有所区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/etc/profile&lt;/code&gt; 任何用户登陆时都会读取该文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc/bashrc&lt;/code&gt; bash shell执行时，不管是何种方式，读取此文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc/paths&lt;/code&gt; 任何用户登陆时都会读取该文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;后面几个是当前用户级的环境变量。macOS 默认用户环境变量配置文件为 &lt;code&gt;~/.bash_profile&lt;/code&gt;，Linux 为 &lt;code&gt;~/.bashrc&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果不存在 &lt;code&gt;~/.bash_profile&lt;/code&gt;，则可以自己创建一个 &lt;code&gt;~/.bash_profile&lt;/code&gt;。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果 &lt;code&gt;~/.bash_profile&lt;/code&gt; 文件存在，则后面的几个文件就会被忽略&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;~/.bash_profile&lt;/code&gt; 文件不存在，才会以此类推读取后面的文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;如果使用的是 SHELL 类型是 &lt;code&gt;zsh&lt;/code&gt;，则还可能存在对应的 &lt;code&gt;/etc/zshrc&lt;/code&gt; 和 &lt;code&gt;~/.zshrc&lt;/code&gt;。任何用户登录 &lt;code&gt;zsh&lt;/code&gt; 的时候，都会读取该文件。某个用户登录的时候，会读取其对应的 &lt;code&gt;~/.zshrc&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;添加环境变量&#34;&gt;添加环境变量&lt;/h2&gt;
+
+&lt;h4 id=&#34;系统环境变量-etc-paths&#34;&gt;系统环境变量 &lt;code&gt;/etc/paths&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;一般添加系统环境变量，建议通过修改 &lt;code&gt;/etc/paths&lt;/code&gt; 的方式进行添加。一般不建议直接修改 &lt;code&gt;/etc/paths&lt;/code&gt; 文件，而是将路径写在 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 目录下的一个文件里，系统会逐一读取 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 下的每个文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Git&lt;/code&gt; 路径就是这样实现的。我们先看看 Git 的例子：&lt;/p&gt;
+
+&lt;p&gt;首先 &lt;code&gt;/etc/paths&lt;/code&gt; 的文件内容大致如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/paths
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+/opt/local/bin
+/opt/local/sbin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后查看 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l /etc/paths.d
+-rw-r--r--    1 root  wheel    19  6 10  2015 git
+-rw-r--r--    1 root  wheel    17  4 20  2016 go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看 &lt;code&gt;/etc/paths.d/git&lt;/code&gt; 文件的内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/paths.d/git
+/usr/local/git/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;/usr/local/git/bin&lt;/code&gt; 就是 Git 的可执行文件路径。&lt;/p&gt;
+
+&lt;p&gt;所以我们如果要添加一个系统环境变量，也可以参考这种方式。&lt;/p&gt;
+
+&lt;p&gt;提供一个添加环境变量的的 shell语句，其中 &lt;code&gt;/usr/local/sbin/mypath&lt;/code&gt; 就是我们自己的可执行文件的路径：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo -s &#39;echo &amp;quot;/usr/local/sbin/mypath&amp;quot; &amp;gt; /etc/paths.d/mypath&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;但添加完成之后，命令不会立即生效，有两种方法使配置文件生效：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;重新登录终端（如果是图形界面，即重新打开 Terminal）&lt;/li&gt;
+&lt;li&gt;通过 &lt;code&gt;source&lt;/code&gt; 命令加载：&lt;code&gt;source /etc/paths&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;配置生效之后，就可以使用 &lt;code&gt;mypath&lt;/code&gt; 命令了。&lt;/p&gt;
+
+&lt;h4 id=&#34;系统环境变量-etc-profile-和-etc-bashrc&#34;&gt;系统环境变量 &lt;code&gt;/etc/profile&lt;/code&gt; 和 &lt;code&gt;/etc/bashrc&lt;/code&gt;&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注：一般不建议修改这两个文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;添加环境变量的语法为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;$PATH:&amp;lt;PATH 1&amp;gt;:&amp;lt;PATH 2&amp;gt;:&amp;lt;PATH 3&amp;gt;:...:&amp;lt;PATH N&amp;gt;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;所以在 &lt;code&gt;/etc/profile&lt;/code&gt; 和 &lt;code&gt;/etc/bashrc&lt;/code&gt; 中添加环境变量，只需要在文件中加入如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;/Users/jh/anaconda/bin:$PATH&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;用户环境变量&#34;&gt;用户环境变量&lt;/h4&gt;
+
+&lt;p&gt;添加用户环境变量，只需要修改 &lt;code&gt;~/.bash_profile&lt;/code&gt;（Bourne Shell）或 &lt;code&gt;~/.zshrc&lt;/code&gt;（zsh）或其他用户级配置文件即可。添加环境变量的语法也是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;$PATH:&amp;lt;PATH 1&amp;gt;:&amp;lt;PATH 2&amp;gt;:&amp;lt;PATH 3&amp;gt;:...:&amp;lt;PATH N&amp;gt;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面是我的 &lt;code&gt;~/.zshrc&lt;/code&gt; 的部分配置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export ANDROID_HOME=~/Library/Android/sdk
+export PATH=$PATH:~/Library/Android/sdk/tools:~/Library/Android/sdk/platform-tools
+export PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/support-files
+alias tree=&amp;quot;find . -print | sed -e &#39;s;[^/]*/;|____;g;s;____|; |;g&#39;&amp;quot;
+alias t=&amp;quot;trans&amp;quot;
+export PATH=&amp;quot;/usr/local/sbin:$PATH&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以通过 &lt;code&gt;echo $PATH&lt;/code&gt; 命令查看当前环境变量：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;echo $PATH
+/usr/local/sbin:/Users/jh/.nvm/versions/node/v7.6.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/Users/jh/Library/Android/sdk/tools:/Users/jh/Library/Android/sdk/platform-tools:/usr/local/mysql/bin:/usr/local/mysql/support-files:/Applications/Sublime Text.app/Contents/SharedSupport/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改了配置文件之后，依旧需要重新登录 SHELL 或者使用 &lt;code&gt;source ~/.zshrc&lt;/code&gt; 来是配置立即生效。&lt;/p&gt;
+
+&lt;h4 id=&#34;export&#34;&gt;export&lt;/h4&gt;
+
+&lt;p&gt;还有一种添加环境变量的方法： &lt;code&gt;export&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;export&lt;/code&gt; 命令用于设置或显示环境变量。通过 &lt;code&gt;export&lt;/code&gt; 添加的环境变量仅在此次登陆周期内有效。&lt;/p&gt;
+
+&lt;p&gt;比如很多时候我们的开发环境和生产环境，就可以通过设置一个临时环境变量来，然后在程序中根据不同的环境变量来设置不同的参数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# 设置 NODE_ENV 环境变量。退出 SHELL 时失效
+$ export NODE_ENV=development
+# 查看当前所有环境变量
+$ export -p 
+...
+typeset -x NODE_ENV=development
+typeset -x USER=jh
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 Node.js 代码中判断当前环境是开发环境还是生产环境：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;if （process.env.NODE_ENV === &#39;development&#39;） {
+    console.log（&#39;开发环境&#39;）;
+} else {
+    console.log（&#39;生产环境&#39;）;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issues &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/34&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/34&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Create Auto Increment Column in Oracle</title>
+      <link>http://nodejh.com/post/How-to-Create-Auto-Increment-Column-in-Oracle/</link>
+      <pubDate>Mon, 20 Feb 2017 20:26:33 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/How-to-Create-Auto-Increment-Column-in-Oracle/</guid>
+      <description>
+
+&lt;p&gt;如果你经常使用 MySQL，你肯定对 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 非常熟悉，因为经常要用到它。&lt;/p&gt;
+
+&lt;h2 id=&#34;一-什么是自增列&#34;&gt;一、什么是自增列 ？&lt;/h2&gt;
+
+&lt;p&gt;自增列是数据库中值随插入的每个行自动增加的一列。它最常用于主键或 ID 字段，这样每次增加一行时，不用指该字段的值，它就会自动增加，而且是唯一的。&lt;/p&gt;
+
+&lt;p&gt;当在 MySQL 中定义列时，我们可以指定一个名为 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 的参数。然后，每当将新值插入此表中时，放入此列的值比最后一个值加 &lt;code&gt;1&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;但很不幸，Oracle 没有 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 功能。 那要如何在Oracle中做到这一点呢？&lt;/p&gt;
+
+&lt;h2 id=&#34;二-在-oracle-11g-中设置自增字段&#34;&gt;二、在  Oracle 11g 中设置自增字段&lt;/h2&gt;
+
+&lt;h3 id=&#34;1-创建表&#34;&gt;1. 创建表&lt;/h3&gt;
+
+&lt;p&gt;首先创建一张用于测试的表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE TABLE &amp;quot;TEST&amp;quot; (
+    ID NUMBER(11) PRIMARY KEY,
+    NAME VARCHAR2(50BYTE) NOT NULL
+);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-创建序列&#34;&gt;2. 创建序列&lt;/h3&gt;
+
+&lt;p&gt;然后创建一个名为 &lt;code&gt;TEST_ID_SEQ&lt;/code&gt; 的序列（序列名称自己随意设定）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE SEQUENCE TEST_ID_SEQ
+INCREMENT BY 1
+START WITH 100
+MAXVALUE 999999999
+NOCYCLE
+NOCACHE;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果要删除序列，可以使用下面的 SQL 命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DROP SEQUENCE TEST_ID_SEQ;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对 &lt;code&gt;SEQUENCE&lt;/code&gt; 的一些说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;INCREMENT BY&lt;/code&gt; 用于指定序列增量（默认值：1），如果指定的是正整数，则序列号自动递增，如果指定的是负数，则自动递减。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;START WITH&lt;/code&gt; 用于指定序列生成器生成的第一个序列号，当序列号顺序递增时默认值为序列号的最小值，当序列号顺序递减时默认值为序列号的最大值。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MAXVALUE&lt;/code&gt; 用于指定序列生成器可以生成的组大序列号（必须大于或等于 &lt;code&gt;START WITH&lt;/code&gt;，并且必须大于 &lt;code&gt;MINVALUE&lt;/code&gt;），默认为 &lt;code&gt;NOMAXVALUE&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MINVALUE&lt;/code&gt; 用于指定序列生成器可以生成的最小序列号（必须小于或等于 &lt;code&gt;START WITH&lt;/code&gt;，并且必须小于 &lt;code&gt;MAXVALUE&lt;/code&gt;），默认值为 &lt;code&gt;NOMINVALUE&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CYCLE&lt;/code&gt; 用于指定在达到序列的最大值或最小值之后是否继续生成序列号，默认为 &lt;code&gt;NOCYCLE&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CACHE&lt;/code&gt; 用于指定在内存中可以预分配的序列号个数（默认值：20）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;到这一步其实就已经可以实现字段自增，只要插入的时候，将 ID 的值设置为序列的下一个值 &lt;code&gt;TEST_ID_SEQ.NEXTVAL&lt;/code&gt; 就可以了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (TEST_ID_SEQ.NEXTVAL, &#39;name1&#39;);
+SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (TEST_ID_SEQ.NEXTVAL, &#39;name2&#39;);
+SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (TEST_ID_SEQ.NEXTVAL, &#39;name3&#39;);
+SQL&amp;gt; SELECT * FROM &amp;quot;TEST&amp;quot;;
+
+ID   NAME
+---  ------
+100	name1
+101	name2
+102	name3
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为了简化插入操作，我们还可以创建一个触发器，当将数据插入到 &amp;ldquo;TEST&amp;rdquo; 表的时候，自动将最新的 ID 插入进去。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-创建触发器&#34;&gt;3. 创建触发器&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE OR REPLACE TRIGGER TEST_ID_SEQ_TRG
+BEFORE INSERT ON &amp;quot;TEST&amp;quot;
+FOR EACH ROW
+WHEN (NEW.&amp;quot;ID&amp;quot; IS NULL)
+BEGIN
+  SELECT TEST_ID_SEQ.NEXTVAL
+  INTO :NEW.&amp;quot;ID&amp;quot;
+  FROM DUAL;
+END;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样的话，每次写插入语句，只需要将 &lt;code&gt;ID&lt;/code&gt; 字段的值设置为 &lt;code&gt;NULL&lt;/code&gt; 它就会自动递增了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (NULL, &#39;name4&#39;);
+SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (NULL, &#39;name5&#39;);
+SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (NULL, &#39;name6&#39;);
+SQL&amp;gt; SELECT * FROM &amp;quot;TEST&amp;quot;;
+
+ID   NAME
+---  ------
+100	name1
+101	name2
+102	name3
+103	name4
+104	name5
+105	name6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;4-一些值得注意的地方&#34;&gt;4. 一些值得注意的地方&lt;/h3&gt;
+
+&lt;h4 id=&#34;4-1-插入指定-id&#34;&gt;4.1 插入指定 ID&lt;/h4&gt;
+
+&lt;p&gt;如果某条插入语句指定了 &lt;code&gt;ID&lt;/code&gt; 的值如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (1000, &#39;name1001&#39;);
+SQL&amp;gt; SELECT * FROM &amp;quot;TEST&amp;quot;;
+
+ID   NAME
+---  ------
+100	name1
+101	name2
+102	name3
+103	name4
+104	name5
+1000	name1001
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;那么下次 &lt;code&gt;ID&lt;/code&gt; 还是会在原来的基础上继续增加：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; INSERT INTO &amp;quot;TEST&amp;quot; (&amp;quot;ID&amp;quot;, &amp;quot;NAME&amp;quot;) VALUES (NULL, &#39;name1001&#39;);
+SQL&amp;gt; SELECT * FROM &amp;quot;TEST&amp;quot;;
+
+ID   NAME
+---  ------
+100	name1
+101	name2
+102	name3
+103	name4
+104	name5
+1000	name1001
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;但当序列的值到了 &lt;code&gt;1000&lt;/code&gt; 的时候，如果 &lt;code&gt;ID&lt;/code&gt; 允许重复，就会有两行记录 &lt;code&gt;ID&lt;/code&gt; 都为 &lt;code&gt;1000&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;但如果 &lt;code&gt;ID&lt;/code&gt; 设置为了主键，如本文的例子 &lt;code&gt;ID NUMBER(11) PRIMARY KEY&lt;/code&gt;，则插入就会报错：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Error : ORA-00001: unique constraint (SOFTWARE.SYS_C0014995) violated
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;4-2-字段加引号&#34;&gt;4.2 字段加引号&lt;/h4&gt;
+
+&lt;p&gt;在 SQL 语句中，字段最好都加上引号，不然可能会报错：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Error : ORA-00900: invalid SQL statement
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ORA-24344: Success with Compilation Error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;4-3-squence&#34;&gt;4.3 SQUENCE&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第一次 &lt;code&gt;NEXTVAL&lt;/code&gt; 返回的是初始值；随后的 &lt;code&gt;NEXTVAL&lt;/code&gt; 会自动增加 &lt;code&gt;INCREMENT BY&lt;/code&gt; 对应的值，然后返回增加后的值。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CURRVAL&lt;/code&gt; 总是返回当前 &lt;code&gt;SEQUENCE&lt;/code&gt; 的值，但是在第一次 &lt;code&gt;NEXTVAL&lt;/code&gt; 初始化之后才能使用 &lt;code&gt;CURRVAL&lt;/code&gt; ，否则会出错。&lt;/li&gt;
+&lt;li&gt;一次 &lt;code&gt;NEXTVAL&lt;/code&gt; 会增加一次 &lt;code&gt;SEQUENCE&lt;/code&gt; 的值，所以如果在同一个语句里面使用多个NEXTVAL，其值就是不一样的。&lt;/li&gt;
+&lt;li&gt;如果指定 &lt;code&gt;CACHE&lt;/code&gt; 值，Oracle 就可以预先在内存里面放置一些 &lt;code&gt;SEQUENCE&lt;/code&gt;，这样存取的快些。 &lt;code&gt;CACHE&lt;/code&gt; 里面的取完后，Oracle 自动再取一组到 &lt;code&gt;CACHE&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;但使用 &lt;code&gt;CACHE&lt;/code&gt; 或许会跳号，比如数据库突然不正常关闭（&lt;code&gt;shutdown abort&lt;/code&gt;)， &lt;code&gt;CACHE&lt;/code&gt; 中的 &lt;code&gt;SEQUENCE&lt;/code&gt; 就会丢失。所以可以在 &lt;code&gt;CREATE SEQUENCE&lt;/code&gt; 的时候用 &lt;code&gt;NOCACHE&lt;/code&gt; 防止这种情况。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;4-4-性能&#34;&gt;4.4 性能&lt;/h4&gt;
+
+&lt;p&gt;在数据库操作中，触发器的使用耗费系统资源相对较大。如果对于表容量相对较小的表格我们可以忽略触发器带来的性能影响。&lt;/p&gt;
+
+&lt;p&gt;考虑到大表操作的性能问题，需要尽可能的减少触发器的使用。对于以上操作，就可以抛弃触发器的使用，直接手动调用序列函数即可，但这样可能在程序维护上稍微带来一些不便。&lt;/p&gt;
+
+&lt;h2 id=&#34;三-在-oracle-12c-中设置自增字段&#34;&gt;三、在 Oracle 12c 中设置自增字段&lt;/h2&gt;
+
+&lt;p&gt;在 Oracle 12c 中设置自增字段就简单多了，因为 ORacle 12c 提供了 &lt;code&gt;IDENTITY&lt;/code&gt; 属性：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE TABLE &amp;quot;TEST&amp;quot; (
+    ID NUMBER(11) GENERATED BY DEFAULT ON NULL AS IDENTITY,
+    NAME VARCHAR2(50BYTE) NOT NULL
+);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样就搞定了！和 MySQL 一样简单！🤣🤣🤣&lt;/p&gt;
+
+&lt;h2 id=&#34;四-总结&#34;&gt;四、总结&lt;/h2&gt;
+
+&lt;p&gt;所以如上所属，在 Oracle 中设置自增字段，需要根据不同的版本使用不同的方法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在 Oracle 11g 中，需要先创建序列（SQUENCE）再创建一个触发器（TRIGGER）。&lt;/li&gt;
+&lt;li&gt;在 Oracle 12c 中，只需要使用 &lt;code&gt;IDENTITY&lt;/code&gt; 属性就可以了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issues &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/33&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/33&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Is JavaScript a call by reference or call by value language?</title>
+      <link>http://nodejh.com/post/Is-JavaScript-a-pass-by-reference-or-pass-by-value-language/</link>
+      <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Is-JavaScript-a-pass-by-reference-or-pass-by-value-language/</guid>
+      <description>
+
+&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
+
+&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-1-基本类型参数传递&#34;&gt;1.1. 基本类型参数传递&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;function addTen(num) {
+  num += 10;
+  return num;
+}
+
+var count = 20;
+var result = addTen(count);
+alert(count); // 20, 没有变化
+alert(result); // 30
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;书上解释说，JavaScript 参数传递都是按值传参。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;所以传递给 &lt;code&gt;addTen&lt;/code&gt; 函数的值是 &lt;code&gt;20&lt;/code&gt; 这个值，所以函数执行结束原始变量 &lt;code&gt;count&lt;/code&gt; 并不会改变。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-2-引用类型参数传递&#34;&gt;1.2. 引用类型参数传递&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;function setName(obj) {
+  obj.name = &#39;Nicholas&#39;;
+  obj = new Object();
+  obj.name = &#39;Greg&#39;;
+}
+
+var person = new Object();
+setName(person);
+alert(person.name); // Nicholas
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为什么结果是 &lt;code&gt;Nicholas&lt;/code&gt; 呢？&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-17-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-1.png&#34; alt=&#34;变量存储方式&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;疑问：如果是传值，那应该是把 person 变量的值（也就是一个指向堆内存中对象的指针）传递到函数中，&lt;code&gt;obj.name = &#39;Greg&#39;;&lt;/code&gt; 改变了堆内存中对象的属性，为什么 &lt;code&gt;person.name&lt;/code&gt; 还是 &lt;code&gt;Nicholas&lt;/code&gt; ？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;2-传值还是传引用&#34;&gt;2. 传值还是传引用？&lt;/h2&gt;
+
+&lt;p&gt;让我们再将上面两个例子综合为下面的例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function changeStuff(a, b, c) {
+  a = a * 10;
+  b.item = &amp;quot;changed&amp;quot;;
+  c = {item: &amp;quot;changed&amp;quot;};
+}
+
+var num = 10;
+var obj1 = {item: &amp;quot;unchanged&amp;quot;};
+var obj2 = {item: &amp;quot;unchanged&amp;quot;};
+
+changeStuff(num, obj1, obj2);
+
+console.log(num);
+console.log(obj1.item);    
+console.log(obj2.item);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最终的输出结果是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;10
+changed
+unchanged
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;所以 JS 到底是传值调用还是传引用调用呢？要弄清楚这个问题，首先我们要明白到底什么是&lt;strong&gt;传值调用（Call-ny-value）&lt;/strong&gt;和&lt;strong&gt;传引用调用（Call-by-reference）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-1-传值调用-pass-by-value&#34;&gt;2.1. 传值调用（Pass by value）&lt;/h4&gt;
+
+&lt;p&gt;在传值调用中，传递给函数参数是函数被调用时所传实参的拷贝。在传值调用中实际参数被求值，其值被绑定到函数中对应的变量上（通常是把值复制到新内存区域）。&lt;/p&gt;
+
+&lt;p&gt;即 &lt;code&gt;changeStuff&lt;/code&gt; 的参数 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 是 &lt;code&gt;num1&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 的拷贝。所以无论 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 怎么变化，&lt;code&gt;num1&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 都保持不变。&lt;/p&gt;
+
+&lt;p&gt;问题就在于 &lt;code&gt;obj1&lt;/code&gt; 变了。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-2-传引用调用-pass-by-reference&#34;&gt;2.2. 传引用调用（Pass by reference）&lt;/h4&gt;
+
+&lt;p&gt;在传引用调用调用中，传递给函数的是它的实际参数的隐式引用而不是实参的拷贝。通常函数能够修改这些参数（比如赋值），而且改变对于调用者是可见的。&lt;/p&gt;
+
+&lt;p&gt;也就是说 &lt;code&gt;changeStuff&lt;/code&gt; 函数内的 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 都分别与 &lt;code&gt;num&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 指向同一块内存，但不是其拷贝。函数内对 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 所做的任何修改，都将反映到 &lt;code&gt;num&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 上 。&lt;/p&gt;
+
+&lt;p&gt;问题就在于 &lt;code&gt;num&lt;/code&gt; 和 &lt;code&gt;obj2&lt;/code&gt; 没变。&lt;/p&gt;
+
+&lt;p&gt;从上面的代码可以看出，JavaScript 中函数参数的传递方式既不是传值，也不是传引用。主要问题出在 JS 的引用类型上面。&lt;/p&gt;
+
+&lt;p&gt;JS 引用类型变量的值是一个指针，指向堆内存中的实际对象。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-3-传共享调用-call-by-sharing&#34;&gt;2.3. 传共享调用（Call by sharing）&lt;/h4&gt;
+
+&lt;p&gt;还有一种求值策略叫做&lt;a href=&#34;http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy/#call-by-sharing&#34;&gt;传共享调用（Call-by-sharing/Call by object/Call by object-sharing）&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;传共享调用和传引用调用的不同之处是，该求值策略传递给函数的参数是对象的引用的拷贝，即对象变量指针的拷贝。&lt;/p&gt;
+
+&lt;p&gt;也就是说， &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 三个变量的值是 &lt;code&gt;num&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 的指针的拷贝。 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 的值分别与 &lt;code&gt;num&lt;/code&gt; &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 的值指向同一个对象。函数内部可以对  &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 进行修改可重新赋值。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function changeStuff(a, b, c) {
+  a = a * 10; // 对 a 赋值，修改 a 的指向，新的值是 a * 10
+  b.item = &amp;quot;changed&amp;quot;; // 因为 b 与 obj1 指向同一个对象，所以这里会修改原始对象 obj1.item 的内容
+  c = {item: &amp;quot;changed&amp;quot;}; // 对 c 重新赋值，修改 c 的指向，其指向的对象内容是 {item: &amp;quot;changed&amp;quot;}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;3-代码分析&#34;&gt;3 代码分析&lt;/h2&gt;
+
+&lt;p&gt;接下来让我们再来分析一下代码。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-变量初始化&#34;&gt;3.1 变量初始化&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;var num = 10;
+var obj1 = {item: &amp;quot;unchanged&amp;quot;};
+var obj2 = {item: &amp;quot;unchanged&amp;quot;};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-2.png&#34; alt=&#34;变量初始化&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-2-调用函数&#34;&gt;3.2 调用函数&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;changeStuff(num, obj1, obj2);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-3.png&#34; alt=&#34;调用函数&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到，变量 &lt;code&gt;a&lt;/code&gt; 的值就是 &lt;code&gt;num&lt;/code&gt; 值的拷贝，变量 &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; 分别是 &lt;code&gt;obj1&lt;/code&gt; &lt;code&gt;obj2&lt;/code&gt; 的指针的拷贝。&lt;/p&gt;
+
+&lt;p&gt;函数的参数其实就是函数作用域内部的变量，函数执行完之后就会销毁。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-3-执行函数体&#34;&gt;3.3 执行函数体&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;a = a * 10;
+b.item = &amp;quot;changed&amp;quot;;
+c = {item: &amp;quot;changed&amp;quot;};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-5.png&#34; alt=&#34;执行函数体&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图所示，变量 &lt;code&gt;a&lt;/code&gt; 的值的改变，并不会影响变量 &lt;code&gt;num&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;而 &lt;code&gt;b&lt;/code&gt; 因为和 &lt;code&gt;obj1&lt;/code&gt; 是指向同一个对象，所以使用 &lt;code&gt;b.item = &amp;quot;changed&amp;quot;;&lt;/code&gt; 修改对象的值，会造成 &lt;code&gt;obj1&lt;/code&gt; 的值也随之改变。&lt;/p&gt;
+
+&lt;p&gt;由于是对 &lt;code&gt;c&lt;/code&gt; 重新赋值了，所以修改 &lt;code&gt;c&lt;/code&gt; 的对象的值，并不会影响到 &lt;code&gt;obj2&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;4-结论&#34;&gt;4. 结论&lt;/h2&gt;
+
+&lt;p&gt;从上面的例子可以看出，对于 JS 来说：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;基本类型是传值调用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;引用类型传共享调用&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;传值调用本质上传递的是变量的值的拷贝。&lt;/p&gt;
+
+&lt;p&gt;传共享调用本质上是传递对象的指针的拷贝，其指针也是变量的值。所以传共享调用也可以说是传值调用。&lt;/p&gt;
+
+&lt;p&gt;所以《JavaScript 高级程序设计》说 &lt;strong&gt;JavaScript 参数传递都是按值传参&lt;/strong&gt; 也是有道理的。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Evaluation_strategy&#34;&gt;Evaluation strategy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%B1%82%E5%80%BC%E7%AD%96%E7%95%A5&#34;&gt;求值策略&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy&#34;&gt;ECMA-262-3 in detail. Chapter 8. Evaluation strategy.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language&#34;&gt;Is JavaScript a pass-by-reference or pass-by-value language?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/simongong/js-stackoverflow-highest-votes/blob/master/questions21-30/parameter-passed-by-value-or-reference.md&#34;&gt;parameter passed by value or reference&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://bosn.me/js/js-call-by-sharing/&#34;&gt;JS是按值传递还是按引用传递?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using SQL Plus on Oracle</title>
+      <link>http://nodejh.com/post/Using-SQL-Plus-on-Oracle/</link>
+      <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Using-SQL-Plus-on-Oracle/</guid>
+      <description>
+
+&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;支持查询、插入和更新数据&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;PL/SQL&lt;/code&gt; 程序&lt;/li&gt;
+&lt;li&gt;查看表和对象的定义&lt;/li&gt;
+&lt;li&gt;开发和执行批处理脚本&lt;/li&gt;
+&lt;li&gt;进行数据库管理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;登录-sql-plus&#34;&gt;登录 SQL *PLUS&lt;/h2&gt;
+
+&lt;p&gt;直接登录，输入命令后会提示输入用户名密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用用户名和密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/[user_password]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;操作系统权限认证的 Oracle SYS 管理员登陆：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;不在终端暴露密码登录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus /nolog
+SQL&amp;gt; conn [username]/[user_password]
+# 或者
+SQL &amp;gt; conn / as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;退出登录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;数据库信息&#34;&gt;数据库信息&lt;/h2&gt;
+
+&lt;h4 id=&#34;查看数据库名&#34;&gt;查看数据库名&lt;/h4&gt;
+
+&lt;p&gt;通常情况了我们称的 &lt;code&gt;数据库&lt;/code&gt;，并不仅指物理的数据集合，而是物理数据、内存、操作系统进程的组合体。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select name from v$database; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;查询当前数据库实例名&#34;&gt;查询当前数据库实例名&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;实例是访问Oracle数据库所需的一部分计算机内存和辅助处理后台进程，是由进程和这些进程所使用的内存(SGA)所构成一个集合。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select instance_name from v$instance;    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;数据库实例名用于对外部连接。在操作系统中要取得与数据库的联系，必须使用数据库实例名。比如我们作开发，要连接数据库，就得连接数据库实例名，&lt;code&gt;orcl&lt;/code&gt; 就为数据库实例名：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;jdbc:oracle:thin:@localhost:1521:orcl
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一个数据库可以有多个实例，在作数据库服务集群的时候可以用到。&lt;/p&gt;
+
+&lt;h2 id=&#34;用户管理&#34;&gt;用户管理&lt;/h2&gt;
+
+&lt;p&gt;Oracle 使用 &lt;code&gt;PROFILE&lt;/code&gt; 文件对用户访问资源的权限进行控制。&lt;/p&gt;
+
+&lt;p&gt;若不做特殊指定，创建用户时用户默认使用的 &lt;code&gt;PROFILE&lt;/code&gt; 就是 &lt;code&gt;DEFAULT&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;查看当前用户：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; show user
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看数据库用户：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; select * from dba_users;  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;解锁用户&#34;&gt;解锁用户&lt;/h4&gt;
+
+&lt;p&gt;默认当密码输错 10 次之后，用户就会被锁定：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ORA-28000: the account is locked
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个时候就需要管理员来解锁：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
+SQL&amp;gt; alter user [username] account unlock;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;有解锁肯定就有锁定：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] account lock;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;密码错误次数&#34;&gt;密码错误次数&lt;/h4&gt;
+
+&lt;p&gt;当然，也可以自己修改最大密码错误次数，最大错误次数存储在 &lt;code&gt;dba_profiles&lt;/code&gt; 表中。&lt;/p&gt;
+
+&lt;p&gt;首先根据 username 查看用户使用的 &lt;code&gt;PROFILE&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT PROFILE FROM DBA_USERS WHERE USERNAME=&#39;[username]&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后根据 username 以及查询到的 &lt;code&gt;PROFILE&lt;/code&gt; 查看该用户的最大密码错误次数 &lt;code&gt;FAILED_LOGIN_ATTEMPTS&lt;/code&gt; ：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT * FROM DBA_PROFILES WHERE PROFILE=&#39;DEFAULT&#39; AND RESOURCE_NAME=&#39;FAILED_LOGIN_ATTEMPTS&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将错误次数修改为无限次：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; ALTER PROFILE DEFAULT LIMIT FAILED_LOGIN_ATTEMPTSUNLIMITED;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;密码有效期&#34;&gt;密码有效期&lt;/h4&gt;
+
+&lt;p&gt;Oracle 11g 默认用户每三个月（180 天）就要修改一次密码，快到密码过期时间就会提醒：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ORA-28002: the password will expire within 7 days
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里同样要先查找到 &lt;code&gt;PROFILE&lt;/code&gt; 再查看用户密码剩余过期时间：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT * FROM DBA_PROFILES WHERE PROFILE=&#39;DEFAULT&#39; AND RESOURCE_NAME=&#39;PASSWORD_LIFE_TIME&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改密码有效期（不受限）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIMEUNLIMITED;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;设置密码过期：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] password expire;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;修改密码&#34;&gt;修改密码&lt;/h4&gt;
+
+&lt;p&gt;修改当前登录用户密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; password
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改某个用户的密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; alter user [username] identified by [password];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;表管理&#34;&gt;表管理&lt;/h2&gt;
+
+&lt;p&gt;Oracle 的表都是存储在表空间里面的。创建表之前需要先创建一个表空间。&lt;/p&gt;
+
+&lt;h4 id=&#34;查看用户所拥有的表&#34;&gt;查看用户所拥有的表&lt;/h4&gt;
+
+&lt;p&gt;查看用户所拥有的表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM USER_TABLES; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看用户可存取的表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM ALL_TABLES; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;数据库中所有表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT TABLE_NAME FROM DBA_TABLES;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;查看表空间&#34;&gt;查看表空间&lt;/h4&gt;
+
+&lt;p&gt;查看表空间详细数据文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; SELECT FILE_NAME,TABLESPACE_NAME from DBA_DATA_FILES;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;创建表空间&#34;&gt;创建表空间&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;create tablespace [表空间名称]
+datafile [表空间数据文件路径 ]
+size [表空间大小]
+autoextend on;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; create tablespace SoftwareManagement
+  2  datafile &#39;/data/oracle/oradata/orcl/SoftwareManagement.dbf&#39;
+  3  size 50m
+  4  autoextend on;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;创建新用户&#34;&gt;创建新用户&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE USER [用户名]  
+IDENTIFIED BY [密码]  
+DEFAULT TABLESPACE [表空间] (默认USERS)  
+TEMPORARY TABLESPACE [临时表空间] (默认TEMP)  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; create USER software
+  2  identified by 123456
+  3  default tablespace Softwaremanagement;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;分配权限&#34;&gt;分配权限&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; GRANT CONNECT TO [username];  
+SQL&amp;gt; GRANT RESOURCE TO [username];  
+SQL&amp;gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据库、表等。 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到这里，数据库中的表空间、用户以及用户权限都创建并分配好了，接下来用户就可以在自己的表空间中创建表，然后进行开发。&lt;/p&gt;
+
+&lt;h2 id=&#34;权限管理&#34;&gt;权限管理&lt;/h2&gt;
+
+&lt;p&gt;在给用户分配权限的时候，分配了 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt; 权限给用户。这两个权限到底是什么呢？&lt;/p&gt;
+
+&lt;h4 id=&#34;oracle中的权限&#34;&gt;oracle中的权限&lt;/h4&gt;
+
+&lt;p&gt;Oracle 中的权限分为两类：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;系统权限：系统规定用户使用数据库的权限，系统权限是对用户而言。&lt;/li&gt;
+&lt;li&gt;实体权限：某种权限的用户对其他用户的表或视图的存取权限，是针对表或者视图而言。如 &lt;code&gt;select&lt;/code&gt;、&lt;code&gt;update&lt;/code&gt;、&lt;code&gt;insert&lt;/code&gt;、&lt;code&gt;delete&lt;/code&gt;、&lt;code&gt;alter&lt;/code&gt;、&lt;code&gt;index&lt;/code&gt;、&lt;code&gt;all&lt;/code&gt;，其中 &lt;code&gt;all&lt;/code&gt; 包含所有的实体权限。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;系统权限分类&#34;&gt;系统权限分类&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;DBA：拥有全部特权，是系统最高权限，只有DBA才可以创建数据库结构。&lt;/li&gt;
+&lt;li&gt;RESOURCE：拥有resource权限的用户只可以创建实体，不可以创建数据库结构。&lt;/li&gt;
+&lt;li&gt;CONNECT：拥有connect权限的用户只可以登录oracle，不可以创建实体，不可以创建数据库结构。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;建议：
+对于普通用户，授予 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt; 权限；
+对于 &lt;code&gt;DBA&lt;/code&gt; 管理用户，授予 &lt;code&gt;CONNECT&lt;/code&gt;、&lt;code&gt;RESOURCE&lt;/code&gt;、&lt;code&gt;DBA&lt;/code&gt; 权限。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;导入导出&#34;&gt;导入导出&lt;/h2&gt;
+
+&lt;p&gt;数据库的导入导出也是一个很常见的需求。&lt;/p&gt;
+
+&lt;h4 id=&#34;导出&#34;&gt;导出&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ exp [username]/[password]@[orcl] file=./database.dmp  full=y
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;username&lt;/code&gt; 是数据库用户名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;password&lt;/code&gt; 是数据库用户密码&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;orcl&lt;/code&gt; 是数据库实例名称&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;file&lt;/code&gt; 后面的参数是导出的数据库文件存放位置及文件名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;full&lt;/code&gt; 其值为 &lt;code&gt;y&lt;/code&gt; 表示全部导出，默认为 &lt;code&gt;no&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果只需导出某几张表，可以指定 &lt;code&gt;tables&lt;/code&gt; 参数：&lt;code&gt;tables=&#39;(tableName, tableName1)&#39;&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;导入&#34;&gt;导入&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ imp [username]/[password]@[orcl] file=./database.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;和导出数据库语法一样，只是关键字不一样。&lt;/p&gt;
+
+&lt;h4 id=&#34;执行-sql-文件&#34;&gt;执行 SQL 文件&lt;/h4&gt;
+
+&lt;p&gt;执行 SQL 文件的方法有很多种。如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用 SQL PLUS 命令&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/password@[orcl] @path/file.name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者远程执行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sqlplus [username]/password@server_IP/service_name @path/file.name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果sql脚本文件比较复杂，包含了begin end语句，就会不断显示行号，解决办法就是在 sql 脚本的最后用 &lt;code&gt;/&lt;/code&gt; 符号结尾。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;在 SQL PLUS 中执行&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt;start file_path
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt;@ file_path
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;file_path&lt;/code&gt; 是文件路径。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/fnng/archive/2012/08/12/2634485.html&#34;&gt;Oracle表空间（tablespaces）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://zyjustin9.iteye.com/blog/2193804&#34;&gt;Oracle数据库，实例，表空间，用户，表之间的关系&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nvd11.blog.163.com/blog/static/2000183122012111524636835/&#34;&gt;Oracle 在Sqlplus 执行sql脚本文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Install Shadowsocks Server in VPS</title>
+      <link>http://nodejh.com/post/Install-Shadowsocks-Server-in-VPS/</link>
+      <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Install-Shadowsocks-Server-in-VPS/</guid>
+      <description>&lt;p&gt;首先关于 Shadowsocks 的使用说明在这里：&lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明&#34;&gt;Shadowsocks 使用说明&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误，以及错误解决办法。&lt;/p&gt;
+
+&lt;p&gt;我的 VPS 系统版本是 Ubuntu 16.10：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat /etc/issue
+Ubuntu 16.10 \n \l
+
+# 或
+$ sudo lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.10
+Release:	16.10
+Codename:	yakkety
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;首先安装 pip：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install python-pip
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后通过 pip 安装 shadowsocks，结果就报错了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo pip install shadowsocks
+Could not import setuptools which is required to install from a source distribution.
+Please install setuptools.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是因为没有安装 setuptools，所以安装一下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo pip install -U setuptools
+# 然后再安装 shadowsocks
+$ sudo pip install shadowsocks
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;更具体的内容可在 Github Issues 查看：&lt;a href=&#34;https://github.com/pypa/pip/issues/1064&#34;&gt;ImportError: No module named setuptools (add details to docs) &lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;接下来配置 shadowsocks：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo vim /etc/shadowsocks.json
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;写入下面的配置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;server&amp;quot;:&amp;quot;my_server_ip&amp;quot;,
+    &amp;quot;server_port&amp;quot;:8388,
+    &amp;quot;local_address&amp;quot;: &amp;quot;127.0.0.1&amp;quot;,
+    &amp;quot;local_port&amp;quot;:1080,
+    &amp;quot;password&amp;quot;:&amp;quot;mypassword&amp;quot;,
+    &amp;quot;timeout&amp;quot;:300,
+    &amp;quot;method&amp;quot;:&amp;quot;chacha20&amp;quot;,
+    &amp;quot;fast_open&amp;quot;: false
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Shadowsocks 的配置文件描述在 &lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File&#34;&gt;Configuration via Config File&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;我的加密算法设置的是 &lt;code&gt;chacha20&lt;/code&gt;。之前主流的SS有两种加密算法：&lt;code&gt;RC4-MD5&lt;/code&gt; 和 &lt;code&gt;aes-256-cfb&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;aes-256-cfb&lt;/code&gt; 是各种一键包默认的加密方法，但是由于路由器和手机性能的问题，这种算法还是多少会影响到一些速度的。&lt;code&gt;RC4-MD5&lt;/code&gt; 主要是加密太简单了，在 GFW 面前加密不加密已经没有什么区别&amp;hellip;所以我们需要密码强度比 &lt;code&gt;RC4-MD5&lt;/code&gt; 高,但是速度比 &lt;code&gt;aes-256-cfb&lt;/code&gt; 快的加密算法,那就是 &lt;code&gt;chacha20&lt;/code&gt; 了。可以说是目前性价比比较高的加密算法。&lt;/p&gt;
+
+&lt;p&gt;然后后台启动 shadowsocks：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo ssserver -c /etc/shadowsocks.json -d start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;又报错了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;INFO: loading config from /etc/shadowsocks.json
+Traceback (most recent call last):
+  File &amp;quot;/usr/local/bin/ssserver&amp;quot;, line 11, in &amp;lt;module&amp;gt;
+    load_entry_point(&#39;shadowsocks==2.8.2&#39;, &#39;console_scripts&#39;, &#39;ssserver&#39;)()
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/server.py&amp;quot;, line 34, in main
+    config = shell.get_config(False)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/shell.py&amp;quot;, line 262, in get_config
+    check_config(config, is_local)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/shell.py&amp;quot;, line 124, in check_config
+    encrypt.try_cipher(config[&#39;password&#39;], config[&#39;method&#39;])
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&amp;quot;, line 44, in try_cipher
+    Encryptor(key, method)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&amp;quot;, line 83, in __init__
+    random_string(self._method_info[1]))
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&amp;quot;, line 109, in get_cipher
+    return m[2](method, key, iv, op)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/sodium.py&amp;quot;, line 62, in __init__
+    load_libsodium()
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/sodium.py&amp;quot;, line 42, in load_libsodium
+    raise Exception(&#39;libsodium not found&#39;)
+Exception: libsodium not found
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;因为没有 &lt;code&gt;libsodium&lt;/code&gt;，&lt;code&gt;libsodium&lt;/code&gt; 是 &lt;code&gt;chacha20&lt;/code&gt; 加密算法所需要的一个包。所以接下来就安装它：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
+tar zxf LATEST.tar.gz
+cd libsodium*
+./configure
+sudo make &amp;amp;&amp;amp; sudo make install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;编译的时候又报错了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;configure: error: no acceptable C compiler found in $PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是因为没有 C 编译器。所以继续安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install build-essential
+# 安装成功之后再编译
+$ sudo make &amp;amp;&amp;amp; sudo make install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后将下面的代码加入到 &lt;code&gt;/etc/ld.so.conf&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;include ld.so.conf.d/*.conf&amp;quot;
+/lib
+/usr/lib64
+/usr/local/lib
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再重新载入配置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo ldconfig
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来再启动 shadowsocks：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo ssserver -c /etc/shadowsocks.json -d start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看 shadowsocks 日志：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tail -f /var/log/shadowsocks.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后只需要配置好客户端，就可以愉快地番茄了。&lt;/p&gt;
+
+&lt;p&gt;最后分享一下我的 vultr 邀请链接，通过该链接注册您将获得 &lt;code&gt;$20&lt;/code&gt; ：&lt;a href=&#34;http://www.vultr.com/?ref=7104654-3B&#34;&gt;vultr&lt;/a&gt;。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Change Source List in Ubuntu</title>
+      <link>http://nodejh.com/post/Change-Source-List-in-Ubuntu/</link>
+      <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Change-Source-List-in-Ubuntu/</guid>
+      <description>
+
+&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
+
+&lt;p&gt;上面命令中提到的 &lt;code&gt;apt-get&lt;/code&gt; 则是 Ubuntu 系统中的一个包管理工具，其常用的几个命令如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;安装软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-cache search &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;卸载软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get remove &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;只卸载软件，不删除配置文件等。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;完全卸载&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get purge &amp;lt;package-name&amp;gt;
+# 或
+$ sudo apt-get remove &amp;lt;package-name&amp;gt; --purge
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;删除包括配置文件在内的所有文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;搜索软件&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-cache &amp;lt;package-name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;更多的关于 &lt;code&gt;apt-get&lt;/code&gt; 的用法可使用 &lt;code&gt;man apt-get&lt;/code&gt; 命令查看。&lt;/p&gt;
+
+&lt;h2 id=&#34;2-软件源的分类&#34;&gt;2. 软件源的分类&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源分为两种：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ubuntu 官方软件源&lt;/li&gt;
+&lt;li&gt;PPA 软件源&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ubuntu 官方软件源中包含了 Ubuntu 系统中所用到的绝大部分的软件，它对应的源列表是 &lt;code&gt;/etc/apt/sources.list&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;PPA 软件源即 Personal Package Archives（个人软件包档案）。有些软件没有被选入 UBuntu 官方软件仓库，为了方便Ubuntu用户使用，&lt;a href=&#34;https://launchpad.net&#34;&gt;Launchpad&lt;/a&gt; 提供了 PPA，允许用户建立自己的软件仓库，自由的上传软件。PPA也被用来对一些打算进入Ubuntu官方仓库的软件，或者某些软件的新版本进行测试。&lt;/p&gt;
+
+&lt;p&gt;Launchpad 是 Ubuntu 母公司 Canonical 有限公司所架设的网站，是一个提供维护、支援或联络 Ubuntu 开发者的平台。&lt;/p&gt;
+
+&lt;h2 id=&#34;3-修改官方软件源&#34;&gt;3. 修改官方软件源&lt;/h2&gt;
+
+&lt;p&gt;由于在国内从 Ubuntu 官方源下载软件比较慢，所以我们通常需要更换软件源来加快下载速度。互联网上有很多开源镜像站点，下面列出了一些网站。&lt;/p&gt;
+
+&lt;p&gt;选择源列表的时候，可以先使用 &lt;code&gt;ping&lt;/code&gt; 命令测试一下网络速度，选择最快的源。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-源列表&#34;&gt;3.1 源列表&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Ubuntu Sources List Generator&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://repogen.simplylinux.ch&#34;&gt;Ubuntu Sources List Generator&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以在该网站上根据所处地区、Ubuntu发行版本等条件自动生成 Ubuntu 源。如我的 Ubuntu 版本号是 16.04，生成的源列表是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#------------------------------------------------------------------------------#
+#                            OFFICIAL UBUNTU REPOS                             #
+#------------------------------------------------------------------------------#
+
+
+###### Ubuntu Main Repos
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
+
+###### Ubuntu Update Repos
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;顺便给出查看 Ubuntu 版本号的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.04 LTS
+Release:	16.04
+Codename:	xenial
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Ubuntu Wiki 源列表&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://wiki.ubuntu.org.cn/源列表&#34;&gt;Ubuntu Wiki 源列表&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;该站点提供了大量的开源镜像，可以先根据自己的版本号，点击版本号后面的 &lt;code&gt;[详细]&lt;/code&gt; 链接进入 &lt;code&gt;模板: Ubuntu source&lt;/code&gt; 页面，该页面提供了很多可用的服务器列表&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-修改源列表&#34;&gt;3.2 修改源列表&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先备份源列表(for sure)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo cp /etc/apt/sources.list /etc/apt/sources.list_backup
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;而后用gedit或其他编辑器打开&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo gedit /etc/apt/sources.list
+# 或 vim
+$ sudo vim /etc/apt/sources.list
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;从上面的列表中选择合适的源，替换掉文件中所有的内容，保存编辑好的文件。&lt;strong&gt;注意：一定要选对版&lt;/strong&gt;本&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;然后，刷新列表&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;注意：一定要执行刷新&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;4-修改-ppa-源&#34;&gt;4. 修改 PPA 源&lt;/h2&gt;
+
+&lt;p&gt;添加 PPA 软件源的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo add-apt-repository ppa:user/ppa-name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;删除 PPA 软件源的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo add-apt-repository --remove ppa:user/ppa-name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;比如 FireFox PPA 源，&lt;a href=&#34;https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa&#34;&gt;https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa&lt;/a&gt; ，我们可以在这里找到 &lt;code&gt;ppa:ubuntu-mozilla-daily/ppa&lt;/code&gt; 的字样，然后我们通过以下命令把这个源加入到 source list 中：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-add-repository ppa:ubuntu-mozilla-daily/ppa
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于 PPA 的源，可以通过 Google 搜索，也可以在 &lt;a href=&#34;https://launchpad.net&#34;&gt;https://launchpad.net&lt;/a&gt; 网站搜索（可能效率比较低）。有的软件可能在官网提供了 PPA 源名称。&lt;/p&gt;
+
+&lt;p&gt;添加完成之后，就会在 &lt;code&gt;/etc/apt/sources.list.d/&lt;/code&gt; 里面创建一个文件：&lt;code&gt;ubuntu-mozilla-daily-ubuntu-ppa-xenial.list&lt;/code&gt;。现在来看看里面的内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat /etc/apt/sources.list.d/ubuntu-mozilla-daily-ubuntu-ppa-xenial.list
+deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu xenial main
+# deb-src http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu xenial main
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以发现其源列表格式其实和官方源一模一样。之所以把 PPA 和官方源区分开来，是因为第三方源可能没有十足的保障。&lt;/p&gt;
+
+&lt;p&gt;添加完成之后，依旧需要使用 &lt;code&gt;sudo apt-get update&lt;/code&gt; 来刷新。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>index</title>
+      <link>http://nodejh.com/tags/</link>
+      <pubDate>Sun, 15 Jan 2017 06:09:53 +0800</pubDate>
+      
+      <guid>http://nodejh.com/tags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Architecture And Code Analysis Of Teaching Evaluation</title>
+      <link>http://nodejh.com/post/Architecture-And-Code-Analysis-Of-Teaching-Evaluation/</link>
+      <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Architecture-And-Code-Analysis-Of-Teaching-Evaluation/</guid>
+      <description>
+
+&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。如何设计应用逻辑，如何组织代码模块，如何确定目录结构等等， 都需要在编码之前进行考虑。每个人的编码风格不尽相同，写出来的代码也各有千秋。要想得出一个最佳实践，就要不断总结自己的过往经验，学习别人的优秀设计，并再次将其运用于实践才能真正理解其中的奥义。&lt;/p&gt;
+
+&lt;p&gt;本文主要就是介绍一键评教程序的软件结构设计，并对代码进行简要分析，同时也会讲述一些自己遇到的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;1-什么是一键评教&#34;&gt;1. 什么是一键评教&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;首先声明，该程序的本质目的是用于学习交流。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;每学期进行教学评估的时候，都要评很多教师，每个教师都有很多选项，再加上教务系统网站比较老旧，操作不方面，评教总是要花很长时间。&lt;/p&gt;
+
+&lt;p&gt;“一键评教，用过都说好”。线上地址 &lt;a href=&#34;http://pj.fyscu.com&#34;&gt;http://pj.fyscu.com&lt;/a&gt;，源码 &lt;a href=&#34;https://github.com/nodejh/teach_evaluation&#34;&gt;https://github.com/nodejh/teach_evaluation&lt;/a&gt; 。&lt;/p&gt;
+
+&lt;p&gt;爱美之心人皆有之，我也很喜欢好用又好看的事物，所以我在写代码的时候也尽量做到好看又好用。软件截图如下，是不是很好看：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c8.jpg&#34; alt=&#34;输入账号的页面&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c3.jpg&#34; alt=&#34;评估结果页面&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;2-功能分析&#34;&gt;2. 功能分析&lt;/h2&gt;
+
+&lt;p&gt;需求很明确，就是能够在一个网页上实现点击按钮自动评估所有教师。那么要实现这样的需求，该怎么去做呢？&lt;/p&gt;
+
+&lt;p&gt;先来想想我们通常手动评教的步骤：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;登录进入教务系统网站&lt;/li&gt;
+&lt;li&gt;找到教学评估链接并进入，这个时候就能看到所有需要进行评估的教师列表&lt;/li&gt;
+&lt;li&gt;从教师列表中点击某个教师，进入到该教师的教学评估页面&lt;/li&gt;
+&lt;li&gt;填写各种需要填写的表单&lt;/li&gt;
+&lt;li&gt;填写完毕之后，点击提交按钮进行评教&lt;/li&gt;
+&lt;li&gt;一切正常的情况下，则对该教师评教成功&lt;/li&gt;
+&lt;li&gt;然后返回到教师列表页面，选择下一个需要评估的教师&lt;/li&gt;
+&lt;li&gt;重复 &lt;code&gt;3-7&lt;/code&gt; 这五个步骤，直到所有教师评估完毕&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;要用程序实现一键评教，其实就是用程序模拟上面的步骤。所以程序要实现的主要功能有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;模拟登录，获取 cookie&lt;/li&gt;
+&lt;li&gt;获取需要评估的教师列表&lt;/li&gt;
+&lt;li&gt;对列表中的每个教师进行评教&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然后我们需要一个用户界面来让用户进行操作。这个界面可以是 APP，也可以是网页。由于网页更方便更利于传播，所以我选择了网页。所以我们就还需要一个 HTTP 服务器，用来提供静态页面资源，并且接收并响应用户操作后发送的 HTTP 请求。&lt;/p&gt;
+
+&lt;h2 id=&#34;3-软件设计&#34;&gt;3. 软件设计&lt;/h2&gt;
+
+&lt;p&gt;软件设计主要从三个方面来说明。一是技术选择，二是软件架构，三是目录结构。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-技术选择&#34;&gt;3.1 技术选择&lt;/h3&gt;
+
+&lt;p&gt;首先是各种技术的选择，包括前后端编程语言（语法）、第三方模块的选择、和服务器部署。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-1-后端语言&#34;&gt;3.1.1 后端语言&lt;/h4&gt;
+
+&lt;p&gt;该程序后端使用的是 Node.js。我的 Node.js 版本是 7.3。大量使用了 ES6 的语法，比如 Promise、模板字符串、箭头函数。只要你的 Node.js 版本 &amp;gt;= 6.0 应该都是可以运行的。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-2-第三方模块&#34;&gt;3.1.2 第三方模块&lt;/h4&gt;
+
+&lt;p&gt;在开发程序之前，我想要尽量让应用的体积足够小，所以我尽量不使用第三方模块。&lt;/p&gt;
+
+&lt;p&gt;最终我只使用了 &lt;code&gt;cheerio&lt;/code&gt; 和 &lt;code&gt;icon-lite&lt;/code&gt; 这两个第三方包。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cheerio&lt;/code&gt; 主要用来分析抓取到的 HTML 文档。其实最开始也想不用 &lt;code&gt;cheerio&lt;/code&gt;，直接使用正则表达式来分析页面的，但正则表达式编写麻烦，我的能力也有限，所以最终选择了使用 &lt;code&gt;cheerio&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;icon-lite&lt;/code&gt; 则是用来对 &lt;code&gt;GBK&lt;/code&gt; 文本进行解码。因为教务系统网站使用的是 GBK 的编码，所以直接抓取的结果是乱码的。除了 &lt;code&gt;icon-lite&lt;/code&gt; 这个包，我找不到其他的可以解决乱码问题的方案了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;3-1-3-编码规范&#34;&gt;3.1.3 编码规范&lt;/h4&gt;
+
+&lt;p&gt;然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 &lt;code&gt;.eslintrc&lt;/code&gt; 作了配置。具体配置在源码 &lt;a href=&#34;https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc&#34;&gt;.eslintrc&lt;/a&gt; 中可以看到。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-4-前端技术&#34;&gt;3.1.4 前端技术&lt;/h4&gt;
+
+&lt;p&gt;为了减小代码体积，提高加载速度，节省带宽，前端没有使用任何第三方 JS 库。并且这只是一个小应用，有没有必须使用庞大（相比该程序而言显得庞大）的第三方库。&lt;/p&gt;
+
+&lt;p&gt;前端使用的是 ES5 的语法。最开始想用 ES6 来写的，但 ES6 写好的代码还需要编译成 ES5 才能在浏览器运行，并且还需要引入各种 polyfill，最终还是决定使用 ES5。&lt;/p&gt;
+
+&lt;p&gt;前端唯一使用了第三方资源的，只有两个字体图标了。一个是 &lt;code&gt;heart&lt;/code&gt; 的图标 ❤️，毕竟是用心写的代码，&lt;code&gt;Made with ❤️ by nodejh&lt;/code&gt;；还有一个就是“关闭”小图标。图标使用的是 &lt;a href=&#34;https://icomoon.io/&#34;&gt;IcoMoon&lt;/a&gt; 的字体图标库，可以自己在里面找到需要的图标然后下载使用。&lt;/p&gt;
+
+&lt;p&gt;该程序只有 &lt;code&gt;index.html&lt;/code&gt; 这一个 HTML 文件，所以本质上也是一个单页应用。所有的操作和交互都在这一个页面完成。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-5-前端代码压缩&#34;&gt;3.1.5 前端代码压缩&lt;/h4&gt;
+
+&lt;p&gt;为了进一步压缩前端资源文件的体积，所以对静态资源进行了压缩。&lt;/p&gt;
+
+&lt;p&gt;压缩 CSS 使用的是在线压缩工具 &lt;a href=&#34;http://csscompressor.com/&#34;&gt;CSS Compressor&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;压缩 JS 使用的是 &lt;a href=&#34;https://github.com/mishoo/UglifyJS2&#34;&gt;UglifyJS2&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-1-6-部署&#34;&gt;3.1.6 部署&lt;/h4&gt;
+
+&lt;p&gt;完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 &lt;a href=&#34;https://github.com/Unitech/pm2&#34;&gt;pm2&lt;/a&gt; 进行进程的管理。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-软件架构&#34;&gt;3.2 软件架构&lt;/h3&gt;
+
+&lt;p&gt;程序的整体架构主要分为三层，可以就将其理解为 MVC 的三个层次。&lt;/p&gt;
+
+&lt;p&gt;MVC 是一种设计模式，设计模式不是一层不变的，我们需要根据自己的实际业务灵活运用。MVC 是一个很经典的设计模式，生活中的很多事物，我们也可以根据 MVC 对其进行定义。就拿人来进行类比，大脑就是 C（Controller），控制着人的一切活动。躯体外表就是 V（View） 层，一方面是表现着一个人的外观，另一方面是人的各种活动的外在表现。体内各种器官比如心脏、肺等就相当于 M（Model），从表面可能并不能直观看到 M 层的作用，但它受大脑控制，进行着血液循环呼吸系统等重要功能，而这些器官可能又跟躯体相互作用，比如影响人的精神面貌或高矮胖瘦。&lt;/p&gt;
+
+&lt;p&gt;说正经的。&lt;/p&gt;
+
+&lt;p&gt;首先是该一键评教程序的 M 层，包括页面抓取、页面分析和评教等功能模块。&lt;/p&gt;
+
+&lt;p&gt;然后是 V 层，主要是前端页面，直接给用户使用，与用户交互的界面。比如用户点击“开始”按钮的时候，就向 C 层发送一个 HTTP 请求。&lt;/p&gt;
+
+&lt;p&gt;C 是控制中心，接收 V 层的 HTTP 请求，根据 HTTP 请求决定调用哪些 M 层的模块，然后将模块调用后的处理结果返回给 V。&lt;/p&gt;
+
+&lt;p&gt;这样一个事件的处理流程可能就是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;V(HTTP 请求)---&amp;gt; C (调用 M 的对应模块)---&amp;gt; M(返回处理结果) ---&amp;gt; C(HTTP 响应) ---&amp;gt; V
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-3-目录结构&#34;&gt;3.3 目录结构&lt;/h3&gt;
+
+&lt;p&gt;了解了软件的整体架构之后，就来看看代码的目录结构，代码的目录结构也完美地印证了这三层架构。&lt;/p&gt;
+
+&lt;p&gt;代码的主要目录／子目录及其功能如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|____app.js  # 入口文件
+|____controller  # C 层目录，定义了各种控制器
+| |____evaluate.js  # 评教的控制器
+| |____evaluationList.js  # 获取需要评教列表的控制器
+| |____staticServer.js  # 静态服务器控制器
+|____helper  # 一些自定义的功能模块
+| |____colors.js  # 十六进制颜色代码，主要是为了改变 console.log 的颜色
+| |____dateformat.js  # 时间格式化
+| |____getContentType.js  # 获取文件后缀名对应的 Content-Type，用于静态服务器
+| |____log.js  # 自定义的彩色 console.log() 输出，告别满屏黑白日志
+| |____request.js  # HTTP 请求的封装
+|____models  # M 层目录，定义了各种模块及实现
+| |____evaluate.js  # 评教功能模块
+| |____getEvaluationList.js  # 获取需要评教的教师列表
+| |____loginZhjw.js  # 模拟登录教务系统
+| |____showEvaluatePage.js  # 显示某个具体的评教页面
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;看完目录结构，再回头看看软件的三层架构，肯定就清晰很多了。&lt;/p&gt;
+
+&lt;h2 id=&#34;4-代码分析&#34;&gt;4. 代码分析&lt;/h2&gt;
+
+&lt;p&gt;接下来再对一些重要的功能模块以及涉及到的代码进行简要分析。相信了解完代码的执行流程之后，对软件的整体架构理解，定会再进一步。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-1-app-js&#34;&gt;4.1 app.js&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;app.js&lt;/code&gt; 是整个项目的入口文件，启动项目的时候使用 &lt;code&gt;node app.js&lt;/code&gt; 即可启动。&lt;/p&gt;
+
+&lt;p&gt;在 app.js 里面，主要是创建了 HTTP Server，然后根据请求的路径，调用对应的控制器：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if (method === &#39;POST&#39; &amp;amp;&amp;amp; pathname === &#39;/api/evaluationList&#39;) {
+    // 模拟登录，获取需要评教的老师列表
+    return evaluationListController(req, res);
+  }
+
+  if (method === &#39;POST&#39; &amp;amp;&amp;amp; pathname === &#39;/api/evaluate&#39;) {
+    // 评教
+    return evaluateController(req, res);
+  }
+
+  if (method === &#39;GET&#39;) {
+    // 所有 GET 请求都当作是请求静态资源
+    return staticServerController(req, res);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当请求方法是 &lt;code&gt;POST&lt;/code&gt; 且路径是 &lt;code&gt;/api/evaluationList&lt;/code&gt; 时，就说明前端是发送的一个获取需要评估的教师列表的请求，所以紧接着执行 &lt;code&gt;evaluationListController(req, res);&lt;/code&gt;，调用该控制器，并且使用 &lt;code&gt;return&lt;/code&gt; 来停止代码的执行。&lt;/p&gt;
+
+&lt;p&gt;如果有新的 API 的请求，都可以在这里加。&lt;/p&gt;
+
+&lt;p&gt;如果所有的自定义的请求及路径都不满足，并且请求的方法是 &lt;code&gt;GET&lt;/code&gt;，那就当作是请求静态资源文件，如 HTML、CSS、JS 或图片等。这里就调用 &lt;code&gt;staticServerController(req, res)&lt;/code&gt;。&lt;code&gt;staticServerController&lt;/code&gt; 是在 Controller 里面定义的返回静态文件的方法。&lt;/p&gt;
+
+&lt;p&gt;如果 &lt;code&gt;GET&lt;/code&gt; 请求也不是，则返回 &lt;code&gt;400 Bad Request&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;然后程序监听了 &lt;code&gt;5000&lt;/code&gt; 端口，这样发送请求到 &lt;code&gt;5000&lt;/code&gt; 端口，代码就能接收到请求并进行处理了。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-2-静态资源服务器&#34;&gt;4.2 静态资源服务器&lt;/h3&gt;
+
+&lt;p&gt;前面已经提到了，&lt;code&gt;staticServerController&lt;/code&gt; 是在 Controller 里面定义的返回静态文件的方法，也就是一个静态资源服务器。&lt;/p&gt;
+
+&lt;p&gt;因为我们的软件很简单，所以完全没有必要使用 express 或 koa 等框架，自己写一个简单的静态服务器完全足够应对所有业务需求了。&lt;/p&gt;
+
+&lt;p&gt;主要代码如下，代码优美，注释详尽，通俗易懂：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * 静态服务器
+ * @param  {object} req request
+ * @param  {object} res response
+ * @return {null}   null
+ */
+const staticServerController = (req, res) =&amp;gt; {
+  let pathname = url.parse(req.url).pathname;
+  if (path.extname(pathname) === &#39;&#39;) {
+    // 没有扩展名，则指定访问目录
+    pathname += &#39;/&#39;;
+  }
+
+  if (pathname.charAt(pathname.length - 1) === &#39;/&#39;) {
+    // 如果访问的是目录，则添加默认文件 index.html
+    pathname += &#39;index.html&#39;;
+  }
+  // 拼接实际文件路径
+  const filepath = path.join(__dirname, &#39;./../public&#39;, pathname);
+  fs.access(filepath, fs.F_OK, (error) =&amp;gt; {
+    if (error) {
+      res.writeHead(404);
+      res.end(&#39;&amp;lt;h1&amp;gt;404 Not Found&amp;lt;/h1&amp;gt;&#39;);
+      return false;
+    }
+    const contentType = getContentType(filepath);
+    res.writeHead(200, { &#39;Content-Type&#39;: contentType });
+    // 读取文件流并使用管道将文件流传输到HTTP流返回给页面
+    fs.createReadStream(filepath)
+      .pipe(res);
+  });
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里需要稍微留意的是 &lt;code&gt;getContentType&lt;/code&gt; 这个方法，这个方法的定义和实现被放在了 &lt;code&gt;helper/getContentType.js&lt;/code&gt; 里面，其主要作用，就是根据请求路径的后缀名来确定 HTTP Response 里面的 &lt;code&gt;Content-Type&lt;/code&gt; 类型，以便浏览器或客户端识别：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * 获取 Content-Type
+ * @param  {string} filepath 文件路径
+ * @return {string}          文件对应的 Conent-Type
+ */
+const getContentType = (filepath) =&amp;gt; {
+  let contentType = &#39;&#39;;
+  const ext = path.extname(filepath);
+  switch (ext) {
+    case &#39;.html&#39;:
+      contentType = &#39;text/html&#39;;
+      break;
+    case &#39;.js&#39;:
+      contentType = &#39;text/javascript&#39;;
+      break;
+    case &#39;.css&#39;:
+      contentType = &#39;text/css&#39;;
+      break;
+    case &#39;.gif&#39;:
+      contentType = &#39;image/gif&#39;;
+      break;
+    case &#39;.jpg&#39;:
+      contentType = &#39;image/jpeg&#39;;
+      break;
+    case &#39;.png&#39;:
+      contentType = &#39;image/png&#39;;
+      break;
+    case &#39;.ico&#39;:
+      contentType = &#39;image/icon&#39;;
+      break;
+    case &#39;.manifest&#39;:
+      contentType = &#39;text/cache-manifest&#39;;
+      break;
+    default:
+      contentType = &#39;application/octet-stream&#39;;
+  }
+  return contentType;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样我们的一个简单的静态资源文件服务器就成型了，单独把这两段代码拿出去也是完全可以运行的。&lt;/p&gt;
+
+&lt;p&gt;当用户请求 &lt;code&gt;localhost:5000&lt;/code&gt; 的时候，根据上面的代码，就会去寻找 &lt;code&gt;public/index.html&lt;/code&gt; 这个文件然后返回给客户端。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;index.html&lt;/code&gt; 就是我们的前端页面。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-3-模拟登录&#34;&gt;4.3 模拟登录&lt;/h3&gt;
+
+&lt;p&gt;要想获取评教列表或进行评教，第一步就是登录教务系统。经抓包分析，教务系统使用的是 &lt;code&gt;session&lt;/code&gt; &lt;code&gt;cookie&lt;/code&gt; 的认证机制，关于如何抓包分析，可以看我的另一篇文章《模拟登录某某大学图书馆系统》[&lt;a href=&#34;http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的&#34;&gt;http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的&lt;/a&gt; &lt;code&gt;cookie&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;登录的时候，是向 &lt;code&gt;http://202.115.47.141/loginAction.do&lt;/code&gt; 发送的 POST 请求，请求的 &lt;code&gt;Content-Type&lt;/code&gt; 是 &lt;code&gt;application/x-www-form-urlencoded&lt;/code&gt; ，参数是 &lt;code&gt;zjh=xx&amp;amp;mm=xx&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;曾经教务系统可以使用 GET 方式登录，所有有一种快捷登录方式，就是在浏览器地址栏 &lt;code&gt;http://202.115.47.141/loginAction.do?zjh=[你的学号]&amp;amp;&amp;amp;mm=[你的密码]&lt;/code&gt;。而且这种方法可以绕过“登录人数已满”的限制。这在选课时期，这种强制的登录方式还是很好用的。不过 GET 方法也有缺点就是，你的学号和密码就直接暴露了，不安全。曾经还通过 Google 搜索，搜到了某个同学的账号及密码。现在教务系统估计是升级了禁止了这个方法。&lt;/p&gt;
+
+&lt;p&gt;模拟登录教务系统的程序在 &lt;code&gt;models/loginZhjw.js&lt;/code&gt; 里面，详细代码就不贴了，总的来说，就是通过 Node.js 的 HTTP 模块，设置一个自定义的 HTTP Headers 信息，然后发送 HTTP 请求。当然，其他任何编程语言道理都一样。&lt;/p&gt;
+
+&lt;p&gt;模拟登录后，教务系统会返回 HTTP Response。HTTP Response 的 &lt;code&gt;Content-Type&lt;/code&gt; 都是 &lt;code&gt;text/html&lt;/code&gt;，也就是说返回的始终都是 HTML 文本。所以我们就可以根返回的 HTML 文本的内容判断是否登录成功。&lt;/p&gt;
+
+&lt;p&gt;如果文本包含下面 &lt;code&gt;errorText&lt;/code&gt; 对象的属性字符串之一，都是登录失败：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; const errorText = {
+        number: &#39;你输入的证件号不存在，请您重新输入！&#39;,
+        password: &#39;您的密码不正确，请您重新输入！&#39;,
+        database: &#39;数据库忙请稍候再试&#39;,
+        notLogin: &#39;请您登录后再使用&#39;,
+      };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同时，也经过抓包发现，登录成功后返回的 HTML 文本的 &lt;code&gt;title&lt;/code&gt; 部分是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;title&amp;gt;学分制综合教务&amp;lt;/title&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;而其他情况都不是。所以就可以大致判断，除了上面几种 &lt;code&gt;errorText&lt;/code&gt; 是登录失败之前，只有返回的 HTML 包含 &lt;code&gt;&amp;lt;title&amp;gt;学分制综合教务&amp;lt;/title&amp;gt;&lt;/code&gt; 才是返回成功。&lt;/p&gt;
+
+&lt;p&gt;登录成功后的 HTTP Response Headers 部分含有一个 &lt;code&gt;set-cookie&lt;/code&gt; 属性，而这个属性的值就是登录成功后的 cookie。我们抓那么多包，做了那么多准备，找的就是它。所以最终从登录成功的响应中取出 cookie 的代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const cookie = result.headers[&#39;set-cookie&#39;].join().split(&#39;;&#39;)[0];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之后获取需要评估的教师列表和评教，都需要在发送 HTTP 请求时在 HTTP Headers 里面带上该 cookie。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-3-获取需要评估的教师列表&#34;&gt;4.3 获取需要评估的教师列表&lt;/h3&gt;
+
+&lt;p&gt;获取需要评估的教师列表就简单很多了，发送的是 GET 请求，然后在 HTTP Headers 里面设置 Cookie 即可，其头发送 HTTP 请求的头信息大概如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const options = {
+    hostname: &#39;202.115.47.141&#39;,
+    port: 80,
+    path: &#39;/jxpgXsAction.do?oper=wjShow&#39;,
+    method: &#39;POST&#39;,
+    headers: {
+      Cookie: data.cookie,
+      &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;,
+      &#39;Content-Length&#39;: Buffer.byteLength(postData),
+    },
+  };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;4-4-进行评教&#34;&gt;4.4 进行评教&lt;/h3&gt;
+
+&lt;p&gt;获取到教师列表之后，就可以进行评教了。但这里有一个坑，就是进行评教之前，必须先访问评教页面，再发送评教请求。不然是无法评教成功的。就是这个问题，导致我纠结了好久。&lt;/p&gt;
+
+&lt;p&gt;也就是说，用程序模拟评教的时候，就要发送两个 HTTP 请求了，一是发送请求到某个老师的评教页面，对应的是 &lt;code&gt;models/showEvaluatePage.js&lt;/code&gt; 这个文件；二是发送评教请求，对应的是 &lt;code&gt;models/evaluate.js&lt;/code&gt;。而且这两个请求都是 POST 类型的。所以代码类逻辑似于下面这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 显示评教页面
+showEvalutePage(data)
+    .then(() =&amp;gt; {
+    // 评教
+    return evaluate(data)
+    })
+    .then((result) =&amp;gt; {
+    // 评教结果
+    })
+        .catch((exception) =&amp;gt; {
+            // 捕获异常
+        });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;4-5-public-js-style-js&#34;&gt;4.5 public/js/style.js&lt;/h3&gt;
+
+&lt;p&gt;前端的 JS 代码都在 &lt;code&gt;style.js&lt;/code&gt; 这个文件里面了，主要就是监听了按钮的点击事件，然后发送 HTTP 请求，并根据请求结果增删页面的 DOM。&lt;/p&gt;
+
+&lt;p&gt;前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 &lt;a href=&#34;http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/&#34;&gt;《AJAX: XHR, jQuery and Fetch API》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h2&gt;
+
+&lt;p&gt;到这里，这篇文章就基本完成了。本文讲述的实践，可能也不是最佳的实践，也有很多值得继续商讨和改进之处。只有不断实践，不断总结，才能写出更美的代码。人生不也一样？总结过去的教训，才能更好地前行。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>macOS Sierra Apache Multiple PHP versions</title>
+      <link>http://nodejh.com/post/macOS-Sierra-Apache-Multiple-PHP-versions/</link>
+      <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/macOS-Sierra-Apache-Multiple-PHP-versions/</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;本文主要内容翻译自&lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-multiple-php-versions&#34;&gt;《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》&lt;/a&gt;，并加入了自己的实践。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;关于如何在 macOS 10.12 上搭建 Web 开发环境，原作者一共写了三篇文章。这是第一篇。&lt;/p&gt;
+
+&lt;p&gt;当前的操作系统是 macOS 10.12，这篇教程讲述的环境搭建和一般 PHP 安装最大的不同是，我们不使用系统自带的 Apache（macOS 自带了 apache、python、ruby 等一些列开发工具），而是使用 Homebrew 的 Apache。当然，系统自带的 Apaceh 也是可以工作的。&lt;/p&gt;
+
+&lt;p&gt;在 macOs 上进行 Web 开发，确实是一件很令人愉快的事情。目前也有很多集成开发工具可以方便地搭建开发环境，比如 &lt;a href=&#34;http://www.mamp.info/en/mamp-pro/&#34;&gt;MAMP PRO&lt;/a&gt;，它具有非常漂亮的一个 UI 界面，并且集成了 Apache、PHP 和 MySQL 三个软件，非常适合新手使用。但是有时候，由于其配置模板有限，软件没有及时升级，使用它的时候可能会遇到软件版本不能及时更新、配置不够方便灵活等问题。&lt;/p&gt;
+
+&lt;p&gt;于是很多人就开始寻找替代方案。幸运的是，这篇文章就是一个替代方案。并且文章给出了简单直接的安装配置步骤。&lt;/p&gt;
+
+&lt;h2 id=&#34;1-安装-homebrew&#34;&gt;1. 安装 Homebrew&lt;/h2&gt;
+
+&lt;p&gt;以下所有软件的安装都依赖于 macOS 上的一个包管理工具 Homebrew。使用 &lt;code&gt;brew&lt;/code&gt; 命令，我们可以方便地在 mac 上安装各种功能各异的软件，当然，首先的安装 homebrew。安装步骤也非常简单，打开终端然后输入下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后等待终端提示你输入密码，程序就会开始自动安装。如果你没有安装 &lt;code&gt;XCode Command Line Tools&lt;/code&gt;，它会自动帮你装上。等待几分钟，待完成后，就可以使用下面的命令查看 Homebrew 是否正确安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew --version
+Homebrew 1.1.5
+Homebrew/homebrew-core (git revision a50a6; last commit 2016-12-28)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同时可能你也需要执行一下下面的命令，来检测配置是否正确：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew doctor
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;若有配置不当的地方，brew 会给出提示，安装提示修复即可。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-1-添加第三方仓库&#34;&gt;1.1 添加第三方仓库&lt;/h3&gt;
+
+&lt;p&gt;我们将需要使用一些来自第三方仓库的软件，所以需要添加额外的仓库：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew tap homebrew/dupes
+$ brew tap homebrew/versions
+$ brew tap homebrew/php
+$ brew tap homebrew/apache
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后更新 brew：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来就可以尽情使用 brew 了。&lt;/p&gt;
+
+&lt;h2 id=&#34;2-apache-的安装&#34;&gt;2. Apache 的安装&lt;/h2&gt;
+
+&lt;p&gt;最新的 macOS 10.12 预装了 Apache 2.4，但苹果移除了一些必要的脚本，所以 Apache 和 Homebrew 配合使用将会变得困难。当然解决该问题的方法就是，使用 Homebrew 重新安装配置 Apache，并使其运行在标准端口上（80/443）。&lt;/p&gt;
+
+&lt;p&gt;如果之前已经安装有 Apache 并且在运行中，首先就需要关闭它，然后移除自动加载脚本。下面的命令没有任何副作用，只管运行就好了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl stop
+$ sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist 2&amp;gt;/dev/null
+$ brew install httpd24 --with-privileged-ports --with-http2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来需要等待一小会儿，因为这个命令是下载源码并编译安装 Apache。上面命令执行结果如下面这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;🍺  /usr/local/Cellar/httpd24/2.4.23_2: 212 files, 4.4M, built in 1 minute 45 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里的路径很重要，因为在接下来的步骤中，我们都需要使用这个路径，在这个例子中，路径是 &lt;code&gt;/usr/local/Cellar/httpd24/2.4.23_2/&lt;/code&gt;，如果你的路径不是这个，则在运行下面的命令的时候，将其替换为你的路径就可以了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo cp -v /usr/local/Cellar/httpd24/2.4.23_2/homebrew.mxcl.httpd24.plist /Library/LaunchDaemons
+sudo chown -v root:wheel /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+sudo chmod -v 644 /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在我们就通过 Homebrew 安装上了 Apache，并使用管理员权限将其配置为自动启动。这个时候 Apache 应该已经在运行了，所以你打开浏览器访问 &lt;code&gt;localhost&lt;/code&gt; 将会看到 “It works！”。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-1-一些小问题&#34;&gt;2.1 一些小问题&lt;/h3&gt;
+
+&lt;p&gt;如果你的浏览器提示说不能建立连接到服务器，那么首先检查一下 Apache 服务是否已经启动了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ps -aef | grep httpd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果 Apache 正在运行，你将会看到一些 httpd 进程。&lt;/p&gt;
+
+&lt;p&gt;重启 Apache：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们也可以监控 Apache 的错误日志，查看是否有错误信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tail -f /usr/local/var/log/apache2/error_log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果上面这些步骤都没有解决问题，那么确定你的 Apache 是否监听了 &lt;code&gt;80&lt;/code&gt; 端口，即 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 配置文件是否有 &lt;code&gt;Listen: 80&lt;/code&gt;，或者 &lt;code&gt;Listen:&lt;/code&gt; 后面是其他端口。&lt;/p&gt;
+
+&lt;p&gt;Apache 是通过 &lt;code&gt;apachectl&lt;/code&gt; 来进行控制的，它的基本使用方法如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl start
+$ sudo apachectl stop
+$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;-k&lt;/code&gt; 参数将强制重启 Apache，不管 Apache 是否准备好。&lt;/p&gt;
+
+&lt;p&gt;最终我将我的 Apache 的端口修改为了 &lt;code&gt;7070&lt;/code&gt;，主要是因为 &lt;code&gt;80&lt;/code&gt; 端口是 HTTP 服务的默认端口，&lt;code&gt;8080&lt;/code&gt; 端口是 Tomcat 的默认端口，为了避免与其他软件如 nginx 等发生潜在端口冲突问题，所以改为了 &lt;code&gt;7070&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-2-apache-的配置&#34;&gt;2.2 Apache 的配置&lt;/h3&gt;
+
+&lt;p&gt;现在我们已经有了一个 Web 服务器，接下来我们需要对其进行一些配置，以便于更方便我们本地的开发。&lt;/p&gt;
+
+&lt;p&gt;首先修改 Apache 的 &lt;code&gt;document root&lt;/code&gt;，这是 Web 服务的根目录，Apache 会从这个目录中寻找资源文件。默认的 document root 是 &lt;code&gt;/Library/WebServer/Documents&lt;/code&gt;。作为一个开发环境，我们可能更希望网站的根目录（即 Web 服务的根目录）在我们自己的用户主目录下。所以接下来修改配置。&lt;/p&gt;
+
+&lt;p&gt;我们可以在终端通过 &lt;code&gt;open -e&lt;/code&gt; 命令使用 Mac 默认的文本编辑器打开一个文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ open -e /usr/local/etc/apache2/2.4/httpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;搜索 &lt;code&gt;DocumentRoot&lt;/code&gt;，然后你会看到下面这行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DocumentRoot &amp;quot;/usr/local/var/www/htdocs&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将这行配置改为自己的用户主目录中的目录，把 &lt;code&gt;your_user&lt;/code&gt; 改为你的用户名：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DocumentRoot /Users/your_user/sites
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;紧接着还要将上面这行代码下面的 &lt;code&gt;&amp;lt;Directory&amp;gt;&lt;/code&gt; 也改为你的新的 document root：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;Directory /Users/your_user/sites&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 &lt;code&gt;&amp;lt;Directory&amp;gt;&lt;/code&gt; 代码块里面，我们还需要将 &lt;code&gt;AllowOverride&lt;/code&gt; 改为下面的样子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# AllowOverride controls what directives may be placed in .htaccess files.
+# It can be &amp;quot;All&amp;quot;, &amp;quot;None&amp;quot;, or any combination of the keywords:
+#   AllowOverride FileInfo AuthConfig Limit
+#
+AllowOverride All
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来通过取消注释使用 &lt;code&gt;mod_rewrite&lt;/code&gt; 模块：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule rewrite_module libexec/mod_rewrite.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-4-用户和用户组&#34;&gt;2.4 用户和用户组&lt;/h3&gt;
+
+&lt;p&gt;现在 Apache 已经指向了我们的用户主目录下的 sites 目录，不过依旧还存在一个问题。Apche 运行的时候，其用户及用户组都是 &lt;code&gt;daemon&lt;/code&gt;，当程序访问我们的用户主目录的时候，就会遇到权限问题。解决这个问题的方法就是，在 &lt;code&gt;httpd.conf&lt;/code&gt; 将用户和用户组分别改为你的用户名 &lt;code&gt;your_user&lt;/code&gt; 和 &lt;code&gt;staff&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;User your_user
+Group staff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-5-sites-目录&#34;&gt;2.5 sites 目录&lt;/h3&gt;
+
+&lt;p&gt;接下来就需要在用户主目录下创建一个 &lt;code&gt;sites&lt;/code&gt; 目录了，然后添加一个简单的 &lt;code&gt;index.html&lt;/code&gt; 文件，并写入 &lt;code&gt;&amp;lt;h1&amp;gt;My User Web Root&amp;lt;/h1&amp;gt;&lt;/code&gt; 代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir ~/Sites
+$ echo &amp;quot;&amp;lt;h1&amp;gt;My User Web Root&amp;lt;/h1&amp;gt;&amp;quot; &amp;gt; ~/Sites/index.html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后重启 Apache 使配置生效：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再访问 &lt;code&gt;http://localhost&lt;/code&gt; 就会显示 &lt;code&gt;index.html&lt;/code&gt; 里面的内容。如果你的配置也生效了，我们就可以继续下一步了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-sites-webroot.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-sites-webroot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;3-php-的安装&#34;&gt;3. PHP 的安装&lt;/h2&gt;
+
+&lt;p&gt;我们接下来安装 PHP 5.5、PHP 5.6、PHP 7.0 和 PHP 7.1，并使用一个简单的脚本来切换不同的版本。&lt;/p&gt;
+
+&lt;p&gt;你可以使用 &lt;code&gt;brew options php55&lt;/code&gt; 来查看所有可以安装的选项设置，比如在这个例子中，我们使用 &lt;code&gt;--with-httpd24&lt;/code&gt; 参数来编译安装 PHP 以及使 Apache 支持 PHP 所需要的一些模块。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install php55 --with-httpd24
+$ brew unlink php55
+$ brew install php56 --with-httpd24
+$ brew unlink php56
+$ brew install php70 --with-httpd24
+$ brew unlink php70
+$ brew install php71 --with-httpd24
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的命令会从源码下载 PHP，并进行编译安装。这可能需要一点时间。&lt;/p&gt;
+
+&lt;p&gt;如果之前已经安装过 PHP，可能需要使用 &lt;code&gt;reinstall&lt;/code&gt; 来代替 &lt;code&gt;install&lt;/code&gt; 进行安装。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-0-1-issue-configure-error-cannot-find-libz&#34;&gt;3.0.1 ISSUE configure: error: Cannot find libz&lt;/h4&gt;
+
+&lt;p&gt;我在安装的时候遇到了一个错误：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;==&amp;gt; ./configure --prefix=/usr/local/Cellar/php56/5.6.11_2 --localstatedir=/usr/local/var --sysconfdir=/usr/local/etc/php/5.6 --with-config-file-path=/usr/local/etc/php/5.6 --with
+checking whether to enable the SQLite3 extension... yes
+checking bundled sqlite3 library... yes
+checking for ZLIB support... yes
+checking if the location of ZLIB install directory is defined... no
+configure: error: Cannot find libz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最终在 Github 上找到了该 ISSUE &lt;a href=&#34;https://github.com/Homebrew/homebrew-php/issues/1946&#34;&gt;Cannot find libz when install php56 #1946
+&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;其原因可能是 Xcode 的 Command Line Tool 没有正确安装。解决问题的方法是运行下面的命令来重新安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;xcode-select --install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可能你也需要根据自己的需要修改一些 PHP 的配置，常见的比如修改内存配置或 &lt;code&gt;date.timezone&lt;/code&gt; 配置。各个版本的配置文件即 &lt;code&gt;php.ini&lt;/code&gt; 在下面的目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/usr/local/etc/php/5.5/php.ini
+/usr/local/etc/php/5.6/php.ini
+/usr/local/etc/php/7.0/php.ini
+/usr/local/etc/php/7.1/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-1-apache-和-php-的配置-第一部分&#34;&gt;3.1. Apache 和 PHP 的配置 - 第一部分&lt;/h3&gt;
+
+&lt;p&gt;我们已经成功安装了多个版本的 PHP，但我们还需要告诉 Apache 怎么使用它们。再次打开 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt;，并搜索 &lt;code&gt;#LoadModule php5_module&lt;/code&gt; 所在行。&lt;/p&gt;
+
+&lt;p&gt;可以发现，每个版本的 PHP 都有一个 &lt;code&gt;LoadModule&lt;/code&gt; 入口，每个 &lt;code&gt;LoadModule&lt;/code&gt; 都指向一个特定版本的 PHP。这里默认的路径如 &lt;code&gt;/usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so&lt;/code&gt; 是 &lt;code&gt;brew&lt;/code&gt; 应用程序的安装路径，我们可以使用一个更通用的路径来替换它们（具体的路径可能有所不同）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule php5_module        /usr/local/Cellar/php55/5.5.38_11/libexec/apache2/libphp5.so
+LoadModule php5_module        /usr/local/Cellar/php56/5.6.29_5/libexec/apache2/libphp5.so
+LoadModule php7_module        /usr/local/Cellar/php70/7.0.14_7/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将上面的路径修改为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之所以可以这么修改，是因为 &lt;code&gt;/usr/local/opt/php71&lt;/code&gt; 其实是由 &lt;code&gt;brew&lt;/code&gt; 创建的 &lt;code&gt;/usr/local/Cellar/php71&lt;/code&gt; 的一个软连接。&lt;/p&gt;
+
+&lt;p&gt;这么修改的好处是，升级 PHP 的小版本号的时候，比如由 &lt;code&gt;7.1.0_11&lt;/code&gt; 时，我们就不需要再修改 &lt;code&gt;LoadModule&lt;/code&gt; 对应的值了。&lt;/p&gt;
+
+&lt;p&gt;我们每次开发或运行依旧只需要一般也只能使用某一个版本的 PHP。以我们要使用 7.1 这个版本开发应用为例，将其他版本的 &lt;code&gt;LoadModule&lt;/code&gt; 都注释掉，只保留对应版本的 &lt;code&gt;LoadModule&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+#LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+#LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样的配置就会告诉 Apache 使用 PHP 7.1 来处理 PHP 请求。（稍后我们将添加切换 PHP 版本的脚本。）&lt;/p&gt;
+
+&lt;p&gt;接下来还需要配置 PHP 的主目录索引文件（Directory Indexes），找到下面的代码块：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;IfModule dir_module&amp;gt;
+    DirectoryIndex index.html
+&amp;lt;/IfModule&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将其替换为下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;IfModule dir_module&amp;gt;
+    DirectoryIndex index.php index.html
+&amp;lt;/IfModule&amp;gt;
+
+&amp;lt;FilesMatch \.php$&amp;gt;
+    SetHandler application/x-httpd-php
+&amp;lt;/FilesMatch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;保存后重启 Apache，PHP 的安装就完成了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-2-验证-php-安装结果&#34;&gt;3.2. 验证 PHP 安装结果&lt;/h3&gt;
+
+&lt;p&gt;验证 PHP 是否正确安装的最好方法是使用 &lt;code&gt;phpinfo()&lt;/code&gt; 这个函数，这个函数会输出 PHP 的版本等信息。当然，最好不要在你的生产环境中使用它。但在开发环境中，使用它对我们了解系统中 PHP 安装信息非常有帮助。&lt;/p&gt;
+
+&lt;p&gt;在网站主目录即你的 &lt;code&gt;sites/&lt;/code&gt; 目录下创建一个 &lt;code&gt;info.php&lt;/code&gt; 的文件，然后输入下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;?php
+phpinfo();
+?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;打开浏览器，访问 &lt;code&gt;http://localhost:7070/info.php&lt;/code&gt;，你讲看到下面的完美的 PHP 信息页面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page.png&#34; alt=&#34;php information page&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果能够看到类似的页面，就说明 Apache 和 PHP 已经成功运行了。你可以通过注释 &lt;code&gt;LoadModule ... php56 ...&lt;/code&gt; 来测试其他版本的 PHP。修改配置后，重启 Apache 并刷新页面就能看到类似的页面了。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-3-php-版本切换脚本&#34;&gt;3.3 PHP 版本切换脚本&lt;/h3&gt;
+
+&lt;p&gt;在开发中，如果每次都通过修改 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 文件去切换 PHP 版本，显然太麻烦了。有没有更容易的方法呢？幸运的是，一些勤劳的开发者已经写好了这样的一个脚本 &lt;a href=&#34;https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11&#34;&gt; PHP switcher script&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;接下来我们将添加 &lt;code&gt;sphp&lt;/code&gt; 到 brew 的 &lt;code&gt;/usr/local/bin&lt;/code&gt; 里面。原文给的方法是使用下面的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ curl -L https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11/raw &amp;gt; /usr/local/bin/sphp
+$ chmod +x /usr/local/bin/sphp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中第一行命令的作用，就是将 Gist 上的这个切换 PHP 版本的脚本下载并写入到 &lt;code&gt;/usr/local/bin/sphp&lt;/code&gt; 这个文件里面。第二行命令的作用是赋予 &lt;code&gt;/usr/local/bin/sphp&lt;/code&gt; 可执行权限。&lt;/p&gt;
+
+&lt;p&gt;但由于国内并不能访问 Gist，所以第一行命令并不能执行成功。所以我在这里提供了整个脚本代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+# Check if command was ran as root.
+if [[ $(id -u) -eq 0 ]]; then
+    echo &amp;quot;The command \&amp;quot;sphp\&amp;quot; should not be executed as root or via sudo directly.&amp;quot;
+    echo &amp;quot;When a service requires root access, you will be prompted for a password as needed.&amp;quot;
+    exit 1
+fi
+
+# Usage
+if [ $# -ne 1 ]; then
+    echo &amp;quot;Usage: sphp [phpversion]&amp;quot;
+    echo &amp;quot;Versions installed:&amp;quot;
+    brew list | grep &#39;^php[0-9]\{2,\}$&#39; | grep -o -E &#39;[0-9]+&#39; | while read -r line ; do
+        echo &amp;quot; - phpversion: $line&amp;quot;
+    done
+    exit 1
+fi
+
+currentversion=&amp;quot;`php -r \&amp;quot;error_reporting(0); echo str_replace(&#39;.&#39;, &#39;&#39;, substr(phpversion(), 0, 3));\&amp;quot;`&amp;quot;
+newversion=&amp;quot;$1&amp;quot;
+
+majorOld=${currentversion:0:1}
+majorNew=${newversion:0:1}
+minorNew=${newversion:1:1}
+
+brew list php$newversion 2&amp;gt; /dev/null &amp;gt; /dev/null
+
+if [ $? -eq 0 ]; then
+    echo &amp;quot;PHP version $newversion found&amp;quot;
+
+    # Check if new version is already the current version.
+    # if [ &amp;quot;${newversion}&amp;quot; == &amp;quot;${currentversion}&amp;quot; ]; then
+    #     echo -n &amp;quot;PHP version ${newversion} is already being used. Continue by reloading? (y/n) &amp;quot;
+    #     while true; do
+    #         read -n 1 yn
+    #         case $yn in
+    #             [Yy]* ) echo &amp;amp;&amp;amp; break;;
+    #             [Nn]* ) echo &amp;amp;&amp;amp; exit 1;;
+    #         esac
+    #     done
+    # fi
+
+    echo &amp;quot;Unlinking old binaries...&amp;quot;
+    brew unlink php$currentversion 2&amp;gt; /dev/null &amp;gt; /dev/null
+
+    echo &amp;quot;Linking new binaries...&amp;quot;
+    brew link php$newversion
+
+    echo &amp;quot;Linking new modphp addon...&amp;quot;
+    sudo ln -sf `brew list php$newversion | grep libphp` /usr/local/lib/libphp${majorNew}.so
+    echo /usr/local/lib/libphp${majorNew}.so
+    echo &amp;quot;Fixing LoadModule...&amp;quot;
+    apacheConf=`httpd -V | grep -i server_config_file | cut -d &#39;&amp;quot;&#39; -f 2`
+    sudo sed -i -e &amp;quot;/LoadModule php${majorOld}_module/s/^#*/#/&amp;quot; $apacheConf
+
+    if grep &amp;quot;LoadModule php${majorNew}_module .*php${newversion}&amp;quot; $apacheConf &amp;gt; /dev/null
+    then
+        sudo sed -i -e &amp;quot;/LoadModule php${majorNew}_module .*php${newversion}/s/^#//&amp;quot; $apacheConf
+    else
+        sudo sed -i -e &amp;quot;/LoadModule php${majorNew}_module/s/^#//&amp;quot; $apacheConf
+    fi
+
+    echo &amp;quot;Updating version file...&amp;quot;
+
+    pgrep -f /usr/sbin/httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    if [ $? -eq 0 ]; then
+        echo &amp;quot;Restarting system Apache...&amp;quot;
+        sudo pkill -9 -f /usr/sbin/httpd
+        sudo /usr/sbin/apachectl -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    fi
+
+    pgrep -f /usr/local/&amp;quot;Cellar|opt&amp;quot;/*/httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    if [ $? -eq 0 ]; then
+        echo &amp;quot;Restarting homebrew Apache...&amp;quot;
+        sudo pkill -9 -f /usr/local/&amp;quot;Cellar|opt&amp;quot;/*/httpd
+        sudo /usr/local/bin/apachectl -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    fi
+
+    # pgrep -x httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    # if [ $? -eq 0 ]; then
+    #     echo &amp;quot;Restarting non-root homebrew Apache...&amp;quot;
+    #     httpd -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    # fi
+
+    echo &amp;quot;Done.&amp;quot;
+
+    # Show PHP CLI version for verification.
+    echo &amp;amp;&amp;amp; php -v
+else
+    echo &amp;quot;PHP version $majorNew.$minorNew was not found.&amp;quot;
+    echo &amp;quot;Try \`brew install php${newversion}\` first.&amp;quot;
+    exit 1
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过 &lt;code&gt;open -e /usr/local/bin/sphp&lt;/code&gt; 打开 &lt;code&gt;sphp&lt;/code&gt; 文件，并将上面的代码复制进入，然后赋予可执行权限：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ chmod +x /usr/local/bin/sphp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-4-检测-path-路径&#34;&gt;3.4. 检测 PATH 路径&lt;/h3&gt;
+
+&lt;p&gt;Homebrew 在安装程序的时候一般会把程序的可执行文件加入到 &lt;code&gt;/usr/local/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/sbin&lt;/code&gt; 这两个目录里面。通过下面的命令可以快速测试可执行文件路径是否正确：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ echo $PATH
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果没有看到类似的输出，你可能需要手动添加这些路径。添加下面的代码到 shell 的配置文件中（不同的 shell 可能需要将路径添加到不同的配置文件中，如 &lt;code&gt;~/.profile&lt;/code&gt; &lt;code&gt;~/.bash_profile&lt;/code&gt; &lt;code&gt;~/.zshrc&lt;/code&gt;）。如果使用的是 macOS 默认的 shell，则添加到 &lt;code&gt;~/.profile&lt;/code&gt; （若没有这个文件，则创建它）；如果使用的是 zsh，则添加到 &lt;code&gt;~/.zshrc&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在添加路径到配置文件的时候，最好关闭其他不相关的终端，因为某些开着的终端可能会对路径造成一些奇怪的问题。添加完成后，配置会在下次打开终端的时候生效。或者使用下面的命令，重新载入配置文件使其立即生效：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 若使用的是默认终端
+$ source ~/.profile
+# 或如果使用的是 zsh
+$ source ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-5-apache-和-php-的配置-第二部分&#34;&gt;3.5. Apache 和 PHP 的配置 - 第二部分&lt;/h3&gt;
+
+&lt;p&gt;尽管之前我们已经配置好了 Apache 和 PHP，现在我们还需要修改配置文件，来使用 &lt;code&gt;PHP switcher script&lt;/code&gt; 切换 PHP 的版本。继续打开 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 然后找到 &lt;code&gt;LoadModule php&lt;/code&gt; 所在的行：&lt;/p&gt;
+
+&lt;p&gt;然后注释掉正在使用的 &lt;code&gt;LoadModule&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+#LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+#LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+#LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;并在下面添加：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Brew PHP LoadModule for `sphp` switcher
+#LoadModule php5_module /usr/local/lib/libphp5.so
+LoadModule php7_module /usr/local/lib/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果你安装了 PHP 5.5 或 5.6 等，注释掉的 &lt;code&gt;php5_module&lt;/code&gt; 同样也非常重要。&lt;code&gt;PHP switcher script&lt;/code&gt; 会自动注释或取消注释 PHP module。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-6-php-切换测试&#34;&gt;3.6 PHP 切换测试&lt;/h3&gt;
+
+&lt;p&gt;完成上面的步骤之后，就可以使用 &lt;code&gt;sphp&lt;/code&gt; 命令来切换 PHP 版本了。&lt;code&gt;sphp&lt;/code&gt; 的参数是由两个数字组合成的两位数：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sphp 5
+PHP version 55 found
+Unlinking old binaries...
+Linking new binaries...
+Linking /usr/local/Cellar/php55/5.5.38_11... 17 symlinks created
+Linking new modphp addon...
+/usr/local/lib/libphp5.so
+Fixing LoadModule...
+Updating version file...
+Restarting homebrew Apache...
+Done.
+
+PHP 5.5.38 (cli) (built: Dec 28 2016 15:48:28)
+Copyright (c) 1997-2015 The PHP Group
+Zend Engine v2.5.0, Copyright (c) 1998-2015 Zend Technologies
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后访问 &lt;code&gt;http://localhost:7070/info.php&lt;/code&gt;，可以看到 PHP 版本已经正确切换：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-sphp.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-sphp&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-6-1-issue-unable-to-load-dynamic-library-usr-local-opt-php56-mongo-mongo-so&#34;&gt;3.6.1 ISSUE Unable to load dynamic library &amp;lsquo;/usr/local/opt/php56-mongo/mongo.so&amp;rsquo;&lt;/h4&gt;
+
+&lt;p&gt;我在切换版本的时候也遇到了问题：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sphp 71
+...
+Warning: PHP Startup: Unable to load dynamic library &#39;/usr/local/opt/php56-mongo/mongo.so&#39; - dlopen(/usr/local/opt/php56-mongo/mongo.so, 9): image not found in Unknown on line 0
+PHP 5.6.29 (cli) (built: Dec 28 2016 15:58:30)
+Copyright (c) 1997-2016 The PHP Group
+Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;根据错误提示，大概是因为 &lt;code&gt;php56-mongo&lt;/code&gt; 这个扩展没有，于是我使用 brew 安装了 &lt;code&gt;php56-mongo&lt;/code&gt; 问题就解决了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install php56-mongo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-7-更新-php-和其他通过-brew-安装的程序&#34;&gt;3.7 更新 PHP 和其他通过 Brew 安装的程序&lt;/h3&gt;
+
+&lt;p&gt;使用 brew 更新 PHP 和其他通过 brew 安装的程序非常简单，第一步是更新 brew 本身：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;升级后将会列出一系列可测回归内心的程序，然后使用下面的命令更新：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew upgrade
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-8-使用具体的-最新的-php-版本&#34;&gt;3.8 使用具体的/最新的 PHP 版本&lt;/h3&gt;
+
+&lt;p&gt;当我们使用 PHP 的时候，每次我们只使用了其中一个版本，并且只有当前使用的版本会更新到最新版本。可以使用下面的命令查看当前 PHP 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ php -v
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以使用下面的命令查看具体的可用 PHP 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew info php55
+homebrew/php/php55: stable 5.5.38 (bottled), HEAD
+PHP Version 5.5
+https://php.net
+Conflicts with: php53, php54, php56, php70, php71
+/usr/local/Cellar/php55/5.5.38_11 (329 files, 47.7M)
+  Built from source on 2016-12-28 at 15:49:20 with: --with-httpd24
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;比如上面的 PHP 5.5 版本的只有一个可用版本 5.5.38。&lt;/p&gt;
+
+&lt;p&gt;然后可以使用 brew 来切换到一个具体的版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew switch php55 5.5.38
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到此，这篇文章就结束了。你已经完成掌握了 Apache 2.4 和各个版本 PHP 的安装，并且能够在 5.5 5.6 7.0 7.1 中快速切换 PHP 版本。原作者还写了两外两篇文章，分别是 &lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-mysql-vhost-apc&#34;&gt;macOS 10.12 Sierra Apache Setup: MySQL, APC &amp;amp; More&lt;/a&gt; 和 &lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-ssl&#34;&gt;macOS 10.12 Sierra Apache Setup: SSL&lt;/a&gt;，近期内我也会将它们翻译成中文，并加入自己的实践总结。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: []()&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Wechat Development Access Guide</title>
+      <link>http://nodejh.com/post/Wechat-Development-Access-Guide/</link>
+      <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Wechat-Development-Access-Guide/</guid>
+      <description>
+
+&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
+
+&lt;p&gt;本文主要提供了 Node.js 版本的验证代码，同时把步骤细化，让开发者更方便地了解整个接入过程，对初学者更友好。&lt;/p&gt;
+
+&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;在微信公众平台后台的 &lt;code&gt;开发者中心/填写服务器配置&lt;/code&gt; 页面，配置好 URL 和 Token 后，复制下面的代码，修改 Token，在服务器运行，然后再在页面上点击提交即可进行接入验证。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require(&#39;http&#39;);
+const url = require(&#39;url&#39;);
+const crypto = require(&#39;crypto&#39;);
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = &#39;token&#39;;
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash(&#39;sha1&#39;);
+  md5sum.update(str);
+  const ciphertext = md5sum.digest(&#39;hex&#39;);
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log(&#39;Request URL: &#39;, req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log(&#39;timestamp: &#39;, timestamp);
+  console.log(&#39;nonce: &#39;, nonce);
+  console.log(&#39;signature: &#39;, signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(&#39;&#39;));
+  console.log(&#39;Sha1 String: &#39;, tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log(&#39;Check Success&#39;);
+  } else {
+    res.end(&#39;failed&#39;);
+    console.log(&#39;Check Failed&#39;);
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&amp;gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log(&#39;Start Checking...&#39;);
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;填写服务器配置&#34;&gt;填写服务器配置&lt;/h2&gt;
+
+&lt;p&gt;登录进入微信公众平台后台管理页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-login-1.png&#34; alt=&#34;登录&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后进入 &lt;code&gt;基本配置&lt;/code&gt; 页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-index.png&#34; alt=&#34;基本配置&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再然后选择 &lt;code&gt;修改配置&lt;/code&gt;，进入到 &lt;code&gt;填写服务器配置&lt;/code&gt; 子页面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-04-Wechat-Development-Access-Guide-config-page.png&#34; alt=&#34;填写服务器配置&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;URL 为已经解析到你的服务器的域名，这里以 &lt;a href=&#34;http://wechat.nodejh.com&#34;&gt;http://wechat.nodejh.com&lt;/a&gt; 这个二级域名为例&lt;/li&gt;
+&lt;li&gt;Token 随意填写即可&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;验证服务器地址的有效性&#34;&gt;验证服务器地址的有效性&lt;/h2&gt;
+
+&lt;p&gt;验证服务器地址的有效性，需要在域名对应的服务器上运行一段验证程序。该程序会接收上个步骤中的域名所发送的 HTTP 请求。&lt;/p&gt;
+
+&lt;p&gt;官方文档提供了 PHP 的示例程序，下面是 Node.js 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// checkSignature.js
+/**
+ * 整个验证步骤分为三步
+ *    1. 将token、timestamp、nonce三个参数进行字典序排序
+ *    2. 将三个参数字符串拼接成一个字符串进行sha1加密
+ *    3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+ */
+
+
+const http = require(&#39;http&#39;);
+const url = require(&#39;url&#39;);
+const crypto = require(&#39;crypto&#39;);
+
+
+// Web 服务器端口
+const port = 3333;
+// 微信公众平台服务器配置中的 Token
+const token = &#39;token&#39;;
+
+
+/**
+ *  对字符串进行sha1加密
+ * @param  {string} str 需要加密的字符串
+ * @return {string}     加密后的字符串
+ */
+function sha1(str) {
+  const md5sum = crypto.createHash(&#39;sha1&#39;);
+  md5sum.update(str);
+  const ciphertext = md5sum.digest(&#39;hex&#39;);
+  return ciphertext;
+}
+
+/**
+ * 验证服务器的有效性
+ * @param  {object} req http 请求
+ * @param  {object} res http 响应
+ * @return {object}     验证结果
+ */
+function checkSignature(req, res) {
+  const query = url.parse(req.url, true).query;
+  console.log(&#39;Request URL: &#39;, req.url);
+  const signature = query.signature;
+  const timestamp = query.timestamp;
+  const nonce = query.nonce;
+  const echostr = query.echostr;
+  console.log(&#39;timestamp: &#39;, timestamp);
+  console.log(&#39;nonce: &#39;, nonce);
+  console.log(&#39;signature: &#39;, signature);
+  // 将 token/timestamp/nonce 三个参数进行字典序排序
+  const tmpArr = [token, timestamp, nonce];
+  const tmpStr = sha1(tmpArr.sort().join(&#39;&#39;));
+  console.log(&#39;Sha1 String: &#39;, tmpStr);
+  // 验证排序并加密后的字符串与 signature 是否相等
+  if (tmpStr === signature) {
+    // 原样返回echostr参数内容
+    res.end(echostr);
+    console.log(&#39;Check Success&#39;);
+  } else {
+    res.end(&#39;failed&#39;);
+    console.log(&#39;Check Failed&#39;);
+  }
+}
+
+
+const server = http.createServer(checkSignature)
+server.listen(port, () =&amp;gt; {
+  console.log(`Server is runnig ar port ${port}`);
+  console.log(&#39;Start Checking...&#39;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;因为验证要使用 80(HTTP) 端口或 443(HTTPS) 端口，而 Node.js 一般不直接监听 80 端口，所以需要使用 Nginx 或其他程序将来自 &lt;code&gt;http://wechat.nodejh.com&lt;/code&gt; 的请求转发到 Node.js 程序端口如上面的 3333。关于 Nginx 的配置，可以看我之前写的&lt;a href=&#34;http://nodejh.com/post/Use-Nginx-Reverse-Proxy-Nodejs/&#34;&gt;《使用 Ngnix 给 Node.js 应用做反向代理》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;这里也顺便给出该程序的 Nginx 配置&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;upstream nodejs {
+    server 127.0.0.1:3333;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+    server_name wechat.nodejh.com;
+    # 日志
+    access_log /var/log/nginx/wechat.nodejh.com.log;
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host  $http_host;
+        proxy_set_header X-Nginx-Proxy true;
+        proxy_set_header Connection &amp;quot;&amp;quot;;
+        proxy_pass http://nodejs;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;配置就绪之后，启动验证程序&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ node checkSignature.js
+Server is runnig ar port 3333
+Start Checking...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样，&lt;code&gt;checkSignature.js&lt;/code&gt; 就会创建一个 3333 端口的服务。访问 &lt;code&gt;http://wechat.nodejh.com&lt;/code&gt; 这个域名的时候，Nginx 就会将请求转发到 3333 端口。&lt;/p&gt;
+
+&lt;p&gt;在微信公众平台后台管理的服务器配置页面，点击提交按钮，就会填写的 URL （这里是 &lt;a href=&#34;http://wechat.nodejh.com）发送一个&#34;&gt;http://wechat.nodejh.com）发送一个&lt;/a&gt; HTTP 请求，并带上 &lt;code&gt;signature,timestamp,nonce,echostr&lt;/code&gt; 这四个参数。&lt;/p&gt;
+
+&lt;p&gt;启动 &lt;code&gt;checkSignature.js&lt;/code&gt; 后，在服务器配置页面，点击提交按钮，就会开启验证。&lt;/p&gt;
+
+&lt;p&gt;服务器端出现下面的结果，就说明验证成功。验证成功后，微信公众平台后台会自动跳转到 &lt;code&gt;基本配置&lt;/code&gt; 页面。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 服务端响应...
+signature:  8fffb8f011d64819ec61105415114694bb03d392
+Sha1 String:  8fffb8f011d64819ec61105415114694bb03d392
+Check Success
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后就可以依据接口文档实现业务逻辑了。&lt;/p&gt;
+
+&lt;p&gt;后续我也还会更新一些关于微信公众平台开发的文章，欢迎关注。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/24&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/24&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Fix Locale Setting Warning From Perl</title>
+      <link>http://nodejh.com/post/Fix-Locale-Setting-Warning-From-Perl/</link>
+      <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Fix-Locale-Setting-Warning-From-Perl/</guid>
+      <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = &amp;quot;en_US:&amp;quot;,
+	LC_ALL = (unset),
+	LC_CTYPE = &amp;quot;zh_CN.UTF-8&amp;quot;,
+	LANG = &amp;quot;en_US&amp;quot;
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale (&amp;quot;en_US&amp;quot;).
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_ALL to default locale: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;那是因为安装软件时，都会去执行一个 &lt;code&gt;update-locale&lt;/code&gt; 的命令，用来更新 &lt;code&gt;locale&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;这个命令是一个脚本，用 perl 写的，可以用 &lt;code&gt;whereis update-locale&lt;/code&gt; 查到，位置在 &lt;code&gt;/usr/sbin/update-locale&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;上述报错并不是因为 &lt;code&gt;update-locale&lt;/code&gt; 命令而引起，&lt;code&gt;update-locale&lt;/code&gt; 这段脚本没有问题，而是因为perl。&lt;/p&gt;
+
+&lt;p&gt;可以使用以下命令测试：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;perl -e exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其实，真正的原因是 perl 为系统使用 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt;，但系统并没有安装 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;这种情况一般是vps比较常见，因为一般都是用 ssh 的方式连接到 vps 上的 &lt;code&gt;sshd&lt;/code&gt; 有这个机制，会把客户机上的语言环境带到远程的机器上。&lt;/p&gt;
+
+&lt;p&gt;客户机一般都会设置 &lt;code&gt;zh_CN.UTF-8&lt;/code&gt; 语言，用来显示中文，而远端的vps一般就只有en_US.UTF-8，zh_CN.UTF-8一旦带过去就会报找不到的错误。&lt;/p&gt;
+
+&lt;p&gt;所以安装一个中文语言，perl就不会报错了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo locale-gen zh_CN zh_CN.UTF-8
+Generating locales...
+  zh_CN.GB2312... done
+  zh_CN.UTF-8... done
+Generation complete.
+$ sudo dpkg-reconfigure locales
+Generating locales...
+  en_US.UTF-8... done
+  zh_CN.GB2312... up-to-date
+  zh_CN.UTF-8... up-to-date
+Generation complete.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个时候，还可以使用 &lt;code&gt;locale&lt;/code&gt; 当前有哪些语言：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ locale
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://stackoverflow.com/questions/2499794/how-to-fix-a-locale-setting-warning-from-perl&#34;&gt;How to fix a locale setting warning from Perl&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ubuntuforums.org/showthread.php?t=1346581&#34;&gt;perl: warning: Setting locale failed.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Use and Break Promise Chain</title>
+      <link>http://nodejh.com/post/Use-and-Stop-Promise-Break-Chain/</link>
+      <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Use-and-Stop-Promise-Break-Chain/</guid>
+      <description>
+
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+
+&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
+
+&lt;p&gt;在程序中，只要返回了一个 promise 对象，如果 promise 对象不是 Rejected 或 Fulfilled 状态，then 方法就会继续调用。利用这个特性，可以处理多个异步逻辑。但有时候某个 then 方法的执行结果可能会决定是否需要执行下一个 then，这个时候就需中止 promise，主要思想就是使用 reject 来中止 promise 的 then 继续执行。&lt;/p&gt;
+
+&lt;p&gt;“中止”这个词不知道用得是否准确。这里可能还是 &lt;code&gt;break&lt;/code&gt; 的含义更精确，跳出本次 promise，不继续执行后面的 then 方法。但 promise 依旧会继续执行。&lt;/p&gt;
+
+&lt;h2 id=&#34;can-i-use-promises&#34;&gt;Can I use promises&lt;/h2&gt;
+
+&lt;p&gt;当前浏览器对 Promise 的支持情况见下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://caniuse.com/#search=promise&#34;&gt;http://caniuse.com/#search=promise&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163312.jpg&#34; alt=&#34;caniusepromise&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;promise&#34;&gt;Promise&lt;/h2&gt;
+
+&lt;p&gt;先简单复习一下 Promise。Promise 其实很简单，就是一个处理异步的方法。一般可以通过 &lt;code&gt;new&lt;/code&gt; 方法来调用 &lt;code&gt;Promise&lt;/code&gt; 的构造器实例化一个 promise 对象：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var promise = new Promise((resolve, reject) =&amp;gt; {
+    // 异步处理
+    // 处理结束后，调用 resolve 或 reject
+    //      成功时就调用 resolve
+    //      失败时就调用 reject
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用 &lt;code&gt;new Promise&lt;/code&gt; 实例化的 promise 对象有以下三个状态：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&amp;ldquo;has-resolution&amp;rdquo; - Fulfilled。resolve(成功)时，此时会调用 onFulfilled&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&amp;ldquo;has-rejection&amp;rdquo; - Rejected。reject(失败)时，此时会调用 onRejected&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&amp;ldquo;unresolved&amp;rdquo; - Pending。既不是resolve也不是reject的状态，也就是promise对象刚被创建后的初始化状态等&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;关于上面这三种状态的读法，其中左侧为在 ES6 Promises 规范中定义的术语， 而右侧则是在 Promises/A+ 中描述状态的术语。基本上状态在代码中是不会涉及到的，所以名称也无需太在意。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-Use-and-Stop-Promise-Chain-promise-states.png&#34; alt=&#34;promise state&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;promise-chain&#34;&gt;Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;先来假设一个业务需求：在系统中使用教务系统账号进行登录。首先用户在登录页面输入用户名（教务系统账号）和密码（教务系统密码）；然后判断数据库中是否存在该用户；如果不存在则使用用户名和密码模拟登录教务系统，如果模拟登录成功，则存储用户名和密码，并返回登录成功。&lt;/p&gt;
+
+&lt;p&gt;听起来就有点复杂对不对？于是画了个流程图来解释整个业务逻辑：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163823.jpg&#34; alt=&#34;flow char&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图只是一个简化版本，比如密码加密、session设置等没有表现出来，大家知道就好。图中 &lt;code&gt;(1)&lt;/code&gt;、&lt;code&gt;(2)&lt;/code&gt;、&lt;code&gt;(3)&lt;/code&gt; 三个地方就是会进行异步处理的地方，一般数据库操作、网络请求都是异步的。&lt;/p&gt;
+
+&lt;p&gt;如果用传统的回调函数 &lt;code&gt;callback&lt;/code&gt; 来处理上面的逻辑，嵌套的层级就会比较深，上面的业务因为有三个异步操作所以有三层回调，代码大概会是下面的样子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 根据 name 查询用户信息
+findUserByName(name, function(err, userinfo) {
+  if (err) {
+    return res.json({
+      code: 1000,
+      message: &#39;查询用户信息，数据库操作数出现异常&#39;,
+    });
+  }
+
+
+  if (userinfo.length &amp;gt; 0) {
+  // 用户存在
+  if (userinfo[0].pwd === pwd)
+    // 密码正确
+    return res.json({
+      code: 0,
+      message: &#39;登录成功&#39;,
+    });
+  }
+
+  // 数据库中不存在该用户，模拟登录教务系统
+  loginEducationSystem(name, pwd, function(err, result) {
+    if (err) {
+      return res.json({
+        code: 1001,
+        message: &#39;模拟登录教务系统出现异常&#39;,
+      });
+    }
+
+    // 约定正确情况下，code 为 0
+    if (result.code !== 0) {
+      return res.json({
+        code: 1002,
+        message: &#39;模拟登录教务系统失败，可能是用户名或密码错误&#39;,
+      });
+    }
+
+    // 模拟登录成功，将用户名密码存入数据库
+    saveUserToDB(name, pwd, function(err, result) {
+      if (err) {
+        return res.json({
+          code: 1003,
+          message: &#39;将用户名密码存入数据库出现异常&#39;,
+        });
+      }
+      if (result.code !== 0) {
+        return res.json({
+          code: 1004,
+          message: &#39;将用户名密码存入数据库出现异常&#39;,
+        });
+      }
+
+      return res.json({
+        code: 0,
+        message: &#39;登录成功!&#39;,
+      });
+    });
+  });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的代码可能存在的不优雅之处：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;随着业务逻辑变负责，回调层级会越来越深&lt;/li&gt;
+&lt;li&gt;代码耦合度比较高，不易修改&lt;/li&gt;
+&lt;li&gt;每一步操作都需要手动进行异常处理，比较麻烦&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接下来再用 promise 实现此处的业务需求。使用 promise 编码之前，可以先思考两个问题。&lt;/p&gt;
+
+&lt;p&gt;一是如何链式调用，二是如何中止链式调用。&lt;/p&gt;
+
+&lt;h2 id=&#34;how-to-use-promise-chain&#34;&gt;How to Use Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;业务中有三个需要异步处理的功能，所以会分别实例化三个 promise 对象，然后对 promise 进行链式调用。那么，如何进行链式调用？&lt;/p&gt;
+
+&lt;p&gt;其实也很简单，直接在 promise 的 then 方法里面返回另一个 promise 即可。例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function start() {
+  return new Promise((resolve, reject) =&amp;gt; {
+    resolve(&#39;start&#39;);
+  });
+}
+
+start()
+  .then(data =&amp;gt; {
+    // promise start
+    console.log(&#39;result of start: &#39;, data);
+    return Promise.resolve(1); // p1
+  })
+  .then(data =&amp;gt; {
+    // promise p1
+    console.log(&#39;result of p1: &#39;, data);
+    return Promise.reject(2); // p2
+  })
+  .then(data =&amp;gt; {
+    // promise p2
+    console.log(&#39;result of p2: &#39;, data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&amp;gt; {
+    // promise p3
+    console.log(&#39;ex: &#39;, ex);
+    return Promise.resolve(4); // p4
+  })
+  .then(data =&amp;gt; {
+    // promise p4
+    console.log(&#39;result of p4: &#39;, data);
+  });
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的代码最终会输出：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;result of start:  start
+result of p1:  1
+ex:  2
+result of p4:  4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;代码的执行逻辑如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-175131.jpg&#34; alt=&#34;promise chain&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从图中可以看出来，代码的执行逻辑是 &lt;code&gt;promise start --&amp;gt; promise p1 --&amp;gt; promise p3 --&amp;gt; promise p4&lt;/code&gt;。所以结合输出结果和执行逻辑图，总结出以下几点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;promise 的 then 方法里面可以继续返回一个新的 promise 对象&lt;/li&gt;
+&lt;li&gt;下一个 then 方法的参数是上一个 promise 对象的 resolve 参数&lt;/li&gt;
+&lt;li&gt;catch 方法的参数是其之前某个 promise 对象的 rejecte 参数&lt;/li&gt;
+&lt;li&gt;一旦某个 then 方法里面的 promise 状态改变为了 rejected，则promise 方法连会跳过后面的 then 直接执行 catch&lt;/li&gt;
+&lt;li&gt;catch 方法里面依旧可以返回一个新的 promise 对象&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;how-to-break-promise-chain&#34;&gt;How to Break Promise Chain&lt;/h2&gt;
+
+&lt;p&gt;接下来就该讨论如何中止 promise 方法链了。&lt;/p&gt;
+
+&lt;p&gt;通过上面的例子，我们可以知道 promise 的状态改变为 rejected 后，promise 就会跳过后面的 then 方法。&lt;/p&gt;
+
+&lt;p&gt;也就是，某个 then 里面发生异常后，就会跳过 then 方法，直接执行 catch。&lt;/p&gt;
+
+&lt;p&gt;所以，当在构造的 promise 方法链中，如果在某个 then 后面，不需要再执行 then 方法了，就可以把它当作一个异常来处理，返回一个异常信息给 catch，其参数可自定义，比如该异常的参数信息为 &lt;code&gt;{ notRealPromiseException: true}&lt;/code&gt;，然后在 catch 里面判断一下 &lt;code&gt;notRealPromiseException&lt;/code&gt; 是否为 &lt;code&gt;true&lt;/code&gt;，如果为 &lt;code&gt;true&lt;/code&gt;，就说明不是程序出现异常，而是在正常逻辑里面中止 then 方法的执行。&lt;/p&gt;
+
+&lt;p&gt;代码大概就这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;start()
+  .then(data =&amp;gt; {
+    // promise start
+    console.log(&#39;result of start: &#39;, data);
+    return Promise.resolve(1); // p1
+    )
+  .then(data =&amp;gt; {
+    // promise p1
+    console.log(&#39;result of p1: &#39;, data);
+    return Promise.reject({
+      notRealPromiseException: true,
+    }); // p2
+  })
+  .then(data =&amp;gt; {
+    // promise p2
+    console.log(&#39;result of p2: &#39;, data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&amp;gt; {
+    console.log(&#39;ex: &#39;, ex);
+    if (ex.notRealPromiseException) {
+      // 一切正常，只是通过 catch 方法来中止 promise chain
+      // 也就是中止 promise p2 的执行
+      return true;
+    }
+    // 真正发生异常
+    return false;
+  });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样的做法可能不符合 &lt;code&gt;catch&lt;/code&gt; 的语义。不过从某种意义上来说，promise 方法链没有继续执行，也可以算是一种“异常”。&lt;/p&gt;
+
+&lt;h2 id=&#34;refactor-callback-with-promise&#34;&gt;Refactor Callback with Promise&lt;/h2&gt;
+
+&lt;p&gt;讲了那么多道理，现在就改来使用 promise 重构之前用回调函数写的异步逻辑了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 据 name 查询用户信息
+const findUserByName = (name, pwd) =&amp;gt; {
+  return new Promise((resolve, reject) =&amp;gt; {
+    // 数据库查询操作
+    if (dbError) {
+      // 数据库查询出错，将 promise 设置为 rejected
+      reject({
+        code: 1000,
+        message: &#39;查询用户信息，数据库操作数出现异常&#39;,
+      });
+    }
+    // 将查询结果赋给 userinfo 变量
+    if (userinfo.length === 0) {
+      // 数据库中不存在该用户
+      resolve();
+    }
+    // 数据库存在该用户，判断密码是否正确
+    if (pwd === userinfo[0].pwd) {
+      // 密码正确，中止 promise 执行
+      reject({
+        notRealPromiseException: true,
+        data: {
+          code: 0,
+          message: &#39;密码正确，登录成功&#39;,
+        }
+      });
+    }
+    // 密码不正确，登录失败，将 Promise 设置为 Rejected 状态
+    reject({
+      code: 1001,
+      message: &#39;密码不正确，登录失败&#39;,
+    });
+  });
+};
+
+
+// 模拟登录教务系统
+const loginEducationSystem = (name, pwd) =&amp;gt; {
+  // 登录逻辑...
+  // 登录成功
+  resolve();
+  // 登录失败
+  reject({
+    code: 1002,
+    message: &#39;模拟登录教务系统失败&#39;,
+  });
+};
+
+
+// 将用户名密码存入数据库
+const saveUserToDB(name, pwd) =&amp;gt; {
+  // 数据库存储操作
+  if (dbError) {
+    // 数据库存储出错，将 promise 设置为 rejected
+    reject({
+      code: 1004,
+      message: &#39;数据库存储出错，将出现异常&#39;,
+    });
+  }
+  // 数据库存储操作成功
+  resolve();
+};
+
+
+findUserByName(name)
+.then(() =&amp;gt; {
+  return loginEducationSystem(name, pwd);
+})
+.then(() =&amp;gt; {
+  return saveUserToDB(name, pwd);
+})
+.catch(e =&amp;gt; {
+  // 判断异常出现原因
+  if (e.notRealPromiseException) {
+    // 正常中止 promise 而故意设置的异常
+    return res.json(e.data);
+  }
+  // 出现错误或异常
+  return res.json(e);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在上面的代码中，实例化了三个 promise 对象，分别实现业务需求中的三个功能。然后通过 promise 方法链来调用。相比用回调函数而言，代码结构更加清晰，也更易读易懂耦合度更低更易扩展了。&lt;/p&gt;
+
+&lt;h2 id=&#34;promise-all-promise-race&#34;&gt;Promise.all &amp;amp;&amp;amp; Promise.race&lt;/h2&gt;
+
+&lt;p&gt;仔细观察可以发现，在上面的 promise 代码中，&lt;code&gt;loginEducationSystem&lt;/code&gt; 和 &lt;code&gt;saveUserToDB&lt;/code&gt; 两个方法执行有先后顺序要求，但没有数据传递。&lt;/p&gt;
+
+&lt;p&gt;其实 promise 方法链更好用的一点是，当下一个操作依赖于上一个操作的结果的时候，可以很方便地通过 then 方法的参数来传递数据。前面页提到过，下一个 then 方法的参数就是上一个 then 方法里面 &lt;code&gt;resolve&lt;/code&gt; 的参数，所以当然就可以把上一个 then 方法的执行结果作为参数传递给下一个 then 方法了。&lt;/p&gt;
+
+&lt;p&gt;还有些时候，可能 then 方法的执行顺序也没有太多要求，只需要 promise 方法链中的两个或多个 promise 全部都执行正确。这时，如果依旧一个一个去写 then 可能就比较麻烦，比如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function p1() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(1);
+    resolve();
+  });
+}
+
+function p2() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(2);
+    resolve();
+  });
+}
+
+function p3() {
+  return new Promise((resolve) =&amp;gt; {
+    console.log(3);
+    resolve();
+  });
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在只需要 &lt;code&gt;p1&lt;/code&gt; &lt;code&gt;p2&lt;/code&gt;  &lt;code&gt;p3&lt;/code&gt; 这三个 promise 都执行，并且 promise 最终状态都是 Fulfilled，那么如果还是使用方法链，这是这样调用：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p1()
+.then(() =&amp;gt; {
+  return p2();
+})
+.then(() =&amp;gt; {
+  return p3();
+})
+.then(() =&amp;gt; {
+  console.log(&#39;all done&#39;);
+})
+.catch(e =&amp;gt; {
+  console.log(&#39;e: &#39;, e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;代码貌似就不那么精炼了。这个时候就有了 &lt;code&gt;Promise.all&lt;/code&gt; 这个方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Promise.all&lt;/code&gt; 接收一个 promise对象的数组作为参数，当这个数组里的所有 promise 对象全部变为 resolve 或 reject 状态的时候，它才会去调用 &lt;code&gt;then&lt;/code&gt; 方法。&lt;/p&gt;
+
+&lt;p&gt;于是，调用这几个 promise 的代码就可以这样写了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p1()
+.then(() =&amp;gt; {
+  return Promise.all([
+    p2(),
+    p3(),
+  ]);
+})
+.then(() =&amp;gt; {
+  console.log(&#39;all done&#39;);
+})
+.catch((e) =&amp;gt; {
+  console.log(&#39;e: &#39;, e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样看起来貌似就精炼些了。&lt;/p&gt;
+
+&lt;p&gt;而对于 &lt;code&gt;Promise.race&lt;/code&gt;，其参数也跟 &lt;code&gt;Promise.all&lt;/code&gt; 一样是一个数组。只是数组中的任何一个 promise 对象如果变为 resolve 或者reject 的话，该函数就会返回，并使用这个 promise 对象的值进行 resolve 或者 reject。&lt;/p&gt;
+
+&lt;p&gt;这里就不举例了。&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;到目前为止，我们就基本了解了 Promise 的用法及特点，并实现用 Promise 重构用回调函数写的异步操作。现在对 Promise 的使用，应该驾轻就熟了。&lt;/p&gt;
+
+&lt;p&gt;完。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/23&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/23&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Symmetric Difference</title>
+      <link>http://nodejh.com/post/Symmetric-Difference/</link>
+      <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Symmetric-Difference/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
+
+&lt;p&gt;给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2, 3, 4}), 而数学术语 &amp;ldquo;对等差分&amp;rdquo; 的集合就是指由所有只在两个集合其中之一的元素组成的集合(A △ B = C = {1, 4}). 对于传入的额外集合 (如 D = {2, 3}), 你应该安装前面原则求前两个集合的结果与新集合的对等差分集合 (C △ D = {1, 4} △ {2, 3} = {1, 2, 3, 4}).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;解题思路&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;a href=&#34;https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce&#34;&gt;Array.prototype.reduce&lt;/a&gt; 对数组进行遍历。传入的两个参数分别是 prev (对等差分后数组)，curr（当前数组）&lt;/li&gt;
+&lt;li&gt;将 sym() 的第一个参数作为初始对等差分数组，即第一个 prev&lt;/li&gt;
+&lt;li&gt;对 prev 数组和 curr 数组去重，防止重复元素影响对等差分的结果&lt;/li&gt;
+&lt;li&gt;遍历 curr 数组，以此判断 curr 数组中每个元素是否在 prev 中出现。如果出现，则从 prev 中删除该元素；如果没有出现，则将其加入到 prev 中&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 对等差分
+function sym(args) {
+  var arr = Array.prototype.slice.call(arguments);
+  return arr.reduce(function(prev, curr) {
+      prev = unique(prev);
+      curr = unique(curr);
+      for (var i=0; i&amp;lt;curr.length; i++) {
+          if (prev.indexOf(curr[i]) === -1) {
+             prev.push(curr[i]);
+          } else {
+              prev.splice(prev.indexOf(curr[i]), 1);
+          }
+          console.log(&#39;new: &#39;, prev);
+      }
+      return prev.sort();
+  });
+}
+
+
+// 数组去重
+function unique(arr) {
+    var res = [];
+    for (var i=0; i&amp;lt;arr.length; i++) {
+        if (res.indexOf(arr[i]) === -1) {
+            res.push(arr[i]);
+        }
+    }
+    return res;
+}
+
+
+// sym([1, 2, 3], [5, 2, 1, 4]);
+sym([1, 1, 2, 5], [2, 2, 3, 5], [3, 4, 5, 5])
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;运行效果：&lt;a href=&#34;https://www.freecodecamp.cn/challenges/symmetric-difference&#34;&gt;Symmetric Difference&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/1&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/1&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Build MXNet on macOS</title>
+      <link>http://nodejh.com/post/Install-MXNet-on-macOS/</link>
+      <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Install-MXNet-on-macOS/</guid>
+      <description>
+
+&lt;p&gt;MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：&lt;a href=&#34;https://github.com/dmlc/mxnet/issues/797&#34;&gt;《MXNet设计和实现简介》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但由于每个人电脑环境不同，所以可能会出现一些依赖库／包的缺失，导致安装失败。&lt;/p&gt;
+
+&lt;h4 id=&#34;安装依赖软件&#34;&gt;安装依赖软件&lt;/h4&gt;
+
+&lt;p&gt;在 macOS 上，首先需要具有以下软件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Homebrew (to install dependencies)&lt;/li&gt;
+&lt;li&gt;Git (to pull code from GitHub)&lt;/li&gt;
+&lt;li&gt;Homebrew/science (for linear algebraic operations)&lt;/li&gt;
+&lt;li&gt;OpenCV (for computer vision operations)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果上述已经安装了，就不需要再安装；如果没有，则按照下面的步骤安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 安装 Homebrew
+$ /usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
+# 安装 Git 和 OpenCV
+$ brew update
+$ brew install git
+$ brew tap homebrew/science
+$ brew info opencv
+$ brew install opencv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;编译-mxnet&#34;&gt;编译 MXNet&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;# 下载源码
+$ git clone --recursive https://github.com/dmlc/mxnet
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后还需要安装 &lt;code&gt;openblas&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 安装 openblas
+$ brew install --fresh -vd openblas
+...
+Generally there are no consequences of this for you. If you build your
+own software and it requires this formula, you&#39;ll need to add to your
+build variables:
+
+    LDFLAGS:  -L/usr/local/opt/openblas/lib
+    CPPFLAGS: -I/usr/local/opt/openblas/include
+
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/openblas/0.2.18_2: 20 files, 41.8M, built in 12 minutes 33 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果没有安装 &lt;code&gt;openblas&lt;/code&gt;，则会有类似 &lt;code&gt;fatal error: &#39;cblas.h&#39; file not found&lt;/code&gt; 的错误，详见 &lt;a href=&#34;https://github.com/dmlc/mxnet/issues/572&#34;&gt;https://github.com/dmlc/mxnet/issues/572&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;接下来修改配置文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd mxnet
+$ cp make/osx.mk ./config.mk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用 vim 或其他编辑器打开 &lt;code&gt;config.mk&lt;/code&gt;，在 &lt;code&gt;USE_BLAS = apple&lt;/code&gt; 下面加入如下 &lt;code&gt;ADD_LDFLAGS = -I/usr/local/opt/openblas/lib&lt;/code&gt; 和 &lt;code&gt;ADD_CFLAGS =  -I/usr/local/opt/openblas/include&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;USE_BLAS = apple
+ADD_LDFLAGS = -I/usr/local/opt/openblas/lib
+ADD_CFLAGS =  -I/usr/local/opt/openblas/include
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后再编译即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ make -j$(sysctl -n hw.ncpu)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;在-python-中使用-mxnet&#34;&gt;在 Python 中使用 MXNet&lt;/h4&gt;
+
+&lt;p&gt;编译安装完成之后，若要使用 MXNet 的 Python 接口，还需要将 mxnet/python 添加到 Python 的包搜索路径。至少有三种方式可以实现。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1. python 代码手动加载&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import os, sys;
+cur_path = os.path.abspath(os.path.dirname(__file__));
+mxnet_lib_path = os.path.join(cur_path, &#39;mxnet/python&#39;);
+sys.path.append(mxnet_lib_path);
+import mxnet as mx;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在没有将 &lt;code&gt;mxnet/python&lt;/code&gt; 添加到 PYTHONPATH 之前，依旧可以运行 &lt;code&gt;/example/image-classification&lt;/code&gt; 里面的一些测试案例，就是因为案例里面有一行 &lt;code&gt;import find_mxnet&lt;/code&gt;，而 &lt;code&gt;find_mxnet&lt;/code&gt; 的作用就是手动加载 &lt;code&gt;mxnet/python&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# find_mxnet.py
+try:
+    import mxnet as mx
+except ImportError:
+    import os, sys
+    curr_path = os.path.abspath(os.path.dirname(__file__))
+    sys.path.append(os.path.join(curr_path, &amp;quot;../../python&amp;quot;))
+    import mxnet as mx
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;2. 将路径加到环境变量 PYTHONPATH 中&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这种方法需要修改 shell 的配置文件。如果使用的 bash，则修改 &lt;code&gt;~/.bashrc&lt;/code&gt;；若使用的是 zsh，则修改 &lt;code&gt;~/.zshrc&lt;/code&gt;；其他类似。&lt;/p&gt;
+
+&lt;p&gt;在 bash 配置文件中加入下面这一行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PYTHONPATH=path_to_mxnet_root/python
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;path_to_mxnet_root&lt;/code&gt; 是下载的 mxnet 源码目录。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3. 全局安装 mxnet&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;直接运行 &lt;code&gt;mxnet/python/setup.py&lt;/code&gt;，将 mxnet 添加到全局路径即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;python setup.py install --user
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;运行上面的命令后，脚本会在 &lt;code&gt;~/.local&lt;/code&gt; 目录下创建一个 &lt;code&gt;lib&lt;/code&gt; 目录，里面有一个 &lt;code&gt;python-2.7/site-packages&lt;/code&gt; 文件夹。&lt;/p&gt;
+
+&lt;p&gt;如果是 &lt;code&gt;sudo python setup.py install&lt;/code&gt;，则上面的目录会在 &lt;code&gt;/usr/lib&lt;/code&gt; 下。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://mxnet.io/get_started/setup.html#build-mxnet-on-os-x-mac&#34;&gt;Build MXNet on OS X (Mac)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/dengdan890730/p/5587542.html&#34;&gt;mxnet的python包导入的前前后后&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/10&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/10&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Get the Max Number in Array</title>
+      <link>http://nodejh.com/post/Get-the-Max-Number-in-Array/</link>
+      <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Get-the-Max-Number-in-Array/</guid>
+      <description>
+
+&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
+
+&lt;h4 id=&#34;使用递归函数&#34;&gt;使用递归函数&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];
+var max = arr[0];
+function findMax( i ){
+  if( i == arr.length ) return max;
+  if( max &amp;lt; arr[i] ) max = arr[i];
+  findMax(i+1);
+}
+
+findMax(1);
+console.log(max);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;使用-for-循环遍历&#34;&gt;使用 for 循环遍历&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];  
+var max = arr[0];
+for(var i = 1; i &amp;lt; arr.length; i++){
+  if( max &amp;lt; arr[i] ){
+    max = arr[i];
+  }
+}
+
+console.log(max);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;使用apply将数组传入max方法中直接返回&#34;&gt;使用apply将数组传入max方法中直接返回&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;Math.max.apply(null,[9,8,55,66,49,68,109,55,33,6,2,1])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;除此之外，还有很多数组排序方式，都可以在排序后，根据新数组索引值获取 最大/最小 值。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var a=[1,2,3,5];
+console.log(Math.max.apply(null, a));//最大值
+console.log(Math.min.apply(null, a));//最小值
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;多维数组可以这么修改：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var a=[1,2,3,[5,6],[1,4,8]];
+var ta=a.join(&amp;quot;,&amp;quot;).split(&amp;quot;,&amp;quot;);//转化为一维数组
+console.log(Math.max.apply(null,ta));//最大值
+console.log(Math.min.apply(null,ta));//最小值
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/9&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/9&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Eclipse on nodejh</title>
+    <link>http://nodejh.com/tags/eclipse/</link>
+    <description>Recent content in Eclipse on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 17 Mar 2016 19:15:01 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/eclipse/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Install Eclipse/JSP/Servlet Develop Environment</title>
+      <link>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</link>
+      <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
+      <description>
+
+&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
+
+&lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;1-踩过的坑&#34;&gt;1. 踩过的坑&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-tomcat-版本过新&#34;&gt;1) Tomcat 版本过新&lt;/h4&gt;
+
+&lt;p&gt;最近 Tomcat 更新到了 9.0，为了求新我们安装了 Tomcat 9.0，但 Eclipse 目前最高只能识别 Tomcat 8 的版本。如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-1.png&#34; alt=&#34;ubuntu-eclipse-1.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;所以为了解决问题，我们就只能再安装一个 Tomcat 8.0 了。因为 Tomcat 的安装只需要解压到指定目录即可，所以安装多少个版本都是互不影响的。如果你还不知道怎么安装，请参考：&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;安装 8.0 和 9.0 的唯一区别是，下载的源码版本不同，即 &lt;code&gt;wget&lt;/code&gt; 这一步不一样，安装 8.0 可以在链接下载：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget http://mirrors.cnnic.cn/apache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下载后可以解压到 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 这个目录，以便和之前的 &lt;code&gt;/opt/tomcat&lt;/code&gt; 作区分。然后启动 Tomcat 8 当然就使用 &lt;code&gt;sudo /opt/tomcat8/bin/catalina.sh start&lt;/code&gt; 这个命令了。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-eclispe-运行权限不够无法识别或执行-tomcat-服务器&#34;&gt;2) Eclispe 运行权限不够无法识别或执行 Tomcat 服务器&lt;/h4&gt;
+
+&lt;p&gt;假设我们已经将 Tomcat 8.0 安装到了 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 这个目录。&lt;/p&gt;
+
+&lt;p&gt;由于最开始我们这个目录给除了 &lt;code&gt;tomcat&lt;/code&gt; 用户外的其它用户的权限很小，也就是除了 &lt;code&gt;tomcat&lt;/code&gt; 用户，其它用户都不能执行 Tomcat 甚至不能读取该目录。&lt;/p&gt;
+
+&lt;p&gt;所以如果我们的 Eclipse 是以普通用户权限运行的，那么它是没办法正确使用 Tomcat 的。&lt;/p&gt;
+
+&lt;p&gt;解决问题的办法有两个，第一种是更改 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 的权限，让普通用户能够访问并执行它；第二种是使用 root 权限来运行 Eclipse。这里把两种方法都写上。任选一种即可。&lt;/p&gt;
+
+&lt;h5 id=&#34;方法一-更改-opt-tomcat8-的权限&#34;&gt;方法一：更改 &lt;code&gt;/opt/tomcat8&lt;/code&gt; 的权限&lt;/h5&gt;
+
+&lt;p&gt;打开终端，执行下面的命了即可，就是这么简单！也推荐就用这种做法：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /opt/
+sudo chmod -R 775 tomcat8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-2.gif&#34; alt=&#34;ubuntu-eclipse-2.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&#34;方法二-使用-root-权限运行-eclipse&#34;&gt;方法二：使用 root 权限运行 Eclipse&lt;/h5&gt;
+
+&lt;p&gt;为什么把这个方法也写上呢？是因为使用 root 权限运行 Eclipse 的时候也会遇到问题：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-3.gif&#34; alt=&#34;ubuntu-eclipse-3.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用 root 运行 Eclispe 的时候，Eclispe 找不到 JAVA 运行环境了，也就是找不到 JRE 了。这和我们最初的环境变量设置有关。&lt;/p&gt;
+
+&lt;p&gt;那么如何解决问题呢？其实方法也有很多，可以修改环境变量，也可以用一种更巧妙的方式，就是将解压后的 &lt;code&gt;jre/&lt;/code&gt; 目录放在 &lt;code&gt;eclipse.ini&lt;/code&gt; 所在的目录，也就是 &lt;code&gt;/opt/eclipse/&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;我们之前已经安装过了 JDK，JDK 的安装目录是 &lt;code&gt;/opt/java&lt;/code&gt;，里面就包含了 JRE，也就是 JRE 的目录是 &lt;code&gt;/opt/java/jre&lt;/code&gt;。好了，下面就将 &lt;code&gt;jre/&lt;/code&gt; 复制过去试试。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-4.gif&#34; alt=&#34;ubuntu-eclipse-4.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;好了，可以看到现在 Eclipse 已经正常启动了。&lt;/p&gt;
+
+&lt;p&gt;更多方法可参考：&lt;a href=&#34;http://stackoverflow.com/questions/2030434/eclipse-no-java-jre-jdk-no-virtual-machine&#34;&gt;Eclipse - no Java (JRE) / (JDK) … no virtual machine&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;之所以举这两个例子，还有一点就是说明，解决一个问题的方法可能有很多种，仁者见仁，智者见智。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-关联-eclispe-和-tomcat&#34;&gt;2. 关联 Eclispe 和 Tomcat&lt;/h3&gt;
+
+&lt;p&gt;假设我们上面是通过第一种方法解决的 Eclispe 不能使用 Tomcat 的问题。&lt;/p&gt;
+
+&lt;p&gt;接下来启动 Tomcat&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/opt/eclispe/eclipse
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后选择菜单栏 &lt;code&gt;Windows--&amp;gt;preferences&lt;/code&gt;，弹出如下界面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-5.gif&#34; alt=&#34;ubuntu-eclipse-5.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图中，点击&amp;rdquo;add&amp;rdquo;的添加按钮，弹出选择 Tomcat 版本的界面。之前说到的 Eclipse 不能识别 Tomcat 9.0 就是这一步不能识别。我们已经又安装了 Tomcat 8.0，所以这里选择 Tomcat 8.0。&lt;/p&gt;
+
+&lt;p&gt;接着点击 &lt;code&gt;Next&lt;/code&gt;，选择 Tomcat 的安装目录，并选择我们安装的 Java 环境：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-6.gif&#34; alt=&#34;ubuntu-eclipse-6.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-使用-eclipse-创建第一个项目&#34;&gt;3. 使用 Eclipse 创建第一个项目&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-新建动态网站项目&#34;&gt;1) 新建动态网站项目&lt;/h4&gt;
+
+&lt;p&gt;选择 &lt;code&gt;File--&amp;gt;New--&amp;gt;Dynamic Web Project&lt;/code&gt;，创建 &lt;code&gt;TomcatTest&lt;/code&gt; 项目：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-7.gif&#34; alt=&#34;ubuntu-eclipse-7.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Eclipse 会自动选择默认的 Tomcat 版本。如果没有默认选择 Tomcat 的版本，则需求点击 &lt;code&gt;New Runtime&lt;/code&gt; 按钮，选择我们刚才设置的 Tomcat 版本。&lt;/p&gt;
+
+&lt;p&gt;在Eclipse中只要创建一个Dynamic Web Project，就可以根据创建向导创建出一个典型 Java Web 站点的目录结构。除非有特殊需要，在大多数情况下都没有必要修改这个目录结构，这也是 Web 容器的缺省目录结构，我们只要直接使用即可。一般的目录结构如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-8.png&#34; alt=&#34;ubuntu-eclipse-8.png&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Deployment Descriptor：部署描述符。部署描述符描述了组件、模块或应用程序（如Web应用程序或企业级软件）应该如何部署。&lt;/li&gt;
+&lt;li&gt;JAX-WS Web Services：Java API for XML Web Services（JAX-WS）是 Java 程序设计语言一个用来创建 Web 服务的 API。&lt;/li&gt;
+&lt;li&gt;build：放入编译之后的文件。&lt;/li&gt;
+&lt;li&gt;WebContent：站点根目录。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;WebContent (站点根目录) 
+     |----META-INF (META-INF文件夹) 
+     |----|---MANIFEST.MF (MANIFEST.MF配置清单文件) 
+     |----WEB-INF (WEB-INF文件夹) 
+     |----|----web.xml (站点配置web.xml) 
+     |----|----lib (第三方库文件夹) 
+
+WEB-INF:是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件   对要访问的文件进行相应映射才能访问。
+
+META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Java 2平台的认可与解释，用来配置应用程序、扩展程序、类加载器和服务。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;2-新建一个-jsp-文件&#34;&gt;2). 新建一个 JSP 文件&lt;/h4&gt;
+
+&lt;p&gt;接下来在 &lt;code&gt;WebContent&lt;/code&gt; 文件夹下新建一个 &lt;code&gt;test.jsp&lt;/code&gt; 文件：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-9.gif&#34; alt=&#34;ubuntu-eclipse-9.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接着我们修改下 &lt;code&gt;test.jsp&lt;/code&gt; 文件。代码如下所示：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page language=&amp;quot;java&amp;quot; contentType=&amp;quot;text/html; charset=UTF-8&amp;quot;
+    pageEncoding=&amp;quot;UTF-8&amp;quot;%&amp;gt;
+&amp;lt;!DOCTYPE html PUBLIC &amp;quot;-//W3C//DTD HTML 4.01 Transitional//EN&amp;quot; &amp;quot;http://www.w3.org/TR/html4/loose.dtd&amp;quot;&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;meta http-equiv=&amp;quot;Content-Type&amp;quot; content=&amp;quot;text/html; charset=UTF-8&amp;quot;&amp;gt;
+&amp;lt;title&amp;gt;Tomcat Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;%
+	out.println(&amp;quot;世界,你好!&amp;quot;);
+%&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-10.gif&#34; alt=&#34;ubuntu-eclipse-10.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后运行该项目：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-11.gif&#34; alt=&#34;ubuntu-eclipse-11.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-新建一个-servlet-文件&#34;&gt;3). 新建一个 Servlet 文件&lt;/h4&gt;
+
+&lt;p&gt;我们也可以使用以上环境创建 Servlet 文件，选择 &lt;code&gt;File--&amp;gt;New--&amp;gt;Servlet&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-12.gif&#34; alt=&#34;ubuntu-eclipse-12.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;文件路径位于 TomcatTest项目的 /TomcatTest/src 目录下创建 &amp;ldquo;HelloServlet&amp;rdquo; 类，包为 &amp;ldquo;com.runoob.test&amp;rdquo;。&lt;/p&gt;
+
+&lt;p&gt;HelloServlet.java 代码如下所示：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package com.test.test;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class HelloWorld
+ */
+@WebServlet(&amp;quot;/HelloWorld&amp;quot;)
+public class HelloWorld extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public HelloWorld() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append(&amp;quot;Served at: &amp;quot;).append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;关于 JSP 和 Servlet 的关系，这里简单作几点说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;JSP 是 HTML 内嵌 JAVA 代码。从本质上讲，JSP 是 Servlet 的扩展，是简易版的 Servlet。Servlet 则完全和 HTML 分离开来，只运用在 JAVA 文件中。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;JSP引擎从磁盘中载入JSP文件，然后将它们转化为servlet。这种转化只是简单地将所有模板文本改用println()语句，并且将所有的JSP元素转化成Java代码。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;JSP引擎将servlet编译成可执行类。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然后我们在运行一下 &lt;code&gt;HelloWorld.java&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-13.gif&#34; alt=&#34;ubuntu-eclipse-13.gif&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/19&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/19&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

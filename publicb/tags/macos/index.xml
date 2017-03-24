@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>macOS on nodejh</title>
+    <link>http://nodejh.com/tags/macos/</link>
+    <description>Recent content in macOS on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 19 Mar 2017 17:15:37 +0800</lastBuildDate>
+    <atom:link href="http://nodejh.com/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting Environmental Variables in MacOS</title>
+      <link>http://nodejh.com/post/Setting-Environmental-Variables-in-MacOS/</link>
+      <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Setting-Environmental-Variables-in-MacOS/</guid>
+      <description>
+
+&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。比如安装完 Atom 之后，就可以使用 &lt;code&gt;atom&lt;/code&gt; 命令打开文件。有时候我们需要自己设置环境变量，MacOS 设置环境变量有很多种方法，最常用的是编辑当前 SHELL 对应的用户级环境变量配置文件，如 &lt;code&gt;bash&lt;/code&gt; 对应的 &lt;code&gt;.bash_profile&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;MacOS 和 Linux 都是类 Unix 系统，它们添加环境变量的方式也是类似的。本文以 macOS 为例。&lt;/p&gt;
+
+&lt;h2 id=&#34;sehll-类型&#34;&gt;SEHLL 类型&lt;/h2&gt;
+
+&lt;p&gt;在添加环境变量之前，首先要知道使用的是什么 SHELL。MacOS 内置了多种 SHELL，可通过 &lt;code&gt;cat /etc/shells&lt;/code&gt; 查看：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/shells
+/bin/bash
+/bin/csh
+/bin/ksh
+/bin/sh
+/bin/tcsh
+/bin/zsh
+$ echo $SHELL
+/bin/zsh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sh&lt;/code&gt;（全称 Bourne Shell）是UNIX最初使用的 shell，而且在每种 UNIX 上都可以使用。Bourne Shell 在 shell 编程方便相当优秀，但在处理与用户的交互方便作得不如其他几种 shell。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bash&lt;/code&gt;（全称 Bourne Again Shell）LinuxOS 默认的，它是 Bourne Shell 的扩展。与 Bourne Shell 完全兼容，并且在 Bourne Shell 的基础上增加了很多特性。可以提供命令补全，命令编辑和命令历史等功能。它还包含了很多 C Shell 和 Korn Shell 中的优点，有灵活和强大的编辑接口，同时又很友好的用户界面。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;csh&lt;/code&gt;（全称 C Shell）是一种比 Bourne Shell更适合的变种 Shell，它的语法与 C 语言很相似。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tcsh&lt;/code&gt; 是 Linux 提供的 C Shell 的一个扩展版本。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Tcsh&lt;/code&gt; 包括命令行编辑，可编程单词补全，拼写校正，历史命令替换，作业控制和类似 C 语言的语法，他不仅和 Bash Shell 提示符兼容，而且还提供比 Bash Shell 更多的提示符参数。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ksh&lt;/code&gt;（全称 Korn Shell）集合了 C Shell 和 Bourne Shell 的优点并且和 Bourne Shell 完全兼容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pdksh&lt;/code&gt; 是 Linux 系统提供的 ksh 的扩展。pdksh 支持人物控制，可以在命令行上挂起，后台执行，唤醒或终止程序。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;zsh&lt;/code&gt; Zsh 是一款功能强大终端（shell）软件，既可以作为一个交互式终端，也可以作为一个脚本解释器。它在兼容 Bash 的同时 （默认不兼容，除非设置成 emulate sh） 还有提供了很多改进，例如：更高效、更好的自动补全、更好的文件名展开（通配符展开）、更好的数组处理、可定制性高。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;环境变量配置文件&#34;&gt;环境变量配置文件&lt;/h2&gt;
+
+&lt;p&gt;macOS 默认的是 &lt;code&gt;Bourne Shell&lt;/code&gt;，其环境变量配置文件及加载顺序如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/etc/profile
+/etc/bashrc
+/etc/paths 
+~/.bash_profile # macOS
+~/.bash_login 
+~/.profile 
+~/.bashrc # linux
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中 &lt;code&gt;/etc/profile&lt;/code&gt; &lt;code&gt;/etc/bashrc&lt;/code&gt; 和 &lt;code&gt;/etc/paths&lt;/code&gt; 是系统级环境变量，对所有用户都有效。但它们的加载时机有所区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/etc/profile&lt;/code&gt; 任何用户登陆时都会读取该文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc/bashrc&lt;/code&gt; bash shell执行时，不管是何种方式，读取此文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc/paths&lt;/code&gt; 任何用户登陆时都会读取该文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;后面几个是当前用户级的环境变量。macOS 默认用户环境变量配置文件为 &lt;code&gt;~/.bash_profile&lt;/code&gt;，Linux 为 &lt;code&gt;~/.bashrc&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果不存在 &lt;code&gt;~/.bash_profile&lt;/code&gt;，则可以自己创建一个 &lt;code&gt;~/.bash_profile&lt;/code&gt;。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果 &lt;code&gt;~/.bash_profile&lt;/code&gt; 文件存在，则后面的几个文件就会被忽略&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;~/.bash_profile&lt;/code&gt; 文件不存在，才会以此类推读取后面的文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;如果使用的是 SHELL 类型是 &lt;code&gt;zsh&lt;/code&gt;，则还可能存在对应的 &lt;code&gt;/etc/zshrc&lt;/code&gt; 和 &lt;code&gt;~/.zshrc&lt;/code&gt;。任何用户登录 &lt;code&gt;zsh&lt;/code&gt; 的时候，都会读取该文件。某个用户登录的时候，会读取其对应的 &lt;code&gt;~/.zshrc&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;添加环境变量&#34;&gt;添加环境变量&lt;/h2&gt;
+
+&lt;h4 id=&#34;系统环境变量-etc-paths&#34;&gt;系统环境变量 &lt;code&gt;/etc/paths&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;一般添加系统环境变量，建议通过修改 &lt;code&gt;/etc/paths&lt;/code&gt; 的方式进行添加。一般不建议直接修改 &lt;code&gt;/etc/paths&lt;/code&gt; 文件，而是将路径写在 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 目录下的一个文件里，系统会逐一读取 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 下的每个文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Git&lt;/code&gt; 路径就是这样实现的。我们先看看 Git 的例子：&lt;/p&gt;
+
+&lt;p&gt;首先 &lt;code&gt;/etc/paths&lt;/code&gt; 的文件内容大致如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/paths
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+/opt/local/bin
+/opt/local/sbin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后查看 &lt;code&gt;/etc/paths.d/&lt;/code&gt; 目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l /etc/paths.d
+-rw-r--r--    1 root  wheel    19  6 10  2015 git
+-rw-r--r--    1 root  wheel    17  4 20  2016 go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看 &lt;code&gt;/etc/paths.d/git&lt;/code&gt; 文件的内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat /etc/paths.d/git
+/usr/local/git/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;/usr/local/git/bin&lt;/code&gt; 就是 Git 的可执行文件路径。&lt;/p&gt;
+
+&lt;p&gt;所以我们如果要添加一个系统环境变量，也可以参考这种方式。&lt;/p&gt;
+
+&lt;p&gt;提供一个添加环境变量的的 shell语句，其中 &lt;code&gt;/usr/local/sbin/mypath&lt;/code&gt; 就是我们自己的可执行文件的路径：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo -s &#39;echo &amp;quot;/usr/local/sbin/mypath&amp;quot; &amp;gt; /etc/paths.d/mypath&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;但添加完成之后，命令不会立即生效，有两种方法使配置文件生效：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;重新登录终端（如果是图形界面，即重新打开 Terminal）&lt;/li&gt;
+&lt;li&gt;通过 &lt;code&gt;source&lt;/code&gt; 命令加载：&lt;code&gt;source /etc/paths&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;配置生效之后，就可以使用 &lt;code&gt;mypath&lt;/code&gt; 命令了。&lt;/p&gt;
+
+&lt;h4 id=&#34;系统环境变量-etc-profile-和-etc-bashrc&#34;&gt;系统环境变量 &lt;code&gt;/etc/profile&lt;/code&gt; 和 &lt;code&gt;/etc/bashrc&lt;/code&gt;&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注：一般不建议修改这两个文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;添加环境变量的语法为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;$PATH:&amp;lt;PATH 1&amp;gt;:&amp;lt;PATH 2&amp;gt;:&amp;lt;PATH 3&amp;gt;:...:&amp;lt;PATH N&amp;gt;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;所以在 &lt;code&gt;/etc/profile&lt;/code&gt; 和 &lt;code&gt;/etc/bashrc&lt;/code&gt; 中添加环境变量，只需要在文件中加入如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;/Users/jh/anaconda/bin:$PATH&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;用户环境变量&#34;&gt;用户环境变量&lt;/h4&gt;
+
+&lt;p&gt;添加用户环境变量，只需要修改 &lt;code&gt;~/.bash_profile&lt;/code&gt;（Bourne Shell）或 &lt;code&gt;~/.zshrc&lt;/code&gt;（zsh）或其他用户级配置文件即可。添加环境变量的语法也是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PATH=&amp;quot;$PATH:&amp;lt;PATH 1&amp;gt;:&amp;lt;PATH 2&amp;gt;:&amp;lt;PATH 3&amp;gt;:...:&amp;lt;PATH N&amp;gt;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面是我的 &lt;code&gt;~/.zshrc&lt;/code&gt; 的部分配置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export ANDROID_HOME=~/Library/Android/sdk
+export PATH=$PATH:~/Library/Android/sdk/tools:~/Library/Android/sdk/platform-tools
+export PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/support-files
+alias tree=&amp;quot;find . -print | sed -e &#39;s;[^/]*/;|____;g;s;____|; |;g&#39;&amp;quot;
+alias t=&amp;quot;trans&amp;quot;
+export PATH=&amp;quot;/usr/local/sbin:$PATH&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以通过 &lt;code&gt;echo $PATH&lt;/code&gt; 命令查看当前环境变量：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;echo $PATH
+/usr/local/sbin:/Users/jh/.nvm/versions/node/v7.6.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/Users/jh/Library/Android/sdk/tools:/Users/jh/Library/Android/sdk/platform-tools:/usr/local/mysql/bin:/usr/local/mysql/support-files:/Applications/Sublime Text.app/Contents/SharedSupport/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改了配置文件之后，依旧需要重新登录 SHELL 或者使用 &lt;code&gt;source ~/.zshrc&lt;/code&gt; 来是配置立即生效。&lt;/p&gt;
+
+&lt;h4 id=&#34;export&#34;&gt;export&lt;/h4&gt;
+
+&lt;p&gt;还有一种添加环境变量的方法： &lt;code&gt;export&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;export&lt;/code&gt; 命令用于设置或显示环境变量。通过 &lt;code&gt;export&lt;/code&gt; 添加的环境变量仅在此次登陆周期内有效。&lt;/p&gt;
+
+&lt;p&gt;比如很多时候我们的开发环境和生产环境，就可以通过设置一个临时环境变量来，然后在程序中根据不同的环境变量来设置不同的参数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# 设置 NODE_ENV 环境变量。退出 SHELL 时失效
+$ export NODE_ENV=development
+# 查看当前所有环境变量
+$ export -p 
+...
+typeset -x NODE_ENV=development
+typeset -x USER=jh
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 Node.js 代码中判断当前环境是开发环境还是生产环境：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;if （process.env.NODE_ENV === &#39;development&#39;） {
+    console.log（&#39;开发环境&#39;）;
+} else {
+    console.log（&#39;生产环境&#39;）;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issues &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/34&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/34&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>macOS Sierra Apache Multiple PHP versions</title>
+      <link>http://nodejh.com/post/macOS-Sierra-Apache-Multiple-PHP-versions/</link>
+      <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/macOS-Sierra-Apache-Multiple-PHP-versions/</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;本文主要内容翻译自&lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-multiple-php-versions&#34;&gt;《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》&lt;/a&gt;，并加入了自己的实践。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;关于如何在 macOS 10.12 上搭建 Web 开发环境，原作者一共写了三篇文章。这是第一篇。&lt;/p&gt;
+
+&lt;p&gt;当前的操作系统是 macOS 10.12，这篇教程讲述的环境搭建和一般 PHP 安装最大的不同是，我们不使用系统自带的 Apache（macOS 自带了 apache、python、ruby 等一些列开发工具），而是使用 Homebrew 的 Apache。当然，系统自带的 Apaceh 也是可以工作的。&lt;/p&gt;
+
+&lt;p&gt;在 macOs 上进行 Web 开发，确实是一件很令人愉快的事情。目前也有很多集成开发工具可以方便地搭建开发环境，比如 &lt;a href=&#34;http://www.mamp.info/en/mamp-pro/&#34;&gt;MAMP PRO&lt;/a&gt;，它具有非常漂亮的一个 UI 界面，并且集成了 Apache、PHP 和 MySQL 三个软件，非常适合新手使用。但是有时候，由于其配置模板有限，软件没有及时升级，使用它的时候可能会遇到软件版本不能及时更新、配置不够方便灵活等问题。&lt;/p&gt;
+
+&lt;p&gt;于是很多人就开始寻找替代方案。幸运的是，这篇文章就是一个替代方案。并且文章给出了简单直接的安装配置步骤。&lt;/p&gt;
+
+&lt;h2 id=&#34;1-安装-homebrew&#34;&gt;1. 安装 Homebrew&lt;/h2&gt;
+
+&lt;p&gt;以下所有软件的安装都依赖于 macOS 上的一个包管理工具 Homebrew。使用 &lt;code&gt;brew&lt;/code&gt; 命令，我们可以方便地在 mac 上安装各种功能各异的软件，当然，首先的安装 homebrew。安装步骤也非常简单，打开终端然后输入下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后等待终端提示你输入密码，程序就会开始自动安装。如果你没有安装 &lt;code&gt;XCode Command Line Tools&lt;/code&gt;，它会自动帮你装上。等待几分钟，待完成后，就可以使用下面的命令查看 Homebrew 是否正确安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew --version
+Homebrew 1.1.5
+Homebrew/homebrew-core (git revision a50a6; last commit 2016-12-28)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同时可能你也需要执行一下下面的命令，来检测配置是否正确：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew doctor
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;若有配置不当的地方，brew 会给出提示，安装提示修复即可。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-1-添加第三方仓库&#34;&gt;1.1 添加第三方仓库&lt;/h3&gt;
+
+&lt;p&gt;我们将需要使用一些来自第三方仓库的软件，所以需要添加额外的仓库：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew tap homebrew/dupes
+$ brew tap homebrew/versions
+$ brew tap homebrew/php
+$ brew tap homebrew/apache
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后更新 brew：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来就可以尽情使用 brew 了。&lt;/p&gt;
+
+&lt;h2 id=&#34;2-apache-的安装&#34;&gt;2. Apache 的安装&lt;/h2&gt;
+
+&lt;p&gt;最新的 macOS 10.12 预装了 Apache 2.4，但苹果移除了一些必要的脚本，所以 Apache 和 Homebrew 配合使用将会变得困难。当然解决该问题的方法就是，使用 Homebrew 重新安装配置 Apache，并使其运行在标准端口上（80/443）。&lt;/p&gt;
+
+&lt;p&gt;如果之前已经安装有 Apache 并且在运行中，首先就需要关闭它，然后移除自动加载脚本。下面的命令没有任何副作用，只管运行就好了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl stop
+$ sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist 2&amp;gt;/dev/null
+$ brew install httpd24 --with-privileged-ports --with-http2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来需要等待一小会儿，因为这个命令是下载源码并编译安装 Apache。上面命令执行结果如下面这样：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;🍺  /usr/local/Cellar/httpd24/2.4.23_2: 212 files, 4.4M, built in 1 minute 45 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里的路径很重要，因为在接下来的步骤中，我们都需要使用这个路径，在这个例子中，路径是 &lt;code&gt;/usr/local/Cellar/httpd24/2.4.23_2/&lt;/code&gt;，如果你的路径不是这个，则在运行下面的命令的时候，将其替换为你的路径就可以了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo cp -v /usr/local/Cellar/httpd24/2.4.23_2/homebrew.mxcl.httpd24.plist /Library/LaunchDaemons
+sudo chown -v root:wheel /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+sudo chmod -v 644 /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在我们就通过 Homebrew 安装上了 Apache，并使用管理员权限将其配置为自动启动。这个时候 Apache 应该已经在运行了，所以你打开浏览器访问 &lt;code&gt;localhost&lt;/code&gt; 将会看到 “It works！”。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-1-一些小问题&#34;&gt;2.1 一些小问题&lt;/h3&gt;
+
+&lt;p&gt;如果你的浏览器提示说不能建立连接到服务器，那么首先检查一下 Apache 服务是否已经启动了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ps -aef | grep httpd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果 Apache 正在运行，你将会看到一些 httpd 进程。&lt;/p&gt;
+
+&lt;p&gt;重启 Apache：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们也可以监控 Apache 的错误日志，查看是否有错误信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tail -f /usr/local/var/log/apache2/error_log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果上面这些步骤都没有解决问题，那么确定你的 Apache 是否监听了 &lt;code&gt;80&lt;/code&gt; 端口，即 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 配置文件是否有 &lt;code&gt;Listen: 80&lt;/code&gt;，或者 &lt;code&gt;Listen:&lt;/code&gt; 后面是其他端口。&lt;/p&gt;
+
+&lt;p&gt;Apache 是通过 &lt;code&gt;apachectl&lt;/code&gt; 来进行控制的，它的基本使用方法如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl start
+$ sudo apachectl stop
+$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;-k&lt;/code&gt; 参数将强制重启 Apache，不管 Apache 是否准备好。&lt;/p&gt;
+
+&lt;p&gt;最终我将我的 Apache 的端口修改为了 &lt;code&gt;7070&lt;/code&gt;，主要是因为 &lt;code&gt;80&lt;/code&gt; 端口是 HTTP 服务的默认端口，&lt;code&gt;8080&lt;/code&gt; 端口是 Tomcat 的默认端口，为了避免与其他软件如 nginx 等发生潜在端口冲突问题，所以改为了 &lt;code&gt;7070&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-2-apache-的配置&#34;&gt;2.2 Apache 的配置&lt;/h3&gt;
+
+&lt;p&gt;现在我们已经有了一个 Web 服务器，接下来我们需要对其进行一些配置，以便于更方便我们本地的开发。&lt;/p&gt;
+
+&lt;p&gt;首先修改 Apache 的 &lt;code&gt;document root&lt;/code&gt;，这是 Web 服务的根目录，Apache 会从这个目录中寻找资源文件。默认的 document root 是 &lt;code&gt;/Library/WebServer/Documents&lt;/code&gt;。作为一个开发环境，我们可能更希望网站的根目录（即 Web 服务的根目录）在我们自己的用户主目录下。所以接下来修改配置。&lt;/p&gt;
+
+&lt;p&gt;我们可以在终端通过 &lt;code&gt;open -e&lt;/code&gt; 命令使用 Mac 默认的文本编辑器打开一个文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ open -e /usr/local/etc/apache2/2.4/httpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;搜索 &lt;code&gt;DocumentRoot&lt;/code&gt;，然后你会看到下面这行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DocumentRoot &amp;quot;/usr/local/var/www/htdocs&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将这行配置改为自己的用户主目录中的目录，把 &lt;code&gt;your_user&lt;/code&gt; 改为你的用户名：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DocumentRoot /Users/your_user/sites
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;紧接着还要将上面这行代码下面的 &lt;code&gt;&amp;lt;Directory&amp;gt;&lt;/code&gt; 也改为你的新的 document root：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;Directory /Users/your_user/sites&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 &lt;code&gt;&amp;lt;Directory&amp;gt;&lt;/code&gt; 代码块里面，我们还需要将 &lt;code&gt;AllowOverride&lt;/code&gt; 改为下面的样子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# AllowOverride controls what directives may be placed in .htaccess files.
+# It can be &amp;quot;All&amp;quot;, &amp;quot;None&amp;quot;, or any combination of the keywords:
+#   AllowOverride FileInfo AuthConfig Limit
+#
+AllowOverride All
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来通过取消注释使用 &lt;code&gt;mod_rewrite&lt;/code&gt; 模块：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule rewrite_module libexec/mod_rewrite.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-4-用户和用户组&#34;&gt;2.4 用户和用户组&lt;/h3&gt;
+
+&lt;p&gt;现在 Apache 已经指向了我们的用户主目录下的 sites 目录，不过依旧还存在一个问题。Apche 运行的时候，其用户及用户组都是 &lt;code&gt;daemon&lt;/code&gt;，当程序访问我们的用户主目录的时候，就会遇到权限问题。解决这个问题的方法就是，在 &lt;code&gt;httpd.conf&lt;/code&gt; 将用户和用户组分别改为你的用户名 &lt;code&gt;your_user&lt;/code&gt; 和 &lt;code&gt;staff&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;User your_user
+Group staff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-5-sites-目录&#34;&gt;2.5 sites 目录&lt;/h3&gt;
+
+&lt;p&gt;接下来就需要在用户主目录下创建一个 &lt;code&gt;sites&lt;/code&gt; 目录了，然后添加一个简单的 &lt;code&gt;index.html&lt;/code&gt; 文件，并写入 &lt;code&gt;&amp;lt;h1&amp;gt;My User Web Root&amp;lt;/h1&amp;gt;&lt;/code&gt; 代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir ~/Sites
+$ echo &amp;quot;&amp;lt;h1&amp;gt;My User Web Root&amp;lt;/h1&amp;gt;&amp;quot; &amp;gt; ~/Sites/index.html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后重启 Apache 使配置生效：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再访问 &lt;code&gt;http://localhost&lt;/code&gt; 就会显示 &lt;code&gt;index.html&lt;/code&gt; 里面的内容。如果你的配置也生效了，我们就可以继续下一步了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-sites-webroot.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-sites-webroot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;3-php-的安装&#34;&gt;3. PHP 的安装&lt;/h2&gt;
+
+&lt;p&gt;我们接下来安装 PHP 5.5、PHP 5.6、PHP 7.0 和 PHP 7.1，并使用一个简单的脚本来切换不同的版本。&lt;/p&gt;
+
+&lt;p&gt;你可以使用 &lt;code&gt;brew options php55&lt;/code&gt; 来查看所有可以安装的选项设置，比如在这个例子中，我们使用 &lt;code&gt;--with-httpd24&lt;/code&gt; 参数来编译安装 PHP 以及使 Apache 支持 PHP 所需要的一些模块。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install php55 --with-httpd24
+$ brew unlink php55
+$ brew install php56 --with-httpd24
+$ brew unlink php56
+$ brew install php70 --with-httpd24
+$ brew unlink php70
+$ brew install php71 --with-httpd24
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的命令会从源码下载 PHP，并进行编译安装。这可能需要一点时间。&lt;/p&gt;
+
+&lt;p&gt;如果之前已经安装过 PHP，可能需要使用 &lt;code&gt;reinstall&lt;/code&gt; 来代替 &lt;code&gt;install&lt;/code&gt; 进行安装。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-0-1-issue-configure-error-cannot-find-libz&#34;&gt;3.0.1 ISSUE configure: error: Cannot find libz&lt;/h4&gt;
+
+&lt;p&gt;我在安装的时候遇到了一个错误：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;==&amp;gt; ./configure --prefix=/usr/local/Cellar/php56/5.6.11_2 --localstatedir=/usr/local/var --sysconfdir=/usr/local/etc/php/5.6 --with-config-file-path=/usr/local/etc/php/5.6 --with
+checking whether to enable the SQLite3 extension... yes
+checking bundled sqlite3 library... yes
+checking for ZLIB support... yes
+checking if the location of ZLIB install directory is defined... no
+configure: error: Cannot find libz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最终在 Github 上找到了该 ISSUE &lt;a href=&#34;https://github.com/Homebrew/homebrew-php/issues/1946&#34;&gt;Cannot find libz when install php56 #1946
+&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;其原因可能是 Xcode 的 Command Line Tool 没有正确安装。解决问题的方法是运行下面的命令来重新安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;xcode-select --install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可能你也需要根据自己的需要修改一些 PHP 的配置，常见的比如修改内存配置或 &lt;code&gt;date.timezone&lt;/code&gt; 配置。各个版本的配置文件即 &lt;code&gt;php.ini&lt;/code&gt; 在下面的目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/usr/local/etc/php/5.5/php.ini
+/usr/local/etc/php/5.6/php.ini
+/usr/local/etc/php/7.0/php.ini
+/usr/local/etc/php/7.1/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-1-apache-和-php-的配置-第一部分&#34;&gt;3.1. Apache 和 PHP 的配置 - 第一部分&lt;/h3&gt;
+
+&lt;p&gt;我们已经成功安装了多个版本的 PHP，但我们还需要告诉 Apache 怎么使用它们。再次打开 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt;，并搜索 &lt;code&gt;#LoadModule php5_module&lt;/code&gt; 所在行。&lt;/p&gt;
+
+&lt;p&gt;可以发现，每个版本的 PHP 都有一个 &lt;code&gt;LoadModule&lt;/code&gt; 入口，每个 &lt;code&gt;LoadModule&lt;/code&gt; 都指向一个特定版本的 PHP。这里默认的路径如 &lt;code&gt;/usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so&lt;/code&gt; 是 &lt;code&gt;brew&lt;/code&gt; 应用程序的安装路径，我们可以使用一个更通用的路径来替换它们（具体的路径可能有所不同）：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule php5_module        /usr/local/Cellar/php55/5.5.38_11/libexec/apache2/libphp5.so
+LoadModule php5_module        /usr/local/Cellar/php56/5.6.29_5/libexec/apache2/libphp5.so
+LoadModule php7_module        /usr/local/Cellar/php70/7.0.14_7/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将上面的路径修改为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之所以可以这么修改，是因为 &lt;code&gt;/usr/local/opt/php71&lt;/code&gt; 其实是由 &lt;code&gt;brew&lt;/code&gt; 创建的 &lt;code&gt;/usr/local/Cellar/php71&lt;/code&gt; 的一个软连接。&lt;/p&gt;
+
+&lt;p&gt;这么修改的好处是，升级 PHP 的小版本号的时候，比如由 &lt;code&gt;7.1.0_11&lt;/code&gt; 时，我们就不需要再修改 &lt;code&gt;LoadModule&lt;/code&gt; 对应的值了。&lt;/p&gt;
+
+&lt;p&gt;我们每次开发或运行依旧只需要一般也只能使用某一个版本的 PHP。以我们要使用 7.1 这个版本开发应用为例，将其他版本的 &lt;code&gt;LoadModule&lt;/code&gt; 都注释掉，只保留对应版本的 &lt;code&gt;LoadModule&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+#LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+#LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样的配置就会告诉 Apache 使用 PHP 7.1 来处理 PHP 请求。（稍后我们将添加切换 PHP 版本的脚本。）&lt;/p&gt;
+
+&lt;p&gt;接下来还需要配置 PHP 的主目录索引文件（Directory Indexes），找到下面的代码块：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;IfModule dir_module&amp;gt;
+    DirectoryIndex index.html
+&amp;lt;/IfModule&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将其替换为下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;IfModule dir_module&amp;gt;
+    DirectoryIndex index.php index.html
+&amp;lt;/IfModule&amp;gt;
+
+&amp;lt;FilesMatch \.php$&amp;gt;
+    SetHandler application/x-httpd-php
+&amp;lt;/FilesMatch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;保存后重启 Apache，PHP 的安装就完成了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apachectl -k restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-2-验证-php-安装结果&#34;&gt;3.2. 验证 PHP 安装结果&lt;/h3&gt;
+
+&lt;p&gt;验证 PHP 是否正确安装的最好方法是使用 &lt;code&gt;phpinfo()&lt;/code&gt; 这个函数，这个函数会输出 PHP 的版本等信息。当然，最好不要在你的生产环境中使用它。但在开发环境中，使用它对我们了解系统中 PHP 安装信息非常有帮助。&lt;/p&gt;
+
+&lt;p&gt;在网站主目录即你的 &lt;code&gt;sites/&lt;/code&gt; 目录下创建一个 &lt;code&gt;info.php&lt;/code&gt; 的文件，然后输入下面的代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;?php
+phpinfo();
+?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;打开浏览器，访问 &lt;code&gt;http://localhost:7070/info.php&lt;/code&gt;，你讲看到下面的完美的 PHP 信息页面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page.png&#34; alt=&#34;php information page&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果能够看到类似的页面，就说明 Apache 和 PHP 已经成功运行了。你可以通过注释 &lt;code&gt;LoadModule ... php56 ...&lt;/code&gt; 来测试其他版本的 PHP。修改配置后，重启 Apache 并刷新页面就能看到类似的页面了。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-3-php-版本切换脚本&#34;&gt;3.3 PHP 版本切换脚本&lt;/h3&gt;
+
+&lt;p&gt;在开发中，如果每次都通过修改 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 文件去切换 PHP 版本，显然太麻烦了。有没有更容易的方法呢？幸运的是，一些勤劳的开发者已经写好了这样的一个脚本 &lt;a href=&#34;https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11&#34;&gt; PHP switcher script&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;接下来我们将添加 &lt;code&gt;sphp&lt;/code&gt; 到 brew 的 &lt;code&gt;/usr/local/bin&lt;/code&gt; 里面。原文给的方法是使用下面的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ curl -L https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11/raw &amp;gt; /usr/local/bin/sphp
+$ chmod +x /usr/local/bin/sphp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中第一行命令的作用，就是将 Gist 上的这个切换 PHP 版本的脚本下载并写入到 &lt;code&gt;/usr/local/bin/sphp&lt;/code&gt; 这个文件里面。第二行命令的作用是赋予 &lt;code&gt;/usr/local/bin/sphp&lt;/code&gt; 可执行权限。&lt;/p&gt;
+
+&lt;p&gt;但由于国内并不能访问 Gist，所以第一行命令并不能执行成功。所以我在这里提供了整个脚本代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+# Check if command was ran as root.
+if [[ $(id -u) -eq 0 ]]; then
+    echo &amp;quot;The command \&amp;quot;sphp\&amp;quot; should not be executed as root or via sudo directly.&amp;quot;
+    echo &amp;quot;When a service requires root access, you will be prompted for a password as needed.&amp;quot;
+    exit 1
+fi
+
+# Usage
+if [ $# -ne 1 ]; then
+    echo &amp;quot;Usage: sphp [phpversion]&amp;quot;
+    echo &amp;quot;Versions installed:&amp;quot;
+    brew list | grep &#39;^php[0-9]\{2,\}$&#39; | grep -o -E &#39;[0-9]+&#39; | while read -r line ; do
+        echo &amp;quot; - phpversion: $line&amp;quot;
+    done
+    exit 1
+fi
+
+currentversion=&amp;quot;`php -r \&amp;quot;error_reporting(0); echo str_replace(&#39;.&#39;, &#39;&#39;, substr(phpversion(), 0, 3));\&amp;quot;`&amp;quot;
+newversion=&amp;quot;$1&amp;quot;
+
+majorOld=${currentversion:0:1}
+majorNew=${newversion:0:1}
+minorNew=${newversion:1:1}
+
+brew list php$newversion 2&amp;gt; /dev/null &amp;gt; /dev/null
+
+if [ $? -eq 0 ]; then
+    echo &amp;quot;PHP version $newversion found&amp;quot;
+
+    # Check if new version is already the current version.
+    # if [ &amp;quot;${newversion}&amp;quot; == &amp;quot;${currentversion}&amp;quot; ]; then
+    #     echo -n &amp;quot;PHP version ${newversion} is already being used. Continue by reloading? (y/n) &amp;quot;
+    #     while true; do
+    #         read -n 1 yn
+    #         case $yn in
+    #             [Yy]* ) echo &amp;amp;&amp;amp; break;;
+    #             [Nn]* ) echo &amp;amp;&amp;amp; exit 1;;
+    #         esac
+    #     done
+    # fi
+
+    echo &amp;quot;Unlinking old binaries...&amp;quot;
+    brew unlink php$currentversion 2&amp;gt; /dev/null &amp;gt; /dev/null
+
+    echo &amp;quot;Linking new binaries...&amp;quot;
+    brew link php$newversion
+
+    echo &amp;quot;Linking new modphp addon...&amp;quot;
+    sudo ln -sf `brew list php$newversion | grep libphp` /usr/local/lib/libphp${majorNew}.so
+    echo /usr/local/lib/libphp${majorNew}.so
+    echo &amp;quot;Fixing LoadModule...&amp;quot;
+    apacheConf=`httpd -V | grep -i server_config_file | cut -d &#39;&amp;quot;&#39; -f 2`
+    sudo sed -i -e &amp;quot;/LoadModule php${majorOld}_module/s/^#*/#/&amp;quot; $apacheConf
+
+    if grep &amp;quot;LoadModule php${majorNew}_module .*php${newversion}&amp;quot; $apacheConf &amp;gt; /dev/null
+    then
+        sudo sed -i -e &amp;quot;/LoadModule php${majorNew}_module .*php${newversion}/s/^#//&amp;quot; $apacheConf
+    else
+        sudo sed -i -e &amp;quot;/LoadModule php${majorNew}_module/s/^#//&amp;quot; $apacheConf
+    fi
+
+    echo &amp;quot;Updating version file...&amp;quot;
+
+    pgrep -f /usr/sbin/httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    if [ $? -eq 0 ]; then
+        echo &amp;quot;Restarting system Apache...&amp;quot;
+        sudo pkill -9 -f /usr/sbin/httpd
+        sudo /usr/sbin/apachectl -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    fi
+
+    pgrep -f /usr/local/&amp;quot;Cellar|opt&amp;quot;/*/httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    if [ $? -eq 0 ]; then
+        echo &amp;quot;Restarting homebrew Apache...&amp;quot;
+        sudo pkill -9 -f /usr/local/&amp;quot;Cellar|opt&amp;quot;/*/httpd
+        sudo /usr/local/bin/apachectl -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    fi
+
+    # pgrep -x httpd 2&amp;gt; /dev/null &amp;gt; /dev/null
+    # if [ $? -eq 0 ]; then
+    #     echo &amp;quot;Restarting non-root homebrew Apache...&amp;quot;
+    #     httpd -k restart &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+    # fi
+
+    echo &amp;quot;Done.&amp;quot;
+
+    # Show PHP CLI version for verification.
+    echo &amp;amp;&amp;amp; php -v
+else
+    echo &amp;quot;PHP version $majorNew.$minorNew was not found.&amp;quot;
+    echo &amp;quot;Try \`brew install php${newversion}\` first.&amp;quot;
+    exit 1
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过 &lt;code&gt;open -e /usr/local/bin/sphp&lt;/code&gt; 打开 &lt;code&gt;sphp&lt;/code&gt; 文件，并将上面的代码复制进入，然后赋予可执行权限：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ chmod +x /usr/local/bin/sphp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-4-检测-path-路径&#34;&gt;3.4. 检测 PATH 路径&lt;/h3&gt;
+
+&lt;p&gt;Homebrew 在安装程序的时候一般会把程序的可执行文件加入到 &lt;code&gt;/usr/local/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/sbin&lt;/code&gt; 这两个目录里面。通过下面的命令可以快速测试可执行文件路径是否正确：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ echo $PATH
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果没有看到类似的输出，你可能需要手动添加这些路径。添加下面的代码到 shell 的配置文件中（不同的 shell 可能需要将路径添加到不同的配置文件中，如 &lt;code&gt;~/.profile&lt;/code&gt; &lt;code&gt;~/.bash_profile&lt;/code&gt; &lt;code&gt;~/.zshrc&lt;/code&gt;）。如果使用的是 macOS 默认的 shell，则添加到 &lt;code&gt;~/.profile&lt;/code&gt; （若没有这个文件，则创建它）；如果使用的是 zsh，则添加到 &lt;code&gt;~/.zshrc&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在添加路径到配置文件的时候，最好关闭其他不相关的终端，因为某些开着的终端可能会对路径造成一些奇怪的问题。添加完成后，配置会在下次打开终端的时候生效。或者使用下面的命令，重新载入配置文件使其立即生效：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# 若使用的是默认终端
+$ source ~/.profile
+# 或如果使用的是 zsh
+$ source ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-5-apache-和-php-的配置-第二部分&#34;&gt;3.5. Apache 和 PHP 的配置 - 第二部分&lt;/h3&gt;
+
+&lt;p&gt;尽管之前我们已经配置好了 Apache 和 PHP，现在我们还需要修改配置文件，来使用 &lt;code&gt;PHP switcher script&lt;/code&gt; 切换 PHP 的版本。继续打开 &lt;code&gt;/usr/local/etc/apache2/2.4/httpd.conf&lt;/code&gt; 然后找到 &lt;code&gt;LoadModule php&lt;/code&gt; 所在的行：&lt;/p&gt;
+
+&lt;p&gt;然后注释掉正在使用的 &lt;code&gt;LoadModule&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+#LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
+#LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
+#LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;并在下面添加：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Brew PHP LoadModule for `sphp` switcher
+#LoadModule php5_module /usr/local/lib/libphp5.so
+LoadModule php7_module /usr/local/lib/libphp7.so
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果你安装了 PHP 5.5 或 5.6 等，注释掉的 &lt;code&gt;php5_module&lt;/code&gt; 同样也非常重要。&lt;code&gt;PHP switcher script&lt;/code&gt; 会自动注释或取消注释 PHP module。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-6-php-切换测试&#34;&gt;3.6 PHP 切换测试&lt;/h3&gt;
+
+&lt;p&gt;完成上面的步骤之后，就可以使用 &lt;code&gt;sphp&lt;/code&gt; 命令来切换 PHP 版本了。&lt;code&gt;sphp&lt;/code&gt; 的参数是由两个数字组合成的两位数：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sphp 5
+PHP version 55 found
+Unlinking old binaries...
+Linking new binaries...
+Linking /usr/local/Cellar/php55/5.5.38_11... 17 symlinks created
+Linking new modphp addon...
+/usr/local/lib/libphp5.so
+Fixing LoadModule...
+Updating version file...
+Restarting homebrew Apache...
+Done.
+
+PHP 5.5.38 (cli) (built: Dec 28 2016 15:48:28)
+Copyright (c) 1997-2015 The PHP Group
+Zend Engine v2.5.0, Copyright (c) 1998-2015 Zend Technologies
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后访问 &lt;code&gt;http://localhost:7070/info.php&lt;/code&gt;，可以看到 PHP 版本已经正确切换：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-sphp.png&#34; alt=&#34;macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-sphp&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-6-1-issue-unable-to-load-dynamic-library-usr-local-opt-php56-mongo-mongo-so&#34;&gt;3.6.1 ISSUE Unable to load dynamic library &amp;lsquo;/usr/local/opt/php56-mongo/mongo.so&amp;rsquo;&lt;/h4&gt;
+
+&lt;p&gt;我在切换版本的时候也遇到了问题：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sphp 71
+...
+Warning: PHP Startup: Unable to load dynamic library &#39;/usr/local/opt/php56-mongo/mongo.so&#39; - dlopen(/usr/local/opt/php56-mongo/mongo.so, 9): image not found in Unknown on line 0
+PHP 5.6.29 (cli) (built: Dec 28 2016 15:58:30)
+Copyright (c) 1997-2016 The PHP Group
+Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;根据错误提示，大概是因为 &lt;code&gt;php56-mongo&lt;/code&gt; 这个扩展没有，于是我使用 brew 安装了 &lt;code&gt;php56-mongo&lt;/code&gt; 问题就解决了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install php56-mongo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-7-更新-php-和其他通过-brew-安装的程序&#34;&gt;3.7 更新 PHP 和其他通过 Brew 安装的程序&lt;/h3&gt;
+
+&lt;p&gt;使用 brew 更新 PHP 和其他通过 brew 安装的程序非常简单，第一步是更新 brew 本身：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;升级后将会列出一系列可测回归内心的程序，然后使用下面的命令更新：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew upgrade
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;3-8-使用具体的-最新的-php-版本&#34;&gt;3.8 使用具体的/最新的 PHP 版本&lt;/h3&gt;
+
+&lt;p&gt;当我们使用 PHP 的时候，每次我们只使用了其中一个版本，并且只有当前使用的版本会更新到最新版本。可以使用下面的命令查看当前 PHP 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ php -v
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以使用下面的命令查看具体的可用 PHP 版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew info php55
+homebrew/php/php55: stable 5.5.38 (bottled), HEAD
+PHP Version 5.5
+https://php.net
+Conflicts with: php53, php54, php56, php70, php71
+/usr/local/Cellar/php55/5.5.38_11 (329 files, 47.7M)
+  Built from source on 2016-12-28 at 15:49:20 with: --with-httpd24
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;比如上面的 PHP 5.5 版本的只有一个可用版本 5.5.38。&lt;/p&gt;
+
+&lt;p&gt;然后可以使用 brew 来切换到一个具体的版本：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew switch php55 5.5.38
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到此，这篇文章就结束了。你已经完成掌握了 Apache 2.4 和各个版本 PHP 的安装，并且能够在 5.5 5.6 7.0 7.1 中快速切换 PHP 版本。原作者还写了两外两篇文章，分别是 &lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-mysql-vhost-apc&#34;&gt;macOS 10.12 Sierra Apache Setup: MySQL, APC &amp;amp; More&lt;/a&gt; 和 &lt;a href=&#34;https://getgrav.org/blog/macos-sierra-apache-ssl&#34;&gt;macOS 10.12 Sierra Apache Setup: SSL&lt;/a&gt;，近期内我也会将它们翻译成中文，并加入自己的实践总结。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Github Issue: []()&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

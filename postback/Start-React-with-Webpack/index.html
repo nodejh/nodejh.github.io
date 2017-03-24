@@ -1,0 +1,494 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Describe your website">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Start React with Webpack &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-light.min.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/fontawesome/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="nodejh" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://nodejh.com/post'>Archive</a>
+	
+
+	
+		<a href='http://nodejh.com/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Start React with Webpack</h1>
+                    <h2 class="headline">
+                    Sep 9, 2016 04:11
+                    · 653 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/react.js">React.js</a>
+                          
+                              <a href="http://nodejh.com/tags/webpack">Webpack</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h2 id="tl-dr">TL;DR</h2>
+
+<pre><code>$ git clone https://github.com/nodejh/start-react-with-webpack react-sample
+$ cd react-sample &amp;&amp; npm install
+$ npm run dev
+</code></pre>
+
+<p>然后打开浏览器输入 <code>http://localhost:8080</code>，并尝试随意修改一下 app 目录里面的代码，就能看到效果了。</p>
+
+<p>为了避免包版本问题导致程序不能运行，根目录下有一个 <code>npm-shrinkwrap.json</code> 文件，这里面所有包的版本都是固定的。 <code>npm install</code> 时首先会检查在根目录下有没有 <code>npm-shrinkwrap.json</code>，如果 shrinkwrap 文件存在的话，npm 会使用它（而不是 <code>package.json</code>）来确定安装的各个包的版本号信息。</p>
+
+<h2 id="1-安装并配置-webpack">1. 安装并配置 Webpack</h2>
+
+<p>首先创建并初始化一个项目目录：</p>
+
+<pre><code>$ mkdir react-sample &amp;&amp; cd react-sample
+$ npm init
+</code></pre>
+
+<p>安装 <code>webpack</code>：</p>
+
+<pre><code>$ npm i webpack --save-dev
+</code></pre>
+
+<p>然后配置 <code>webpack.config.js</code>：</p>
+
+<pre><code># 创建一个 webpack.config.js 文件
+$ touch webpack.config.js
+</code></pre>
+
+<!-- more -->
+
+<p>在该文件中加入下面的内容：</p>
+
+<pre><code>const webpack = require('webpack');
+const path = require('path');
+
+// 定义打包目录路径
+const BUILD_DIR = path.resolve(__dirname, './build');
+// 定义组件目录路径
+const APP_DIR = path.resolve(__dirname, './app');
+
+const config = {
+  entry: `${APP_DIR}/index.jsx`, // 文件打包的入口点
+  output: {
+    path: BUILD_DIR, // 输出目录的绝对路径
+    filename: 'bundle.js', // 输出的每个包的相对路径
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx'], // 开启后缀名的自动补全
+  },
+};
+
+module.exports = config;
+</code></pre>
+
+<p>这是一个最基本的 webpack 配置文件。</p>
+
+<p>接下来在 <code>build/</code> 目录中创建一个 <code>index.html</code> 文件：</p>
+
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;Start React with Webpack&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;app&quot; /&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;./bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h2 id="2-配置加载器-babel-loader">2. 配置加载器 babel-loader</h2>
+
+<p>加载器是把一个资源文件作为入参转换为另一个资源文件的 node.js 函数。</p>
+
+<p>由于我们写 React 的时候使用的是 JSX 语法和 ES6 语法，而浏览器并不完全支持它们。所以需要使用 <a href="https://github.com/babel/babel-loader"><code>babel-loader</code></a> 来让 webpack 加载 JSX 和 ES6 的文件。</p>
+
+<p><code>babel-loader</code> 的主要作用如下图：</p>
+
+<p><img src="/images/Start-React-with-Webpack-babel-loader.png" alt="Babel" /></p>
+
+<p>安装依赖包：</p>
+
+<pre><code>$ npm i babel-core babel-loader babel-preset-es2015 babel-preset-react --save-dev
+</code></pre>
+
+<p><code>babel-preset-es2015</code> 是转换 <code>ES6</code> 的包；<code>babel-preset-react</code> 是转换 JSX 的包。</p>
+
+<p>接下来需要修改 <code>webpack.config.js</code>：</p>
+
+<pre><code>// Existing Code ....
+const config = {
+  // Existing Code ....
+  module: {
+    loaders: [{
+      test: /\.(js|jsx)$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015', 'react']
+      }
+    }]
+  }
+};
+</code></pre>
+
+<h2 id="3-hello-react">3. Hello React</h2>
+
+<p>安装 React：</p>
+
+<pre><code>$ npm i react react-dom --save
+</code></pre>
+
+<p>在 <code>app</code> 目录下新建一个 <code>index.jsx</code> 文件，然后将下面的内容添加到 <code>index.jsx</code> 中：</p>
+
+<pre><code>import React from 'react';
+import {render} from 'react-dom';
+
+class App extends React.Component {
+  render () {
+    return &lt;h1&gt; Hello React!&lt;/h1&gt;;
+  }
+}
+
+render(&lt;App/&gt;, document.getElementById('app'));
+
+</code></pre>
+
+<p>这个时候，执行下面的命令打包：</p>
+
+<pre><code>webpack -w
+</code></pre>
+
+<p><code>-w</code> 参数表示持续监测项目目录，如果文件发生修改，则重新打包。</p>
+
+<p>打包完成后，将 <code>build/index.html</code> 用浏览器打开，就能看到 <code>Hello React!</code>，如下：</p>
+
+<p><img src="/images/Start-React-with-Webpack-hello_world.png" alt="hello_world.png" /></p>
+
+<h2 id="4-自动刷新和热加载">4. 自动刷新和热加载</h2>
+
+<p>懒是第一生产力。每次写完代码，都要重新打包，重新刷新浏览器才能看到结果，显然很麻烦。</p>
+
+<p>那有没有能够自动刷新浏览器的方法呢？当然有，这个时候就需要 webpack-dev-server 这个包。</p>
+
+<pre><code>$ npm install webpack-dev-server -g
+</code></pre>
+
+<p><code>webpack-dev-server</code> 提供了两种自动刷新模式：</p>
+
+<p><strong>Iframe 模式</strong></p>
+
+<ul>
+<li>不需要额外配置，只用修改路径</li>
+<li>应用被嵌入了一个 iframe 内部，页面顶部可以展示打包进度信息</li>
+<li>因为 Iframe 的关系，如果应用有多个页面，无法看到当前页面的 URL 信息</li>
+</ul>
+
+<p><strong>inline 模式</strong></p>
+
+<ul>
+<li>需要添加 &ndash;inline 配置参数</li>
+<li>提示信息在控制台中和浏览器的console中显示</li>
+<li>页面的 URL 改变，可以在浏览器地址栏看见</li>
+</ul>
+
+<p>接下来启动 webpack-dev-server：</p>
+
+<pre><code>$ webpack-dev-server --inline --hot --content-base ./build/
+</code></pre>
+
+<p><code>--hot</code> 参数就是热加载，即在不刷新浏览器的条件下，应用最新的代码更新。在浏览器中可能看到这样的输出：</p>
+
+<pre><code>[HMR] Waiting for update signal from WDS...
+[WDS] Hot Module Replacement enabled.
+</code></pre>
+
+<p><code>--content-base ./</code> 参数表示将当前目录作为 server 根目录。命令启动后，会在 8080 端口创建一个 HTTP 服务，通过访问 <code>http://localhost:8080/index.html</code> 就可以访问我们的项目了，并且修改了项目中的代码后，浏览器会自动刷新并实现热加载。</p>
+
+<p>当然，命令行输入这么长，还是不太方便，所以还有一种更简单的方式，在 <code>package.json</code> 中配置 webpack develop server：</p>
+
+<pre><code>// Existing Code ....
+&quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;webpack-dev-server --inline --hot --content-base ./build/&quot;
+  }
+</code></pre>
+
+<p>然后通过 <code>npm start dev</code> 来启动即可。</p>
+
+<h2 id="5-添加一个新的组件">5. 添加一个新的组件</h2>
+
+<p>在 <code>app</code> 目录中新建一个 <code>AwesomeComponent.jsx</code> 文件，并添加如下代码：</p>
+
+<pre><code>import React, { Component } from 'react';
+
+class AwesomeComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      likesCount: 0
+    };
+    this.onLike = this.onLike.bind(this);
+  }
+
+
+  onLike() {
+    let newLikesCount = this.state.likesCount + 1;
+    this.setState({
+      likesCount: newLikesCount
+    });
+  }
+
+
+  render() {
+    return (
+      &lt;div&gt;
+        Likes: &lt;span&gt;{this.state.likesCount}&lt;/span&gt;
+        &lt;div&gt;
+          &lt;button onClick={this.onLike}&gt;Like Me&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+
+export default AwesomeComponent;
+</code></pre>
+
+<p>然后修改 <code>index.jsx</code>：</p>
+
+<pre><code>// ...
+import AwesomeComponent from './AwesomeComponent.jsx';
+// ...
+class App extends React.Component {
+  render () {
+    return (
+      &lt;div&gt;
+        &lt;p&gt; Hello React!&lt;/p&gt;
+        &lt;AwesomeComponent /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+// ...
+</code></pre>
+
+<p><img src="/images/Start-React-with-Webpack-like.png" alt="like.png" /></p>
+
+<hr />
+
+<h2 id="update">UPDATE</h2>
+
+<h3 id="2016-10-15">2016.10.15</h3>
+
+<ul>
+<li>更新 webpack-dev-server 的配置方法</li>
+</ul>
+
+<h5 id="设置-webpack-dev-server-old">设置 webpack-dev-server (old)</h5>
+
+<p>上面我们直接通过浏览器浏览的 <code>html</code> 文件，接下来我们需要利用 <code>webpack-dev-server</code> 来创建一个 HTTP Server。</p>
+
+<p>首先安装 <code>webpack-dev-server</code>：</p>
+
+<pre><code>$ npm i webpack-dev-server --save-dev
+</code></pre>
+
+<p>然后在 <code>package.json</code> 的 <code>script</code> 里面加入 <code>build</code> 和 <code>dev</code> 两个命令：</p>
+
+<pre><code>{
+  &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;webpack&quot;,
+    &quot;dev&quot;: &quot;webpack-dev-server --devtool eval --progress --colors --hot --content-base build&quot;
+  }
+}
+</code></pre>
+
+<ul>
+<li>webpack-dev-server - 在 localhost:8080 建立一个 Web 服务器</li>
+<li>&ndash;devtool eval - 为你的代码创建源地址。当有任何报错的时候可以让你更加精确地定位到文件和行号</li>
+<li>&ndash;progress - 显示合并代码进度</li>
+<li>&ndash;colors - 命令行中显示颜色！</li>
+<li>&ndash;content-base build - 指向设置的输出目录</li>
+</ul>
+
+<p>然后就可以使用 <code>npm run dev</code> 的命令来启动项目：</p>
+
+<pre><code>$ npm run dev
+</code></pre>
+
+<p>在浏览器地址栏输入 <code>localhost:8080</code> 即可看到页面。</p>
+
+<p>如果需要浏览器自动刷新，将 <code>webpack.config.js</code> 中的 <code>entry: APP_DIR + '/index.jsx</code> 改为下面这样：</p>
+
+<pre><code>entry: [
+   'webpack-dev-server/client?http://localhost:8080',
+   'webpack/hot/dev-server',
+    APP_DIR + '/index.jsx'
+]
+</code></pre>
+
+<p>这样的话，每次当代码发生变化之后，webpack 会自动重新打包，浏览器也会自动刷新页面。</p>
+
+<h3 id="2016-11-19-更新">2016.11.19 更新</h3>
+
+<ul>
+<li>使用 ES6 语法编写 webpack.config.js</li>
+<li>修改 babel-loader 加载器的配置方法：将添加 <code>.babelrc</code> 文件改为在 webpack.config.js 中配置</li>
+<li>🐛：webpack-dev-server &ndash;inline &ndash;hot &ndash;content-base ./build/ ➡️ webpack-dev-server &ndash;inline &ndash;hot &ndash;content-base ./build/</li>
+</ul>
+
+<h5 id="babel-loader-加载器的配置方法-old">babel-loader 加载器的配置方法(old)</h5>
+
+<p>接下来需要配置 babel-loader，告诉 webpack 我们使用了 ES6 和 JSX 插件。先通过touch .babelrc 创建一个名为 .babelrc 的配置文件。然后加入下面的代码：</p>
+
+<pre><code>{
+  &quot;presets&quot; : [&quot;es2015&quot;, &quot;react&quot;]
+}
+</code></pre>
+
+<p>然后再修改 webpack.config.js，使 webpack 在打包的时候，使用 babel-loader：</p>
+
+<pre><code>// Existing Code ....
+var config = {
+  // Existing Code ....
+  module: {
+    loaders : [
+      {
+        test : /\.jsx?/,
+        include : APP_DIR,
+        loader : 'babel'
+      }
+    ]
+  }
+}
+</code></pre>
+
+<h5 id="自动刷新和热加在的配置-old-wrong">自动刷新和热加在的配置(old, wrong)</h5>
+
+<p>当然，命令行输入这么长，还是不太方便，所以还有一种更简单的方式，直接在 <code>webpack.cofig.js</code> 中配置 webpack develop server：</p>
+
+<pre><code>{
+  entry: {
+    // ...      
+  },
+  // ...
+  devServer: {
+    hot: true,
+    inline: true
+  }
+}
+</code></pre>
+
+                </section>
+            </article>
+
+            <div id="disqus_thread"></div>
+<div style="margin-top: 50px">
+  评论: 请点击 Gtihub Issue 链接跳转到评论页面
+</div>
+</div>
+
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github"></i>
+    </a>
+    
+    <a class="symbol" href="http://stackoverflow.com/users/4518882/nodejh">
+        <i class="fa fa-stack-overflow"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2016 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script   src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>

@@ -1,0 +1,180 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Describe your website">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>How to Remove .DS_Store on macOS &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-light.min.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/fontawesome/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="nodejh" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://nodejh.com/post'>Archive</a>
+	
+
+	
+		<a href='http://nodejh.com/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>How to Remove .DS_Store on macOS</h1>
+                    <h2 class="headline">
+                    Feb 24, 2016 14:25
+                    · 85 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/mac-ox">Mac OX</a>
+                          
+                              <a href="http://nodejh.com/tags/git">GIT</a>
+                          
+                              <a href="http://nodejh.com/tags/.ds_store">.DS_Store</a>
+                          
+                              <a href="http://nodejh.com/tags/to">to</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h3 id="ds-store-是什么">.DS_Store 是什么</h3>
+
+<p>使用 Mac 的用户可能会注意到，系统经常会自动在每个目录生成一个隐藏的 <code>.DS_Store 文件</code>。<code>.DS_Store</code> (英文全称 Desktop Services Store)是一种由苹果公司的Mac OS X操作系统所创造的隐藏文件，目的在于存贮目录的自定义属性，例如文件们的图标位置或者是背景色的选择。相当于 Windows 下的 <code>desktop.ini</code>。</p>
+
+<h3 id="删除-ds-store">删除 .DS_Store</h3>
+
+<p>如果你的项目中还没有自动生成的 <code>.DS_Store</code> 文件，那么直接将 <code>.DS_Store</code> 加入到 <code>.gitignore</code> 文件就可以了。如果你的项目中已经存在 <code>.DS_Store</code> 文件，那就需要先从项目中将其删除，再将它加入到 <code>.gitignore</code>。如下：</p>
+
+<pre><code># 删除项目中的所有.DS_Store。这会跳过不在项目中的 .DS_Store
+find . -name .DS_Store -print0 | xargs -0 git rm -f --ignore-unmatch
+# 将 .DS_Store 加入到 .gitignore
+echo .DS_Store &gt;&gt; ~/.gitignore
+# 更新项目
+git add --all
+git commit -m '.DS_Store banished!'
+</code></pre>
+
+<p>如果你只需要删除磁盘上的 <code>.DS_Store</code>，可以使用下面的命令来删除当前目录及其子目录下的所有<code>.DS_Store</code> 文件:</p>
+
+<pre><code>find . -name '*.DS_Store' -type f -delete
+</code></pre>
+
+<h3 id="禁用或启用自动生成">禁用或启用自动生成</h3>
+
+<ul>
+<li>禁止.DS_store生成：</li>
+</ul>
+
+<pre><code>defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+</code></pre>
+
+<ul>
+<li>恢复.DS_store生成：</li>
+</ul>
+
+<pre><code>defaults delete com.apple.desktopservices DSDontWriteNetworkStores
+</code></pre>
+
+                </section>
+            </article>
+
+            <div id="disqus_thread"></div>
+<div style="margin-top: 50px">
+  评论: 请点击 Gtihub Issue 链接跳转到评论页面
+</div>
+</div>
+
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github"></i>
+    </a>
+    
+    <a class="symbol" href="http://stackoverflow.com/users/4518882/nodejh">
+        <i class="fa fa-stack-overflow"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2016 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script   src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>

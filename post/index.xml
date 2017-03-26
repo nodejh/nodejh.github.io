@@ -6,8 +6,391 @@
     <description>Recent content in Posts on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 19 Mar 2017 17:15:37 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Understand the Oracle startup process</title>
+      <link>http://nodejh.com/post/Oracle-Startup-and-Shutdown/</link>
+      <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Oracle-Startup-and-Shutdown/</guid>
+      <description>
+
+&lt;h2 id=&#34;一-常用启动步骤&#34;&gt;一. 常用启动步骤&lt;/h2&gt;
+
+&lt;p&gt;对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。&lt;/p&gt;
+
+&lt;p&gt;如果还需要使用 OEM 来监控数据库服务，则还要启动 OEM。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-启动数据库&#34;&gt;1. 启动数据库&lt;/h4&gt;
+
+&lt;p&gt;我们可以使用 &lt;code&gt;sqlplus&lt;/code&gt; 来启动数据库。关于 &lt;code&gt;sqlplus&lt;/code&gt; 的详细使用方法请参考 &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/31&#34;&gt;《使用 SQL *Plus 管理 Oracle 数据库》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;进入 &lt;code&gt;sqlplus&lt;/code&gt; ：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sqlplus / as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;启动数据库：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&amp;gt; startup
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;2-启动监听器&#34;&gt;2. 启动监听器&lt;/h4&gt;
+
+&lt;p&gt;Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。&lt;/p&gt;
+
+&lt;p&gt;启动监听器：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ lsnrctl start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;完成这两个步骤，就可以使用数据库了。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-启动-oem&#34;&gt;3. 启动 OEM&lt;/h4&gt;
+
+&lt;p&gt;Oracle Enterprise Manager（Oracle企业管理器，简称 OEM ）是一个图形化数据库管理工具，可同时监控管理多个系统上的多个数据库，因而特别适合分布式环境。&lt;/p&gt;
+
+&lt;p&gt;启动 OEM：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ emctl start dbconsole
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;启动成功后就可以通过 &lt;code&gt;http://服务器:1158/em&lt;/code&gt; 来访问基于 Web 的监控页面。&lt;/p&gt;
+
+&lt;h2 id=&#34;二-启动概述&#34;&gt;二. 启动概述&lt;/h2&gt;
+
+&lt;p&gt;Oracle Serve 由实例（Instance）和数据库（database）组成，每一个运行的 Oracle 数据库都与一个 Oracle 实例关联。&lt;/p&gt;
+
+&lt;p&gt;实例是由一组后台进程和一块称为系统全局区 SGA（System Global Area）的共享内存段组成。后台进程是数据库和操作系统进行交互的通道，后台进程的命名由 ORACLE_SID 决定，Oracle 根据 ORACLE_SID 来寻找参数文件启动实例。数据库是指存储在磁盘上的一组物理文件。&lt;/p&gt;
+
+&lt;p&gt;Oracle 数据库具有四种状态，启动过程具有三个阶段。四种状态分别 &lt;code&gt;shutdown&lt;/code&gt; &lt;code&gt;nomount&lt;/code&gt; &lt;code&gt;mount&lt;/code&gt; &lt;code&gt;open&lt;/code&gt;，对应三个阶段分别为：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;启动实例 &lt;code&gt;shutdown --&amp;gt; nomount&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;装载数据库 &lt;code&gt;nomount --&amp;gt; mount&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;打开数据库 &lt;code&gt;mount --&amp;gt; open&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;                                                    ^
+                                           open     |
+                                     +--------------|
+                                     |   All files
+                                     |   opened as
+                                     | described by
+                              mount  |  the control
+                       +-------------+ file for this
+                       | Control file    instance
+                       |    opened
+                       |   for this
+               nomount |   instance
+           +-----------+
+           |  Instance
+           |   started
+           |
+  shutdown |
+-----------+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;启动实例后，Oracle 软件会将实例与特定的数据库关联，这个过程称为装载数据库。接下
+来可以打开数据库，以便授权用户访问数据库。在同一台计算机上可以并发执行多个实例，
+每一个实例只访问自己的物理数据库。&lt;/p&gt;
+
+&lt;h2 id=&#34;三-启动详解&#34;&gt;三. 启动详解&lt;/h2&gt;
+
+&lt;p&gt;为了弄清楚 Oracle 启动过程的详细内容，我们需要用到两个命令：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ps&lt;/code&gt;用来查看系统运行了哪些进程&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ipcs&lt;/code&gt; 查询进程间通信设施状态，显示使用了共享内存和信号量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;3-1-shutdown-状态&#34;&gt;3.1. &lt;code&gt;shutdown&lt;/code&gt; 状态&lt;/h4&gt;
+
+&lt;p&gt;当 Oracle 处于该状态的时候，Oracle 的所有文件都静静的躺在磁盘里，一切都还未开始，属于关机状态。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ps -ef | grep oracle
+oracle    4524     1  0 00:54 ?        00:00:39 /data/oracle/product/11.2.0/db_1/bin/emagent
+root     12825   974  0 13:49 ?        00:00:00 sshd: oracle [priv]
+oracle   12832 12825  0 13:49 ?        00:00:00 sshd: oracle@pts/0
+oracle   12833 12832  0 13:49 pts/0    00:00:00 -bash
+oracle   13825 12833  0 13:54 pts/0    00:00:00 ps -ef
+oracle   13826 12833  0 13:54 pts/0    00:00:00 grep --color=auto oracle
+$ ipcs -a
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x011268f0 458753     root       600        1000       8
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;3-2-启动实例-shutdown-nomount&#34;&gt;3.2. 启动实例 &lt;code&gt;shutdown --&amp;gt; nomount&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;总体来说，启动数据库实例包括以下操作：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;读取参数文件 &lt;code&gt;SPFILE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;分配 SGA&lt;/li&gt;
+&lt;li&gt;启动后台进程&lt;/li&gt;
+&lt;li&gt;打开告警文件和跟踪文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在启动实例时，将为实例创建一系列后台进程和服务进程，并且在内存中创建 SGA 区等内存结构。在实例启动的过程中只会使用到初始化参数文件，数据库是否存在对实例的启动没有影响。如果初化参数设置有误，实例将无法启动。&lt;/p&gt;
+
+&lt;p&gt;启动数据库实例的命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sqlplus / as sysdba
+
+SQL*Plus: Release 11.2.0.1.0 Production on Sun Mar 26 14:05:14 2017
+
+Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+SQL&amp;gt; startup nomount
+ORACLE instance started.
+
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&#34;3-2-1-读取参数文件&#34;&gt;3.2.1 读取参数文件&lt;/h6&gt;
+
+&lt;p&gt;启动数据库实例首先会读取 &lt;code&gt;SPFILE&lt;/code&gt; 文件中的初始化参数，如果 &lt;code&gt;SPFILE&lt;/code&gt; 文件不存在，则会读取初始化文件。Linux 系统的 &lt;code&gt;SPFILE&lt;/code&gt; 文件在 &lt;code&gt;$ORACLE_HOME/dbs&lt;/code&gt; 目录下，Windows NT 和 Windows 2000 中 &lt;code&gt;SPFILE&lt;/code&gt; 文件目录在 &lt;code&gt;%ORACLE_HOME%\database&lt;/code&gt;。文件的读取顺序如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;首先查找 &lt;code&gt;spfile$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果不存在，则继续查找 &lt;code&gt;spfile.ora&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;如果不存在，则继续查找 &lt;code&gt;init$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其中 &lt;code&gt;spfile$ORACLE_SID.ora&lt;/code&gt; 和 &lt;code&gt;spfile.ora&lt;/code&gt; 属于 &lt;code&gt;SPFILE&lt;/code&gt; 文件，&lt;code&gt;init$ORACLE_SID.ora&lt;/code&gt; 是初始化文件。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;查看 &lt;code&gt;$ORACLE_HOME&lt;/code&gt; 和 &lt;code&gt;$ORACLE_SID&lt;/code&gt; 的值可使用 &lt;code&gt;echo&lt;/code&gt; 命令，如 &lt;code&gt;echo $ORACLE_HOME&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h6 id=&#34;3-2-2-分配-sga&#34;&gt;3.2.2 分配 SGA&lt;/h6&gt;
+
+&lt;p&gt;读取到参数文件之后，Oracle 会根据参数文件分配 SGA（System Global Area）。&lt;/p&gt;
+
+&lt;p&gt;SGA 是一个非常庞大的内存区间，这也是为什么开启 Oracle 之后占用了很大内存的原因。SGA 由所有服务进程和后台进程共享。&lt;/p&gt;
+
+&lt;p&gt;我们可以通过 &lt;code&gt;show sga&lt;/code&gt; 或 &lt;code&gt;select * from v$sga&lt;/code&gt; 查看 SGA 的大小：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show sga;
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+
+SQL&amp;gt; select * from v$sga;
+
+NAME					      VALUE
+---------------------------------------- ----------
+Fixed Size				    2217792
+Variable Size				 2432698560
+Database Buffers			  822083584
+Redo Buffers				   16642048
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;SGA 分为不同的池，我们可以通过视图 &lt;code&gt;v$sgastat&lt;/code&gt; 查看：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select pool,sum(bytes) bytes from v$sgastat group by pool;
+
+POOL			      BYTES
+------------------------ ----------
+java pool		   16777216
+large pool		   16777216
+shared pool		 1258295992
+			  840943424
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&#34;3-2-3-启动后台进程&#34;&gt;3.2.3 启动后台进程&lt;/h6&gt;
+
+&lt;p&gt;其中有 5 个进程必须启动， DBWR、LGWR、SMON、PMON、CKPT。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;SMON&lt;/code&gt; 系统监视器（System Monitor）。如果 Oracle 实例失败，则在 SGA 中的任何没有写到磁盘中的数据都会丢失。有许多情况可能引起 Oracle 实例失败，例如操作系统的崩溃就会引起 Oracle 实例的失败。当实例失败之后，如果重新打开该数据库，则后台进程 SMON 自动执行实例的复原操作。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;DBWR&lt;/code&gt; 数据库书写器（Database Write）。该服务器进程在缓冲存储区中记录所有的变化和数据。DBWR 把来自数据库的缓冲存储区中的脏数据写到数据文件中，以便确保数据库缓冲存储区中有足够的空闲的缓冲存储区。脏数据就是正在使用但是没有写到数据文件中的数据。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;LGWR&lt;/code&gt; 日志书写器（Log Write）。LGWR 负责把重做日志缓冲存储区中的数据写入到重做日志文件中。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;CKPT&lt;/code&gt; 检查点（Checkpoint）。该进程可以用来同步化数据库的文件，它可以把日志中的文件写入到数据库中。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PMON&lt;/code&gt; 进程监视器（Process Monitor）。当取消当前的事务，或释放进程占用的锁以及释放其它资源之后，PMON 进程清空那些失败的进程。&lt;/p&gt;
+
+&lt;h6 id=&#34;3-2-4-打开告警文件和跟踪文件&#34;&gt;3.2.4 打开告警文件和跟踪文件&lt;/h6&gt;
+
+&lt;p&gt;数据库的启动过程记录在警告追踪文件中，该警告追踪文件中包括数据库启动信息，它存放在参数&lt;code&gt;BACKGOUND_DUMP_DEST&lt;/code&gt; 定义的目录下，警告日志的名字为 &lt;code&gt;alert_&amp;lt;sid&amp;gt;.log&lt;/code&gt;，&lt;code&gt;sid&lt;/code&gt; 是实例的名称：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter background_dump_dest;
+
+NAME			           TYPE               VALUE
+-------------------- -------------------------------------------------
+background_dump_dest  string  /data/oracle/diag/rdbms/orcl/orcl/trace
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;进入到目录查看警告日志关于 &lt;code&gt;startup nomount&lt;/code&gt; 过程记录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ more alert_orcl.log
+Fri Nov 11 17:04:51 2016
+Starting ORACLE instance (normal)
+LICENSE_MAX_SESSION = 0
+LICENSE_SESSIONS_WARNING = 0
+Shared memory segment for instance monitoring created
+Picked latch-free SCN scheme 3
+Using LOG_ARCHIVE_DEST_1 parameter default value as USE_DB_RECOVERY_FILE_DEST
+Autotune of undo retention is turned on.
+IMODE=BR
+ILAT =27
+LICENSE_MAX_USERS = 0
+SYS auditing is disabled
+Starting up:
+Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options.
+Using parameter settings in client-side pfile /data/oracle/admin/orcl/pfile/init.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Oracle 实例的后台进程会在遇到问题的时候将日志写入跟踪文件中。数据库的跟踪文件在目录由 &lt;code&gt;BACKGOUND_DUMP_DEST&lt;/code&gt; 参数指定，最大大小由 &lt;code&gt;MAX_DUMP_FILE_SIZE&lt;/code&gt; 指定，默认为&lt;code&gt;UNLIMITED&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter user_dump_dest;
+
+NAME				     TYPE
+------------------------------------ ----------------------
+VALUE
+------------------------------
+user_dump_dest			     string
+/data/oracle/diag/rdbms/orcl/o
+rcl/trace
+SQL&amp;gt; show parameter max_dump_file_size;
+
+NAME				     TYPE
+------------------------------------ ----------------------
+VALUE
+------------------------------
+max_dump_file_size		     string
+unlimited
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;3-3-nomount-状态&#34;&gt;3.3 &lt;code&gt;nomount&lt;/code&gt; 状态&lt;/h4&gt;
+
+&lt;p&gt;启动数据库实例后，只会创建实例（即创建 Oracle 实例的各种内存结构与服务进程），并不加载数据库，也不会打开任何数据文件。&lt;/p&gt;
+
+&lt;h6 id=&#34;3-3-1-测试数据字典能否打开&#34;&gt;3.3.1 测试数据字典能否打开&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from v$datafile;
+select * from v$datafile
+              *
+ERROR at line 1:
+ORA-01507: database not mounted
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;select * from v$datafile&lt;/code&gt; 的时候报错，说明数据库字典在 &lt;code&gt;nomount&lt;/code&gt; 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。&lt;/p&gt;
+
+&lt;p&gt;但是在 &lt;code&gt;nomount&lt;/code&gt; 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter control_files;
+
+NAME				     TYPE
+------------------------------------ 
+VALUE
+------------------------------
+control_files			     string
+/data/oracle/oradata/orcl/cont
+rol01.ctl, /data/oracle/flash_
+recovery_area/orcl/control02.c
+tl
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&#34;3-2-3-查看系统进程和通信设施状态&#34;&gt;3.2.3 查看系统进程和通信设施状态&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ps -ef | grep oracle
+oracle    4524     1  0 Mar26 ?        00:01:25 /data/oracle/product/11.2.0/db_1/bin/emagent
+root      9797   974  0 00:57 ?        00:00:00 sshd: oracle [priv]
+oracle    9805  9797  0 00:57 ?        00:00:00 sshd: oracle@pts/0
+oracle    9806  9805  0 00:57 pts/0    00:00:00 -bash
+oracle   10020     1  0 00:58 ?        00:00:00 ora_pmon_orcl
+oracle   10022     1  0 00:58 ?        00:00:01 ora_vktm_orcl
+oracle   10026     1  0 00:58 ?        00:00:00 ora_gen0_orcl
+oracle   10028     1  0 00:58 ?        00:00:00 ora_diag_orcl
+oracle   10030     1  0 00:58 ?        00:00:00 ora_dbrm_orcl
+oracle   10032     1  0 00:58 ?        00:00:00 ora_psp0_orcl
+oracle   10034     1  0 00:58 ?        00:00:01 ora_dia0_orcl
+oracle   10036     1  0 00:58 ?        00:00:00 ora_mman_orcl
+oracle   10038     1  0 00:58 ?        00:00:00 ora_dbw0_orcl
+oracle   10040     1  0 00:58 ?        00:00:00 ora_lgwr_orcl
+oracle   10042     1  0 00:58 ?        00:00:00 ora_ckpt_orcl
+oracle   10044     1  0 00:58 ?        00:00:00 ora_smon_orcl
+oracle   10046     1  0 00:58 ?        00:00:00 ora_reco_orcl
+oracle   10048     1  0 00:58 ?        00:00:00 ora_mmon_orcl
+oracle   10050     1  0 00:58 ?        00:00:00 ora_mmnl_orcl
+oracle   10052     1  0 00:58 ?        00:00:00 ora_d000_orcl
+oracle   10054     1  0 00:58 ?        00:00:00 ora_s000_orcl
+oracle   15675  9806  0 01:59 pts/0    00:00:00 ps -ef
+oracle   15676  9806  0 01:59 pts/0    00:00:00 grep --color=auto oracle
+$ ipcs -a
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x011268f0 458753     root       600        1000       9
+0x00000000 524290     oracle     660        4096       0
+0x00000000 557059     oracle     660        4096       0
+0x2a1ee740 589828     oracle     660        4096       0
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+0x19ba9600 1310738    oracle     660        154
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;由 &lt;code&gt;smon&lt;/code&gt;、&lt;code&gt;pmon&lt;/code&gt; &lt;code&gt;lgwr&lt;/code&gt; 等进程可以看出此阶段创建了多个后台进程，并首次报告使用了共享内存和信号量。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-3-装载数据库-nomunt-mount&#34;&gt;3.3 装载数据库 &lt;code&gt;nomunt --&amp;gt; mount&lt;/code&gt;&lt;/h4&gt;
+
+&lt;h4 id=&#34;3-4-mount-状态&#34;&gt;3.4 &lt;code&gt;mount&lt;/code&gt; 状态&lt;/h4&gt;
+
+&lt;h4 id=&#34;3-5-打开数据库-mount-open&#34;&gt;3.5 打开数据库 &lt;code&gt;mount --&amp;gt; open&lt;/code&gt;&lt;/h4&gt;
+
+&lt;h4 id=&#34;3-6-open-状态&#34;&gt;3.6 &lt;code&gt;open&lt;/code&gt; 状态&lt;/h4&gt;
+
+&lt;h2 id=&#34;常见连接错误&#34;&gt;常见连接错误&lt;/h2&gt;
+
+&lt;h4 id=&#34;1-未启动数据库实例&#34;&gt;1. 未启动数据库实例&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Connection Failed
+ORA-12514: TNS:listener does not currently know of service requested in connect descriptor
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;2-未启动监听器&#34;&gt;2. 未启动监听器&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Oracle Connection Failed
+ORA 12541: TNS:no listener
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.oracle.com/cd/B28359_01/server.111/b28310/start001.htm#ADMIN10063&#34;&gt;Starting Up a Database&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.itpub.net/9399028/viewspace-682015/&#34;&gt;Oracle SGA详解&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.itpub.net/25264937/viewspace-694917/&#34;&gt;Oracle之内存结构（SGA、PGA）&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Setting Environmental Variables in MacOS</title>
@@ -3140,249 +3523,6 @@ console.log(Math.min.apply(null,ta));//最小值
 &lt;hr /&gt;
 
 &lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/9&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/9&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Check Parameters in Express Router</title>
-      <link>http://nodejh.com/post/Check-Parameters-in-Express-Router/</link>
-      <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
-      
-      <guid>http://nodejh.com/post/Check-Parameters-in-Express-Router/</guid>
-      <description>
-
-&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
-
-&lt;p&gt;几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST 方法还是 GET 方法，数据校验都是必要的操作。&lt;/p&gt;
-
-&lt;p&gt;对于大部分 API 来说，可能只需要判断传入的参数是否为 undefined 或 null，所以这个时候，为了减少重复代码，我们可以写一个简单的中间件来处理路由中的参数。&lt;/p&gt;
-
-&lt;p&gt;这个中间件的需求如下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;检测路由中的一般参数是否为 undefined、null、[]、&amp;rdquo;&lt;/li&gt;
-&lt;li&gt;中间件同时还需要能对特殊参数做处理，如一个参数值在 1-100 之间&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;最终写出来的处理参数的模块：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/**
- * 检测路由中的参数
- * @method checkParameters
- * @param  {object}        req     http请求
- * @param  {object}        res     http响应
- * @param  {Function}      next    
- * @param  {[type]}        special 特殊参数，
- *                                 格式： [{eval: &#39;req.query.id&amp;gt;0&#39;, key:&#39;id&#39;, type: &#39;query&#39;}]
- *                                 key 属性的值必须和eval中对应，且type只能是 query/params/body
- * @return {object}        若参数错误，直接返回json到前端；正确，则next()
- */
-function checkParameters(req, res, next, special) {
-  // console.log(&#39;params: &#39;, req.params);
-  // console.log(&#39;body: &#39;, req.body);
-  // console.log(&#39;query: &#39;, req.query);
-  console.log(&#39;specialParams: &#39;, typeof special);
-  // 判断是否传入第四个参数
-  if (Array.isArray(special)) {
-    // 判断特殊参数
-    for (let i = 0; i &amp;lt; special.length; i++) {
-      // console.log(&#39;special[i]: &#39;, special[i]);
-      // console.log(&#39;special[i] eval: &#39;, special[i].hasOwnProperty(&#39;eval&#39;));
-      // console.log(&#39;special[i] key: &#39;, special[i].hasOwnProperty(&#39;key&#39;));
-      // console.log(&#39;special[i] type: &#39;, special[i].hasOwnProperty(&#39;type&#39;));
-
-      // 判断是否具有 eval, key, type 三个参数
-      if (! (special[i].hasOwnProperty(&#39;eval&#39;)
-        &amp;amp;&amp;amp; special[i].hasOwnProperty(&#39;key&#39;)
-        &amp;amp;&amp;amp; special[i].hasOwnProperty(&#39;type&#39;))) {
-        return res.json({
-          code: 90001,
-          msg: &#39;检测参数属否正确时，传入的特殊参数格式不完全&#39;,
-          detail: special
-        });
-      }
-      // 判断 eval, key, type 三个参数是否为 undefined
-      if ( !(typeof special[i][&#39;eval&#39;] !== undefined
-      &amp;amp;&amp;amp; typeof special[i][&#39;key&#39;] !== undefined
-      &amp;amp;&amp;amp; typeof special[i][&#39;type&#39;] !== undefined)) {
-        return res.json({
-          code: 90002,
-          msg: &#39;检测参数属否正确时，传入的特殊参数为 undefined&#39;,
-          detail: special
-        });
-      }
-      const evalString = special[i][&#39;eval&#39;];
-      const type = special[i][&#39;type&#39;];
-      const key = special[i][&#39;key&#39;];
-      // 判断 key 和 eval 是否匹配
-      console.log(&#39;length: &#39;, evalString
-      .split(&#39;req.&#39; + type + &#39;.&#39; + key)
-      .length);
-      const length = evalString.split(&#39;req.&#39; + type + &#39;.&#39; + key).length;
-      if (length &amp;lt; 1) {
-        return res.json({
-          code: 90003,
-          msg: &#39;检测参数属否正确时，传入的特殊参数为格式不正确&#39;,
-          detail: special
-        });
-      }
-      // 执行 eval
-      if (!eval(evalString)) {
-        return res.json({
-          code: 90004,
-          msg: &#39;检测参数属否正确时，参数不匹配传入的条件 &#39; + evalString,
-          detail: special,
-          parameters: req[type]
-        });
-      }
-      // 从普通参数中删除特殊参数
-      // console.log(&#39;delete: &#39;, req[type][key]);
-      delete req[type][key];
-    }
-  }
-
-  const params = req.params;
-  // 去掉 req.params 中 {&#39;0&#39;: &#39;&#39;, ...} 这一项
-  delete params[&#39;0&#39;];
-  // console.log(&#39;params: &#39;, params);
-  const body = req.body;
-  const query = req.query;
-  const common = Object.assign(params, body, query);
-  console.log(&#39;common: &#39;, common);
-  // 检测参数属否为undefined
-  for (let i in common) {
-    if (typeof common[i] === &#39;undefined&#39;) {
-      return res.json({
-        code: 90005,
-        msg: &#39;检测参数属否正确时，&#39; + i + &#39; 参数为undefined&#39;,
-        detail: common
-      });
-    }
-    // 检测参数属否为null
-    if (common[i] === null) {
-      return res.json({
-        code: 90006,
-        msg: &#39;检测参数属否正确时，&#39; + i + &#39; 参数为null&#39;,
-        detail: common
-      });
-    }
-    // 检测参数是否为空字符串 &#39;&#39;
-    if (common[i] === &#39;&#39;) {
-      return res.json({
-        code: 90007,
-        msg: &#39;检测参数属否正确时，&#39; + i + &#39; 参数为空字符串&#39;,
-        detail: common
-      });
-    }
-    // 检测参数是否为空数组 []
-    if (common[i] === &#39;&#39;) {
-      return res.json({
-        code: 90008,
-        msg: &#39;检测参数属否正确时，&#39; + i + &#39; 参数为空数组&#39;,
-        detail: common
-      });
-    }
-  }
-
-  return next();
-}
-
-module.exports = checkParameters;
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;函数详解&#34;&gt;函数详解&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;1. 特殊参数的处理&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;这个模块，首先对特殊参数做处理。&lt;code&gt;special&lt;/code&gt; 这个参数是一个数组，格式如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[{
-  eval: &#39;parseInt(req.query.id) &amp;gt; 1 &amp;amp;&amp;amp; parseInt(req.query.id) &amp;lt; 10&#39;,
-  key: &#39;id&#39;,
-  type: &#39;query&#39;
-}, {
-  eval: &#39;parseInt(req.query.age) === 11&#39;,
-  key: &#39;age&#39;,
-  type: &#39;query&#39;
-}]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;key 属性的值必须和eval中对应，且type只能是 query/params/body。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;首先判断函数是否传入第四个参数，并且第四个参数是否为数组，如果这两个条件成立，说明有特殊参数需要处理。&lt;/li&gt;
-&lt;li&gt;然后判断是否具有 eval, key, type 三个参数。eval 参数是一个参数条件表达式，如 &amp;lsquo;id&amp;gt;0&amp;rsquo;，最终通过 &lt;code&gt;eval()&lt;/code&gt; 函数来执行这个表达式。&lt;code&gt;key&lt;/code&gt; 表示参数属性名，type 表示是通过何种方式传递的参数，如 query/params/body。&lt;/li&gt;
-&lt;li&gt;接下来判断  eval, key, type 三个参数自身是否为 undefined 或 null&lt;/li&gt;
-&lt;li&gt;再然后判断 判断 key 和 eval 是否匹配。key 和 eval 的匹配，主要是为了后面从一般参数中删除特殊参数&lt;/li&gt;
-&lt;li&gt;再执行 eval 表达式，判断表达式是否成立，即特殊参数值是否合法&lt;/li&gt;
-&lt;li&gt;如果以上都为真，说明特殊参数合法，最后则使用 delete 从参数中删除特殊参数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;2. 普通参数处理&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;处理完毕特殊参数后，就需要处理普通参数。普通参数只需要满足：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;不为 &lt;code&gt;undefined&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;不为 &lt;code&gt;null&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;不为空字符串 &lt;code&gt;&#39;&#39;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;不为空数组 &lt;code&gt;[]&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;普通参数，即 &lt;code&gt;req.body&lt;/code&gt; &lt;code&gt;req.params&lt;/code&gt; &lt;code&gt;req.query&lt;/code&gt; 中的所有非特殊参数。&lt;/p&gt;
-
-&lt;p&gt;除了在判断特殊参数的时候，需要 delete 特殊参数，还需要 &lt;code&gt;delete req.params[&#39;0&#39;]&lt;/code&gt;。因为对于 &lt;code&gt;req.params&lt;/code&gt;，当 URL 没有 &lt;code&gt;path&lt;/code&gt; 部分的时候，&lt;code&gt;req.params[&#39;0&#39;]&lt;/code&gt; 为 &lt;code&gt;&#39;&#39;&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;处理完毕之后，若所有参数都合法，则返回 &lt;code&gt;next()&lt;/code&gt;。&lt;/p&gt;
-
-&lt;h4 id=&#34;模块使用&#34;&gt;模块使用&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;1. 创建没有挂载路径的中间件&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;首先在 Express 项目入口文件，创建一个参数处理中间件：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;// app.js
-const checkParameters = require(&#39;./checkParameters&#39;);
-// ...
-app.use(function(req, res, next) {
-  checkParameters(req, res, next);
-});
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;注意这里的 &lt;code&gt;app.use()&lt;/code&gt; 需要放在创建具体路由中间件如&lt;code&gt;app.use(&#39;/&#39;, index)&lt;/code&gt; 之前。&lt;/p&gt;
-
-&lt;p&gt;当 Express 接收到 HTTP 请求后，首先该中间件会检测参数是否合法（只判断是否为 null 或 undefine 或 &amp;ldquo; 或 []）。如果不合法，则直接返回；如果合法，则程序继续执行，由匹配该请求路径的路由继续完成该请求。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2. 创建挂载路径的中间件&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;如果需要对某个路由的特殊参数做处理，则需要创建一个挂载路径的中间件。&lt;/p&gt;
-
-&lt;p&gt;比如为们要判断 &lt;code&gt;/index&lt;/code&gt; 路由的 GET 请求中的 &lt;code&gt;id&lt;/code&gt; 参数，其中 &lt;code&gt;id&lt;/code&gt; 的取值范围是 1-100，URL 形式如 &lt;code&gt;http://localhost:3000/index?id=10&lt;/code&gt;，则可以这样使用该模块：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;// index.js
-const checkParameters = require(&#39;./checkParameters&#39;);
-
-// 挂载路径的中间件
-router.get(&#39;/index&#39;, function(req, res, next) {
-  const special = {
-    eval: &#39;parseInt(req.query.id) &amp;gt;= 1 &amp;amp;&amp;amp; parseInt(req.query.id) &amp;lt;= 100&#39;,
-    key: &#39;id&#39;,
-    type: &#39;query&#39;
-  };
-  checkParameters(req, res, next, special);
-});
-// 正常逻辑处理
-router.get(&#39;/index&#39;, function(req, res, next) {
-  // 正常逻辑
-});
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;当 Express 接收到一个 HTTP 请求的时候，首先还是没有挂载路径的中间件先处理请求，检测参数；然后该挂载路径的中间件再检测参数；最后才执行正常处理逻辑。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/5&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/5&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

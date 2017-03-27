@@ -23,38 +23,38 @@
 
 &lt;p&gt;如果还需要使用 OEM 来监控数据库服务，则还要启动 OEM。&lt;/p&gt;
 
-&lt;h4 id=&#34;1-启动数据库&#34;&gt;1. 启动数据库&lt;/h4&gt;
+&lt;h4 id=&#34;1-1-启动数据库&#34;&gt;1.1. 启动数据库&lt;/h4&gt;
 
 &lt;p&gt;我们可以使用 &lt;code&gt;sqlplus&lt;/code&gt; 来启动数据库。关于 &lt;code&gt;sqlplus&lt;/code&gt; 的详细使用方法请参考 &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/31&#34;&gt;《使用 SQL *Plus 管理 Oracle 数据库》&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;进入 &lt;code&gt;sqlplus&lt;/code&gt; ：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sqlplus / as sysdba
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;启动数据库：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&amp;gt; startup
+&lt;pre&gt;&lt;code&gt;&amp;gt;SQL startup
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;2-启动监听器&#34;&gt;2. 启动监听器&lt;/h4&gt;
+&lt;h4 id=&#34;1-2-启动监听器&#34;&gt;1.2. 启动监听器&lt;/h4&gt;
 
 &lt;p&gt;Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。&lt;/p&gt;
 
 &lt;p&gt;启动监听器：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ lsnrctl start
+&lt;pre&gt;&lt;code&gt;$ lsnrctl start
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;完成这两个步骤，就可以使用数据库了。&lt;/p&gt;
 
-&lt;h4 id=&#34;3-启动-oem&#34;&gt;3. 启动 OEM&lt;/h4&gt;
+&lt;h4 id=&#34;1-3-启动-oem&#34;&gt;1.3. 启动 OEM&lt;/h4&gt;
 
 &lt;p&gt;Oracle Enterprise Manager（Oracle企业管理器，简称 OEM ）是一个图形化数据库管理工具，可同时监控管理多个系统上的多个数据库，因而特别适合分布式环境。&lt;/p&gt;
 
 &lt;p&gt;启动 OEM：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ emctl start dbconsole
+&lt;pre&gt;&lt;code&gt;$ emctl start dbconsole
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;启动成功后就可以通过 &lt;code&gt;http://服务器:1158/em&lt;/code&gt; 来访问基于 Web 的监控页面。&lt;/p&gt;
@@ -65,7 +65,9 @@
 
 &lt;p&gt;实例是由一组后台进程和一块称为系统全局区 SGA（System Global Area）的共享内存段组成。后台进程是数据库和操作系统进行交互的通道，后台进程的命名由 ORACLE_SID 决定，Oracle 根据 ORACLE_SID 来寻找参数文件启动实例。数据库是指存储在磁盘上的一组物理文件。&lt;/p&gt;
 
-&lt;p&gt;Oracle 数据库具有四种状态，启动过程具有三个阶段。四种状态分别 &lt;code&gt;shutdown&lt;/code&gt; &lt;code&gt;nomount&lt;/code&gt; &lt;code&gt;mount&lt;/code&gt; &lt;code&gt;open&lt;/code&gt;，对应三个阶段分别为：&lt;/p&gt;
+&lt;p&gt;Oracle 数据库具有四种状态，启动过程具有三个阶段。&lt;/p&gt;
+
+&lt;p&gt;四种状态分别 &lt;code&gt;shutdown&lt;/code&gt; &lt;code&gt;nomount&lt;/code&gt; &lt;code&gt;mount&lt;/code&gt; &lt;code&gt;open&lt;/code&gt;，对应三个阶段分别为：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;启动实例 &lt;code&gt;shutdown --&amp;gt; nomount&lt;/code&gt;&lt;/li&gt;
@@ -93,9 +95,7 @@
 -----------+
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;启动实例后，Oracle 软件会将实例与特定的数据库关联，这个过程称为装载数据库。接下
-来可以打开数据库，以便授权用户访问数据库。在同一台计算机上可以并发执行多个实例，
-每一个实例只访问自己的物理数据库。&lt;/p&gt;
+&lt;p&gt;启动实例后，Oracle 软件会将实例与特定的数据库关联，这个过程称为装载数据库。接下来可以打开数据库，以便授权用户访问数据库。在同一台计算机上可以并发执行多个实例，每一个实例只访问自己的物理数据库。&lt;/p&gt;
 
 &lt;h2 id=&#34;三-启动详解&#34;&gt;三. 启动详解&lt;/h2&gt;
 
@@ -110,7 +110,7 @@
 
 &lt;p&gt;当 Oracle 处于该状态的时候，Oracle 的所有文件都静静的躺在磁盘里，一切都还未开始，属于关机状态。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ps -ef | grep oracle
+&lt;pre&gt;&lt;code&gt;$ ps -ef | grep oracle
 oracle    4524     1  0 00:54 ?        00:00:39 /data/oracle/product/11.2.0/db_1/bin/emagent
 root     12825   974  0 13:49 ?        00:00:00 sshd: oracle [priv]
 oracle   12832 12825  0 13:49 ?        00:00:00 sshd: oracle@pts/0
@@ -145,7 +145,7 @@ key        semid      owner      perms      nsems
 
 &lt;p&gt;启动数据库实例的命令如下：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sqlplus / as sysdba
+&lt;pre&gt;&lt;code&gt;$ sqlplus / as sysdba
 
 SQL*Plus: Release 11.2.0.1.0 Production on Sun Mar 26 14:05:14 2017
 
@@ -167,7 +167,7 @@ Redo Buffers		   16642048 bytes
 
 &lt;p&gt;&lt;strong&gt;测试数据文件能否打开：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from v$datafile;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; select * from v$datafile;
 select * from v$datafile
               *
 ERROR at line 1:
@@ -178,7 +178,7 @@ ORA-01507: database not mounted
 
 &lt;p&gt;但是在 &lt;code&gt;nomount&lt;/code&gt; 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter control_files;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; show parameter control_files;
 
 NAME				     TYPE
 ------------------------------------ 
@@ -196,9 +196,9 @@ tl
 &lt;p&gt;启动数据库实例首先会读取 &lt;code&gt;SPFILE&lt;/code&gt; 文件中的初始化参数，如果 &lt;code&gt;SPFILE&lt;/code&gt; 文件不存在，则会读取初始化文件。Linux 系统的 &lt;code&gt;SPFILE&lt;/code&gt; 文件在 &lt;code&gt;$ORACLE_HOME/dbs&lt;/code&gt; 目录下，Windows NT 和 Windows 2000 中 &lt;code&gt;SPFILE&lt;/code&gt; 文件目录在 &lt;code&gt;%ORACLE_HOME%\database&lt;/code&gt;。文件的读取顺序如下：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;首先查找 &lt;code&gt;spfile$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;如果不存在，则继续查找 &lt;code&gt;spfile.ora&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;如果不存在，则继续查找 &lt;code&gt;init$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spfile$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spfile.ora&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;init$ORACLE_SID.ora&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;其中 &lt;code&gt;spfile$ORACLE_SID.ora&lt;/code&gt; 和 &lt;code&gt;spfile.ora&lt;/code&gt; 属于 &lt;code&gt;SPFILE&lt;/code&gt; 文件，&lt;code&gt;init$ORACLE_SID.ora&lt;/code&gt; 是初始化文件。&lt;/p&gt;
@@ -215,7 +215,7 @@ tl
 
 &lt;p&gt;我们可以通过 &lt;code&gt;show sga&lt;/code&gt; 或 &lt;code&gt;select * from v$sga&lt;/code&gt; 查看 SGA 的大小：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show sga;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; show sga;
 Total System Global Area 3273641984 bytes
 Fixed Size		    2217792 bytes
 Variable Size		 2432698560 bytes
@@ -235,7 +235,7 @@ Redo Buffers				   16642048
 
 &lt;p&gt;SGA 分为不同的池，我们可以通过视图 &lt;code&gt;v$sgastat&lt;/code&gt; 查看：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select pool,sum(bytes) bytes from v$sgastat group by pool;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; select pool,sum(bytes) bytes from v$sgastat group by pool;
 
 POOL			      BYTES
 ------------------------ ----------
@@ -262,7 +262,7 @@ shared pool		 1258295992
 
 &lt;p&gt;&lt;strong&gt;查看系统进程和通信设施状态：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ps -ef | grep oracle
+&lt;pre&gt;&lt;code&gt;$ ps -ef | grep oracle
 oracle    4524     1  0 Mar26 ?        00:01:25 /data/oracle/product/11.2.0/db_1/bin/emagent
 root      9797   974  0 00:57 ?        00:00:00 sshd: oracle [priv]
 oracle    9805  9797  0 00:57 ?        00:00:00 sshd: oracle@pts/0
@@ -309,7 +309,7 @@ key        semid      owner      perms      nsems
 
 &lt;p&gt;数据库的启动过程记录在警告追踪文件中，该警告追踪文件中包括数据库启动信息，它存放在参数&lt;code&gt;BACKGOUND_DUMP_DEST&lt;/code&gt; 定义的目录下，警告日志的名字为 &lt;code&gt;alert_&amp;lt;sid&amp;gt;.log&lt;/code&gt;，&lt;code&gt;sid&lt;/code&gt; 是实例的名称：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter background_dump_dest;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; show parameter background_dump_dest;
 
 NAME			           TYPE               VALUE
 -------------------- -------------------------------------------------
@@ -318,7 +318,7 @@ background_dump_dest  string  /data/oracle/diag/rdbms/orcl/orcl/trace
 
 &lt;p&gt;进入到目录查看警告日志关于 &lt;code&gt;startup nomount&lt;/code&gt; 过程记录：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ more alert_orcl.log
+&lt;pre&gt;&lt;code&gt;$ more alert_orcl.log
 Fri Nov 11 17:04:51 2016
 Starting ORACLE instance (normal)
 LICENSE_MAX_SESSION = 0
@@ -339,7 +339,7 @@ Using parameter settings in client-side pfile /data/oracle/admin/orcl/pfile/init
 
 &lt;p&gt;Oracle 实例的后台进程会在遇到问题的时候将日志写入跟踪文件中。数据库的跟踪文件在目录由 &lt;code&gt;BACKGOUND_DUMP_DEST&lt;/code&gt; 参数指定，最大大小由 &lt;code&gt;MAX_DUMP_FILE_SIZE&lt;/code&gt; 指定，默认为&lt;code&gt;UNLIMITED&lt;/code&gt;。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; show parameter user_dump_dest;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; show parameter user_dump_dest;
 
 NAME				     TYPE
 ------------------------------------ ----------------------
@@ -360,7 +360,7 @@ unlimited
 
 &lt;h4 id=&#34;3-3-装载数据库-nomunt-mount&#34;&gt;3.3 装载数据库 &lt;code&gt;nomunt --&amp;gt; mount&lt;/code&gt;&lt;/h4&gt;
 
-&lt;h6 id=&#34;装载数据库概述&#34;&gt;装载数据库概述&lt;/h6&gt;
+&lt;h6 id=&#34;3-3-1-装载数据库概述&#34;&gt;3.3.1 装载数据库概述&lt;/h6&gt;
 
 &lt;p&gt;装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：&lt;/p&gt;
 
@@ -381,14 +381,14 @@ unlimited
 
 &lt;p&gt;&lt;code&gt;alert database mount&lt;/code&gt;：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; alter database mount;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; alter database mount;
 
 Database altered.
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;startup mount&lt;/code&gt;：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; shutdown immediate;
+&lt;pre&gt;&lt;code&gt;SQL&amp;gt; shutdown immediate;
 ORA-01109: database not open
 
 
@@ -405,11 +405,11 @@ Redo Buffers		   16642048 bytes
 Database mounted.
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h6 id=&#34;3-3-1-可以查询控制文件&#34;&gt;3.3.1 可以查询控制文件&lt;/h6&gt;
+&lt;h6 id=&#34;3-3-2-可以查询控制文件&#34;&gt;3.3.2 可以查询控制文件&lt;/h6&gt;
 
 &lt;p&gt;这个时候我们就可以查询控制文件、数据文件和重做日志文件了。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select status from v$instance;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; select status from v$instance;
 
 STATUS
 ------------------------
@@ -445,11 +445,11 @@ MEMBER
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h6 id=&#34;3-3-2-不能查询表-视图&#34;&gt;3.3.2 不能查询表、视图&lt;/h6&gt;
+&lt;h6 id=&#34;3-3-3-不能查询表-视图&#34;&gt;3.3.3 不能查询表、视图&lt;/h6&gt;
 
 &lt;p&gt;但此时还不能查询数据库文件，如表和视图。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 &lt;code&gt;打开数据库&lt;/code&gt; 之后，才能使用数据库。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from tab;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; select * from tab;
 select * from tab
               *
 ERROR at line 1:
@@ -464,17 +464,22 @@ ORA-01219: database not open: queries allowed on fixed tables/views only
 
 &lt;h4 id=&#34;3-4-打开数据库-mount-open&#34;&gt;3.4 打开数据库 &lt;code&gt;mount --&amp;gt; open&lt;/code&gt;&lt;/h4&gt;
 
-&lt;h6 id=&#34;打开数据库概述&#34;&gt;打开数据库概述&lt;/h6&gt;
+&lt;p&gt;打开数据库时，实例将打开所有处于联机状态的数据文件和重做日志文件。&lt;/p&gt;
 
-&lt;p&gt;打开数据库就表示 Oracle 打开数据库文件和重做日志文件。打开数据库时，实例将打开所有处于联机状态的数据文件和重做日志文件。控制文件中的任何一个数据文件或重做日志文件无法正常打开，数据库都将返回错误信息，这时需要进行数据库恢复。&lt;/p&gt;
+&lt;p&gt;在此期间，Oracle 服务器将校验所有的数据文件和联机日志文件能否打开，并对数据库作一致性检查。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果出现一致性错误，&lt;code&gt;SMON&lt;/code&gt; 进程将启动实例恢复&lt;/li&gt;
+&lt;li&gt;如果任一数据文件或联机日志文件丢失，Oracle 服务器将报错&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;只有将数据库设置为打开状态后，数据库才处于正常状态，这时普通用户才能够访问数据库。&lt;/p&gt;
 
 &lt;p&gt;打开数据库也有两种方式。&lt;/p&gt;
 
-&lt;p&gt;一是使用 &lt;code&gt;alter&lt;/code&gt; 命令：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一是使用 &lt;code&gt;alter&lt;/code&gt; 命令。&lt;/strong&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&amp;gt;SQL alter database open;
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;&amp;gt;SQL alter database open;
 
 Database altered.
 
@@ -486,9 +491,11 @@ OPEN
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;二是直接通过 &lt;code&gt;startup&lt;/code&gt; 命令启动，&lt;code&gt;startup&lt;/code&gt; 命令会逐步完成数据库启动的三个步骤（创建实例、装载数据库、打开数据库），将数据库启动到 &lt;code&gt;open&lt;/code&gt; 状态：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;二是直接通过 &lt;code&gt;startup&lt;/code&gt; 命令启动。&lt;/strong&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; startup
+&lt;p&gt;&lt;code&gt;startup&lt;/code&gt; 命令会逐步完成数据库启动的三个步骤（创建实例、装载数据库、打开数据库），将数据库启动到 &lt;code&gt;open&lt;/code&gt; 状态：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; startup
 ORACLE instance started.
 
 Total System Global Area 3273641984 bytes
@@ -512,7 +519,76 @@ Database opened.
 	40 OPERATIONS			BOSTON
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;常见连接错误&#34;&gt;常见连接错误&lt;/h2&gt;
+&lt;h2 id=&#34;四-关闭数据库&#34;&gt;四. 关闭数据库&lt;/h2&gt;
+
+&lt;p&gt;与启动数据库顺序相反，也分三个步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;CLOSE&lt;/code&gt;  关闭数据库（关闭数据文件）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DISMOUNT&lt;/code&gt; 卸载数据库（关闭控制文件）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SHUTDOWN&lt;/code&gt; 关闭 Oracle 实例&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;同时关闭模式也有多种。&lt;/p&gt;
+
+&lt;h4 id=&#34;4-1-normal&#34;&gt;4.1. NORMAL&lt;/h4&gt;
+
+&lt;p&gt;正常的关闭方式。如果对于关闭数据库的时间没有限制，通常采用这种方式。&lt;/p&gt;
+
+&lt;p&gt;以 &lt;code&gt;NORMAL&lt;/code&gt; 方式关闭数据库，Oracle 将执行如下操作：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;阻止任何用户建立新的连接&lt;/li&gt;
+&lt;li&gt;等待当前所有正在连接的用户主动断开连接&lt;/li&gt;
+&lt;li&gt;当前所有用户的都断开连接后，将立即关闭数据库&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;4-2-transaction&#34;&gt;4.2. TRANSACTION&lt;/h4&gt;
+
+&lt;p&gt;事务关闭方式，它的首要任务是保证当前所有活动的事务都可以被提交，并在尽可能短的时间内关闭数据库。&lt;/p&gt;
+
+&lt;p&gt;以事务方式关闭，Oracle将执行如下操作：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;阻止用户建立新连接和开始新事务&lt;/li&gt;
+&lt;li&gt;等待所有活动事务提交后，再断开用户连接&lt;/li&gt;
+&lt;li&gt;当所有活动事务提交完毕，用户断开连接后，关闭数据库&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;4-3-immediate&#34;&gt;4.3. IMMEDIATE&lt;/h4&gt;
+
+&lt;p&gt;立即关闭方式，可以较快且安全的关闭数据库，是 DBA 经常采用的关闭数据库的方式。&lt;/p&gt;
+
+&lt;p&gt;立即关闭方式 Oracle执行如下操作：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;阻止用户建立新的连接和开始新的事务&lt;/li&gt;
+&lt;li&gt;中断当前事务，回滚未提交事务&lt;/li&gt;
+&lt;li&gt;强制断开所有用户连接和执行检查点把脏数据写到数据文件中&lt;/li&gt;
+&lt;li&gt;关闭数据库&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;五-为什么分为三步&#34;&gt;五. 为什么分为三步&lt;/h2&gt;
+
+&lt;p&gt;现在问题来了，明明一步就可以把数据库启动起来，为什么 Oracle 要很麻烦地分为三步呢？&lt;/p&gt;
+
+&lt;p&gt;这样的步骤，对于普通用户来说是多余的，但对于 DBA 来说确实非常重要的。因为这三个步骤中，每一步都会启动对应的进程打开对应的文件，所以维护的时候，我们就可以准对具体的问题，在数据库的某种状态下进行数据库维护工作。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;nomount 状态&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;nomount&lt;/code&gt; 状态不打开任何的控制文件及数据文件，所以我们可以在此阶段数据库创建、控制文件重建、特定的备份恢复等操作。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;mount 状态&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在加载完成以后，数据库还不可以被访问，所以在此阶段我们可以：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;重命名数据文件，移动数据文件位置等&lt;/li&gt;
+&lt;li&gt;启用或关闭重做日志文件的归档及非归档模式&lt;/li&gt;
+&lt;li&gt;实现数据库的完全恢复&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;六-常见连接错误&#34;&gt;六. 常见连接错误&lt;/h2&gt;
 
 &lt;h4 id=&#34;1-未启动数据库实例&#34;&gt;1. 未启动数据库实例&lt;/h4&gt;
 
@@ -528,11 +604,24 @@ ORA 12541: TNS:no listener
 
 &lt;hr /&gt;
 
+&lt;p&gt;参考：&lt;/p&gt;
+
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://docs.oracle.com/cd/B28359_01/server.111/b28310/start001.htm#ADMIN10063&#34;&gt;Starting Up a Database&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://blog.itpub.net/9399028/viewspace-682015/&#34;&gt;Oracle SGA详解&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://blog.itpub.net/25264937/viewspace-694917/&#34;&gt;Oracle之内存结构（SGA、PGA）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.dongcoder.com/detail-441242.html&#34;&gt;Oracle 数据库启动过程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.itpub.net/29620680/viewspace-1153413/&#34;&gt;oracle数据库启动过程大揭秘 &lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.zhaokongnuan.com/2015/01/03/Oracle学习交流（二）-oracle体系结构及启动流程/&#34;&gt;Oracle学习交流（二）&amp;ndash;oracle体系结构及启动流程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.csdn.net/leshami/article/details/5542983&#34;&gt;Oracle 数据库实例启动关闭过程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.jellythink.com/archives/1007&#34;&gt;Oracle学习笔记——数据库启动原理&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Github Issues &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/35&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/35&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
     </item>
     

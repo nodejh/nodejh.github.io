@@ -50,7 +50,7 @@
                     </h1>
                     <h2 class="headline">
                     Mar 26, 2017 00:42
-                    · 3026 words
+                    · 3170 words
                     · 7 minutes read
                       <span class="tags">
                       
@@ -99,15 +99,13 @@
 <li><a href="#3-2-4-打开告警文件和跟踪文件">3.2.4 打开告警文件和跟踪文件</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#3-3-nomount-状态">3.3 <code>nomount</code> 状态</a>
+<li><a href="#3-3-装载数据库-nomunt-mount">3.3 装载数据库 <code>nomunt --&gt; mount</code></a>
 <ul>
 <li>
 <ul>
-<li><a href="#3-3-1-测试数据字典能否打开">3.3.1 测试数据字典能否打开</a></li>
-<li><a href="#3-2-3-查看系统进程和通信设施状态">3.2.3 查看系统进程和通信设施状态</a></li>
+<li><a href="#查看数据字典">查看数据字典</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#3-3-装载数据库-nomunt-mount">3.3 装载数据库 <code>nomunt --&gt; mount</code></a></li>
 <li><a href="#3-4-mount-状态">3.4 <code>mount</code> 状态</a></li>
 <li><a href="#3-5-打开数据库-mount-open">3.5 打开数据库 <code>mount --&gt; open</code></a></li>
 <li><a href="#3-6-open-状态">3.6 <code>open</code> 状态</a></li>
@@ -215,7 +213,7 @@
 <p>为了弄清楚 Oracle 启动过程的详细内容，我们需要用到两个命令：</p>
 
 <ul>
-<li><code>ps</code>用来查看系统运行了哪些进程</li>
+<li><code>ps</code> 用来查看系统运行了哪些进程</li>
 <li><code>ipcs</code> 查询进程间通信设施状态，显示使用了共享内存和信号量</li>
 </ul>
 
@@ -274,6 +272,34 @@ Fixed Size		    2217792 bytes
 Variable Size		 2432698560 bytes
 Database Buffers	  822083584 bytes
 Redo Buffers		   16642048 bytes
+</code></pre>
+
+<p>启动数据库实例后，只会创建实例（即创建 Oracle 实例的各种内存结构与服务进程），并不加载数据库，也不会打开任何数据文件。</p>
+
+<p><strong>测试数据字典能否打开：</strong></p>
+
+<pre><code class="language-bash">SQL&gt; select * from v$datafile;
+select * from v$datafile
+              *
+ERROR at line 1:
+ORA-01507: database not mounted
+</code></pre>
+
+<p><code>select * from v$datafile</code> 的时候报错，说明数据库字典在 <code>nomount</code> 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。</p>
+
+<p>但是在 <code>nomount</code> 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：</p>
+
+<pre><code class="language-bash">SQL&gt; show parameter control_files;
+
+NAME				     TYPE
+------------------------------------ 
+VALUE
+------------------------------
+control_files			     string
+/data/oracle/oradata/orcl/cont
+rol01.ctl, /data/oracle/flash_
+recovery_area/orcl/control02.c
+tl
 </code></pre>
 
 <h6 id="3-2-1-读取参数文件">3.2.1 读取参数文件</h6>
@@ -345,6 +371,51 @@ shared pool		 1258295992
 
 <p><code>PMON</code> 进程监视器（Process Monitor）。当取消当前的事务，或释放进程占用的锁以及释放其它资源之后，PMON 进程清空那些失败的进程。</p>
 
+<p><strong>查看系统进程和通信设施状态：</strong></p>
+
+<pre><code class="language-bash">$ ps -ef | grep oracle
+oracle    4524     1  0 Mar26 ?        00:01:25 /data/oracle/product/11.2.0/db_1/bin/emagent
+root      9797   974  0 00:57 ?        00:00:00 sshd: oracle [priv]
+oracle    9805  9797  0 00:57 ?        00:00:00 sshd: oracle@pts/0
+oracle    9806  9805  0 00:57 pts/0    00:00:00 -bash
+oracle   10020     1  0 00:58 ?        00:00:00 ora_pmon_orcl
+oracle   10022     1  0 00:58 ?        00:00:01 ora_vktm_orcl
+oracle   10026     1  0 00:58 ?        00:00:00 ora_gen0_orcl
+oracle   10028     1  0 00:58 ?        00:00:00 ora_diag_orcl
+oracle   10030     1  0 00:58 ?        00:00:00 ora_dbrm_orcl
+oracle   10032     1  0 00:58 ?        00:00:00 ora_psp0_orcl
+oracle   10034     1  0 00:58 ?        00:00:01 ora_dia0_orcl
+oracle   10036     1  0 00:58 ?        00:00:00 ora_mman_orcl
+oracle   10038     1  0 00:58 ?        00:00:00 ora_dbw0_orcl
+oracle   10040     1  0 00:58 ?        00:00:00 ora_lgwr_orcl
+oracle   10042     1  0 00:58 ?        00:00:00 ora_ckpt_orcl
+oracle   10044     1  0 00:58 ?        00:00:00 ora_smon_orcl
+oracle   10046     1  0 00:58 ?        00:00:00 ora_reco_orcl
+oracle   10048     1  0 00:58 ?        00:00:00 ora_mmon_orcl
+oracle   10050     1  0 00:58 ?        00:00:00 ora_mmnl_orcl
+oracle   10052     1  0 00:58 ?        00:00:00 ora_d000_orcl
+oracle   10054     1  0 00:58 ?        00:00:00 ora_s000_orcl
+oracle   15675  9806  0 01:59 pts/0    00:00:00 ps -ef
+oracle   15676  9806  0 01:59 pts/0    00:00:00 grep --color=auto oracle
+$ ipcs -a
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x011268f0 458753     root       600        1000       9
+0x00000000 524290     oracle     660        4096       0
+0x00000000 557059     oracle     660        4096       0
+0x2a1ee740 589828     oracle     660        4096       0
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+0x19ba9600 1310738    oracle     660        154
+</code></pre>
+
+<p>由 <code>smon</code>、<code>pmon</code> <code>lgwr</code> 等进程可以看出此阶段创建了多个后台进程，并首次报告使用了共享内存和信号量。</p>
+
 <h6 id="3-2-4-打开告警文件和跟踪文件">3.2.4 打开告警文件和跟踪文件</h6>
 
 <p>数据库的启动过程记录在警告追踪文件中，该警告追踪文件中包括数据库启动信息，它存放在参数<code>BACKGOUND_DUMP_DEST</code> 定义的目录下，警告日志的名字为 <code>alert_&lt;sid&gt;.log</code>，<code>sid</code> 是实例的名称：</p>
@@ -398,82 +469,44 @@ max_dump_file_size		     string
 unlimited
 </code></pre>
 
-<h4 id="3-3-nomount-状态">3.3 <code>nomount</code> 状态</h4>
-
-<p>启动数据库实例后，只会创建实例（即创建 Oracle 实例的各种内存结构与服务进程），并不加载数据库，也不会打开任何数据文件。</p>
-
-<h6 id="3-3-1-测试数据字典能否打开">3.3.1 测试数据字典能否打开</h6>
-
-<pre><code class="language-bash">SQL&gt; select * from v$datafile;
-select * from v$datafile
-              *
-ERROR at line 1:
-ORA-01507: database not mounted
-</code></pre>
-
-<p><code>select * from v$datafile</code> 的时候报错，说明数据库字典在 <code>nomount</code> 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。</p>
-
-<p>但是在 <code>nomount</code> 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：</p>
-
-<pre><code class="language-bash">SQL&gt; show parameter control_files;
-
-NAME				     TYPE
------------------------------------- 
-VALUE
-------------------------------
-control_files			     string
-/data/oracle/oradata/orcl/cont
-rol01.ctl, /data/oracle/flash_
-recovery_area/orcl/control02.c
-tl
-</code></pre>
-
-<h6 id="3-2-3-查看系统进程和通信设施状态">3.2.3 查看系统进程和通信设施状态</h6>
-
-<pre><code class="language-bash">$ ps -ef | grep oracle
-oracle    4524     1  0 Mar26 ?        00:01:25 /data/oracle/product/11.2.0/db_1/bin/emagent
-root      9797   974  0 00:57 ?        00:00:00 sshd: oracle [priv]
-oracle    9805  9797  0 00:57 ?        00:00:00 sshd: oracle@pts/0
-oracle    9806  9805  0 00:57 pts/0    00:00:00 -bash
-oracle   10020     1  0 00:58 ?        00:00:00 ora_pmon_orcl
-oracle   10022     1  0 00:58 ?        00:00:01 ora_vktm_orcl
-oracle   10026     1  0 00:58 ?        00:00:00 ora_gen0_orcl
-oracle   10028     1  0 00:58 ?        00:00:00 ora_diag_orcl
-oracle   10030     1  0 00:58 ?        00:00:00 ora_dbrm_orcl
-oracle   10032     1  0 00:58 ?        00:00:00 ora_psp0_orcl
-oracle   10034     1  0 00:58 ?        00:00:01 ora_dia0_orcl
-oracle   10036     1  0 00:58 ?        00:00:00 ora_mman_orcl
-oracle   10038     1  0 00:58 ?        00:00:00 ora_dbw0_orcl
-oracle   10040     1  0 00:58 ?        00:00:00 ora_lgwr_orcl
-oracle   10042     1  0 00:58 ?        00:00:00 ora_ckpt_orcl
-oracle   10044     1  0 00:58 ?        00:00:00 ora_smon_orcl
-oracle   10046     1  0 00:58 ?        00:00:00 ora_reco_orcl
-oracle   10048     1  0 00:58 ?        00:00:00 ora_mmon_orcl
-oracle   10050     1  0 00:58 ?        00:00:00 ora_mmnl_orcl
-oracle   10052     1  0 00:58 ?        00:00:00 ora_d000_orcl
-oracle   10054     1  0 00:58 ?        00:00:00 ora_s000_orcl
-oracle   15675  9806  0 01:59 pts/0    00:00:00 ps -ef
-oracle   15676  9806  0 01:59 pts/0    00:00:00 grep --color=auto oracle
-$ ipcs -a
-
------- Message Queues --------
-key        msqid      owner      perms      used-bytes   messages
-
------- Shared Memory Segments --------
-key        shmid      owner      perms      bytes      nattch     status
-0x011268f0 458753     root       600        1000       9
-0x00000000 524290     oracle     660        4096       0
-0x00000000 557059     oracle     660        4096       0
-0x2a1ee740 589828     oracle     660        4096       0
-
------- Semaphore Arrays --------
-key        semid      owner      perms      nsems
-0x19ba9600 1310738    oracle     660        154
-</code></pre>
-
-<p>由 <code>smon</code>、<code>pmon</code> <code>lgwr</code> 等进程可以看出此阶段创建了多个后台进程，并首次报告使用了共享内存和信号量。</p>
-
 <h4 id="3-3-装载数据库-nomunt-mount">3.3 装载数据库 <code>nomunt --&gt; mount</code></h4>
+
+<p>装载数据库有两种方式：</p>
+
+<ul>
+<li>一是直接启动数据库到 <code>mount</code> 状态：<code>startup mount</code></li>
+<li>二是如果数据库已经启动到 <code>nomount</code> 状态，使用 <code>alter database mount</code> 把数据库切换到<code>mount</code> 状态</li>
+</ul>
+
+<p><code>alert database mount</code>：</p>
+
+<pre><code class="language-bash">SQL&gt; alter database mount;
+
+Database altered.
+</code></pre>
+
+<p><code>startup mount</code>：</p>
+
+<pre><code class="language-bash">SQL&gt; shutdown immediate;
+ORA-01109: database not open
+
+
+Database dismounted.
+ORACLE instance shut down.
+SQL&gt; startup mount;
+ORACLE instance started.
+
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+Database mounted.
+</code></pre>
+
+<h6 id="查看数据字典">查看数据字典</h6>
+
+<p>这个时候，我们可以查看</p>
 
 <h4 id="3-4-mount-状态">3.4 <code>mount</code> 状态</h4>
 

@@ -165,7 +165,7 @@ Redo Buffers		   16642048 bytes
 
 &lt;p&gt;启动数据库实例后，只会创建实例（即创建 Oracle 实例的各种内存结构与服务进程），并不加载数据库，也不会打开任何数据文件。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;测试数据字典能否打开：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;测试数据文件能否打开：&lt;/strong&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from v$datafile;
 select * from v$datafile
@@ -174,7 +174,7 @@ ERROR at line 1:
 ORA-01507: database not mounted
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;code&gt;select * from v$datafile&lt;/code&gt; 的时候报错，说明数据库字典在 &lt;code&gt;nomount&lt;/code&gt; 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;select * from v$datafile&lt;/code&gt; 的时候报错，说明数据库文件在 &lt;code&gt;nomount&lt;/code&gt; 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。&lt;/p&gt;
 
 &lt;p&gt;但是在 &lt;code&gt;nomount&lt;/code&gt; 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：&lt;/p&gt;
 
@@ -360,6 +360,18 @@ unlimited
 
 &lt;h4 id=&#34;3-3-装载数据库-nomunt-mount&#34;&gt;3.3 装载数据库 &lt;code&gt;nomunt --&amp;gt; mount&lt;/code&gt;&lt;/h4&gt;
 
+&lt;h6 id=&#34;装载数据库概述&#34;&gt;装载数据库概述&lt;/h6&gt;
+
+&lt;p&gt;装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Oracle根据参数文件 &lt;code&gt;SPFILE&lt;/code&gt; 中的参数找到控制文件&lt;/li&gt;
+&lt;li&gt;打开控制文件&lt;/li&gt;
+&lt;li&gt;从控制文件获得数据字典和重做日志文件的名字及位置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;完成以上三步，没有任何错误的情况下，Oracle 就已经把实例和数据库关联起来了。&lt;/p&gt;
+
 &lt;p&gt;装载数据库有两种方式：&lt;/p&gt;
 
 &lt;ul&gt;
@@ -393,17 +405,9 @@ Redo Buffers		   16642048 bytes
 Database mounted.
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：&lt;/p&gt;
+&lt;h6 id=&#34;3-3-1-可以查询控制文件&#34;&gt;3.3.1 可以查询控制文件&lt;/h6&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Oracle根据参数文件 &lt;code&gt;SPFILE&lt;/code&gt; 中的参数找到控制文件&lt;/li&gt;
-&lt;li&gt;打开控制文件&lt;/li&gt;
-&lt;li&gt;从控制文件获得数据文件和重做日志文件的名字及位置&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;完成以上三步，没有任何错误的情况下，Oracle 就已经把实例和数据库关联起来了。&lt;/p&gt;
-
-&lt;p&gt;这个时候我们就可以查询控制文件、数据文件、重做日志文件了。但此时还不能查询用户表的内容。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 &lt;code&gt;打开数据库&lt;/code&gt; 之后，才能使用数据库。&lt;/p&gt;
+&lt;p&gt;这个时候我们就可以查询控制文件、数据文件和重做日志文件了。&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select status from v$instance;
 
@@ -441,77 +445,84 @@ MEMBER
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;装载数据库需要打开控制文件，将数据库与打开的实例相关联。而控制文件中包含日志文件，数据文件的位置信息，检查点信息等重要信息。但此时还不能查询用户表的内容。&lt;/p&gt;
+&lt;h6 id=&#34;3-3-2-不能查询表-视图&#34;&gt;3.3.2 不能查询表、视图&lt;/h6&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但此时还不能查询数据库文件，如表和视图。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 &lt;code&gt;打开数据库&lt;/code&gt; 之后，才能使用数据库。&lt;/p&gt;
 
-&lt;h6 id=&#34;查看数据字典&#34;&gt;查看数据字典&lt;/h6&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from tab;
+select * from tab
+              *
+ERROR at line 1:
+ORA-01219: database not open: queries allowed on fixed tables/views only
 
-&lt;p&gt;这个时候我们可以查看数据字典，因为控制文件已经打开。&lt;/p&gt;
-
-&lt;p&gt;可以看出数据库状态已变成 &lt;code&gt;mount&lt;/code&gt; 了，如图：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select FILE#, STATUS, NAME from v$datafile;
-
-     FILE# STATUS
----------- --------------
-NAME
---------------------------------------------------------------------------------
-	 1 SYSTEM
-/data/oracle/oradata/orcl/system01.dbf
-
-	 2 ONLINE
-/data/oracle/oradata/orcl/sysaux01.dbf
-
-	 3 ONLINE
-/data/oracle/oradata/orcl/undotbs01.dbf
-
-
-     FILE# STATUS
----------- --------------
-NAME
---------------------------------------------------------------------------------
-	 4 ONLINE
-/data/oracle/oradata/orcl/users01.dbf
-
-	 5 ONLINE
-/data/oracle/oradata/orcl/example01.dbf
-
-	 6 ONLINE
-/data/oracle/oradata/orcl/SoftwareManagement.dbf
-
-
-6 rows selected.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h6 id=&#34;数据文件&#34;&gt;数据文件&lt;/h6&gt;
-
-&lt;p&gt;但是此时我们不能访问数据库的数据文件（表，视图），文件此时数据文件没有打开。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from scott.dept;
+SQL&amp;gt; select * from scott.dept;
 select * from scott.dept
                     *
 ERROR at line 1:
 ORA-01219: database not open: queries allowed on fixed tables/views only
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;3-4-mount-状态&#34;&gt;3.4 &lt;code&gt;mount&lt;/code&gt; 状态&lt;/h4&gt;
+&lt;h4 id=&#34;3-4-打开数据库-mount-open&#34;&gt;3.4 打开数据库 &lt;code&gt;mount --&amp;gt; open&lt;/code&gt;&lt;/h4&gt;
 
-&lt;h4 id=&#34;3-5-打开数据库-mount-open&#34;&gt;3.5 打开数据库 &lt;code&gt;mount --&amp;gt; open&lt;/code&gt;&lt;/h4&gt;
+&lt;h6 id=&#34;打开数据库概述&#34;&gt;打开数据库概述&lt;/h6&gt;
 
-&lt;h4 id=&#34;3-6-open-状态&#34;&gt;3.6 &lt;code&gt;open&lt;/code&gt; 状态&lt;/h4&gt;
+&lt;p&gt;打开数据库就表示 Oracle 打开数据库文件和重做日志文件。打开数据库时，实例将打开所有处于联机状态的数据文件和重做日志文件。控制文件中的任何一个数据文件或重做日志文件无法正常打开，数据库都将返回错误信息，这时需要进行数据库恢复。&lt;/p&gt;
+
+&lt;p&gt;只有将数据库设置为打开状态后，数据库才处于正常状态，这时普通用户才能够访问数据库。&lt;/p&gt;
+
+&lt;p&gt;打开数据库也有两种方式。&lt;/p&gt;
+
+&lt;p&gt;一是使用 &lt;code&gt;alter&lt;/code&gt; 命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&amp;gt;SQL alter database open;
+
+Database altered.
+
+SQL&amp;gt; select status from v$instance;
+
+STATUS
+------------------------
+OPEN
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;二是直接通过 &lt;code&gt;startup&lt;/code&gt; 命令启动，&lt;code&gt;startup&lt;/code&gt; 命令会逐步完成数据库启动的三个步骤（创建实例、装载数据库、打开数据库），将数据库启动到 &lt;code&gt;open&lt;/code&gt; 状态：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; startup
+ORACLE instance started.
+
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+Database mounted.
+Database opened.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;启动之后，就可以访问数据文件了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;SQL&amp;gt; select * from scott.dept;
+
+    DEPTNO DNAME			LOC
+---------- ---------------------------- --------------------------
+	10 ACCOUNTING			NEW YORK
+	20 RESEARCH			DALLAS
+	30 SALES			CHICAGO
+	40 OPERATIONS			BOSTON
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h2 id=&#34;常见连接错误&#34;&gt;常见连接错误&lt;/h2&gt;
 
 &lt;h4 id=&#34;1-未启动数据库实例&#34;&gt;1. 未启动数据库实例&lt;/h4&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Connection Failed
+&lt;pre&gt;&lt;code&gt;Connection Failed
 ORA-12514: TNS:listener does not currently know of service requested in connect descriptor
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h4 id=&#34;2-未启动监听器&#34;&gt;2. 未启动监听器&lt;/h4&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Oracle Connection Failed
+&lt;pre&gt;&lt;code&gt;Oracle Connection Failed
 ORA 12541: TNS:no listener
 &lt;/code&gt;&lt;/pre&gt;
 

@@ -45,13 +45,13 @@
                 <header>
                     <h1>
                         
-                            深入理解 Oracle 启动过程
+                            深入理解 Oracle 启动过程[未完]
                         
                     </h1>
                     <h2 class="headline">
                     Mar 26, 2017 00:42
-                    · 3170 words
-                    · 7 minutes read
+                    · 3648 words
+                    · 8 minutes read
                       <span class="tags">
                       
                       
@@ -104,6 +104,7 @@
 <li>
 <ul>
 <li><a href="#查看数据字典">查看数据字典</a></li>
+<li><a href="#数据文件">数据文件</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#3-4-mount-状态">3.4 <code>mount</code> 状态</a></li>
@@ -504,9 +505,107 @@ Redo Buffers		   16642048 bytes
 Database mounted.
 </code></pre>
 
+<p>装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：</p>
+
+<ul>
+<li>Oracle根据参数文件 <code>SPFILE</code> 中的参数找到控制文件</li>
+<li>打开控制文件</li>
+<li>从控制文件获得数据文件和重做日志文件的名字及位置</li>
+</ul>
+
+<p>完成以上三步，没有任何错误的情况下，Oracle 就已经把实例和数据库关联起来了。</p>
+
+<p>这个时候我们就可以查询控制文件、数据文件、重做日志文件了。但此时还不能查询用户表的内容。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 <code>打开数据库</code> 之后，才能使用数据库。</p>
+
+<pre><code class="language-bash">SQL&gt; select status from v$instance;
+
+STATUS
+------------------------
+MOUNTED
+
+SQL&gt; select name from v$controlfile;
+
+NAME
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/control01.ctl
+/data/oracle/flash_recovery_area/orcl/control02.ctl
+
+SQL&gt; select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/system01.dbf
+/data/oracle/oradata/orcl/sysaux01.dbf
+/data/oracle/oradata/orcl/undotbs01.dbf
+/data/oracle/oradata/orcl/users01.dbf
+/data/oracle/oradata/orcl/example01.dbf
+/data/oracle/oradata/orcl/SoftwareManagement.dbf
+
+6 rows selected.
+
+SQL&gt; select member from v$logfile;
+
+MEMBER
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/redo03.log
+/data/oracle/oradata/orcl/redo02.log
+/data/oracle/oradata/orcl/redo01.log
+
+</code></pre>
+
+<p>装载数据库需要打开控制文件，将数据库与打开的实例相关联。而控制文件中包含日志文件，数据文件的位置信息，检查点信息等重要信息。但此时还不能查询用户表的内容。</p>
+
+<pre><code class="language-bash"></code></pre>
+
 <h6 id="查看数据字典">查看数据字典</h6>
 
-<p>这个时候，我们可以查看</p>
+<p>这个时候我们可以查看数据字典，因为控制文件已经打开。</p>
+
+<p>可以看出数据库状态已变成 <code>mount</code> 了，如图：</p>
+
+<pre><code class="language-bash">SQL&gt; select FILE#, STATUS, NAME from v$datafile;
+
+     FILE# STATUS
+---------- --------------
+NAME
+--------------------------------------------------------------------------------
+	 1 SYSTEM
+/data/oracle/oradata/orcl/system01.dbf
+
+	 2 ONLINE
+/data/oracle/oradata/orcl/sysaux01.dbf
+
+	 3 ONLINE
+/data/oracle/oradata/orcl/undotbs01.dbf
+
+
+     FILE# STATUS
+---------- --------------
+NAME
+--------------------------------------------------------------------------------
+	 4 ONLINE
+/data/oracle/oradata/orcl/users01.dbf
+
+	 5 ONLINE
+/data/oracle/oradata/orcl/example01.dbf
+
+	 6 ONLINE
+/data/oracle/oradata/orcl/SoftwareManagement.dbf
+
+
+6 rows selected.
+</code></pre>
+
+<h6 id="数据文件">数据文件</h6>
+
+<p>但是此时我们不能访问数据库的数据文件（表，视图），文件此时数据文件没有打开。</p>
+
+<pre><code class="language-bash">SQL&gt; select * from scott.dept;
+select * from scott.dept
+                    *
+ERROR at line 1:
+ORA-01219: database not open: queries allowed on fixed tables/views only
+</code></pre>
 
 <h4 id="3-4-mount-状态">3.4 <code>mount</code> 状态</h4>
 

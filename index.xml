@@ -393,9 +393,107 @@ Redo Buffers		   16642048 bytes
 Database mounted.
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Oracle根据参数文件 &lt;code&gt;SPFILE&lt;/code&gt; 中的参数找到控制文件&lt;/li&gt;
+&lt;li&gt;打开控制文件&lt;/li&gt;
+&lt;li&gt;从控制文件获得数据文件和重做日志文件的名字及位置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;完成以上三步，没有任何错误的情况下，Oracle 就已经把实例和数据库关联起来了。&lt;/p&gt;
+
+&lt;p&gt;这个时候我们就可以查询控制文件、数据文件、重做日志文件了。但此时还不能查询用户表的内容。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 &lt;code&gt;打开数据库&lt;/code&gt; 之后，才能使用数据库。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select status from v$instance;
+
+STATUS
+------------------------
+MOUNTED
+
+SQL&amp;gt; select name from v$controlfile;
+
+NAME
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/control01.ctl
+/data/oracle/flash_recovery_area/orcl/control02.ctl
+
+SQL&amp;gt; select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/system01.dbf
+/data/oracle/oradata/orcl/sysaux01.dbf
+/data/oracle/oradata/orcl/undotbs01.dbf
+/data/oracle/oradata/orcl/users01.dbf
+/data/oracle/oradata/orcl/example01.dbf
+/data/oracle/oradata/orcl/SoftwareManagement.dbf
+
+6 rows selected.
+
+SQL&amp;gt; select member from v$logfile;
+
+MEMBER
+--------------------------------------------------------------------------------
+/data/oracle/oradata/orcl/redo03.log
+/data/oracle/oradata/orcl/redo02.log
+/data/oracle/oradata/orcl/redo01.log
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;装载数据库需要打开控制文件，将数据库与打开的实例相关联。而控制文件中包含日志文件，数据文件的位置信息，检查点信息等重要信息。但此时还不能查询用户表的内容。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;&lt;/code&gt;&lt;/pre&gt;
+
 &lt;h6 id=&#34;查看数据字典&#34;&gt;查看数据字典&lt;/h6&gt;
 
-&lt;p&gt;这个时候，我们可以查看&lt;/p&gt;
+&lt;p&gt;这个时候我们可以查看数据字典，因为控制文件已经打开。&lt;/p&gt;
+
+&lt;p&gt;可以看出数据库状态已变成 &lt;code&gt;mount&lt;/code&gt; 了，如图：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select FILE#, STATUS, NAME from v$datafile;
+
+     FILE# STATUS
+---------- --------------
+NAME
+--------------------------------------------------------------------------------
+	 1 SYSTEM
+/data/oracle/oradata/orcl/system01.dbf
+
+	 2 ONLINE
+/data/oracle/oradata/orcl/sysaux01.dbf
+
+	 3 ONLINE
+/data/oracle/oradata/orcl/undotbs01.dbf
+
+
+     FILE# STATUS
+---------- --------------
+NAME
+--------------------------------------------------------------------------------
+	 4 ONLINE
+/data/oracle/oradata/orcl/users01.dbf
+
+	 5 ONLINE
+/data/oracle/oradata/orcl/example01.dbf
+
+	 6 ONLINE
+/data/oracle/oradata/orcl/SoftwareManagement.dbf
+
+
+6 rows selected.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&#34;数据文件&#34;&gt;数据文件&lt;/h6&gt;
+
+&lt;p&gt;但是此时我们不能访问数据库的数据文件（表，视图），文件此时数据文件没有打开。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SQL&amp;gt; select * from scott.dept;
+select * from scott.dept
+                    *
+ERROR at line 1:
+ORA-01219: database not open: queries allowed on fixed tables/views only
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h4 id=&#34;3-4-mount-状态&#34;&gt;3.4 &lt;code&gt;mount&lt;/code&gt; 状态&lt;/h4&gt;
 

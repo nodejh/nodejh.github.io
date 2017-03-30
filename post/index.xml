@@ -6,8 +6,42 @@
     <description>Recent content in Posts on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Handy MySQL Commands</title>
+      <link>http://nodejh.com/post/Handy-MySQL-Commands/</link>
+      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Handy-MySQL-Commands/</guid>
+      <description>&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;描述&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;登录远程数据库&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;mysql -h hostname -u root -p&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;创建数据库并设置编码&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;查看表结构&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;describe table_name/desc table&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+    </item>
     
     <item>
       <title>Understand the Oracle startup process</title>
@@ -3697,69 +3731,6 @@ except ImportError:
 &lt;hr /&gt;
 
 &lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/10&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/10&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Get the Max Number in Array</title>
-      <link>http://nodejh.com/post/Get-the-Max-Number-in-Array/</link>
-      <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
-      
-      <guid>http://nodejh.com/post/Get-the-Max-Number-in-Array/</guid>
-      <description>
-
-&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
-
-&lt;h4 id=&#34;使用递归函数&#34;&gt;使用递归函数&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];
-var max = arr[0];
-function findMax( i ){
-  if( i == arr.length ) return max;
-  if( max &amp;lt; arr[i] ) max = arr[i];
-  findMax(i+1);
-}
-
-findMax(1);
-console.log(max);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;使用-for-循环遍历&#34;&gt;使用 for 循环遍历&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;var arr = [9,8,55,66,49,68,109,55,33,6,2,1];  
-var max = arr[0];
-for(var i = 1; i &amp;lt; arr.length; i++){
-  if( max &amp;lt; arr[i] ){
-    max = arr[i];
-  }
-}
-
-console.log(max);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;使用apply将数组传入max方法中直接返回&#34;&gt;使用apply将数组传入max方法中直接返回&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;Math.max.apply(null,[9,8,55,66,49,68,109,55,33,6,2,1])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;除此之外，还有很多数组排序方式，都可以在排序后，根据新数组索引值获取 最大/最小 值。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;var a=[1,2,3,5];
-console.log(Math.max.apply(null, a));//最大值
-console.log(Math.min.apply(null, a));//最小值
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;多维数组可以这么修改：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;var a=[1,2,3,[5,6],[1,4,8]];
-var ta=a.join(&amp;quot;,&amp;quot;).split(&amp;quot;,&amp;quot;);//转化为一维数组
-console.log(Math.max.apply(null,ta));//最大值
-console.log(Math.min.apply(null,ta));//最小值
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/9&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/9&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

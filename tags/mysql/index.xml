@@ -6,8 +6,42 @@
     <description>Recent content in MySQL on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 02 Oct 2016 00:53:28 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Handy MySQL Commands</title>
+      <link>http://nodejh.com/post/Handy-MySQL-Commands/</link>
+      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/Handy-MySQL-Commands/</guid>
+      <description>&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;描述&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;登录远程数据库&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;mysql -h hostname -u root -p&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;创建数据库并设置编码&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;查看表结构&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;describe table_name/desc table&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+    </item>
     
     <item>
       <title>The innodb_system data file &#39;ibdata1&#39; must be writeable</title>

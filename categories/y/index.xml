@@ -36,7 +36,22 @@
 
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;查看表结构&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;describe table_name/desc table&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;describe [table name]/desc table/show columns from [table name]&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;删除一列&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;alter table [table name] drop column [column name]&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;添加一列&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;alter table [table name] add column [new column name] varchar (20)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;修改列名称&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;alter table [table name] change [old column name] [new column name] varchar (50)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

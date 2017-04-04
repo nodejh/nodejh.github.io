@@ -50,7 +50,7 @@
                     </h1>
                     <h2 class="headline">
                     Mar 30, 2017 18:06
-                    · 43 words
+                    · 93 words
                     · 1 minute read
                       <span class="tags">
                       
@@ -88,7 +88,22 @@
 
 <tr>
 <td align="left">查看表结构</td>
-<td align="left">describe table_name/desc table</td>
+<td align="left">describe [table name]/desc table/show columns from [table name]</td>
+</tr>
+
+<tr>
+<td align="left">删除一列</td>
+<td align="left">alter table [table name] drop column [column name]</td>
+</tr>
+
+<tr>
+<td align="left">添加一列</td>
+<td align="left">alter table [table name] add column [new column name] varchar (20)</td>
+</tr>
+
+<tr>
+<td align="left">修改列名称</td>
+<td align="left">alter table [table name] change [old column name] [new column name] varchar (50)</td>
 </tr>
 </tbody>
 </table>

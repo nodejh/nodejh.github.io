@@ -2,11 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on nodejh</title>
-    <link>http://nodejh.com/tags/python/</link>
+    <link>http://nodejh.com/tags/python/index.xml</link>
     <description>Recent content in Python on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 09 Oct 2016 18:27:44 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -347,9 +346,7 @@ print(&amp;quot;[INFO] loss={:.4f}, accuracy: {:.4f}%&amp;quot;.format(loss,
       <pubDate>Mon, 01 Aug 2016 21:17:51 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</guid>
-      <description>
-
-&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
+      <description>&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
 
@@ -370,6 +367,8 @@ build variables:
 ==&amp;gt; Summary
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;安装完成后，会有如上提示。接下来需要做的事，将 &lt;code&gt;opencv3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt; 链接到 &lt;code&gt;Python3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt;:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;echo /usr/local/opt/opencv3/lib/python3.5/site-packages &amp;gt;&amp;gt; /usr/local/lib/python3.5/site-packages/opencv3.pth
@@ -385,8 +384,7 @@ build variables:
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/20&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/20&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/20&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/20&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

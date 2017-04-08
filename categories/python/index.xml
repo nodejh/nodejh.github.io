@@ -2,11 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on nodejh</title>
-    <link>http://nodejh.com/categories/python/</link>
+    <link>http://nodejh.com/categories/python/index.xml</link>
     <description>Recent content in Python on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 09 Oct 2016 18:27:44 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

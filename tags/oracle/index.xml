@@ -2,11 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Oracle on nodejh</title>
-    <link>http://nodejh.com/tags/oracle/</link>
+    <link>http://nodejh.com/tags/oracle/index.xml</link>
     <description>Recent content in Oracle on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/oracle/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

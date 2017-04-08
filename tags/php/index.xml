@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>PHP on nodejh</title>
-    <link>http://nodejh.com/tags/php/</link>
-    <description>Recent content in PHP on nodejh</description>
+    <title>Php on nodejh</title>
+    <link>http://nodejh.com/tags/php/index.xml</link>
+    <description>Recent content in Php on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 29 Dec 2016 00:04:41 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/php/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

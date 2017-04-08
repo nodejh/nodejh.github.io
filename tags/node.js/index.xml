@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Node.js on nodejh</title>
-    <link>http://nodejh.com/tags/node/index.js/</link>
-    <description>Recent content in Node.js on nodejh</description>
+    <title>Node.Js on nodejh</title>
+    <link>http://nodejh.com/tags/node.js/index.xml</link>
+    <description>Recent content in Node.Js on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Dec 2016 18:58:19 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -1868,6 +1867,8 @@ server.listen(port, hostname, () =&amp;gt; {
 });
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;该例子使用的是 3000 端口，需要像 &lt;code&gt;localhost:3000&lt;/code&gt; 这样，域名（或IP）加上 &lt;code&gt;:port&lt;/code&gt; 才能访问。而一般 Web 应用都是监听的 80 端口。而普通应用一般只能监听 &lt;code&gt;1024&lt;/code&gt; 以上的端口号，监听 80 端口需要 root 权限。而且 node.js 监听了 80 端口后，像 nginx 这类 HTTP Server 就只能选择监听其他端口了。&lt;/p&gt;
 
 &lt;p&gt;所以一般不使用 node.js 直接监听 80 端口，而是通过 nginx 来做反向代理。&lt;/p&gt;
@@ -1899,8 +1900,7 @@ server {
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/14&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/14&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/14&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/14&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

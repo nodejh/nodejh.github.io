@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="nodejh">
 		<meta name="description" content="My Blog">
-		<meta name="generator" content="Hugo 0.16" />
+		<meta name="generator" content="Hugo 0.19" />
 		<title>Create and Manage MySQL User &middot; nodejh</title>
 		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
 		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
@@ -96,9 +96,7 @@
                   
                 
                 <section id="post-body">
-                    
-
-<h3 id="一-创建数据库用户">一.创建数据库用户</h3>
+                    <h3 id="一-创建数据库用户">一.创建数据库用户</h3>
 
 <p>首先用root账号进入MySQL：</p>
 
@@ -120,6 +118,8 @@ ult collate utf8_general_ci;
 2.&gt; insert into mysql.user(host,user,password) value('hostname','username',password('yourpassword'));
   &gt; flush privileges;
 </code></pre>
+
+<p></p>
 
 <p>说明：
 username：即将创建的用户名;
@@ -260,7 +260,6 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 <hr />
 
 <p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/7">https://github.com/nodejh/nodejh.github.io/issues/7</a></p>
-
                 </section>
             </article>
 
@@ -295,7 +294,7 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
     
     <p class="small">
     
-        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
     
     </p>
     <p class="small">
@@ -318,7 +317,7 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-84989670-1', 'auto');
 ga('send', 'pageview');

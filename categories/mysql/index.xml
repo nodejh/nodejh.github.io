@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>MySQL on nodejh</title>
-    <link>http://nodejh.com/categories/mysql/</link>
-    <description>Recent content in MySQL on nodejh</description>
+    <title>Mysql on nodejh</title>
+    <link>http://nodejh.com/categories/mysql/index.xml</link>
+    <description>Recent content in Mysql on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 12 Apr 2016 02:40:03 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -15,9 +14,7 @@
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/Create-and-Manage-MySQL-User/</guid>
-      <description>
-
-&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
 
@@ -39,6 +36,8 @@ ult collate utf8_general_ci;
 2.&amp;gt; insert into mysql.user(host,user,password) value(&#39;hostname&#39;,&#39;username&#39;,password(&#39;yourpassword&#39;));
   &amp;gt; flush privileges;
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;说明：
 username：即将创建的用户名;
@@ -178,8 +177,7 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/7&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/7&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/7&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/7&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

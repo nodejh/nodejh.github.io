@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="nodejh">
 		<meta name="description" content="My Blog">
-		<meta name="generator" content="Hugo 0.16" />
+		<meta name="generator" content="Hugo 0.19" />
 		<title>Troubleshoot MySQL Start Error &middot; nodejh</title>
 		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
 		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
@@ -91,9 +91,7 @@
                   
                 
                 <section id="post-body">
-                    
-
-<p>今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。</p>
+                    <p>今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。</p>
 
 <p>在此记录下整个排错过程。</p>
 
@@ -104,6 +102,8 @@
 <li>MySQL 5.7.13</li>
 <li><code>/usr/local/mysql/bin</code> 和 <code>/usr/local/mysql/support-files</code> 都已经加入到了系统环境变量</li>
 </ul>
+
+<p></p>
 
 <h4 id="1-进入-mysql-控制台报错">1. 进入 MySQL 控制台报错</h4>
 
@@ -283,7 +283,6 @@ Starting MySQL
 <hr />
 
 <p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/13">https://github.com/nodejh/nodejh.github.io/issues/13</a></p>
-
                 </section>
             </article>
 
@@ -318,7 +317,7 @@ Starting MySQL
     
     <p class="small">
     
-        © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
     
     </p>
     <p class="small">
@@ -341,7 +340,7 @@ Starting MySQL
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-84989670-1', 'auto');
 ga('send', 'pageview');

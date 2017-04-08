@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>React.js on nodejh</title>
-    <link>http://nodejh.com/tags/react/index.js/</link>
-    <description>Recent content in React.js on nodejh</description>
+    <title>React.Js on nodejh</title>
+    <link>http://nodejh.com/tags/react.js/index.xml</link>
+    <description>Recent content in React.Js on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 09 Sep 2016 04:11:13 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/react.js/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

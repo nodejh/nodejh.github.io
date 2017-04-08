@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on nodejh</title>
-    <link>http://nodejh.com/post/</link>
+    <link>http://nodejh.com/post/index.xml</link>
     <description>Recent content in Posts on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>

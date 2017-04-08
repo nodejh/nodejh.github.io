@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>JDK on nodejh</title>
-    <link>http://nodejh.com/tags/jdk/</link>
-    <description>Recent content in JDK on nodejh</description>
+    <title>Jdk on nodejh</title>
+    <link>http://nodejh.com/tags/jdk/index.xml</link>
+    <description>Recent content in Jdk on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 12 Mar 2016 16:06:40 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/jdk/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -15,11 +14,11 @@
       <pubDate>Sat, 12 Mar 2016 16:06:40 +0800</pubDate>
       
       <guid>http://nodejh.com/post/how-to-install-java-on-ubuntu/</guid>
-      <description>
-
-&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
 
 &lt;p&gt;建JAVA开发环境，第一步就是要安装JDK。在这里下载：&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&#34;&gt;Java SE Development Kit 8 - Downloads&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-java-on-ubuntu-1.png&#34; alt=&#34;下载 JDK&#34; /&gt;&lt;/p&gt;
 
@@ -93,8 +92,7 @@ sudo tar zxvf ~/Downloads/eclipse-jee-mars-2-linux-gtk-x86_64.tar.gz -C /opt/ecl
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/16&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/16&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/16&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/16&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

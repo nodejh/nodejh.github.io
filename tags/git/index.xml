@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>GIT on nodejh</title>
-    <link>http://nodejh.com/tags/git/</link>
-    <description>Recent content in GIT on nodejh</description>
+    <title>Git on nodejh</title>
+    <link>http://nodejh.com/tags/git/index.xml</link>
+    <description>Recent content in Git on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 24 Feb 2016 14:25:25 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -15,11 +14,11 @@
       <pubDate>Wed, 24 Feb 2016 14:25:25 +0800</pubDate>
       
       <guid>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
-      <description>
-
-&lt;h3 id=&#34;ds-store-是什么&#34;&gt;.DS_Store 是什么&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;ds-store-是什么&#34;&gt;.DS_Store 是什么&lt;/h3&gt;
 
 &lt;p&gt;使用 Mac 的用户可能会注意到，系统经常会自动在每个目录生成一个隐藏的 &lt;code&gt;.DS_Store 文件&lt;/code&gt;。&lt;code&gt;.DS_Store&lt;/code&gt; (英文全称 Desktop Services Store)是一种由苹果公司的Mac OS X操作系统所创造的隐藏文件，目的在于存贮目录的自定义属性，例如文件们的图标位置或者是背景色的选择。相当于 Windows 下的 &lt;code&gt;desktop.ini&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;删除-ds-store&#34;&gt;删除 .DS_Store&lt;/h3&gt;
 
@@ -57,8 +56,7 @@ git commit -m &#39;.DS_Store banished!&#39;
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/18&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/18&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/18&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/18&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

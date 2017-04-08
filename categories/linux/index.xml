@@ -2,11 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on nodejh</title>
-    <link>http://nodejh.com/categories/linux/</link>
+    <link>http://nodejh.com/categories/linux/index.xml</link>
     <description>Recent content in Linux on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 23 Jan 2015 20:33:29 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>MySQL on nodejh</title>
-    <link>http://nodejh.com/tags/mysql/</link>
-    <description>Recent content in MySQL on nodejh</description>
+    <title>Mysql on nodejh</title>
+    <link>http://nodejh.com/tags/mysql/index.xml</link>
+    <description>Recent content in Mysql on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -134,9 +133,7 @@ Starting MySQL
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
       <guid>http://nodejh.com/post/Troubleshoot-MySQL-Start-Error/</guid>
-      <description>
-
-&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
+      <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
 
 &lt;p&gt;在此记录下整个排错过程。&lt;/p&gt;
 
@@ -147,6 +144,8 @@ Starting MySQL
 &lt;li&gt;MySQL 5.7.13&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;/usr/local/mysql/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/mysql/support-files&lt;/code&gt; 都已经加入到了系统环境变量&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;h4 id=&#34;1-进入-mysql-控制台报错&#34;&gt;1. 进入 MySQL 控制台报错&lt;/h4&gt;
 
@@ -325,8 +324,7 @@ Starting MySQL
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/13&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/13&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/13&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/13&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -335,9 +333,7 @@ Starting MySQL
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/Create-and-Manage-MySQL-User/</guid>
-      <description>
-
-&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
 
@@ -359,6 +355,8 @@ ult collate utf8_general_ci;
 2.&amp;gt; insert into mysql.user(host,user,password) value(&#39;hostname&#39;,&#39;username&#39;,password(&#39;yourpassword&#39;));
   &amp;gt; flush privileges;
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;说明：
 username：即将创建的用户名;
@@ -498,8 +496,7 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/7&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/7&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/7&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/7&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -515,6 +512,8 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 
 &lt;p&gt;这是因为 MySQL 默认的 &lt;code&gt;bind-address&lt;/code&gt; 是 &lt;code&gt;127.0.0.1&lt;/code&gt;, 也就是限制了只能本地访问.&lt;/p&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;所以解决方法之一,就是修改 &lt;code&gt;bind-address&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;改为 &lt;code&gt;0.0.0.0&lt;/code&gt; ,任何远程 IP 都能访问.你也可以把它改为你的电脑的 IP,只能你自己访问.&lt;/p&gt;
@@ -528,8 +527,7 @@ $ sudo service mysql restart
 
 &lt;hr /&gt;
 
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/4&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/4&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/4&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/4&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

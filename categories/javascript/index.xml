@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>javascript on nodejh</title>
-    <link>http://nodejh.com/categories/javascript/</link>
-    <description>Recent content in javascript on nodejh</description>
+    <title>Javascript on nodejh</title>
+    <link>http://nodejh.com/categories/javascript/index.xml</link>
+    <description>Recent content in Javascript on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate>
     <atom:link href="http://nodejh.com/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
     
     <item>

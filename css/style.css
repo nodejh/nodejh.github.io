@@ -812,7 +812,7 @@ h2.month {
 }
 
 .archive .post-item {
-    padding: 10px 10px;
+    padding: 10px 0px;
     /*border-left: 1px solid #cacaca;*/
     overflow-x: hidden;
     white-space:nowrap;
@@ -821,7 +821,7 @@ h2.month {
 .archive .post-time {
     display: inline-block;
     width: 60px;
-    margin: 0 10px;
+    /*margin: 0 10px;*/
     color: #8a8a8a;
 }
 

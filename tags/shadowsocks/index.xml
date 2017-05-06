@@ -17,7 +17,9 @@
       <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-shadowsocks-server-in-vps/</guid>
-      <description>首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误</description>
+      <description>&lt;p&gt;首先关于 Shadowsocks 的使用说明在这里：&lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明&#34;&gt;Shadowsocks 使用说明&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

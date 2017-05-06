@@ -51,7 +51,7 @@
                     </h1>
                     <h2 class="headline">
                     Feb 7, 2017 13:08
-                    · 1249 words
+                    · 1261 words
                     · 3 minutes read
                       <span class="tags">
                       
@@ -86,11 +86,11 @@
                   
                 
                 <section id="post-body">
-                    
-
-<h2 id="1-软件管理工具-apt-get">1. 软件管理工具 apt-get</h2>
+                    <h2 id="1-软件管理工具-apt-get">1. 软件管理工具 apt-get</h2>
 
 <p>Ubuntu 软件源本质上是一个软件仓库，我们可以通过 <code>sudo apt-get install &lt;package-name&gt;</code> 命令来从仓库中下载安装软件。</p>
+
+<p></p>
 
 <p>上面命令中提到的 <code>apt-get</code> 则是 Ubuntu 系统中的一个包管理工具，其常用的几个命令如下：</p>
 
@@ -159,18 +159,18 @@ $ sudo apt-get remove &lt;package-name&gt; --purge
 
 
 ###### Ubuntu Main Repos
-deb http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
-deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
 
 ###### Ubuntu Update Repos
-deb http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
-deb http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
-deb http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
-deb http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
-deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse 
-deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse 
-deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse 
-deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse 
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+deb-src http://cn.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
 </code></pre>
 
 <p>顺便给出查看 Ubuntu 版本号的命令：</p>
@@ -245,7 +245,6 @@ deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu xenial main
 <p>可以发现其源列表格式其实和官方源一模一样。之所以把 PPA 和官方源区分开来，是因为第三方源可能没有十足的保障。</p>
 
 <p>添加完成之后，依旧需要使用 <code>sudo apt-get update</code> 来刷新。</p>
-
                 </section>
             </article>
 

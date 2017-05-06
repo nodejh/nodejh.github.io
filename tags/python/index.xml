@@ -17,7 +17,11 @@
       <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
       
       <guid>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</guid>
-      <description>本文翻译自 A simple neural network with Python and Keras 1. 使用 Python and Keras 构建 一个简单的神经网络 在开始之前，我们先快速复习一下当前最通用的神经网络架构：前馈网络。 我们接下来将写</description>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文翻译自 &lt;a href=&#34;http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/&#34;&gt;A simple neural network with Python and Keras&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -29,23 +33,6 @@
       <description>&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ brew install opencv3 --with-python3
-......
-......
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-opencv3 and opencv install many of the same files.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/opencv3/lib
-    CPPFLAGS: -I/usr/local/opt/opencv3/include
-
-==&amp;gt; Summary
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

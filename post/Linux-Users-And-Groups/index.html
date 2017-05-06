@@ -51,7 +51,7 @@
                     </h1>
                     <h2 class="headline">
                     Jan 23, 2015 20:33
-                    · 5863 words
+                    · 5866 words
                     · 12 minutes read
                       <span class="tags">
                       
@@ -102,9 +102,9 @@
                   
                 
                 <section id="post-body">
-                    
+                    <p>Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统。</p>
 
-<p>Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统。</p>
+<p></p>
 
 <p>用户的账号一方面可以帮助系统管理员对使用系统的用户进行跟踪，并控制他们对系统资源的访问；另一方面也可以帮助用户组织文件，并为用户提供安全性保护。</p>
 
@@ -216,23 +216,23 @@
 <li>-l 锁定口令，即禁用账号。</li>
 <li>-u 口令解锁。</li>
 <li>-d 使账号无口令。</li>
-<li>-f 强迫用户下次登录时修改口令。</li>
-<li>
+<li>-f 强迫用户下次登录时修改口令。
++
 如果默认用户名，则修改当前用户的口令。</li>
 </ul>
 
 <p>例如，假设当前用户是 <code>jh</code>，则下面的命令修改该用户自己的口令：</p>
 
 <pre><code>$ passwd
-Old password:****** 
-New password:******* 
+Old password:******
+New password:*******
 Re-enter new password:*******
 </code></pre>
 
 <p>如果是超级用户，可以用下列形式指定任何用户的口令：</p>
 
 <pre><code># passwd jh
-New password:******* 
+New password:*******
 Re-enter new password:*******
 </code></pre>
 
@@ -584,7 +584,6 @@ root	ALL=(ALL:ALL) ALL
 <li>whoami 查看当前用户</li>
 <li>id users 查看用户编号及用户组编号</li>
 </ul>
-
                 </section>
             </article>
 

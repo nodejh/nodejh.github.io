@@ -6,10 +6,19 @@
     <description>Recent content on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
     
 	<atom:link href="http://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Handy MySQL Commands</title>
+      <link>http://nodejh.com/post/handy-mysql-commands/</link>
+      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Understand the Oracle startup process</title>
@@ -17,7 +26,11 @@
       <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
       
       <guid>http://nodejh.com/post/understand-the-oracle-startup-process/</guid>
-      <description>一. 常用启动步骤 对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。 如果还需要使用 OEM 来监控数据库服务，则还要启动 O</description>
+      <description>&lt;h2 id=&#34;一-常用启动步骤&#34;&gt;一. 常用启动步骤&lt;/h2&gt;
+
+&lt;p&gt;对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +39,9 @@
       <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
       
       <guid>http://nodejh.com/post/setting-environmental-variables-in-macos/</guid>
-      <description>我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。比如安装完 Atom 之后，就可以使用 atom 命令打开文</description>
+      <description>&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +50,9 @@
       <pubDate>Mon, 20 Feb 2017 20:26:33 +0800</pubDate>
       
       <guid>http://nodejh.com/post/how-to-create-auto-increment-column-in-oracle/</guid>
-      <description>如果你经常使用 MySQL，你肯定对 AUTO_INCREMENT 非常熟悉，因为经常要用到它。 一、什么是自增列 ？ 自增列是数据库中值随插入的每个行自动增加的一列。它最常用于</description>
+      <description>&lt;p&gt;如果你经常使用 MySQL，你肯定对 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 非常熟悉，因为经常要用到它。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +61,11 @@
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
       <guid>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
-      <description>1. 例子 先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。 1.1. 基本类型参数传递 function addTen(num) { num += 10; return num; } var count = 20; var result = addTen(count); alert(count);</description>
+      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
+
+&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -53,7 +74,9 @@
       <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
       
       <guid>http://nodejh.com/post/using-sql-plus-on-oracle/</guid>
-      <description>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 SQL、PL/SQL、 和 SQL*Plus 命令： 支持查询、插入和更新数据 执行 PL/SQL 程序 查看表和对象的定义 开发和执行批处</description>
+      <description>&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -62,7 +85,9 @@
       <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-shadowsocks-server-in-vps/</guid>
-      <description>首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误</description>
+      <description>&lt;p&gt;首先关于 Shadowsocks 的使用说明在这里：&lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明&#34;&gt;Shadowsocks 使用说明&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -71,7 +96,11 @@
       <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
       
       <guid>http://nodejh.com/post/change-source-list-in-ubuntu/</guid>
-      <description>1. 软件管理工具 apt-get Ubuntu 软件源本质上是一个软件仓库，我们可以通过 sudo apt-get install &amp;lt;package-name&amp;gt; 命令来从仓库中下载安装软件。 上面命令中提到的 apt-get 则是 Ubuntu 系统中的一个包管理工具</description>
+      <description>&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -80,7 +109,9 @@
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
       <guid>http://nodejh.com/post/architecture-and-code-analysis-of-teaching-evaluation/</guid>
-      <description>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。如何设计应用逻辑，如何</description>
+      <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -89,7 +120,11 @@
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
       <guid>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</guid>
-      <description>本文主要内容翻译自《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》，并加入了自己的实践。 前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的</description>
+      <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
+
+&lt;p&gt;通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -98,7 +133,9 @@
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/wechat-development-access-guide/</guid>
-      <description>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 公众平台开发者文档-接入指南 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代</description>
+      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -107,7 +144,9 @@
       <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
       
       <guid>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</guid>
-      <description>当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下： perl: warning: Setting locale failed. perl: warning: Please check that your locale settings: LANGUAGE = &amp;quot;en_US:&amp;quot;, LC_ALL = (unset), LC_CTYPE = &amp;quot;zh_CN.UTF-8&amp;quot;, LANG = &amp;quot;en_US&amp;quot; are supported and installed on your system. perl: warning: Falling back to a fallback locale (&amp;quot;en_US&amp;quot;). locale: Cannot set</description>
+      <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -116,7 +155,11 @@
       <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
       
       <guid>http://nodejh.com/post/use-and-stop-promise-break-chain/</guid>
-      <description>Abstract 本文主要讲的是如何实现 Promise 的链式调用。也就是 promise().then().then().catch() 的形式，然后讨论如何在某一个 then() 里面中止 Promise。 在程序中，只要返回了一个 promise 对象，如果 promise 对</description>
+      <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+
+&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -125,7 +168,11 @@
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
       <guid>http://nodejh.com/post/symmetric-difference/</guid>
-      <description>题目 创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组. 给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2,</description>
+      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -134,7 +181,9 @@
       <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-mxnet-on-macos/</guid>
-      <description>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但</description>
+      <description>&lt;p&gt;MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：&lt;a href=&#34;https://github.com/dmlc/mxnet/issues/797&#34;&gt;《MXNet设计和实现简介》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -143,7 +192,9 @@
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/get-the-max-number-in-array/</guid>
-      <description>本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &amp;lt; arr[i] ) max = arr[i]; findMax(i+1); } findMax(1); console.log(max); 使用 for 循环遍历 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var</description>
+      <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -152,7 +203,9 @@
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
       <guid>http://nodejh.com/post/check-parameters-in-express-router/</guid>
-      <description>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。 几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST</description>
+      <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -161,7 +214,11 @@
       <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
       
       <guid>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</guid>
-      <description>本文翻译自 A simple neural network with Python and Keras 1. 使用 Python and Keras 构建 一个简单的神经网络 在开始之前，我们先快速复习一下当前最通用的神经网络架构：前馈网络。 我们接下来将写</description>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文翻译自 &lt;a href=&#34;http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/&#34;&gt;A simple neural network with Python and Keras&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -170,7 +227,9 @@
       <pubDate>Fri, 07 Oct 2016 01:03:30 +0800</pubDate>
       
       <guid>http://nodejh.com/post/crawler-for-scu-libirary/</guid>
-      <description>本文详细讲述如何模拟登录某某大学图书馆系统 为什么说是某某大学？往下看了就知道了 😉 对于爬虫程序，如果需要抓取的页面，需要登录后才能访问，这时一</description>
+      <description>&lt;p&gt;本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -179,7 +238,11 @@
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
       <guid>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
-      <description>今天重启电脑后 MySQL 又用不了了！ 然后查看了错误日志 ： $ sudo cat /usr/local/mysql/data/jh.local.err 2016-10-01T15:51:09.6NZ mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/data 2016-10-01T15:51:09.574413Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details). 2016-10-01T15:51:09.574540Z 0 [Warning] &#39;NO_ZERO_DATE&#39;, &#39;NO_ZERO_IN_DATE&#39; and &#39;ERROR_FOR_DIVISION_BY_ZERO&#39; sql modes should be used with</description>
+      <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
+
+&lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -188,7 +251,9 @@
       <pubDate>Fri, 30 Sep 2016 17:14:37 +0800</pubDate>
       
       <guid>http://nodejh.com/post/migrate-to-hugo-from-hexo/</guid>
-      <description>把博客从 Hexo 迁移到了 Hugo。主要原因有二： Hexo 中文乱码。当中文大概超过1000字，就出现奇怪的乱码。看了 Hexo 的 ISSUE，这个问题也不只我遇到。</description>
+      <description>&lt;p&gt;把博客从 &lt;a href=&#34;http://hexo.io/&#34;&gt;Hexo&lt;/a&gt; 迁移到了 &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;。主要原因有二：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -197,7 +262,7 @@
       <pubDate>Tue, 27 Sep 2016 20:48:24 +0800</pubDate>
       
       <guid>http://nodejh.com/post/use-eslint-config-airbnb-in-atom/</guid>
-      <description>&lt;p&gt;ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。关于 ESLint 的详细介绍可看&lt;a href=&#34;http://eslint.org&#34;&gt;官方文档&lt;/a&gt;。&lt;/p&gt;
+      <description>&lt;p&gt;ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
@@ -221,7 +286,14 @@
       <pubDate>Fri, 09 Sep 2016 04:11:13 +0800</pubDate>
       
       <guid>http://nodejh.com/post/start-react-with-webpack/</guid>
-      <description>TL;DR $ git clone https://github.com/nodejh/start-react-with-webpack react-sample $ cd react-sample &amp;amp;&amp;amp; npm install $ npm run dev 然后打开浏览器输入 http://localhost:8080，并尝试随意修改一下 app 目录里面的代码，就能看到效</description>
+      <description>&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/nodejh/start-react-with-webpack react-sample
+$ cd react-sample &amp;amp;&amp;amp; npm install
+$ npm run dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -234,23 +306,6 @@
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;$ brew install opencv3 --with-python3
-......
-......
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-opencv3 and opencv install many of the same files.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/opencv3/lib
-    CPPFLAGS: -I/usr/local/opt/opencv3/include
-
-==&amp;gt; Summary
-&lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -261,16 +316,6 @@ build variables:
       
       <guid>http://nodejh.com/post/troubleshoot-mysql-start-error/</guid>
       <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
-
-&lt;p&gt;在此记录下整个排错过程。&lt;/p&gt;
-
-&lt;h4 id=&#34;0-系统环境&#34;&gt;0. 系统环境&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;操作系统 OS X EI Caption 10.11.6 (15G31)&lt;/li&gt;
-&lt;li&gt;MySQL 5.7.13&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;/usr/local/mysql/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/mysql/support-files&lt;/code&gt; 都已经加入到了系统环境变量&lt;/li&gt;
-&lt;/ul&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
@@ -283,22 +328,6 @@ build variables:
       <guid>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</guid>
       <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;const http = require(&#39;http&#39;);
-
-const hostname = &#39;127.0.0.1&#39;;
-const port = 3000;
-
-const server = http.createServer((req, res) =&amp;gt; {
-  res.statusCode = 200;
-  res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;);
-  res.end(&#39;Hello World\n&#39;);
-});
-
-server.listen(port, hostname, () =&amp;gt; {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
-&lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -310,11 +339,6 @@ server.listen(port, hostname, () =&amp;gt; {
       <guid>http://nodejh.com/post/webstorm-node-js-core-module-source-not-configured/</guid>
       <description>&lt;p&gt;在 Webstrom 中引入 Node.js 自带模块的时候，Webstorm 有如下错误提示：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;Node.js core module source not configured
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这是因为没有配置 Webstorm 支持 Node.js 自带模块。&lt;/p&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -324,7 +348,7 @@ server.listen(port, hostname, () =&amp;gt; {
       <pubDate>Wed, 13 Apr 2016 10:35:40 +0800</pubDate>
       
       <guid>http://nodejh.com/post/get-chinese-phonetic-syllable-with-js/</guid>
-      <description>&lt;h3 id=&#34;最终函数&#34;&gt;最终函数&lt;/h3&gt;
+      <description>&lt;h2 id=&#34;最终函数&#34;&gt;最终函数&lt;/h2&gt;
 
 &lt;p&gt;最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：&lt;/p&gt;
 
@@ -337,28 +361,9 @@ server.listen(port, hostname, () =&amp;gt; {
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
-      <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
+      <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mysql -u root -p
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后输入密码即可。&lt;/p&gt;
-
-&lt;p&gt;创建数据库并设置编码为 &lt;code&gt;utf8&lt;/code&gt;，不然中文可能会乱码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; create database mydb default character set utf8 defa
-ult collate utf8_general_ci;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;新建用户有两种方式&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;1.&amp;gt; create user username@hostname identified by &#39;yourpassword&#39;;
-
-2.&amp;gt; insert into mysql.user(host,user,password) value(&#39;hostname&#39;,&#39;username&#39;,password(&#39;yourpassword&#39;));
-  &amp;gt; flush privileges;
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
@@ -374,8 +379,6 @@ ult collate utf8_general_ci;
 &lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;这是因为 MySQL 默认的 &lt;code&gt;bind-address&lt;/code&gt; 是 &lt;code&gt;127.0.0.1&lt;/code&gt;, 也就是限制了只能本地访问.&lt;/p&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -385,7 +388,16 @@ ult collate utf8_general_ci;
       <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
-      <description>Eclipse JSP/Servlet 环境搭建 本文假定你已安装了 JDK 环境，如未安装，可参阅： Ubuntu下JAVA开发环境的配置 Ubuntu 下 Tomcat 的配置 1. 踩过的坑 1) Tomcat 版本过新 最近 Tomcat 更新到了</description>
+      <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
+
+&lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -409,9 +421,7 @@ ult collate utf8_general_ci;
       <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
 
-&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。
-JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
-Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。&lt;/p&gt;
+&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
@@ -422,11 +432,7 @@ Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server�
       <pubDate>Wed, 24 Feb 2016 14:25:25 +0800</pubDate>
       
       <guid>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
-      <description>&lt;h3 id=&#34;ds-store-是什么&#34;&gt;.DS_Store 是什么&lt;/h3&gt;
-
-&lt;p&gt;使用 Mac 的用户可能会注意到，系统经常会自动在每个目录生成一个隐藏的 &lt;code&gt;.DS_Store 文件&lt;/code&gt;。&lt;code&gt;.DS_Store&lt;/code&gt; (英文全称 Desktop Services Store)是一种由苹果公司的Mac OS X操作系统所创造的隐藏文件，目的在于存贮目录的自定义属性，例如文件们的图标位置或者是背景色的选择。相当于 Windows 下的 &lt;code&gt;desktop.ini&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -435,7 +441,9 @@ Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server�
       <pubDate>Fri, 23 Jan 2015 20:33:29 +0800</pubDate>
       
       <guid>http://nodejh.com/post/linux-users-and-groups/</guid>
-      <description>Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系</description>
+      <description>&lt;p&gt;Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

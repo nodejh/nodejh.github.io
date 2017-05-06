@@ -21,23 +21,6 @@
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;$ brew install opencv3 --with-python3
-......
-......
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-opencv3 and opencv install many of the same files.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/opencv3/lib
-    CPPFLAGS: -I/usr/local/opt/opencv3/include
-
-==&amp;gt; Summary
-&lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     

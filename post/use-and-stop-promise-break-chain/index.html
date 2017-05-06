@@ -51,7 +51,7 @@
                     </h1>
                     <h2 class="headline">
                     Nov 24, 2016 22:19
-                    · 3303 words
+                    · 3306 words
                     · 7 minutes read
                       <span class="tags">
                       
@@ -89,11 +89,11 @@
                   
                 
                 <section id="post-body">
-                    
-
-<h2 id="abstract">Abstract</h2>
+                    <h2 id="abstract">Abstract</h2>
 
 <p>本文主要讲的是如何实现 Promise 的链式调用。也就是 <code>promise().then().then().catch()</code> 的形式，然后讨论如何在某一个 <code>then()</code> 里面中止 Promise。</p>
+
+<p></p>
 
 <p>在程序中，只要返回了一个 promise 对象，如果 promise 对象不是 Rejected 或 Fulfilled 状态，then 方法就会继续调用。利用这个特性，可以处理多个异步逻辑。但有时候某个 then 方法的执行结果可能会决定是否需要执行下一个 then，这个时候就需中止 promise，主要思想就是使用 reject 来中止 promise 的 then 继续执行。</p>
 
@@ -507,7 +507,6 @@ function p3() {
 <hr />
 
 <p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/23">https://github.com/nodejh/nodejh.github.io/issues/23</a></p>
-
                 </section>
             </article>
 

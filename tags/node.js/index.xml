@@ -17,7 +17,9 @@
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
       <guid>http://nodejh.com/post/architecture-and-code-analysis-of-teaching-evaluation/</guid>
-      <description>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。如何设计应用逻辑，如何</description>
+      <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +28,9 @@
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/wechat-development-access-guide/</guid>
-      <description>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 公众平台开发者文档-接入指南 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代</description>
+      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +39,11 @@
       <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
       
       <guid>http://nodejh.com/post/use-and-stop-promise-break-chain/</guid>
-      <description>Abstract 本文主要讲的是如何实现 Promise 的链式调用。也就是 promise().then().then().catch() 的形式，然后讨论如何在某一个 then() 里面中止 Promise。 在程序中，只要返回了一个 promise 对象，如果 promise 对</description>
+      <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+
+&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +52,9 @@
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
       <guid>http://nodejh.com/post/check-parameters-in-express-router/</guid>
-      <description>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。 几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST</description>
+      <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -53,7 +63,9 @@
       <pubDate>Fri, 07 Oct 2016 01:03:30 +0800</pubDate>
       
       <guid>http://nodejh.com/post/crawler-for-scu-libirary/</guid>
-      <description>本文详细讲述如何模拟登录某某大学图书馆系统 为什么说是某某大学？往下看了就知道了 😉 对于爬虫程序，如果需要抓取的页面，需要登录后才能访问，这时一</description>
+      <description>&lt;p&gt;本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -63,22 +75,6 @@
       
       <guid>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</guid>
       <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;const http = require(&#39;http&#39;);
-
-const hostname = &#39;127.0.0.1&#39;;
-const port = 3000;
-
-const server = http.createServer((req, res) =&amp;gt; {
-  res.statusCode = 200;
-  res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;);
-  res.end(&#39;Hello World\n&#39;);
-});
-
-server.listen(port, hostname, () =&amp;gt; {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

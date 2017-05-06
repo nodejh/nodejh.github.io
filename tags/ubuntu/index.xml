@@ -17,7 +17,11 @@
       <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
       
       <guid>http://nodejh.com/post/change-source-list-in-ubuntu/</guid>
-      <description>1. 软件管理工具 apt-get Ubuntu 软件源本质上是一个软件仓库，我们可以通过 sudo apt-get install &amp;lt;package-name&amp;gt; 命令来从仓库中下载安装软件。 上面命令中提到的 apt-get 则是 Ubuntu 系统中的一个包管理工具</description>
+      <description>&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
+
+&lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +30,9 @@
       <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
       
       <guid>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</guid>
-      <description>当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下： perl: warning: Setting locale failed. perl: warning: Please check that your locale settings: LANGUAGE = &amp;quot;en_US:&amp;quot;, LC_ALL = (unset), LC_CTYPE = &amp;quot;zh_CN.UTF-8&amp;quot;, LANG = &amp;quot;en_US&amp;quot; are supported and installed on your system. perl: warning: Falling back to a fallback locale (&amp;quot;en_US&amp;quot;). locale: Cannot set</description>
+      <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +41,16 @@
       <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
       
       <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
-      <description>Eclipse JSP/Servlet 环境搭建 本文假定你已安装了 JDK 环境，如未安装，可参阅： Ubuntu下JAVA开发环境的配置 Ubuntu 下 Tomcat 的配置 1. 踩过的坑 1) Tomcat 版本过新 最近 Tomcat 更新到了</description>
+      <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
+
+&lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -59,9 +74,7 @@
       <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
 
-&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。
-JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
-Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。&lt;/p&gt;
+&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

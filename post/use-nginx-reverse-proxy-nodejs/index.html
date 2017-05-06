@@ -51,7 +51,7 @@
                     </h1>
                     <h2 class="headline">
                     Apr 30, 2016 17:19
-                    · 273 words
+                    · 274 words
                     · 1 minute read
                       <span class="tags">
                       
@@ -72,6 +72,8 @@
                 <section id="post-body">
                     <p>一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：</p>
 
+<p></p>
+
 <pre><code>const http = require('http');
 
 const hostname = '127.0.0.1';
@@ -88,7 +90,7 @@ server.listen(port, hostname, () =&gt; {
 });
 </code></pre>
 
-<p></p>
+<p>HUGOMORE42</p>
 
 <p>该例子使用的是 3000 端口，需要像 <code>localhost:3000</code> 这样，域名（或IP）加上 <code>:port</code> 才能访问。而一般 Web 应用都是监听的 80 端口。而普通应用一般只能监听 <code>1024</code> 以上的端口号，监听 80 端口需要 root 权限。而且 node.js 监听了 80 端口后，像 nginx 这类 HTTP Server 就只能选择监听其他端口了。</p>
 

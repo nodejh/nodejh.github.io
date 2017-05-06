@@ -97,9 +97,11 @@
                   
                 
                 <section id="post-body">
-                    <p>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。关于 ESLint 的详细介绍可看<a href="http://eslint.org">官方文档</a>。</p>
+                    <p>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。</p>
 
 <p></p>
+
+<p>关于 ESLint 的详细介绍可看<a href="http://eslint.org">官方文档</a>。</p>
 
 <h4 id="1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint</h4>
 
@@ -134,9 +136,9 @@
 
         // never参数：不能带末尾的逗号,
 
-        // always参数：必须带末尾的逗号，  
+        // always参数：必须带末尾的逗号，
 
-        // always-multiline：多行模式必须带逗号，单行模式不能带逗号  
+        // always-multiline：多行模式必须带逗号，单行模式不能带逗号
 
         &quot;comma-dangle&quot;: [2, &quot;never&quot;],
 
@@ -270,23 +272,23 @@
 
         &quot;complexity&quot;: [2, 5],
 
-        //不同分支的return语句不能返回不同的类型，要么一致要么都没有  
+        //不同分支的return语句不能返回不同的类型，要么一致要么都没有
 
         &quot;consistent-return&quot;: 0,
 
-        // if else while for do后面的代码块是否需要{ }包围，参数：  
+        // if else while for do后面的代码块是否需要{ }包围，参数：
 
-        // multi         只有块中有多行语句时才需要{ }包围  
+        // multi         只有块中有多行语句时才需要{ }包围
 
         // multi-line    只有块中有多行语句时才需要{ }包围, 但是块中的执行语句只有一行时，块中的语句只能跟和if语句在同一行。
 
-        //                if (foo) foo++; else doSomething();  
+        //                if (foo) foo++; else doSomething();
 
-        // multi-or-nest 只有块中有多行语句时才需要{ }包围, 如果块中的执行语句只有一行，执行语句可以另起一行也可以跟在if语句后面    
+        // multi-or-nest 只有块中有多行语句时才需要{ }包围, 如果块中的执行语句只有一行，执行语句可以另起一行也可以跟在if语句后面
 
-        // [2, &quot;multi&quot;, &quot;consistent&quot;] 保持前后语句的{ }一致  
+        // [2, &quot;multi&quot;, &quot;consistent&quot;] 保持前后语句的{ }一致
 
-        // default: [2, &quot;all&quot;] 全都需要{ }包围  
+        // default: [2, &quot;all&quot;] 全都需要{ }包围
 
         &quot;curly&quot;: 2,
 
@@ -296,25 +298,25 @@
 
         // 在书写对象的属性或方法时，新的一行代码可以以. 开头，也可以以. 结束。
 
-        // 强制统一object.key中 . 的位置，参数:  
+        // 强制统一object.key中 . 的位置，参数:
 
-        //      property，'.'号应与属性在同一行  
+        //      property，'.'号应与属性在同一行
 
-        //      object, '.' 号应与对象名在同一行  
+        //      object, '.' 号应与对象名在同一行
 
         &quot;dot-location&quot;: [2, &quot;property&quot;],
 
-        // 强制使用.号取属性  
+        // 强制使用.号取属性
 
-        // 参数： allowKeywords：true  使用保留字做属性名时，只能使用.方式取属性  
+        // 参数： allowKeywords：true  使用保留字做属性名时，只能使用.方式取属性
 
         //                       false 使用保留字做属性名时, 只能使用[]方式取属性
 
-        //                       e.g [2, {&quot;allowKeywords&quot;: false}]  
+        //                       e.g [2, {&quot;allowKeywords&quot;: false}]
 
         //        allowPattern:  当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值
 
-        //                       e.g [2, {&quot;allowPattern&quot;: &quot;^[a-z]+(_[a-z]+)+$&quot;}]  
+        //                       e.g [2, {&quot;allowPattern&quot;: &quot;^[a-z]+(_[a-z]+)+$&quot;}]
 
         &quot;dot-notation&quot;: [2, { &quot;allowKeywords&quot;: true }],
 
@@ -666,7 +668,7 @@
 
         // never参数： 数组元素前后不能带空格，
 
-        // always参数：数组元素前后必须留空格  
+        // always参数：数组元素前后必须留空格
 
         &quot;array-bracket-spacing&quot;: [2, &quot;never&quot;],
 
@@ -674,7 +676,7 @@
 
         // always参数：默认，前后必须留空格
 
-        // never参数： 前后不能带空格  
+        // never参数： 前后不能带空格
 
         &quot;block-spacing&quot;: [2, &quot;always&quot;],
 
@@ -682,7 +684,7 @@
 
         &quot;brace-style&quot;: [2, &quot;1tbs&quot;, { &quot;allowSingleLine&quot;: true }],
 
-        //强制使用驼峰命名  
+        //强制使用驼峰命名
 
         &quot;camelcase&quot;: 2,
 
@@ -702,7 +704,7 @@
 
         //如果一个变量被指定为this对象的别名，那么这个变量就不能够用来赋其他值，只能够用来保存this对象。
 
-        //如果this对象明确被赋值给了一个变量，那么这个变量应该是配置中指定的那个变量名。     
+        //如果this对象明确被赋值给了一个变量，那么这个变量应该是配置中指定的那个变量名。
 
         &quot;consistent-this&quot;: [2, &quot;self&quot;],
 
@@ -720,13 +722,13 @@
 
         //函数表达式是通过var等声明变量的关键字开头，然后跟函数名，再后面是function本身。在使用函数表达式定义函数前调用函数会报错
 
-        // 统一定义函数是所采用的方式，参数：  
+        // 统一定义函数是所采用的方式，参数：
 
-        //    declaration: 强制使用方法声明的方式，function f(){} e.g [2, &quot;declaration&quot;]  
+        //    declaration: 强制使用方法声明的方式，function f(){} e.g [2, &quot;declaration&quot;]
 
-        //    expression：强制使用方法表达式的方式，默认方式，var f = function() {}  e.g [2, &quot;expression&quot;]  
+        //    expression：强制使用方法表达式的方式，默认方式，var f = function() {}  e.g [2, &quot;expression&quot;]
 
-        //    allowArrowFunctions: declaration风格中允许箭头函数。 e.g [2, &quot;declaration&quot;, {&quot;allowArrowFunctions&quot;:true}]  
+        //    allowArrowFunctions: declaration风格中允许箭头函数。 e.g [2, &quot;declaration&quot;, {&quot;allowArrowFunctions&quot;:true}]
 
         &quot;func-style&quot;: [2, &quot;expression&quot;],
 

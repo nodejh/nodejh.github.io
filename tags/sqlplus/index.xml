@@ -17,7 +17,9 @@
       <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
       
       <guid>http://nodejh.com/post/using-sql-plus-on-oracle/</guid>
-      <description>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 SQL、PL/SQL、 和 SQL*Plus 命令： 支持查询、插入和更新数据 执行 PL/SQL 程序 查看表和对象的定义 开发和执行批处</description>
+      <description>&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

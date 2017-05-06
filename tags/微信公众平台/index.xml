@@ -17,7 +17,9 @@
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/wechat-development-access-guide/</guid>
-      <description>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 公众平台开发者文档-接入指南 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代</description>
+      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

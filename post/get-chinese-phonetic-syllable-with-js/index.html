@@ -71,10 +71,10 @@
 <ul>
 <li>
 <ul>
-<li>
-<ul>
 <li><a href="#最终函数">最终函数</a></li>
 <li><a href="#思路">思路</a>
+<ul>
+<li>
 <ul>
 <li><a href="#1-找到所有拼音音节表">1. 找到所有拼音音节表</a></li>
 <li><a href="#2-递归判断字符串">2. 递归判断字符串</a></li>
@@ -88,7 +88,7 @@
                   
                 
                 <section id="post-body">
-                    <h3 id="最终函数">最终函数</h3>
+                    <h2 id="最终函数">最终函数</h2>
 
 <p>最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：</p>
 
@@ -138,7 +138,7 @@ function is_pinyin(string) {
     var name = lowerString.substring(0, i+1);
     index = list.lastIndexOf(name) &gt; index ? list.lastIndexOf(name) : index;
   }
-  
+
   // 判断当前 lowerString 是不是拼音(lowerString 在 list 中就是;不在就不是)
   if (index &gt;= 0) {
     var item = list[index];
@@ -154,7 +154,7 @@ function is_pinyin(string) {
 }
 </code></pre>
 
-<h3 id="思路">思路</h3>
+<h2 id="思路">思路</h2>
 
 <h4 id="1-找到所有拼音音节表">1. 找到所有拼音音节表</h4>
 

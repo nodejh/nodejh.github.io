@@ -90,9 +90,9 @@
                   
                 
                 <section id="post-body">
-                    
+                    <p>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。</p>
 
-<p>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。</p>
+<p></p>
 
 <p>几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST 方法还是 GET 方法，数据校验都是必要的操作。</p>
 
@@ -112,7 +112,7 @@
  * @method checkParameters
  * @param  {object}        req     http请求
  * @param  {object}        res     http响应
- * @param  {Function}      next    
+ * @param  {Function}      next
  * @param  {[type]}        special 特殊参数，
  *                                 格式： [{eval: 'req.query.id&gt;0', key:'id', type: 'query'}]
  *                                 key 属性的值必须和eval中对应，且type只能是 query/params/body
@@ -324,7 +324,6 @@ router.get('/index', function(req, res, next) {
 <hr />
 
 <p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/5">https://github.com/nodejh/nodejh.github.io/issues/5</a></p>
-
                 </section>
             </article>
 

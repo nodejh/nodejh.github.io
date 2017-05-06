@@ -497,10 +497,22 @@ Post List
     /*border-top: 1px solid #eee;*/
 }
 
+#post-list #summary li+li {
+    padding-top: 0px;
+    /*border-top: 1px solid #eee;*/
+}
+
+
 #post-list a {
     color: #333;
     display: block;
     font: bold 19px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif;
+}
+
+#post-list #summary a {
+    color: #5badf0;
+    display: inline;
+    font: 400 1em "Helvetica Neue", helvetica, Arial, sans-serif;
 }
 
 #post-list .dates {

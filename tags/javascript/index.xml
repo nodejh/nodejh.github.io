@@ -17,7 +17,11 @@
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
       <guid>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
-      <description>1. 例子 先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。 1.1. 基本类型参数传递 function addTen(num) { num += 10; return num; } var count = 20; var result = addTen(count); alert(count);</description>
+      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
+
+&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +30,11 @@
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
       <guid>http://nodejh.com/post/symmetric-difference/</guid>
-      <description>题目 创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组. 给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2,</description>
+      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +43,9 @@
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/get-the-max-number-in-array/</guid>
-      <description>本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &amp;lt; arr[i] ) max = arr[i]; findMax(i+1); } findMax(1); console.log(max); 使用 for 循环遍历 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var</description>
+      <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +54,9 @@
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
       <guid>http://nodejh.com/post/check-parameters-in-express-router/</guid>
-      <description>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。 几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST</description>
+      <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -66,7 +78,7 @@
       <pubDate>Wed, 13 Apr 2016 10:35:40 +0800</pubDate>
       
       <guid>http://nodejh.com/post/get-chinese-phonetic-syllable-with-js/</guid>
-      <description>&lt;h3 id=&#34;最终函数&#34;&gt;最终函数&lt;/h3&gt;
+      <description>&lt;h2 id=&#34;最终函数&#34;&gt;最终函数&lt;/h2&gt;
 
 &lt;p&gt;最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：&lt;/p&gt;
 

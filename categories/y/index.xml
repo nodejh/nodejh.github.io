@@ -2,59 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Y on nodejh</title>
-    <link>http://nodejh.com/categories/y/index.xml</link>
+    <link>http://nodejh.com/categories/y/</link>
     <description>Recent content in Y on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <atom:link href="http://nodejh.com/categories/y/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
+    
+	<atom:link href="http://nodejh.com/categories/y/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Handy MySQL Commands</title>
-      <link>http://nodejh.com/post/Handy-MySQL-Commands/</link>
+      <link>http://nodejh.com/post/handy-mysql-commands/</link>
       <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/Handy-MySQL-Commands/</guid>
-      <description>&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th align=&#34;left&#34;&gt;描述&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;命令&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;登录远程数据库&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;mysql -h hostname -u root -p&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;创建数据库并设置编码&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;查看表结构&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;describe [table name]/desc table/show columns from [table name]&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;删除一列&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] drop column [column name]&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;添加一列&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] add column [new column name] varchar (20)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;修改列名称&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] change [old column name] [new column name] varchar (50)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-</description>
+      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

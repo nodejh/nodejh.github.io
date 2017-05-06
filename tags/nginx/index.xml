@@ -19,22 +19,6 @@
       <guid>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</guid>
       <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;const http = require(&#39;http&#39;);
-
-const hostname = &#39;127.0.0.1&#39;;
-const port = 3000;
-
-const server = http.createServer((req, res) =&amp;gt; {
-  res.statusCode = 200;
-  res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;);
-  res.end(&#39;Hello World\n&#39;);
-});
-
-server.listen(port, hostname, () =&amp;gt; {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
-&lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     

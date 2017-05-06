@@ -6,10 +6,19 @@
     <description>Recent content in Mysql on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 02 Oct 2016 00:53:28 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
     
 	<atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Handy MySQL Commands</title>
+      <link>http://nodejh.com/post/handy-mysql-commands/</link>
+      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>The innodb_system data file &#39;ibdata1&#39; must be writeable</title>
@@ -17,7 +26,11 @@
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
       <guid>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
-      <description>今天重启电脑后 MySQL 又用不了了！ 然后查看了错误日志 ： $ sudo cat /usr/local/mysql/data/jh.local.err 2016-10-01T15:51:09.6NZ mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/data 2016-10-01T15:51:09.574413Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details). 2016-10-01T15:51:09.574540Z 0 [Warning] &#39;NO_ZERO_DATE&#39;, &#39;NO_ZERO_IN_DATE&#39; and &#39;ERROR_FOR_DIVISION_BY_ZERO&#39; sql modes should be used with</description>
+      <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
+
+&lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,16 +41,6 @@
       <guid>http://nodejh.com/post/troubleshoot-mysql-start-error/</guid>
       <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
 
-&lt;p&gt;在此记录下整个排错过程。&lt;/p&gt;
-
-&lt;h4 id=&#34;0-系统环境&#34;&gt;0. 系统环境&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;操作系统 OS X EI Caption 10.11.6 (15G31)&lt;/li&gt;
-&lt;li&gt;MySQL 5.7.13&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;/usr/local/mysql/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/mysql/support-files&lt;/code&gt; 都已经加入到了系统环境变量&lt;/li&gt;
-&lt;/ul&gt;
-
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -47,28 +50,9 @@
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
-      <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
+      <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mysql -u root -p
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后输入密码即可。&lt;/p&gt;
-
-&lt;p&gt;创建数据库并设置编码为 &lt;code&gt;utf8&lt;/code&gt;，不然中文可能会乱码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; create database mydb default character set utf8 defa
-ult collate utf8_general_ci;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;新建用户有两种方式&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;1.&amp;gt; create user username@hostname identified by &#39;yourpassword&#39;;
-
-2.&amp;gt; insert into mysql.user(host,user,password) value(&#39;hostname&#39;,&#39;username&#39;,password(&#39;yourpassword&#39;));
-  &amp;gt; flush privileges;
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
@@ -83,8 +67,6 @@ ult collate utf8_general_ci;
 
 &lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)
 &lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这是因为 MySQL 默认的 &lt;code&gt;bind-address&lt;/code&gt; 是 &lt;code&gt;127.0.0.1&lt;/code&gt;, 也就是限制了只能本地访问.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

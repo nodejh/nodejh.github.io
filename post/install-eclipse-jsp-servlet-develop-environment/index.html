@@ -101,9 +101,7 @@
                   
                 
                 <section id="post-body">
-                    
-
-<h2 id="eclipse-jsp-servlet-环境搭建">Eclipse JSP/Servlet 环境搭建</h2>
+                    <h2 id="eclipse-jsp-servlet-环境搭建">Eclipse JSP/Servlet 环境搭建</h2>
 
 <p>本文假定你已安装了 JDK 环境，如未安装，可参阅：</p>
 
@@ -111,6 +109,8 @@
 <li><a href="http://nodejh.com/post/how-to-install-java-on-ubuntu/">Ubuntu下JAVA开发环境的配置</a></li>
 <li><a href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/">Ubuntu 下 Tomcat 的配置</a></li>
 </ul>
+
+<p></p>
 
 <h3 id="1-踩过的坑">1. 踩过的坑</h3>
 
@@ -209,12 +209,12 @@ sudo chmod -R 775 tomcat8
 <li>WebContent：站点根目录。</li>
 </ul>
 
-<pre><code>WebContent (站点根目录) 
-     |----META-INF (META-INF文件夹) 
-     |----|---MANIFEST.MF (MANIFEST.MF配置清单文件) 
-     |----WEB-INF (WEB-INF文件夹) 
-     |----|----web.xml (站点配置web.xml) 
-     |----|----lib (第三方库文件夹) 
+<pre><code>WebContent (站点根目录)
+     |----META-INF (META-INF文件夹)
+     |----|---MANIFEST.MF (MANIFEST.MF配置清单文件)
+     |----WEB-INF (WEB-INF文件夹)
+     |----|----web.xml (站点配置web.xml)
+     |----|----lib (第三方库文件夹)
 
 WEB-INF:是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件   对要访问的文件进行相应映射才能访问。
 
@@ -276,7 +276,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(&quot;/HelloWorld&quot;)
 public class HelloWorld extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -321,7 +321,6 @@ public class HelloWorld extends HttpServlet {
 <hr />
 
 <p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/19">https://github.com/nodejh/nodejh.github.io/issues/19</a></p>
-
                 </section>
             </article>
 

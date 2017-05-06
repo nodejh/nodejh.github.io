@@ -17,7 +17,11 @@
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
       <guid>http://nodejh.com/post/symmetric-difference/</guid>
-      <description>题目 创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组. 给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2,</description>
+      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +30,9 @@
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/get-the-max-number-in-array/</guid>
-      <description>本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &amp;lt; arr[i] ) max = arr[i]; findMax(i+1); } findMax(1); console.log(max); 使用 for 循环遍历 var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var</description>
+      <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

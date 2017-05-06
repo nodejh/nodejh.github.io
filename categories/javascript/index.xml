@@ -17,7 +17,11 @@
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
       <guid>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
-      <description>1. 例子 先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。 1.1. 基本类型参数传递 function addTen(num) { num += 10; return num; } var count = 20; var result = addTen(count); alert(count);</description>
+      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
+
+&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

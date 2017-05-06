@@ -17,7 +17,9 @@
       <pubDate>Fri, 30 Sep 2016 17:14:37 +0800</pubDate>
       
       <guid>http://nodejh.com/post/migrate-to-hugo-from-hexo/</guid>
-      <description>把博客从 Hexo 迁移到了 Hugo。主要原因有二： Hexo 中文乱码。当中文大概超过1000字，就出现奇怪的乱码。看了 Hexo 的 ISSUE，这个问题也不只我遇到。</description>
+      <description>&lt;p&gt;把博客从 &lt;a href=&#34;http://hexo.io/&#34;&gt;Hexo&lt;/a&gt; 迁移到了 &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;。主要原因有二：&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -17,7 +17,9 @@
       <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
       
       <guid>http://nodejh.com/post/setting-environmental-variables-in-macos/</guid>
-      <description>我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。比如安装完 Atom 之后，就可以使用 atom 命令打开文</description>
+      <description>&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +28,11 @@
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
       <guid>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</guid>
-      <description>本文主要内容翻译自《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》，并加入了自己的实践。 前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的</description>
+      <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
+
+&lt;p&gt;通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

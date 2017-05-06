@@ -17,7 +17,14 @@
       <pubDate>Fri, 09 Sep 2016 04:11:13 +0800</pubDate>
       
       <guid>http://nodejh.com/post/start-react-with-webpack/</guid>
-      <description>TL;DR $ git clone https://github.com/nodejh/start-react-with-webpack react-sample $ cd react-sample &amp;amp;&amp;amp; npm install $ npm run dev 然后打开浏览器输入 http://localhost:8080，并尝试随意修改一下 app 目录里面的代码，就能看到效</description>
+      <description>&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/nodejh/start-react-with-webpack react-sample
+$ cd react-sample &amp;amp;&amp;amp; npm install
+$ npm run dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

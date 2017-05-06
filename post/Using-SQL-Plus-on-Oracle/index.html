@@ -51,7 +51,7 @@
                     </h1>
                     <h2 class="headline">
                     Feb 17, 2017 15:03
-                    · 1928 words
+                    · 1931 words
                     · 4 minutes read
                       <span class="tags">
                       
@@ -129,9 +129,9 @@
                   
                 
                 <section id="post-body">
-                    
+                    <p>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 <code>SQL</code>、<code>PL/SQL</code>、 和 <code>SQL*Plus</code> 命令：</p>
 
-<p>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 <code>SQL</code>、<code>PL/SQL</code>、 和 <code>SQL*Plus</code> 命令：</p>
+<p></p>
 
 <ul>
 <li>支持查询、插入和更新数据</li>
@@ -177,7 +177,7 @@ SQL &gt; conn / as sysdba
 
 <p>通常情况了我们称的 <code>数据库</code>，并不仅指物理的数据集合，而是物理数据、内存、操作系统进程的组合体。</p>
 
-<pre><code>SQL&gt; select name from v$database; 
+<pre><code>SQL&gt; select name from v$database;
 </code></pre>
 
 <h4 id="查询当前数据库实例名">查询当前数据库实例名</h4>
@@ -186,7 +186,7 @@ SQL &gt; conn / as sysdba
 <p>实例是访问Oracle数据库所需的一部分计算机内存和辅助处理后台进程，是由进程和这些进程所使用的内存(SGA)所构成一个集合。</p>
 </blockquote>
 
-<pre><code>SQL&gt; select instance_name from v$instance;    
+<pre><code>SQL&gt; select instance_name from v$instance;
 </code></pre>
 
 <p>数据库实例名用于对外部连接。在操作系统中要取得与数据库的联系，必须使用数据库实例名。比如我们作开发，要连接数据库，就得连接数据库实例名，<code>orcl</code> 就为数据库实例名：</p>
@@ -209,7 +209,7 @@ SQL &gt; conn / as sysdba
 
 <p>查看数据库用户：</p>
 
-<pre><code>SQL&gt; select * from dba_users;  
+<pre><code>SQL&gt; select * from dba_users;
 </code></pre>
 
 <h4 id="解锁用户">解锁用户</h4>
@@ -291,12 +291,12 @@ SQL&gt; alter user [username] account unlock;
 
 <p>查看用户所拥有的表：</p>
 
-<pre><code>SQL&gt; SELECT TABLE_NAME FROM USER_TABLES; 
+<pre><code>SQL&gt; SELECT TABLE_NAME FROM USER_TABLES;
 </code></pre>
 
 <p>查看用户可存取的表：</p>
 
-<pre><code>SQL&gt; SELECT TABLE_NAME FROM ALL_TABLES; 
+<pre><code>SQL&gt; SELECT TABLE_NAME FROM ALL_TABLES;
 </code></pre>
 
 <p>数据库中所有表：</p>
@@ -329,10 +329,10 @@ autoextend on;
 
 <h4 id="创建新用户">创建新用户</h4>
 
-<pre><code>CREATE USER [用户名]  
-IDENTIFIED BY [密码]  
-DEFAULT TABLESPACE [表空间] (默认USERS)  
-TEMPORARY TABLESPACE [临时表空间] (默认TEMP)  
+<pre><code>CREATE USER [用户名]
+IDENTIFIED BY [密码]
+DEFAULT TABLESPACE [表空间] (默认USERS)
+TEMPORARY TABLESPACE [临时表空间] (默认TEMP)
 </code></pre>
 
 <p>例如：</p>
@@ -344,9 +344,9 @@ TEMPORARY TABLESPACE [临时表空间] (默认TEMP)
 
 <h4 id="分配权限">分配权限</h4>
 
-<pre><code>SQL&gt; GRANT CONNECT TO [username];  
-SQL&gt; GRANT RESOURCE TO [username];  
-SQL&gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据库、表等。 
+<pre><code>SQL&gt; GRANT CONNECT TO [username];
+SQL&gt; GRANT RESOURCE TO [username];
+SQL&gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据库、表等。
 </code></pre>
 
 <p>到这里，数据库中的表空间、用户以及用户权限都创建并分配好了，接下来用户就可以在自己的表空间中创建表，然后进行开发。</p>
@@ -439,7 +439,6 @@ SQL&gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据�
 <li><a href="http://zyjustin9.iteye.com/blog/2193804">Oracle数据库，实例，表空间，用户，表之间的关系</a></li>
 <li><a href="http://nvd11.blog.163.com/blog/static/2000183122012111524636835/">Oracle 在Sqlplus 执行sql脚本文件</a></li>
 </ul>
-
                 </section>
             </article>
 

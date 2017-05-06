@@ -17,28 +17,9 @@
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
       <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
-      <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
+      <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mysql -u root -p
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后输入密码即可。&lt;/p&gt;
-
-&lt;p&gt;创建数据库并设置编码为 &lt;code&gt;utf8&lt;/code&gt;，不然中文可能会乱码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; create database mydb default character set utf8 defa
-ult collate utf8_general_ci;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;新建用户有两种方式&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;1.&amp;gt; create user username@hostname identified by &#39;yourpassword&#39;;
-
-2.&amp;gt; insert into mysql.user(host,user,password) value(&#39;hostname&#39;,&#39;username&#39;,password(&#39;yourpassword&#39;));
-  &amp;gt; flush privileges;
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

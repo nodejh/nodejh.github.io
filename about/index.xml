@@ -2,12 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>about on nodejh</title>
-    <link>http://nodejh.com/about/index.xml</link>
+    <link>http://nodejh.com/about/</link>
     <description>Recent content in about on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 30 Sep 2016 00:53:06 +0800</lastBuildDate>
-    <atom:link href="http://nodejh.com/about/index.xml" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://nodejh.com/about/index.xml" rel="self" type="application/rss+xml" />
+    
     
   </channel>
 </rss>

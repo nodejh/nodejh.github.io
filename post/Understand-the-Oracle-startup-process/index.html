@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="nodejh">
 		<meta name="description" content="My Blog">
-		<meta name="generator" content="Hugo 0.19" />
+		<meta name="generator" content="Hugo 0.20.2" />
 		<title>Understand the Oracle startup process &middot; nodejh</title>
 		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
 		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
@@ -30,6 +30,7 @@
 	
 	<a href='http://nodejh.com/post'>Archive</a>
 	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/projects'>Projects</a>
 	<a href='http://nodejh.com/about'>About</a>
 
 	
@@ -78,8 +79,8 @@
 <ul>
 <li>
 <ul>
-<li><a href="#1-1-启动数据库">1.1. 启动数据库</a></li>
-<li><a href="#1-2-启动监听器">1.2. 启动监听器</a></li>
+<li><a href="#1-1-启动监听器">1.1. 启动监听器</a></li>
+<li><a href="#1-2-启动数据库">1.2. 启动数据库</a></li>
 <li><a href="#1-3-启动-oem">1.3. 启动 OEM</a></li>
 </ul></li>
 </ul></li>
@@ -144,7 +145,18 @@
 
 <p>如果还需要使用 OEM 来监控数据库服务，则还要启动 OEM。</p>
 
-<h4 id="1-1-启动数据库">1.1. 启动数据库</h4>
+<h4 id="1-1-启动监听器">1.1. 启动监听器</h4>
+
+<p>Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。</p>
+
+<p>启动监听器：</p>
+
+<pre><code>$ lsnrctl start
+</code></pre>
+
+<p>完成这两个步骤，就可以使用数据库了。</p>
+
+<h4 id="1-2-启动数据库">1.2. 启动数据库</h4>
 
 <p>我们可以使用 <code>sqlplus</code> 来启动数据库。关于 <code>sqlplus</code> 的详细使用方法请参考 <a href="https://github.com/nodejh/nodejh.github.io/issues/31">《使用 SQL *Plus 管理 Oracle 数据库》</a>。</p>
 
@@ -157,17 +169,6 @@
 
 <pre><code>&gt;SQL startup
 </code></pre>
-
-<h4 id="1-2-启动监听器">1.2. 启动监听器</h4>
-
-<p>Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。</p>
-
-<p>启动监听器：</p>
-
-<pre><code>$ lsnrctl start
-</code></pre>
-
-<p>完成这两个步骤，就可以使用数据库了。</p>
 
 <h4 id="1-3-启动-oem">1.3. 启动 OEM</h4>
 
@@ -748,6 +749,21 @@ ORA 12541: TNS:no listener
             </article>
 
             
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
 
             
 

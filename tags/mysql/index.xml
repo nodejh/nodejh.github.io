@@ -2,137 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mysql on nodejh</title>
-    <link>http://nodejh.com/tags/mysql/index.xml</link>
+    <link>http://nodejh.com/tags/mysql/</link>
     <description>Recent content in Mysql on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 02 Oct 2016 00:53:28 +0800</lastBuildDate>
     
-    <item>
-      <title>Handy MySQL Commands</title>
-      <link>http://nodejh.com/post/Handy-MySQL-Commands/</link>
-      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
-      
-      <guid>http://nodejh.com/post/Handy-MySQL-Commands/</guid>
-      <description>&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th align=&#34;left&#34;&gt;描述&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;命令&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;登录远程数据库&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;mysql -h hostname -u root -p&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;创建数据库并设置编码&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;查看表结构&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;describe [table name]/desc table/show columns from [table name]&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;删除一列&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] drop column [column name]&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;添加一列&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] add column [new column name] varchar (20)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;修改列名称&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;alter table [table name] change [old column name] [new column name] varchar (50)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-</description>
-    </item>
+	<atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>The innodb_system data file &#39;ibdata1&#39; must be writeable</title>
-      <link>http://nodejh.com/post/The-innodb_system-data-file-ibdata1-must-be-writeable/</link>
+      <link>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/The-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
-      <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
-
-&lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo cat /usr/local/mysql/data/jh.local.err
-2016-10-01T15:51:09.6NZ mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/data
-2016-10-01T15:51:09.574413Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
-2016-10-01T15:51:09.574540Z 0 [Warning] &#39;NO_ZERO_DATE&#39;, &#39;NO_ZERO_IN_DATE&#39; and &#39;ERROR_FOR_DIVISION_BY_ZERO&#39; sql modes should be used with strict mode. They will be merged with strict mode in a future release.
-2016-10-01T15:51:09.574546Z 0 [Warning] &#39;NO_AUTO_CREATE_USER&#39; sql mode was not set.
-2016-10-01T15:51:09.574595Z 0 [Warning] Insecure configuration for --secure-file-priv: Current value does not restrict location of generated files. Consider setting it to a valid, non-empty path.
-2016-10-01T15:51:09.574641Z 0 [Note] /usr/local/mysql/bin/mysqld (mysqld 5.7.13) starting as process 7326 ...
-2016-10-01T15:51:09.579265Z 0 [Warning] Setting lower_case_table_names=2 because file system for /usr/local/mysql/data/ is case insensitive
-2016-10-01T15:51:09.581901Z 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
-2016-10-01T15:51:09.581934Z 0 [Note] InnoDB: Uses event mutexes
-2016-10-01T15:51:09.581943Z 0 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
-2016-10-01T15:51:09.581950Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.3
-2016-10-01T15:51:09.582282Z 0 [Note] InnoDB: Number of pools: 1
-2016-10-01T15:51:09.582394Z 0 [Note] InnoDB: Using CPU crc32 instructions
-2016-10-01T15:51:09.583648Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
-2016-10-01T15:51:09.594097Z 0 [Note] InnoDB: Completed initialization of buffer pool
-2016-10-01T15:51:09.606687Z 0 [ERROR] InnoDB: The innodb_system data file &#39;ibdata1&#39; must be writable
-2016-10-01T15:51:09.606728Z 0 [ERROR] InnoDB: The innodb_system data file &#39;ibdata1&#39; must be writable
-2016-10-01T15:51:09.606753Z 0 [ERROR] InnoDB: Plugin initialization aborted with error Generic error
-2016-10-01T15:51:09.913995Z 0 [ERROR] Plugin &#39;InnoDB&#39; init function returned error.
-2016-10-01T15:51:09.914027Z 0 [ERROR] Plugin &#39;InnoDB&#39; registration as a STORAGE ENGINE failed.
-2016-10-01T15:51:09.914035Z 0 [ERROR] Failed to initialize plugins.
-2016-10-01T15:51:09.914040Z 0 [ERROR] Aborting
-
-2016-10-01T15:51:09.914056Z 0 [Note] Binlog end
-2016-10-01T15:51:09.914142Z 0 [Note] Shutting down plugin &#39;CSV&#39;
-2016-10-01T15:51:09.914491Z 0 [Note] /usr/local/mysql/bin/mysqld: Shutdown complete
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;其中最关键的当然是 &lt;code&gt;2016-10-01T15:51:09.606687Z 0 [ERROR] InnoDB: The innodb_system data file &#39;ibdata1&#39; must be writable&lt;/code&gt;。说的是 &lt;code&gt;ibdata1&lt;/code&gt; 文件不可写。&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;ibdata1&lt;/code&gt; 是InnoDB的共有表空间，默认情况下会把表空间存放在一个文件ibdata1中，（此原因会造成这个文件越来越大）。&lt;/p&gt;
-
-&lt;p&gt;所以大概能猜测是 mysql 用户的权限不够了。所以再给 &lt;code&gt;ibdata1&lt;/code&gt; 目录分配一下权限即可。&lt;/p&gt;
-
-&lt;p&gt;这个时候需要查看一下mysql 安装目录权限。我没有查看，就直接使用 &lt;code&gt;chown&lt;/code&gt; 改变了整个 mysql 目录的权限，这是一个非常不好的习惯。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cd /usr/local/mysql
-$ sudo chown -R _mysql:_mysql *
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这里需要注意的是，macOS 系统下，mysql 的用户组和用户名都是 &lt;code&gt;_mysql&lt;/code&gt;，Linux 没记错的话应该是 &lt;code&gt;mysql&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;然后再重启 MySQL：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo mysql.server start
-Password:
-Starting MySQL
- SUCCESS!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;问题解决！&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/2&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/1&lt;/a&gt;&lt;/p&gt;
-</description>
+      <guid>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
+      <description>今天重启电脑后 MySQL 又用不了了！ 然后查看了错误日志 ： $ sudo cat /usr/local/mysql/data/jh.local.err 2016-10-01T15:51:09.6NZ mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/data 2016-10-01T15:51:09.574413Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details). 2016-10-01T15:51:09.574540Z 0 [Warning] &#39;NO_ZERO_DATE&#39;, &#39;NO_ZERO_IN_DATE&#39; and &#39;ERROR_FOR_DIVISION_BY_ZERO&#39; sql modes should be used with</description>
     </item>
     
     <item>
       <title>Troubleshoot MySQL Start Error</title>
-      <link>http://nodejh.com/post/Troubleshoot-MySQL-Start-Error/</link>
+      <link>http://nodejh.com/post/troubleshoot-mysql-start-error/</link>
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/Troubleshoot-MySQL-Start-Error/</guid>
+      <guid>http://nodejh.com/post/troubleshoot-mysql-start-error/</guid>
       <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
 
 &lt;p&gt;在此记录下整个排错过程。&lt;/p&gt;
@@ -145,194 +38,15 @@ Starting MySQL
 &lt;li&gt;&lt;code&gt;/usr/local/mysql/bin&lt;/code&gt; 和 &lt;code&gt;/usr/local/mysql/support-files&lt;/code&gt; 都已经加入到了系统环境变量&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h4 id=&#34;1-进入-mysql-控制台报错&#34;&gt;1. 进入 MySQL 控制台报错&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;# 使用 mysql 命令进入 mysql 控制台
-$ mysql -uroot -p
-Enter password:
-ERROR 2002 (HY000): Can&#39;t connect to local MySQL server through socket &#39;/tmp/mysql.sock&#39; (2)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;出现这个错误，第一时间想到的原因就是 MySQL 并没有启动。为了验证这个猜测，所以我们接下来看看 MySQL 的运行情况。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mysql.server status
-/usr/local/mysql/support-files/mysql.server: line 365: pidof: command not found
- ERROR! MySQL is not running
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;可以发现， MySQL 没有运行。&lt;/p&gt;
-
-&lt;p&gt;这里使用的是 &lt;code&gt;mysql.server status&lt;/code&gt; 命令来查看 MySQL 的运行状态。如果你没有将该命令加入到系统环境变量，则需要加上相应的路径才行，不然会有类似于 &lt;code&gt;zsh: command not found: mysql.server&lt;/code&gt; 的错误，也就是说，没有这个命令。&lt;/p&gt;
-
-&lt;p&gt;如果没有将 MySQL 相应命令加入系统环境变量，一般需要这么来启动 MySQL：&lt;code&gt;/usr/local/mysql/support-files/mysql.server status&lt;/code&gt;，进入 MySQL 控台则需要这样：&lt;code&gt;/usr/local/mysql/bin/mysql -uroot -p&lt;/code&gt;。也就是在 &lt;code&gt;mysql.server&lt;/code&gt; 或 &lt;code&gt;mysql&lt;/code&gt; 等命令前加上路径。&lt;/p&gt;
-
-&lt;h4 id=&#34;2-mysql-启动报错&#34;&gt;2. MySQL 启动报错&lt;/h4&gt;
-
-&lt;p&gt;既然 MySQL 没有运行，那么我们肯定要启动 MySQL。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mysql.server start
-Starting MySQL
-. ERROR! The server quit without updating PID file (/usr/local/mysql/data/jh.local.pid).
-$ mysql.server status
-/usr/local/mysql/support-files/mysql.server: line 365: pidof: command not found
- ERROR! MySQL is not running
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;启动报错了。会不会是权限不够呢？于是我们再试试使用 &lt;code&gt;sudo&lt;/code&gt; 来启动 MySQL：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Starting MySQL
-...........................
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code&gt;...&lt;/code&gt; 一直在增长，MySQL 一直是正在启动，但就是无法启动成功。&lt;/p&gt;
-
-&lt;h4 id=&#34;3-排查-mysql-启动报错原因&#34;&gt;3. 排查 MySQL 启动报错原因&lt;/h4&gt;
-
-&lt;p&gt;既然 MySQL 启动报错了，那么我们可以通过查看一些日志来推断 MySQL 的报错原因。
-在 MySQL 的安装目录里面，有一个 &lt;code&gt;data&lt;/code&gt; 目录 （&lt;code&gt;/usr/local/mysql/data&lt;/code&gt;），这里吗有一个名为 &lt;code&gt;your_computer_name.local.err&lt;/code&gt; 的文件（例如我的该文件名为 &lt;code&gt;jh.local.err&lt;/code&gt; ），这个文件里面记录了 MySQL 启动的详细日志信息。&lt;/p&gt;
-
-&lt;p&gt;为了更准地得到我们想要的信息，我们可以先删掉改文件，然后再启动 MySQL。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo rm /usr/local/mysql/data/jh.local.err
-$ sudo mysql.server start
-Starting MySQL
-..................
-# 然后 Ctrl+C 停止进程
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这个时候，再来看看 &lt;code&gt;jh.local.err&lt;/code&gt; 里面的内容：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo tail /usr/local/mysql/data/jh.local.err
-2016-07-31T15:31:35.414440Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 35
-2016-07-31T15:31:35.414531Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
-2016-07-31T15:31:36.417804Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 35
-2016-07-31T15:31:36.418940Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
-2016-07-31T15:31:37.422609Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 35
-2016-07-31T15:31:37.422654Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
-2016-07-31T15:31:38.427437Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 35
-2016-07-31T15:31:38.427670Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
-2016-07-31T15:31:39.431165Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 35
-2016-07-31T15:31:39.431205Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;第一行就出现了 &lt;code&gt;[ERROR] InnoDB: Unable to lock ./ibdata1 error: 35&lt;/code&gt;。然后第二行有个 &lt;code&gt;[Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;大概意思就是，启动 MySQL 的进程无法给 &lt;code&gt;ibdata1&lt;/code&gt; 这个文件加锁。可能是因为有其他 &lt;code&gt;mysqld&lt;/code&gt; 进程已经在使用该文件了。&lt;/p&gt;
-
-&lt;p&gt;然后后面一直重复这两行。所以我们大概可以猜测，当我们使用 &lt;code&gt;sudo mysql.server start&lt;/code&gt; 这个命令来启动 MySQL 的时候，MySQL 一直在尝试启动，但由于进程占用，一直无法启动成功。&lt;/p&gt;
-
-&lt;h4 id=&#34;4-查看-mysqld-进程&#34;&gt;4. 查看 mysqld 进程&lt;/h4&gt;
-
-&lt;p&gt;既然可能是 &lt;code&gt;mysqld&lt;/code&gt; 进程已经启动，那么就列出 &lt;code&gt;mysqld&lt;/code&gt; 的进程看看：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ ps xa | grep mysqld
-8238   ??  Ss     0:03.74 /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid
-10291 s003  R+     0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn mysqld
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;果然是有进程启动了，那么我们结束该进程，再重新启动 MySQL  试试：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo kill 8238
-$ sudo mysql.server start
-Starting MySQL
-..................
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然而还是和之前一样的情况。再看看进程启动情况？&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;10341   ??  Ss     0:00.38 /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid
-10343 s003  R+     0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn mysqld
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code&gt;mysqld&lt;/code&gt; 的进程依然存在，只是进程 ID 由之前的 &lt;code&gt;8238&lt;/code&gt; 变成了 &lt;code&gt;10341&lt;/code&gt;。多试几次，就会发现，当我们 kill 掉 &lt;code&gt;mysqld&lt;/code&gt; 的进程后，它会自动重启。&lt;/p&gt;
-
-&lt;h4 id=&#34;5-查看进程占用文件&#34;&gt;5. 查看进程占用文件&lt;/h4&gt;
-
-&lt;p&gt;为了弄清楚已经启动的 &lt;code&gt;mysqld&lt;/code&gt; 进程到底是为什么重启，我们可以先看看进程打开了哪些文件。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ lsof -c mysqld
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;什么都没有。&lt;code&gt;lsof&lt;/code&gt; 只会列出当前用户启动的进程打开的文件。那么加上 &lt;code&gt;sudo&lt;/code&gt; 试试？&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo lsof -c mysqld
-COMMAND   PID   USER   FD     TYPE             DEVICE  SIZE/OFF     NODE NAME
-mysqld  10634 _mysql  cwd      DIR                1,4       510 38686058 /usr/local/mysql-5.7.13-osx10.11-x86_64/data
-mysqld  10634 _mysql  txt      REG                1,4  30794000 38685611 /usr/local/mysql-5.7.13-osx10.11-x86_64/bin/mysqld
-mysqld  10634 _mysql  txt      REG                1,4    643792 38194604 /usr/lib/dyld
-mysqld  10634 _mysql  txt      REG                1,4 558201098 39151946 /private/var/db/dyld/dyld_shared_cache_x86_64h
-mysqld  10634 _mysql    0r     CHR                3,2       0t0      302 /dev/null
-mysqld  10634 _mysql    1w     REG                1,4     71906 39198339 /usr/local/mysql-5.7.13-osx10.11-x86_64/data/mysqld.local.err
-mysqld  10634 _mysql    2w     REG                1,4     71906 39198339 /usr/local/mysql-5.7.13-osx10.11-x86_64/data/mysqld.local.err
-mysqld  10634 _mysql    3u  KQUEUE                                       count=0, state=0xa
-.......
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;果然 &lt;code&gt;mysqld&lt;/code&gt; 打开了很多文件！说明 &lt;code&gt;mysqld&lt;/code&gt; 这个进程真实存在，并且占用了 MySQL 文件，而且是以 &lt;code&gt;root&lt;/code&gt; 权限运行的。&lt;/p&gt;
-
-&lt;h4 id=&#34;6-mysql-到底为何而启动&#34;&gt;6. MySQL 到底为何而启动&lt;/h4&gt;
-
-&lt;p&gt;继续推断，&lt;code&gt;root&lt;/code&gt; 权限启动，并且自动重启，那估计和系统启动有关了。&lt;/p&gt;
-
-&lt;p&gt;在 Linux 系统下，&lt;code&gt;/etc/rc.*&lt;/code&gt; 或者 &lt;code&gt;/etc/init&lt;/code&gt; 目录下包含着系统里各个服务启动和停止的脚本，而 OS X 中则是由 &lt;code&gt;launchd&lt;/code&gt; 做进程的管理和控制。&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;launchd&lt;/code&gt;  是OS X 从 10.4开始引入，用于用于初始化系统环境的关键进程，它是内核装载成功之后在OS环境下启动的第一个进程。采用这种方式配置启动进程，只需要一个 &lt;code&gt;plist&lt;/code&gt; 文件。&lt;code&gt;/Library/LaunchDaemons&lt;/code&gt; 目录下的 &lt;code&gt;plist&lt;/code&gt; 文件都是系统启动后立即启动进程。使用 &lt;code&gt;launchctl&lt;/code&gt; 命令加载/卸载 &lt;code&gt;plist&lt;/code&gt; 文件，加载配置文件后，程序启动，卸载配置文件后程序关闭。&lt;/p&gt;
-
-&lt;p&gt;进入 &lt;code&gt;/Library/LaunchDaemons&lt;/code&gt; 查看一下，确实是有一个和 MySQL 相关的 &lt;code&gt;plist&lt;/code&gt; 文件 &lt;code&gt;com.oracle.oss.mysql.mysqld.plist&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;那么卸载该文件，然后再查看进程，验证是不是因为该 &lt;code&gt;plist&lt;/code&gt;，所以 &lt;code&gt;mysqld&lt;/code&gt; 才会不断重启：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo launchctl unload -w /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;查看进程：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ ps xa | grep mysqld
-10924 s005  S+     0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn mysqld
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;果然 &lt;code&gt;mysqld&lt;/code&gt; 进程已经不存在了。说明推测是正确的，&lt;code&gt;mysqld&lt;/code&gt; 之所以会以 &lt;code&gt;root&lt;/code&gt; 权限启动，就是因为有一个启动 &lt;code&gt;mysqld&lt;/code&gt; 的 &lt;code&gt;plist&lt;/code&gt; 配置文件。&lt;/p&gt;
-
-&lt;p&gt;因为是修通了系统的进程启动管理配置，所以需要重启一下，&lt;code&gt;launchd&lt;/code&gt; 才会在下次启动中生效。&lt;/p&gt;
-
-&lt;p&gt;重启后，再通过 &lt;code&gt;mysql.server&lt;/code&gt;  来启动 MySQL，就会发现一切正常了！&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo mysql.server start
-Password:
-Starting MySQL
-. SUCCESS!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;7-总结&#34;&gt;7. 总结&lt;/h4&gt;
-
-&lt;p&gt;加载 &lt;code&gt;plist&lt;/code&gt; 配置的命令：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo launchctl load -w /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;卸载 &lt;code&gt;plist&lt;/code&gt; 配置的命令：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo launchctl unload -w /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;所以折腾了那么久，其实就只是因为 OS X 特殊的启动管理机制造成的 &lt;code&gt;mysqld&lt;/code&gt; 自动启动并占用进程，造成我们期望的 MySQL 启动方式没有正常运行。&lt;/p&gt;
-
-&lt;p&gt;卸载掉 &lt;code&gt;plsit&lt;/code&gt; 配置并重启系统就好了！&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/13&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/13&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Create and Manage MySQL User</title>
-      <link>http://nodejh.com/post/Create-and-Manage-MySQL-User/</link>
+      <link>http://nodejh.com/post/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/Create-and-Manage-MySQL-User/</guid>
+      <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
       <description>&lt;h3 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h3&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
@@ -356,155 +70,15 @@ ult collate utf8_general_ci;
   &amp;gt; flush privileges;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;说明：
-username：即将创建的用户名;
-hostname：主机名。主机名为localhost表示用户可以本地登录；主机名为 % 表示远程访问，该用户可以从任意远程主机登陆。
-yourpassword:该用户密码。如果密码为空，则该用户可不通过密码直接登录服务器。密码为空也可以直接写为：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; &amp;gt; create user &#39;username&#39;@&#39;hostname&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;flsu privileges:刷新权限。
-方法1设置后不需刷新权限即可生效；方法2需要刷新权限才能生效。&lt;/p&gt;
-
-&lt;p&gt;例：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; &amp;gt; create user test@localhost identified by &#39;testpasswd&#39;;
- &amp;gt; create user test@&#39;%&#39; identified by &#39;testpasswd&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;创建一个用户名为test的用户，并设置其本地访问和远程访问。注意通配符 % 需要加引号。&lt;/p&gt;
-
-&lt;h3 id=&#34;二-查看已有用户&#34;&gt;二.查看已有用户&lt;/h3&gt;
-
-&lt;p&gt;查看用户名，主机名，密码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; select user,host,password from mysql.user;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;三-删除已有用户&#34;&gt;三.删除已有用户&lt;/h3&gt;
-
-&lt;p&gt;删除也有两种方式。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;1.&amp;gt; drop user username@hostname;
-2.&amp;gt; delete from mysql.user where user=&#39;usrname&#39; and host=&#39;hostname&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;说明：如果未指定主机名，则 drop user username 默认删除username@&amp;lsquo;%&amp;lsquo;；如果没有 username@&amp;rsquo;%&amp;lsquo;,则会提示 ERROR 1396 (HY000) 的错误。&lt;/p&gt;
-
-&lt;h3 id=&#34;四-设置修改用户密码&#34;&gt;四.设置修改用户密码&lt;/h3&gt;
-
-&lt;p&gt;同样有两种方式。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;1.&amp;gt; set password for username@&#39;hostname&#39; = password(&#39;newpassword&#39;);
-2.&amp;gt; update mysql.user password=password(&#39;newpassword&#39;) where user=&#39;username&#39; and host=&#39;hostname&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;同样，方法一不需要刷新即可生效；方法2需要刷新才能生效。&lt;/p&gt;
-
-&lt;h3 id=&#34;五-为用户分配数据库及数据库表的权限&#34;&gt;五.为用户分配数据库及数据库表的权限&lt;/h3&gt;
-
-&lt;p&gt;MySQL给用户分配数据库（表）权限的命令可概括为&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;grant 权限 on 数据库对象 to 用户
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&#34;1-分配某个数据库的所有权限&#34;&gt;1.分配某个数据库的所有权限&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant all privileges on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;表示将数据库db中所有表的所有权限赋予用户username，通配符 % 表示可远程访问。&lt;/p&gt;
-
-&lt;h5 id=&#34;2-分配数据库中一个表的所有权限&#34;&gt;2.分配数据库中一个表的所有权限&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant all privileges on db.table to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;表示将数据库db中的table表的所有权限赋予用户username。&lt;/p&gt;
-
-&lt;h5 id=&#34;3-分配创建-修改-删除-mysql-数据表结构权限&#34;&gt;3.分配创建、修改、删除 MySQL 数据表结构权限。&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant create on db.* to username@&#39;%&#39;;
-&amp;gt; grant alter  on db.* to username@&#39;%&#39;;
-&amp;gt; grant drop   on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;操作 MySQL 外键权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant references on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;操作 MySQL 临时表权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant create temporary tables on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;操作 MySQL 索引权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant index on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;操作 MySQL 视图、查看视图源代码 权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant create view on db.* to username@&#39;%&#39;;
-&amp;gt; grant show view on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;操作 MySQL 存储过程、函数 权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant create routine on db.* to username@&#39;%&#39;; -- now, can show procedure status
-&amp;gt; grant alter routine on db.* to username@&#39;%&#39;; -- now, you can drop a procedure
-&amp;gt; grant execute on db.* to username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;六-查看用户权限&#34;&gt;六.查看用户权限&lt;/h3&gt;
-
-&lt;p&gt;查看当前用户权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; show grants;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;查看其它用户权限&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; show grants for username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;七-撤销已经赋予给-mysql-用户权限的权限&#34;&gt;七.撤销已经赋予给 MySQL 用户权限的权限。&lt;/h3&gt;
-
-&lt;p&gt;revoke 与 grant 的语法类似，只需要把关键字 “to” 换成 “from” 即可：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; grant all on *.* to username@&#39;%&#39;;
-&amp;gt; revoke all on *.* from username@&#39;%&#39;;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;八-mysql-grant-revoke-用户权限注意事项&#34;&gt;八.MySQL grant,revoke 用户权限注意事项&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;grant, revoke 用户权限后，该用户只有重新连接 MySQL 数据库，权限才能生效。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;如果想让授权的用户，也可以将这些权限 grant 给其他用户，需要选项 “grant option“&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;grant select on db.* to username@localhost with grant option;&lt;/p&gt;
-&lt;/blockquote&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这个特性一般用不到。实际中，数据库权限最好由 管理员 来统一管理。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/7&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/7&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Cannot Connet to MySql With Error Code 61</title>
-      <link>http://nodejh.com/post/Cannot-Connet-to-MySQL-With-Error-Code-61/</link>
+      <link>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</link>
       <pubDate>Thu, 07 Apr 2016 01:55:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/Cannot-Connet-to-MySQL-With-Error-Code-61/</guid>
+      <guid>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</guid>
       <description>&lt;p&gt;远程连接 MySQL 的时候出现如下错误:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)
@@ -512,22 +86,7 @@ yourpassword:该用户密码。如果密码为空，则该用户可不通过密�
 
 &lt;p&gt;这是因为 MySQL 默认的 &lt;code&gt;bind-address&lt;/code&gt; 是 &lt;code&gt;127.0.0.1&lt;/code&gt;, 也就是限制了只能本地访问.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;所以解决方法之一,就是修改 &lt;code&gt;bind-address&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;改为 &lt;code&gt;0.0.0.0&lt;/code&gt; ,任何远程 IP 都能访问.你也可以把它改为你的电脑的 IP,只能你自己访问.&lt;/p&gt;
-
-&lt;p&gt;修改后,重启就好了:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
-# 修改 bind-address
-$ sudo service mysql restart
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/4&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/4&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

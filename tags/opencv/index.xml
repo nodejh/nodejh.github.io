@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Opencv on nodejh</title>
-    <link>http://nodejh.com/tags/opencv/index.xml</link>
+    <link>http://nodejh.com/tags/opencv/</link>
     <description>Recent content in Opencv on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <atom:link href="http://nodejh.com/tags/opencv/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 Aug 2016 21:17:51 +0800</lastBuildDate>
+    
+	<atom:link href="http://nodejh.com/tags/opencv/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Install Opencv3 for Python3.5 on Mac OS X</title>
@@ -35,24 +38,7 @@ build variables:
 ==&amp;gt; Summary
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;安装完成后，会有如上提示。接下来需要做的事，将 &lt;code&gt;opencv3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt; 链接到 &lt;code&gt;Python3&lt;/code&gt; 的 &lt;code&gt;site-packegs&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;echo /usr/local/opt/opencv3/lib/python3.5/site-packages &amp;gt;&amp;gt; /usr/local/lib/python3.5/site-packages/opencv3.pth
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;检查是否安装成功&#34;&gt;检查是否安装成功&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;$ python
-&amp;gt;&amp;gt;&amp;gt; import cv2
-&amp;gt;&amp;gt;&amp;gt; cv2.__version__
-&#39;3.1.0&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Github Issue: &lt;a href=&#34;https://github.com/nodejh/nodejh.github.io/issues/20&#34;&gt;https://github.com/nodejh/nodejh.github.io/issues/20&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

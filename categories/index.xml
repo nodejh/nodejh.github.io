@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on nodejh</title>
+    <link>http://nodejh.com/categories/</link>
+    <description>Recent content in Categories on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    
+	<atom:link href="http://nodejh.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Database</title>
+      <link>http://nodejh.com/categories/database/</link>
+      <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>http://nodejh.com/categories/java/</link>
+      <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>http://nodejh.com/categories/javascript/</link>
+      <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>http://nodejh.com/categories/linux/</link>
+      <pubDate>Fri, 23 Jan 2015 20:33:29 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Macos</title>
+      <link>http://nodejh.com/categories/macos/</link>
+      <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/macos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mysql</title>
+      <link>http://nodejh.com/categories/mysql/</link>
+      <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/mysql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Node.Js</title>
+      <link>http://nodejh.com/categories/node.js/</link>
+      <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/node.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Php</title>
+      <link>http://nodejh.com/categories/php/</link>
+      <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/php/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>http://nodejh.com/categories/python/</link>
+      <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shadowsocks</title>
+      <link>http://nodejh.com/categories/shadowsocks/</link>
+      <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/shadowsocks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ubuntu</title>
+      <link>http://nodejh.com/categories/ubuntu/</link>
+      <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
+      
+      <guid>http://nodejh.com/categories/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

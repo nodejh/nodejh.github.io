@@ -221,13 +221,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/database/</loc>
+    <loc>http://nodejh.com/categories/database/</loc>
     <lastmod>2017-03-26T00:42:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/database/</loc>
+    <loc>http://nodejh.com/tags/database/</loc>
     <lastmod>2017-03-26T00:42:23+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -275,25 +275,25 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/java/</loc>
-    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://nodejh.com/categories/java/</loc>
     <lastmod>2016-03-17T19:15:01+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/javascript/</loc>
-    <lastmod>2017-02-18T11:07:14+08:00</lastmod>
+    <loc>http://nodejh.com/tags/java/</loc>
+    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://nodejh.com/categories/javascript/</loc>
+    <lastmod>2017-02-18T11:07:14+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://nodejh.com/tags/javascript/</loc>
     <lastmod>2017-02-18T11:07:14+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -311,13 +311,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/linux/</loc>
+    <loc>http://nodejh.com/categories/linux/</loc>
     <lastmod>2015-01-23T20:33:29+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/linux/</loc>
+    <loc>http://nodejh.com/tags/linux/</loc>
     <lastmod>2015-01-23T20:33:29+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -329,13 +329,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/macos/</loc>
+    <loc>http://nodejh.com/categories/macos/</loc>
     <lastmod>2017-03-19T17:15:37+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/macos/</loc>
+    <loc>http://nodejh.com/tags/macos/</loc>
     <lastmod>2017-03-19T17:15:37+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -347,14 +347,14 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/mysql/</loc>
-    <lastmod>2016-10-02T00:53:28+08:00</lastmod>
+    <loc>http://nodejh.com/categories/mysql/</loc>
+    <lastmod>2016-04-12T02:40:03+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/mysql/</loc>
-    <lastmod>2016-04-12T02:40:03+08:00</lastmod>
+    <loc>http://nodejh.com/tags/mysql/</loc>
+    <lastmod>2016-10-02T00:53:28+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -371,13 +371,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/node.js/</loc>
+    <loc>http://nodejh.com/categories/node.js/</loc>
     <lastmod>2016-12-30T18:58:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/node.js/</loc>
+    <loc>http://nodejh.com/tags/node.js/</loc>
     <lastmod>2016-12-30T18:58:19+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -395,13 +395,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/php/</loc>
+    <loc>http://nodejh.com/categories/php/</loc>
     <lastmod>2016-12-29T00:04:41+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/php/</loc>
+    <loc>http://nodejh.com/tags/php/</loc>
     <lastmod>2016-12-29T00:04:41+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -419,13 +419,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/python/</loc>
+    <loc>http://nodejh.com/categories/python/</loc>
     <lastmod>2016-10-09T18:27:44+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/python/</loc>
+    <loc>http://nodejh.com/tags/python/</loc>
     <lastmod>2016-10-09T18:27:44+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -437,13 +437,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/shadowsocks/</loc>
+    <loc>http://nodejh.com/categories/shadowsocks/</loc>
     <lastmod>2017-02-10T16:52:15+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/shadowsocks/</loc>
+    <loc>http://nodejh.com/tags/shadowsocks/</loc>
     <lastmod>2017-02-10T16:52:15+08:00</lastmod>
     <priority>0</priority>
   </url>
@@ -467,13 +467,13 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/ubuntu/</loc>
+    <loc>http://nodejh.com/categories/ubuntu/</loc>
     <lastmod>2017-02-07T13:08:16+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://nodejh.com/categories/ubuntu/</loc>
+    <loc>http://nodejh.com/tags/ubuntu/</loc>
     <lastmod>2017-02-07T13:08:16+08:00</lastmod>
     <priority>0</priority>
   </url>

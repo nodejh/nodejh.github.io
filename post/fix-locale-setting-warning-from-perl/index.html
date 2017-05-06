@@ -1,0 +1,225 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.20.2" />
+		<title>Fix Locale Setting Warning From Perl &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="nodejh" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/post'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/projects'>Projects</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            远程登录 VPS 语言错误
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Dec 2, 2016 15:58
+                    · 497 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/ubuntu">Ubuntu</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：</p>
+
+<pre><code>perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = &quot;en_US:&quot;,
+	LC_ALL = (unset),
+	LC_CTYPE = &quot;zh_CN.UTF-8&quot;,
+	LANG = &quot;en_US&quot;
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale (&quot;en_US&quot;).
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_ALL to default locale: No such file or directory
+</code></pre>
+
+<p>那是因为安装软件时，都会去执行一个 <code>update-locale</code> 的命令，用来更新 <code>locale</code>。</p>
+
+<p>这个命令是一个脚本，用 perl 写的，可以用 <code>whereis update-locale</code> 查到，位置在 <code>/usr/sbin/update-locale</code>。</p>
+
+<p>上述报错并不是因为 <code>update-locale</code> 命令而引起，<code>update-locale</code> 这段脚本没有问题，而是因为perl。</p>
+
+<p>可以使用以下命令测试：</p>
+
+<pre><code>perl -e exit
+</code></pre>
+
+<p>其实，真正的原因是 perl 为系统使用 <code>zh_CN.UTF-8</code>，但系统并没有安装 <code>zh_CN.UTF-8</code>。</p>
+
+<p>这种情况一般是vps比较常见，因为一般都是用 ssh 的方式连接到 vps 上的 <code>sshd</code> 有这个机制，会把客户机上的语言环境带到远程的机器上。</p>
+
+<p>客户机一般都会设置 <code>zh_CN.UTF-8</code> 语言，用来显示中文，而远端的vps一般就只有en_US.UTF-8，zh_CN.UTF-8一旦带过去就会报找不到的错误。</p>
+
+<p>所以安装一个中文语言，perl就不会报错了。</p>
+
+<pre><code>$ sudo locale-gen zh_CN zh_CN.UTF-8
+Generating locales...
+  zh_CN.GB2312... done
+  zh_CN.UTF-8... done
+Generation complete.
+$ sudo dpkg-reconfigure locales
+Generating locales...
+  en_US.UTF-8... done
+  zh_CN.GB2312... up-to-date
+  zh_CN.UTF-8... up-to-date
+Generation complete.
+</code></pre>
+
+<p>这个时候，还可以使用 <code>locale</code> 当前有哪些语言：</p>
+
+<pre><code>$ locale
+</code></pre>
+
+<hr />
+
+<p>参考</p>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/2499794/how-to-fix-a-locale-setting-warning-from-perl">How to fix a locale setting warning from Perl</a></li>
+<li><a href="https://ubuntuforums.org/showthread.php?t=1346581">perl: warning: Setting locale failed.</a></li>
+</ul>
+
+                </section>
+            </article>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

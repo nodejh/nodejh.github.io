@@ -6,10 +6,19 @@
     <description>Recent content on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 05 Jul 2017 11:41:43 +0800</lastBuildDate>
     
 	<atom:link href="http://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Project Documentation With Hexo Static Site Generator</title>
+      <link>http://nodejh.com/post/project-documentation-with-hexo-static-site-generator/</link>
+      <pubDate>Wed, 05 Jul 2017 11:41:43 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/project-documentation-with-hexo-static-site-generator/</guid>
+      <description>当我们发布一个开源项目的时候，最重要的事情之一就是要创建项目文档。对使用项目的用户来说，文档是非常有必要的，通常我们可以使用下面这些方式来创</description>
+    </item>
     
     <item>
       <title>Handy MySQL Commands</title>

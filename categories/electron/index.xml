@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Electron on nodejh</title>
+    <link>http://nodejh.com/categories/electron/</link>
+    <description>Recent content in Electron on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 06 Jul 2017 15:32:26 +0800</lastBuildDate>
+    
+	<atom:link href="http://nodejh.com/categories/electron/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Electron Quick Start</title>
+      <link>http://nodejh.com/post/electron-quick-start/</link>
+      <pubDate>Thu, 06 Jul 2017 15:32:26 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/electron-quick-start/</guid>
+      <description>简介 Electron 是一个可以使用 Web 技术如 JavaScript、HTML 和 CSS 来创建跨平台原生桌面应用的框架。借助 Electron，我们可以使用纯 JavaScript 来调用丰</description>
+    </item>
+    
+  </channel>
+</rss>

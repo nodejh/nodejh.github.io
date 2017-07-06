@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>前端 on nodejh</title>
+    <link>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</link>
+    <description>Recent content in 前端 on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 06 Jul 2017 14:53:34 +0800</lastBuildDate>
+    
+	<atom:link href="http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vue2 Tutorials 01 Quick Start</title>
+      <link>http://nodejh.com/post/vue2-tutorials-01-quick-start/</link>
+      <pubDate>Thu, 06 Jul 2017 14:53:34 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/vue2-tutorials-01-quick-start/</guid>
+      <description>Vue 的官方文档 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,617 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.24.1" />
+		<title>Vue2 Tutorials 01 Quick Start &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/post'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/projects'>Projects</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            快速入门 - Vue2 Tutorials (一)
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Jul 6, 2017 14:53
+                    · 2823 words
+                    · 6 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/vue">vue</a>
+                          
+                              <a href="http://nodejh.com/tags/%E5%89%8D%E7%AB%AF">前端</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#命令行工具">命令行工具</a>
+<ul>
+<li><a href="#安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目</a></li>
+<li><a href="#安装依赖">安装依赖</a></li>
+</ul></li>
+<li><a href="#代码分析">代码分析</a>
+<ul>
+<li><a href="#main-js">main.js</a>
+<ul>
+<li><a href="#el">el</a></li>
+<li><a href="#components">components</a></li>
+<li><a href="#template">template</a></li>
+</ul></li>
+<li><a href="#src-app-vue">src/App.vue</a></li>
+<li><a href="#src-components-hello-vue">src/components/Hello.vue</a></li>
+</ul></li>
+<li><a href="#模板语法">模板语法</a>
+<ul>
+<li><a href="#插值">插值</a>
+<ul>
+<li><a href="#文本插值">文本插值</a></li>
+<li><a href="#纯-html">纯 HTML</a></li>
+<li><a href="#js-表达式">JS 表达式</a></li>
+</ul></li>
+<li><a href="#指令">指令</a>
+<ul>
+<li><a href="#v-bind">v-bind</a></li>
+<li><a href="#v-on">v-on</a></li>
+<li><a href="#v-if">v-if</a></li>
+<li><a href="#v-for">v-for</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#实践">实践</a></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>Vue 的<a href="https://cn.vuejs.org/v2/guide/">官方文档</a> 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧不能立即立即 vue-cli 创建的项目代码。所以本文 vue-cli 构建的项目为基础，详细解释其代码及对应的概念，并进行简单的实践。</p>
+
+<h2 id="命令行工具">命令行工具</h2>
+
+<h3 id="安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目</h3>
+
+<p>首先要全局安装 vue-cl：</p>
+
+<pre><code class="language-shell">$ npm install --global vue-cli
+</code></pre>
+
+<p>然后使用 vue-cli 初始化一个基于 webpack 模板的新项目，除了 <code>Install vue-router?</code> 选 <code>N (No)</code>，其余都可以直接回车选 <code>Y (Yes)</code>，因为我们暂时不会讲到 <code>vue-router</code>：</p>
+
+<pre><code class="language-shell">$ vue init webpack demo
+? Project name demo
+? Project description A Vue.js project
+
+? Author nodejh &lt;jianghangscu@gmail.com&gt;
+? Vue build standalone
+? Install vue-router? No
+? Use ESLint to lint your code? Yes
+? Pick an ESLint preset Standard
+? Setup unit tests with Karma + Mocha? Yes
+? Setup e2e tests with Nightwatch? Yes
+</code></pre>
+
+<h3 id="安装依赖">安装依赖</h3>
+
+<pre><code class="language-shell">$ cd demo
+$ npm install
+$ npm run dev
+</code></pre>
+
+<p>然后打开浏览器，输入 <code>http://localhost:8080</code> 就能看到界面。</p>
+
+<p>接下来分析一下代码。</p>
+
+<h2 id="代码分析">代码分析</h2>
+
+<p>项目目录结构如下：</p>
+
+<pre><code class="language-shell">├── README.md
+├── build    # 编译项目的配置文件目录
+├── config    # 配置文件目录
+├── src    # 项目主要代码目录
+├── static    # 静态资源
+├── test    # 测试文件目录
+</code></pre>
+
+<p>开发阶段的主要代码都在 <code>src</code> 目录中编写，vue-cli 默认生成了一些代码：</p>
+
+<pre><code class="language-shell">src
+├── App.vue
+├── assets
+│   └── logo.png
+├── components
+│   └── Hello.vue
+└── main.js
+</code></pre>
+
+<p>可以发现，代码的后缀名有两种：</p>
+
+<ul>
+<li><code>.js</code> JS 文件</li>
+<li><code>.vue</code> Vue 组件，里面定义了 Vue 实例、模板、样式等。需要由 webpack 等工具来转换为 js 代码</li>
+</ul>
+
+<p>接下来会逐一解释这些文件及代码。</p>
+
+<h3 id="main-js">main.js</h3>
+
+<p><code>main.js</code> 是项目的入口文件，也是 webpack 打包的入口文件。里面最代码很少，主要就是通过 <code>new Vue()</code> 创建 Vue 实例：</p>
+
+<pre><code class="language-js">new Vue({
+  el: '#app',
+  template: '&lt;App/&gt;',
+  components: { App },
+});
+</code></pre>
+
+<p>每个 Vue.js 应用都是通过构造函数 Vue 创建一个 Vue 的根实例启动的。</p>
+
+<p>在实例化 Vue 时，传入一个了一个对象，对象包含以下几个选项。</p>
+
+<h4 id="el">el</h4>
+
+<p><code>el</code> 的值是 Vue 实例的挂载目标，这里是 <code>#app</code>，也就是 <code>demo/index.html</code> 中 <code>id=&quot;app&quot;</code> 这个元素：</p>
+
+<pre><code class="language-html">&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<p><code>el</code> 必须是一个已存在的元素。</p>
+
+<p><a href="https://cn.vuejs.org/v2/api/#el">api/#el</a></p>
+
+<h4 id="components">components</h4>
+
+<p>在说 <code>template</code> 之前，先来看看 <code>components</code> 属性。</p>
+
+<p><code>components: { App }</code> 等价于 <code>components: { App: App }</code>，是一个包含了对 Vue 实例可见的组件的哈希表。只有在 <code>components</code> 里面列出来的组件，才可以在 <code>template</code> 里面使用。</p>
+
+<p>如果我们把 <code>components: { App }</code> 改为 <code>components: { App }</code> 改为 <code>components: { MyApp: App }</code>，那么在 <code>template</code> 里面就需要这样使用：<code>template: '&lt;my-app /&gt;'</code>。</p>
+
+<p>由于 HTML 标签不区分大小写，所以 <code>components</code> 里面的驼峰命名会自动转换为短横线。详见 <a href="https://cn.vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case">camelCase vs. kebab-case</a></p>
+
+<h4 id="template">template</h4>
+
+<p><code>template</code> 就是挂载到页面的模板。</p>
+
+<p>这里的值是 <code>&lt;App/&gt;</code> 组件就是 <code>components</code> 属性中的 <code>App</code>，也就是通过 <code>import</code> 引入的 <code>App</code> 这个模板。</p>
+
+<pre><code class="language-js">new Vue({
+  el: '#app',
+  // 这里的 &lt;App/&gt; 就是 components 属性的值 App
+  template: '&lt;App/&gt;',
+  components: { App },
+});
+</code></pre>
+
+<p>所以这段代码的含义就是，将 <code>&lt;App/&gt;</code> 这个模板挂载到元素 <code>#app</code> 上。</p>
+
+<h3 id="src-app-vue">src/App.vue</h3>
+
+<p><code>src/App.vue</code> 是一个典型的<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">单文件组件</a>。实际在项目中，我们写的基本都是组件，再根据需要用组件组成页面，这其实就是组件化。组件与组件之间相互独立，项目结构更加清晰，也更有利于维护。</p>
+
+<p>一个组件里面封装了 HTML、CSS 和 JS，有自己独立的样式和逻辑。</p>
+
+<p><code>&lt;template&gt;</code> 就是组件中的模板，模板的代码都在 <code>&lt;template&gt;</code> 标签中，除 <code>&lt;hello&gt;</code> 之外都是普通的 HTML。因为 <code>hello</code> 也是一个组件，然后通过标签的形式注入到模板中。</p>
+
+<p>为什么模板中能使用 <code>hello</code> 这个组件呢？</p>
+
+<p>这是因为 <code>&lt;script&gt;&lt;/script&gt;</code> 标签里面定义了 <code>Hello</code>（首字母大写）这个组件：</p>
+
+<pre><code class="language-js">import Hello from './components/Hello'
+
+export default {
+  name: 'app',
+  components: {
+    // Hello 组件，即 ./components/Hello 的一个引用
+    Hello  
+  }
+}
+</code></pre>
+
+<p>这里 <code>components</code> 属性的含义，在之前已经提到过了，只有在 <code>components</code> 里面列出来的组件，才能被模板使用。这里列出了 <code>Hello</code> 这个组件，所以在 <code>&lt;template&gt;</code> 中我们可以使用 <code>&lt;hello&gt;</code>（前面也提到过， vue 会自动将驼峰法命名转为短横线）。</p>
+
+<p>而 <code>components</code> 属性里面的 <code>Hello</code>，则是 <code>./components/Hello</code> 这个组件的一个引用：</p>
+
+<pre><code class="language-js">import Hello from './components/Hello'
+</code></pre>
+
+<p>最后就是 <code>&lt;style&gt;</code> 标签，里面就是普通的 CSS 了。</p>
+
+<h3 id="src-components-hello-vue">src/components/Hello.vue</h3>
+
+<p>最后再来看看 <code>src/components/Hello.vue</code> 这个组件的代码。</p>
+
+<p>基本跟 <code>src/App.vue</code> 是一样的，除了下面这两个地方之外：</p>
+
+<pre><code class="language-html">&lt;h1&gt;{{ msg }}&lt;/h1&gt;
+</code></pre>
+
+<pre><code class="language-js">data () {
+  return {
+    msg: 'Welcome to Your Vue.js App'
+  }
+}
+</code></pre>
+
+<p>恭喜你！看到这里，我们就可以真正开始写代码了。</p>
+
+<p><code>{{}}</code> 是 Vue 的一个模板语法，文本插值。如上面的例子所示，我们在 <code>data</code> 里面定义一个对象，就可以在模板中通过 <code>{{ }}</code> 来访问。</p>
+
+<p><code>data</code> 虽然是一个函数，但它执行之后就等价于：</p>
+
+<pre><code class="language-js">data: {
+  msg: 'Welcome to Your Vue.js App'
+}
+</code></pre>
+
+<p>当我们改变 <code>msg</code> 的值，在页面上渲染出来的数据也会改变。也就是数据和 DOM 绑定在了一起。</p>
+
+<h2 id="模板语法">模板语法</h2>
+
+<h3 id="插值">插值</h3>
+
+<h4 id="文本插值">文本插值</h4>
+
+<p>上面我们已经接触到了文本插值 <code>{{}}</code>，<code>{{ msg }}</code> 将会被替代为对应数据对象上 msg 属性的值。无论何时，绑定的数据对象（即 <code>data</code>）上 msg 属性发生了改变，插值处的内容都会更新。</p>
+
+<p>通过使用 v-once 指令，我们也能执行一次性地插值，当数据改变时，插值处的内容不会更新。但请留心这会影响到该节点上所有的数据绑定：</p>
+
+<pre><code class="language-html">&lt;h1 v-once&gt;This will never change: {{ msg }}&lt;/h1&gt;
+</code></pre>
+
+<h4 id="纯-html">纯 HTML</h4>
+
+<p>双大括号会将数据解释为纯文本，而非 HTML 。为了输出真正的 HTML ，需要使用 <code>v-html</code> 指令：</p>
+
+<pre><code class="language-html">&lt;div v-html=&quot;rawHtml&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<p>这个 div 的内容将会被替换成为属性值 rawHtml，直接作为 HTML —— 数据绑定会被忽略。注意，你不能使用 v-html 来复合局部模板，因为 Vue 不是基于字符串的模板引擎。组件更适合担任 UI 重用与复合的基本单元。</p>
+
+<blockquote>
+<p>你的站点上动态渲染的任意 HTML 可能会非常危险，因为它很容易导致 XSS 攻击。请只对可信内容使用 HTML 插值，绝不要对用户提供的内容插值。</p>
+</blockquote>
+
+<h4 id="js-表达式">JS 表达式</h4>
+
+<p><code>{{}}</code> 中也可以写 JS 表达式：</p>
+
+<pre><code class="language-js">{{ number + 1 }}
+{{ ok ? 'YES' : 'NO' }}
+{{ message.split('').reverse().join('') }}
+
+&lt;div v-bind:id=&quot;'list-' + id&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<h3 id="指令">指令</h3>
+
+<p>指令（Directives）是带有 <code>v-</code> 前缀的特殊属性。</p>
+
+<h4 id="v-bind">v-bind</h4>
+
+<p><code>{{}}</code> 不能在 HTML 属性中使用。针对 HTML 属性需要使用 <code>v-bind</code>：</p>
+
+<pre><code class="language-html">&lt;div v-bind:id=&quot;dynamicId&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<p>这对布尔值的属性也有效 —— 如果条件被求值为 <code>false</code> 的话该属性会被移除：</p>
+
+<pre><code class="language-html">&lt;button v-bind:disabled=&quot;isButtonDisabled&quot;&gt;Button&lt;/button&gt;
+</code></pre>
+
+<p><code>v-bind</code> 也可以缩写：</p>
+
+<pre><code class="language-html">&lt;div :id=&quot;dynamicId&quot;&gt;&lt;/div&gt;
+&lt;button :disabled=&quot;isButtonDisabled&quot;&gt;Button&lt;/button&gt;
+</code></pre>
+
+<h4 id="v-on">v-on</h4>
+
+<p><code>v-on</code> 用来监听 DOM 事件：</p>
+
+<pre><code class="language-html">&lt;button v-on:click=&quot;doSomething&quot;&gt;&lt;/button&gt;
+</code></pre>
+
+<p>也可以缩写成下面这样：</p>
+
+<pre><code class="language-html">&lt;button @click=&quot;doSomething&quot;&gt;&lt;/button&gt;
+</code></pre>
+
+<h4 id="v-if">v-if</h4>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;p v-if=&quot;seen&quot;&gt;Now you see me&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'hello',
+  data: {
+    seen: true
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+<p>这里 <code>v-if</code> 指令将根据表达式 <code>seen</code> 的值的真假来移除/插入 <code>&lt;p&gt;</code> 元素。</p>
+
+<h4 id="v-for">v-for</h4>
+
+<p><code>v-for</code> 指令可以绑定数组的数据来渲染一个项目列表：</p>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;ol&gt;
+    &lt;li v-for=&quot;todo in todos&quot;&gt;
+      {{ todo.text }}
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+  export default {
+    data: {
+      todos: [
+        { text: '学习 JavaScript' },
+        { text: '学习 Vue' },
+        { text: '整个牛项目' }
+      ]
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+
+<h2 id="实践">实践</h2>
+
+<p>让我们把目光回到 <code>Hello.vue</code>。在这个组件里面有一些链接列表， Essential Links 和 Ecosystem，这些列表直接使用 HTML 编写：</p>
+
+<pre><code class="language-html">&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://vuejs.org&quot; target=&quot;_blank&quot;&gt;Core Docs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://forum.vuejs.org&quot; target=&quot;_blank&quot;&gt;Forum&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gitter.im/vuejs/vue&quot; target=&quot;_blank&quot;&gt;Gitter Chat&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/vuejs&quot; target=&quot;_blank&quot;&gt;Twitter&lt;/a&gt;&lt;/li&gt;
+  &lt;br&gt;
+  &lt;li&gt;&lt;a href=&quot;http://vuejs-templates.github.io/webpack/&quot; target=&quot;_blank&quot;&gt;Docs for This Template&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Ecosystem&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://router.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vue-router&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://vuex.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vuex&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://vue-loader.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vue-loader&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/vuejs/awesome-vue&quot; target=&quot;_blank&quot;&gt;awesome-vue&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p>按照传统的写法，如果我们需要往里面添加链接的时候，每次我们都得添加 <code>&lt;li&gt;</code> 和 <code>&lt;a&gt;</code> 标签。思考两个问题：</p>
+
+<ul>
+<li>添加几个链接还好，如果要添加非常非常多呢？难到要复制几十次 <code>&lt;li&gt;</code> 和 <code>&lt;a&gt;</code> 标签？</li>
+<li>如果要动态改变链接列表呢？难道要使用 <code>innerHTML</code> 等方法修改 DOM？</li>
+</ul>
+
+<p>聪明的你可能已经想到了，很明显不需要这么做，我们可以使用模板语法。将链接信息写到 Vue 的数据对象 <code>data</code> 里面，然后通过动态绑定的方式，将数据绑定到 DOM。</p>
+
+<p>所以修改如下：</p>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div class=&quot;hello&quot;&gt;
+    &lt;h1&gt;{{ msg }}&lt;/h1&gt;
+    &lt;h2&gt;Essential Links&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li v-for=&quot;essentialLink in essentialLinks&quot;&gt;
+        &lt;a :href=&quot;essentialLink.link&quot; target=&quot;_blank&quot;&gt;{{ essentialLink.text }}&lt;/a&gt;
+      &lt;/li&gt;
+      &lt;br&gt;
+      &lt;li&gt;&lt;a href=&quot;http://vuejs-templates.github.io/webpack/&quot; target=&quot;_blank&quot;&gt;Docs for This Template&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;h2&gt;Ecosystem&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li v-for=&quot;ecosystem in ecosystems&quot;&gt;
+        &lt;a :href=&quot;ecosystem.link&quot; target=&quot;_blank&quot;&gt;{{ ecosystem.text }}&lt;/a&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'hello',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App',
+      ecosystems: [
+        {
+          link: 'http://router.vuejs.org/',
+          text: 'vue-router'
+        },
+        {
+          link: 'http://vuex.vuejs.org/',
+          text: 'vuex'
+        },
+        {
+          link: 'http://vue-loader.vuejs.org/',
+          text: 'vue-loader'
+        },
+        {
+          link: 'https://github.com/vuejs/awesome-vue',
+          text: 'awesome-vue'
+        }
+      ],
+      essentialLinks: [
+        {
+          link: 'https://vuejs.org',
+          text: 'Core Docs'
+        },
+        {
+          link: 'https://forum.vuejs.org',
+          text: 'Forum'
+        },
+        {
+          link: 'https://gitter.im/vuejs/vue',
+          text: 'Gitter Chat'
+        },
+        {
+          link: 'https://github.com/vuejs/awesome-vue',
+          text: 'awesome-vue'
+        },
+        {
+          link: 'https://twitter.com/vuejs',
+          text: 'Twitter'
+        }
+      ]
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+<p>这样我们就把数据和视图分开了，模板里面的代码也简洁了很多，不再需要写很多重复的代码。并且根据不同数据，我们也能展示出不同的 UI。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>本文详细讲解了 vue-cli 初始化的项目代码，并且在讲解代码的过程中，介绍了构造 vue 对象的一些参数，以及 vue 的一些基本概念，比如模板语法中的插值和指令。最后通过修改代码对以上知识点进行实践。</p>
+
+<p>相信看到了这里，你对如何使用 vue 写一个项目已经有了初步了解。当然，看完本文，可能还有很多概念理解不清楚，这时推荐去看一下 vue 的<a href="https://cn.vuejs.org/">官方文档</a>，这个时候再去看<a href="https://cn.vuejs.org/">官方文档</a>，应该就会轻松很多了。</p>
+
+                </section>
+            </article>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

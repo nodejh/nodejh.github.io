@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://nodejh.com/post/vue2-tutorials-01-quick-start/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://nodejh.com/post/project-documentation-with-hexo-static-site-generator/</loc>
     <lastmod>2017-07-05T11:41:43+08:00</lastmod>
   </url>
@@ -432,7 +437,7 @@
   
   <url>
     <loc>http://nodejh.com/post/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -503,6 +508,18 @@
   </url>
   
   <url>
+    <loc>http://nodejh.com/tags/vue/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://nodejh.com/categories/vue/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://nodejh.com/tags/webpack/</loc>
     <lastmod>2016-09-09T04:11:13+08:00</lastmod>
     <priority>0</priority>
@@ -522,7 +539,19 @@
   
   <url>
     <loc>http://nodejh.com/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://nodejh.com/tags/%E5%89%8D%E7%AB%AF/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
     <priority>0</priority>
   </url>
   

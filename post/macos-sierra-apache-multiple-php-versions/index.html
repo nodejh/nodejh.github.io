@@ -47,8 +47,8 @@
                     </h1>
                     <h2 class="headline">
                     Dec 29, 2016 00:04
-                    · 5291 words
-                    · 11 minutes read
+                    · 5596 words
+                    · 12 minutes read
                       <span class="tags">
                       
                       
@@ -98,6 +98,13 @@
 <li><a href="#3-7-更新-php-和其他通过-brew-安装的程序">3.7 更新 PHP 和其他通过 Brew 安装的程序</a></li>
 <li><a href="#3-8-使用具体的-最新的-php-版本">3.8 使用具体的/最新的 PHP 版本</a></li>
 </ul></li>
+<li><a href="#4-更新">4. 更新</a>
+<ul>
+<li><a href="#4-1-homebrew-dupes-was-deprecated">4.1 homebrew/dupes was deprecated</a></li>
+<li><a href="#4-2-warning-homebrew-versions-was-deprecated">4.2 Warning: homebrew/versions was deprecated.</a></li>
+<li><a href="#4-3-with-http2-was-deprecated-using-with-nghttp2-instead">4.3 &ndash;with-http2 was deprecated; using &ndash;with-nghttp2 instead</a></li>
+<li><a href="#4-4-apache-和-php-的配置-第二部分">4.4 Apache 和 PHP 的配置 - 第二部分</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -127,19 +134,19 @@
 
 <p>以下所有软件的安装都依赖于 macOS 上的一个包管理工具 Homebrew。使用 <code>brew</code> 命令，我们可以方便地在 mac 上安装各种功能各异的软件，当然，首先的安装 homebrew。安装步骤也非常简单，打开终端然后输入下面的代码：</p>
 
-<pre><code>$ ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
+<pre><code class="language-bash">$ ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
 </code></pre>
 
 <p>然后等待终端提示你输入密码，程序就会开始自动安装。如果你没有安装 <code>XCode Command Line Tools</code>，它会自动帮你装上。等待几分钟，待完成后，就可以使用下面的命令查看 Homebrew 是否正确安装：</p>
 
-<pre><code>$ brew --version
+<pre><code class="language-bash">$ brew --version
 Homebrew 1.1.5
 Homebrew/homebrew-core (git revision a50a6; last commit 2016-12-28)
 </code></pre>
 
 <p>同时可能你也需要执行一下下面的命令，来检测配置是否正确：</p>
 
-<pre><code>$ brew doctor
+<pre><code class="language-bash">$ brew doctor
 </code></pre>
 
 <p>若有配置不当的地方，brew 会给出提示，安装提示修复即可。</p>
@@ -148,15 +155,13 @@ Homebrew/homebrew-core (git revision a50a6; last commit 2016-12-28)
 
 <p>我们将需要使用一些来自第三方仓库的软件，所以需要添加额外的仓库：</p>
 
-<pre><code>$ brew tap homebrew/dupes
-$ brew tap homebrew/versions
-$ brew tap homebrew/php
+<pre><code class="language-bash">$ brew tap homebrew/php
 $ brew tap homebrew/apache
 </code></pre>
 
 <p>然后更新 brew：</p>
 
-<pre><code>$ brew update
+<pre><code class="language-bash">$ brew update
 </code></pre>
 
 <p>接下来就可以尽情使用 brew 了。</p>
@@ -167,22 +172,22 @@ $ brew tap homebrew/apache
 
 <p>如果之前已经安装有 Apache 并且在运行中，首先就需要关闭它，然后移除自动加载脚本。下面的命令没有任何副作用，只管运行就好了：</p>
 
-<pre><code>$ sudo apachectl stop
+<pre><code class="language-bash">$ sudo apachectl stop
 $ sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist 2&gt;/dev/null
 $ brew install httpd24 --with-privileged-ports --with-http2
 </code></pre>
 
 <p>接下来需要等待一小会儿，因为这个命令是下载源码并编译安装 Apache。上面命令执行结果如下面这样：</p>
 
-<pre><code>🍺  /usr/local/Cellar/httpd24/2.4.23_2: 212 files, 4.4M, built in 1 minute 45 seconds
+<pre><code class="language-bash">🍺  /usr/local/Cellar/httpd24/2.4.23_2: 212 files, 4.4M, built in 1 minute 45 seconds
 </code></pre>
 
 <p>这里的路径很重要，因为在接下来的步骤中，我们都需要使用这个路径，在这个例子中，路径是 <code>/usr/local/Cellar/httpd24/2.4.23_2/</code>，如果你的路径不是这个，则在运行下面的命令的时候，将其替换为你的路径就可以了：</p>
 
-<pre><code>sudo cp -v /usr/local/Cellar/httpd24/2.4.23_2/homebrew.mxcl.httpd24.plist /Library/LaunchDaemons
-sudo chown -v root:wheel /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
-sudo chmod -v 644 /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
-sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+<pre><code class="language-bash">$ sudo cp -v /usr/local/Cellar/httpd24/2.4.23_2/homebrew.mxcl.httpd24.plist /Library/LaunchDaemons
+$ sudo chown -v root:wheel /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+$ sudo chmod -v 644 /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
+$ sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
 </code></pre>
 
 <p>现在我们就通过 Homebrew 安装上了 Apache，并使用管理员权限将其配置为自动启动。这个时候 Apache 应该已经在运行了，所以你打开浏览器访问 <code>localhost</code> 将会看到 “It works！”。</p>
@@ -193,26 +198,26 @@ sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.httpd24.plist
 
 <p>如果你的浏览器提示说不能建立连接到服务器，那么首先检查一下 Apache 服务是否已经启动了：</p>
 
-<pre><code>$ ps -aef | grep httpd
+<pre><code class="language-bash">$ ps -aef | grep httpd
 </code></pre>
 
 <p>如果 Apache 正在运行，你将会看到一些 httpd 进程。</p>
 
 <p>重启 Apache：</p>
 
-<pre><code>$ sudo apachectl -k restart
+<pre><code class="language-bash">$ sudo apachectl -k restart
 </code></pre>
 
 <p>我们也可以监控 Apache 的错误日志，查看是否有错误信息：</p>
 
-<pre><code>$ tail -f /usr/local/var/log/apache2/error_log
+<pre><code class="language-bash">$ tail -f /usr/local/var/log/apache2/error_log
 </code></pre>
 
 <p>如果上面这些步骤都没有解决问题，那么确定你的 Apache 是否监听了 <code>80</code> 端口，即 <code>/usr/local/etc/apache2/2.4/httpd.conf</code> 配置文件是否有 <code>Listen: 80</code>，或者 <code>Listen:</code> 后面是其他端口。</p>
 
 <p>Apache 是通过 <code>apachectl</code> 来进行控制的，它的基本使用方法如下：</p>
 
-<pre><code>$ sudo apachectl start
+<pre><code class="language-bash">$ sudo apachectl start
 $ sudo apachectl stop
 $ sudo apachectl -k restart
 </code></pre>
@@ -229,7 +234,7 @@ $ sudo apachectl -k restart
 
 <p>我们可以在终端通过 <code>open -e</code> 命令使用 Mac 默认的文本编辑器打开一个文件：</p>
 
-<pre><code>$ open -e /usr/local/etc/apache2/2.4/httpd.conf
+<pre><code class="language-bash">$ open -e /usr/local/etc/apache2/2.4/httpd.conf
 </code></pre>
 
 <p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-28-macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit.png" alt="macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page-it-works-textedit" /></p>
@@ -241,17 +246,17 @@ $ sudo apachectl -k restart
 
 <p>将这行配置改为自己的用户主目录中的目录，把 <code>your_user</code> 改为你的用户名：</p>
 
-<pre><code>DocumentRoot /Users/your_user/sites
+<pre><code>DocumentRoot &quot;/Users/your_user/sites&quot;
 </code></pre>
 
 <p>紧接着还要将上面这行代码下面的 <code>&lt;Directory&gt;</code> 也改为你的新的 document root：</p>
 
-<pre><code>&lt;Directory /Users/your_user/sites&gt;
+<pre><code class="language-xml">&lt;Directory &quot;/Users/your_user/sites&quot;&gt;
 </code></pre>
 
 <p>在 <code>&lt;Directory&gt;</code> 代码块里面，我们还需要将 <code>AllowOverride</code> 改为下面的样子：</p>
 
-<pre><code># AllowOverride controls what directives may be placed in .htaccess files.
+<pre><code class="language-bash"># AllowOverride controls what directives may be placed in .htaccess files.
 # It can be &quot;All&quot;, &quot;None&quot;, or any combination of the keywords:
 #   AllowOverride FileInfo AuthConfig Limit
 #
@@ -275,13 +280,15 @@ Group staff
 
 <p>接下来就需要在用户主目录下创建一个 <code>sites</code> 目录了，然后添加一个简单的 <code>index.html</code> 文件，并写入 <code>&lt;h1&gt;My User Web Root&lt;/h1&gt;</code> 代码：</p>
 
-<pre><code>$ mkdir ~/Sites
-$ echo &quot;&lt;h1&gt;My User Web Root&lt;/h1&gt;&quot; &gt; ~/Sites/index.html
+<pre><code class="language-bash">$ mkdir ~/Sites
+$ echo &quot;&lt;h1&gt;My User Web Root&lt;/h1&gt;&quot; &gt; ~/sites/index.html
 </code></pre>
+
+<p>注意，<code>sites</code> 目录的绝对路径需要和 <code>httpd.conf</code> 中的 <code>DocumentRoot</code> 保持一致。</p>
 
 <p>然后重启 Apache 使配置生效：</p>
 
-<pre><code>$ sudo apachectl -k restart
+<pre><code class="language-bash">$ sudo apachectl -k restart
 </code></pre>
 
 <p>再访问 <code>http://localhost</code> 就会显示 <code>index.html</code> 里面的内容。如果你的配置也生效了，我们就可以继续下一步了。</p>
@@ -294,7 +301,7 @@ $ echo &quot;&lt;h1&gt;My User Web Root&lt;/h1&gt;&quot; &gt; ~/Sites/index.html
 
 <p>你可以使用 <code>brew options php55</code> 来查看所有可以安装的选项设置，比如在这个例子中，我们使用 <code>--with-httpd24</code> 参数来编译安装 PHP 以及使 Apache 支持 PHP 所需要的一些模块。</p>
 
-<pre><code>$ brew install php55 --with-httpd24
+<pre><code class="language-bash">$ brew install php55 --with-httpd24
 $ brew unlink php55
 $ brew install php56 --with-httpd24
 $ brew unlink php56
@@ -324,12 +331,12 @@ configure: error: Cannot find libz
 
 <p>其原因可能是 Xcode 的 Command Line Tool 没有正确安装。解决问题的方法是运行下面的命令来重新安装：</p>
 
-<pre><code>xcode-select --install
+<pre><code class="language-bash">$ xcode-select --install
 </code></pre>
 
 <p>可能你也需要根据自己的需要修改一些 PHP 的配置，常见的比如修改内存配置或 <code>date.timezone</code> 配置。各个版本的配置文件即 <code>php.ini</code> 在下面的目录：</p>
 
-<pre><code>/usr/local/etc/php/5.5/php.ini
+<pre><code class="language-bash">/usr/local/etc/php/5.5/php.ini
 /usr/local/etc/php/5.6/php.ini
 /usr/local/etc/php/7.0/php.ini
 /usr/local/etc/php/7.1/php.ini
@@ -337,11 +344,11 @@ configure: error: Cannot find libz
 
 <h3 id="3-1-apache-和-php-的配置-第一部分">3.1. Apache 和 PHP 的配置 - 第一部分</h3>
 
-<p>我们已经成功安装了多个版本的 PHP，但我们还需要告诉 Apache 怎么使用它们。再次打开 <code>/usr/local/etc/apache2/2.4/httpd.conf</code>，并搜索 <code>#LoadModule php5_module</code> 所在行。</p>
+<p>我们已经成功安装了多个版本的 PHP，但我们还需要告诉 Apache 怎么使用它们。再次打开 <code>/usr/local/etc/apache2/2.4/httpd.conf</code>，并搜索 <code>LoadModule php5_module</code> 所在行。</p>
 
 <p>可以发现，每个版本的 PHP 都有一个 <code>LoadModule</code> 入口，每个 <code>LoadModule</code> 都指向一个特定版本的 PHP。这里默认的路径如 <code>/usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so</code> 是 <code>brew</code> 应用程序的安装路径，我们可以使用一个更通用的路径来替换它们（具体的路径可能有所不同）：</p>
 
-<pre><code>LoadModule php5_module        /usr/local/Cellar/php55/5.5.38_11/libexec/apache2/libphp5.so
+<pre><code class="language-bash">LoadModule php5_module        /usr/local/Cellar/php55/5.5.38_11/libexec/apache2/libphp5.so
 LoadModule php5_module        /usr/local/Cellar/php56/5.6.29_5/libexec/apache2/libphp5.so
 LoadModule php7_module        /usr/local/Cellar/php70/7.0.14_7/libexec/apache2/libphp7.so
 LoadModule php7_module        /usr/local/Cellar/php71/7.1.0_11/libexec/apache2/libphp7.so
@@ -349,7 +356,7 @@ LoadModule php7_module        /usr/local/Cellar/php71/7.1.0_11/libexec/apache2/l
 
 <p>将上面的路径修改为：</p>
 
-<pre><code>LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+<pre><code class="language-bash">LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
 LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
 LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
 LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
@@ -361,7 +368,7 @@ LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
 
 <p>我们每次开发或运行依旧只需要一般也只能使用某一个版本的 PHP。以我们要使用 7.1 这个版本开发应用为例，将其他版本的 <code>LoadModule</code> 都注释掉，只保留对应版本的 <code>LoadModule</code>：</p>
 
-<pre><code>#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
+<pre><code class="language-bash">#LoadModule php5_module        /usr/local/opt/php55/libexec/apache2/libphp5.so
 #LoadModule php5_module        /usr/local/opt/php56/libexec/apache2/libphp5.so
 #LoadModule php7_module        /usr/local/opt/php70/libexec/apache2/libphp7.so
 LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
@@ -371,14 +378,14 @@ LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
 
 <p>接下来还需要配置 PHP 的主目录索引文件（Directory Indexes），找到下面的代码块：</p>
 
-<pre><code>&lt;IfModule dir_module&gt;
+<pre><code class="language-xml">&lt;IfModule dir_module&gt;
     DirectoryIndex index.html
 &lt;/IfModule&gt;
 </code></pre>
 
 <p>将其替换为下面的代码：</p>
 
-<pre><code>&lt;IfModule dir_module&gt;
+<pre><code class="language-xml">&lt;IfModule dir_module&gt;
     DirectoryIndex index.php index.html
 &lt;/IfModule&gt;
 
@@ -389,7 +396,7 @@ LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
 
 <p>保存后重启 Apache，PHP 的安装就完成了：</p>
 
-<pre><code>$ sudo apachectl -k restart
+<pre><code class="language-bash">$ sudo apachectl -k restart
 </code></pre>
 
 <h3 id="3-2-验证-php-安装结果">3.2. 验证 PHP 安装结果</h3>
@@ -398,7 +405,7 @@ LoadModule php7_module        /usr/local/opt/php71/libexec/apache2/libphp7.so
 
 <p>在网站主目录即你的 <code>sites/</code> 目录下创建一个 <code>info.php</code> 的文件，然后输入下面的代码：</p>
 
-<pre><code>&lt;?php
+<pre><code class="language-php">&lt;?php
 phpinfo();
 ?&gt;
 </code></pre>
@@ -413,9 +420,9 @@ phpinfo();
 
 <p>在开发中，如果每次都通过修改 <code>/usr/local/etc/apache2/2.4/httpd.conf</code> 文件去切换 PHP 版本，显然太麻烦了。有没有更容易的方法呢？幸运的是，一些勤劳的开发者已经写好了这样的一个脚本 <a href="https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11"> PHP switcher script</a>。</p>
 
-<p>接下来我们将添加 <code>sphp</code> 到 brew 的 <code>/usr/local/bin</code> 里面。原文给的方法是使用下面的命令：</p>
+<p>接下来我们将添加 sphp 到 brew 的 /usr/local/bin 里面。原文给的方法是使用下面的命令：</p>
 
-<pre><code>$ curl -L https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11/raw &gt; /usr/local/bin/sphp
+<pre><code class="language-bash">$ curl -L https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11/raw &gt; /usr/local/bin/sphp
 $ chmod +x /usr/local/bin/sphp
 </code></pre>
 
@@ -423,7 +430,7 @@ $ chmod +x /usr/local/bin/sphp
 
 <p>但由于国内并不能访问 Gist，所以第一行命令并不能执行成功。所以我在这里提供了整个脚本代码：</p>
 
-<pre><code>#!/bin/bash
+<pre><code class="language-bash">#!/bin/bash
 
 # Check if command was ran as root.
 if [[ $(id -u) -eq 0 ]]; then
@@ -519,7 +526,13 @@ else
 fi
 </code></pre>
 
-<p>通过 <code>open -e /usr/local/bin/sphp</code> 打开 <code>sphp</code> 文件，并将上面的代码复制进入，然后赋予可执行权限：</p>
+<p>首先在 <code>/usr/local/bin/</code> 目录下新建 <code>sphp</code> 文件，然后通过 <code>open</code> 命令使用默认的编辑器打开它：</p>
+
+<pre><code class="language-bash">$ touch /usr/local/bin/sphp
+$ open -e /usr/local/bin/sphp
+</code></pre>
+
+<p>将上面的代码复制进去并保存，然后赋予可执行权限：</p>
 
 <pre><code>$ chmod +x /usr/local/bin/sphp
 </code></pre>
@@ -559,7 +572,7 @@ $ source ~/.zshrc
 
 <p>并在下面添加：</p>
 
-<pre><code># Brew PHP LoadModule for `sphp` switcher
+<pre><code class="language-bash">#Brew PHP LoadModule for `sphp` switcher
 #LoadModule php5_module /usr/local/lib/libphp5.so
 LoadModule php7_module /usr/local/lib/libphp7.so
 </code></pre>
@@ -570,7 +583,7 @@ LoadModule php7_module /usr/local/lib/libphp7.so
 
 <p>完成上面的步骤之后，就可以使用 <code>sphp</code> 命令来切换 PHP 版本了。<code>sphp</code> 的参数是由两个数字组合成的两位数：</p>
 
-<pre><code>$ sphp 5
+<pre><code class="language-bash">$ sphp 55
 PHP version 55 found
 Unlinking old binaries...
 Linking new binaries...
@@ -595,7 +608,7 @@ Zend Engine v2.5.0, Copyright (c) 1998-2015 Zend Technologies
 
 <p>我在切换版本的时候也遇到了问题：</p>
 
-<pre><code>$ sphp 71
+<pre><code class="language-bash">$ sphp 71
 ...
 Warning: PHP Startup: Unable to load dynamic library '/usr/local/opt/php56-mongo/mongo.so' - dlopen(/usr/local/opt/php56-mongo/mongo.so, 9): image not found in Unknown on line 0
 PHP 5.6.29 (cli) (built: Dec 28 2016 15:58:30)
@@ -605,31 +618,31 @@ Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
 
 <p>根据错误提示，大概是因为 <code>php56-mongo</code> 这个扩展没有，于是我使用 brew 安装了 <code>php56-mongo</code> 问题就解决了：</p>
 
-<pre><code>$ brew install php56-mongo
+<pre><code class="language-bash">$ brew install php56-mongo
 </code></pre>
 
 <h3 id="3-7-更新-php-和其他通过-brew-安装的程序">3.7 更新 PHP 和其他通过 Brew 安装的程序</h3>
 
 <p>使用 brew 更新 PHP 和其他通过 brew 安装的程序非常简单，第一步是更新 brew 本身：</p>
 
-<pre><code>$ brew update
+<pre><code class="language-bash">$ brew update
 </code></pre>
 
 <p>升级后将会列出一系列可测回归内心的程序，然后使用下面的命令更新：</p>
 
-<pre><code>$ brew upgrade
+<pre><code class="language-bash">$ brew upgrade
 </code></pre>
 
 <h3 id="3-8-使用具体的-最新的-php-版本">3.8 使用具体的/最新的 PHP 版本</h3>
 
 <p>当我们使用 PHP 的时候，每次我们只使用了其中一个版本，并且只有当前使用的版本会更新到最新版本。可以使用下面的命令查看当前 PHP 版本：</p>
 
-<pre><code>$ php -v
+<pre><code class="language-bash">$ php -v
 </code></pre>
 
 <p>可以使用下面的命令查看具体的可用 PHP 版本：</p>
 
-<pre><code>$ brew info php55
+<pre><code class="language-bash">$ brew info php55
 homebrew/php/php55: stable 5.5.38 (bottled), HEAD
 PHP Version 5.5
 https://php.net
@@ -642,10 +655,49 @@ Conflicts with: php53, php54, php56, php70, php71
 
 <p>然后可以使用 brew 来切换到一个具体的版本：</p>
 
-<pre><code>$ brew switch php55 5.5.38
+<pre><code class="language-bash">$ brew switch php55 5.5.38
 </code></pre>
 
 <p>到此，这篇文章就结束了。你已经完成掌握了 Apache 2.4 和各个版本 PHP 的安装，并且能够在 5.5 5.6 7.0 7.1 中快速切换 PHP 版本。原作者还写了两外两篇文章，分别是 <a href="https://getgrav.org/blog/macos-sierra-apache-mysql-vhost-apc">macOS 10.12 Sierra Apache Setup: MySQL, APC &amp; More</a> 和 <a href="https://getgrav.org/blog/macos-sierra-apache-ssl">macOS 10.12 Sierra Apache Setup: SSL</a>，近期内我也会将它们翻译成中文，并加入自己的实践总结。</p>
+
+<h2 id="4-更新">4. 更新</h2>
+
+<h3 id="4-1-homebrew-dupes-was-deprecated">4.1 homebrew/dupes was deprecated</h3>
+
+<p>在 1.1 需要添加第三方库 <code>brew tap homebrew/dupes</code> 的时候，由于有些软件 macOS 已经有了，有一些移动到了 <code>homebrew-core</code> 所以不再需要添加了。详见 <a href="https://github.com/Homebrew/homebrew-dupes">Homebrew/homebrew-dupes</a>。</p>
+
+<blockquote>
+<p>These formulae were those that duplicated software provided by macOS.
+All formulae were migrated to Homebrew/homebrew-core or deleted.</p>
+</blockquote>
+
+<p>如果执行这个命令，就会有如下警告：</p>
+
+<pre><code class="language-bash">$ brew tap homebrew/dupes
+Warning: homebrew/dupes was deprecated. This tap is now empty as all its formulae were migrated.
+</code></pre>
+
+<h3 id="4-2-warning-homebrew-versions-was-deprecated">4.2 Warning: homebrew/versions was deprecated.</h3>
+
+<p>同理，还有 <code>homebrew/versions</code> 也不需要添加了。</p>
+
+<pre><code class="language-bash">$ brew tap homebrew/versions
+Updating Homebrew...
+==&gt; Auto-updated Homebrew!
+Updated 1 tap (caskroom/cask).
+No changes to formulae.
+
+Warning: homebrew/versions was deprecated. This tap is now empty as all its formulae were migrated.
+</code></pre>
+
+<h3 id="4-3-with-http2-was-deprecated-using-with-nghttp2-instead">4.3 &ndash;with-http2 was deprecated; using &ndash;with-nghttp2 instead</h3>
+
+<p>Warning: homebrew/apache/httpd24: &ndash;with-http2 was deprecated; using &ndash;with-nghttp2 instead!
+Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option so it will be ignored!</p>
+
+<h3 id="4-4-apache-和-php-的配置-第二部分">4.4 Apache 和 PHP 的配置 - 第二部分</h3>
+
+<p>在 <code>3.5. Apache 和 PHP 的配置 - 第二部分</code> 部分，不修改配置文件也可以。</p>
 
 <hr />
 

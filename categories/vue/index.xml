@@ -6,10 +6,19 @@
     <description>Recent content in Vue on nodejh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 06 Jul 2017 14:53:34 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 17 Jul 2017 09:57:37 +0800</lastBuildDate>
     
 	<atom:link href="http://nodejh.com/categories/vue/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Vue2 Tutorials 02 TodoList</title>
+      <link>http://nodejh.com/post/vue2-tutorials-02-todolist/</link>
+      <pubDate>Mon, 17 Jul 2017 09:57:37 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/vue2-tutorials-02-todolist/</guid>
+      <description>在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &amp;mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、</description>
+    </item>
     
     <item>
       <title>Vue2 Tutorials 01 Quick Start</title>

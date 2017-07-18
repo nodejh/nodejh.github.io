@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://nodejh.com/post/vue2-tutorials-02-todolist/</loc>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://nodejh.com/post/electron-quick-start/</loc>
     <lastmod>2017-07-06T15:32:26+08:00</lastmod>
   </url>
@@ -454,7 +459,7 @@
   
   <url>
     <loc>http://nodejh.com/post/</loc>
-    <lastmod>2017-07-06T15:32:26+08:00</lastmod>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -526,13 +531,13 @@
   
   <url>
     <loc>http://nodejh.com/tags/vue/</loc>
-    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://nodejh.com/categories/vue/</loc>
-    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -556,7 +561,7 @@
   
   <url>
     <loc>http://nodejh.com/</loc>
-    <lastmod>2017-07-06T15:32:26+08:00</lastmod>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -1,0 +1,499 @@
+    <!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="nodejh">
+		<meta name="description" content="My Blog">
+		<meta name="generator" content="Hugo 0.24.1" />
+		<title>Vue2 Tutorials 02 TodoList &middot; nodejh</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/post'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        Vue2 Tutorials 02 TodoList
+                    </h1>
+                    <h2 class="headline">
+                    Jul 17, 2017 09:57
+                    · 1993 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/vue">vue</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#初始化项目">初始化项目</a></li>
+<li><a href="#添加-todolist-组件">添加 TodoList 组件</a></li>
+<li><a href="#添加完成-todo-的方法">添加完成 Todo 的方法</a></li>
+<li><a href="#todoadd-组件">TodoAdd 组件</a></li>
+<li><a href="#完成添加-todo-功能">完成添加 Todo 功能</a></li>
+<li><a href="#todo-统计">Todo 统计</a></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、双向绑定、自定义事件的触发与监听、计算属性等概念。接下来从这个小项目中，对这些基本概念进行实践，从而加深理解。</p>
+
+<p>本文的所有代码在 <a href="https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList">https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList</a>。</p>
+
+<p>最终实现效果如下：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/02.TodoLos%1Ct-3.png" alt="02.TodoLost-3.png" /></p>
+
+<p>接下来就一一实现。</p>
+
+<h2 id="初始化项目">初始化项目</h2>
+
+<p>同样使用 <code>vue-cli</code> 初始化项目，直接回车就好了。</p>
+
+<pre><code class="language-shell">$ vue init webpack todoListDemo
+$ cd todoListDemo
+$ npm install
+$ npm run dev
+</code></pre>
+
+<p>启动之后，浏览器就会自动现默认的页面。</p>
+
+<p>在进行编码之前，首先要考虑组件怎么设计。在本文中，组件结构如下。</p>
+
+<pre><code class="language-js">+-----------------------+
+|                       |
+|  +-----------------+  |
+|  |    Todo Add     |  |
+|  +-----------------+  |
+|  +-----------------+  |
+|  |                 |  |
+|  |   Todo List     |  |
+|  |+---------------+|  |
+|  ||   Todo Item   ||  |
+|  |+---------------+|  |
+|  |+---------------+|  |
+|  ||   Todo Item   ||  |
+|  |+---------------+|  |
+|  |+---------------+|  |
+|  ||   Todo Item   ||  |
+|  |+---------------+|  |
+|  |                 |  |
+|  +-----------------+  |
+|                       |
++-----------------------+
+</code></pre>
+
+<p>其中主要包括两个大的组件</p>
+
+<ul>
+<li><code>TodoAdd</code> 添加 Todo 的一个输入框</li>
+<li><code>TodoList</code> Todo 列表，里面有每一个 Todo Item</li>
+</ul>
+
+<h2 id="添加-todolist-组件">添加 TodoList 组件</h2>
+
+<p>在 <code>src/components</code> 目录下新建一个名为 <code>TodoList.vue</code> 的文件，并添加如下代码：</p>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div id=&quot;todoList&quot;&gt;
+    &lt;h1&gt;Todo List&lt;/h1&gt;
+    &lt;ul class=&quot;todos&quot;&gt;
+      &lt;li v-for=&quot;todo, index in todos&quot; class=&quot;todo&quot;&gt;
+        &lt;input
+          type=&quot;checkbox&quot;
+          name=&quot;&quot;
+          value=&quot;&quot;
+          :checked=&quot;todo.isCompleted&quot;
+        &gt;
+        &lt;span
+          :class=&quot;todo.isCompleted ? 'completed' : ''&quot;
+          @
+        &gt;
+          &lt;em&gt;{{ index + 1 }}.&lt;/em&gt;{{ todo.text }}
+        &lt;/span&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+  name: 'TodoList',
+  data: () =&gt; ({
+    todos: [{
+      text: '吃饭',
+      isCompleted: false
+    }, {
+      text: '睡觉',
+      isCompleted: false
+    }]
+  })
+}
+&lt;/script&gt;
+&lt;style scoped&gt;
+#todoList {
+  margin: 0 auto;
+  max-width: 350px;
+}
+.todos li {
+  list-style: none;
+}
+.todo {
+  text-align: left;
+  cursor: pointer;
+}
+.completed {
+  text-decoration: line-through;
+}
+&lt;/style&gt;
+</code></pre>
+
+<p>在 <code>TodoList</code> 中，使用 <code>todos</code> 数组来保存所有的 todo list。其中每一个 todo 都是对象，对象里面有两个属性，分别是 todo 的内容，和 todo 是否完成的标志。默认给数组添加了两个 todo，主要用于演示。</p>
+
+<p><code>src/components/Hello.vue</code> 在本项目中没什么用，可以随意删除。</p>
+
+<p>然后修改 <code>src/router/index.js</code>：</p>
+
+<pre><code class="language-js">import Vue from 'vue'
+import Router from 'vue-router'
+import TodoList from '@/components/TodoList'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'todoList',
+      component: TodoList
+    }
+  ]
+})
+</code></pre>
+
+<p>修改完之后，vue 会自动重新编译并刷新页面，这时浏览器的页面如下：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/02.TodoLos%1Ct-1.png" alt="02.TodoLost-1.png" /></p>
+
+<h2 id="添加完成-todo-的方法">添加完成 Todo 的方法</h2>
+
+<p>在该 demo 中，当点击 todo item 或者前面的复选框的时候，就完成 todo。所以现在需要添加完成 todo 的方法，并设置 todo item 的点击事件。</p>
+
+<p>像下面这样修改 <code>src/components/TodoList.vue</code> 中的 <code>template</code> 部分：</p>
+
+<pre><code class="language-html">&lt;input
+  type=&quot;checkbox&quot;
+  name=&quot;&quot;
+  value=&quot;&quot;
+  :checked=&quot;todo.isCompleted&quot;
+  @click=&quot;completed(index)&quot;
+&gt;
+&lt;span
+  :class=&quot;todo.isCompleted ? 'completed' : ''&quot;
+  @click=&quot;completed(index)&quot;
+&gt;
+  &lt;em&gt;{{ index }}.&lt;/em&gt;{{ todo.text }}
+&lt;/span&gt;
+</code></pre>
+
+<p>然后在组件里面添加对应的 <code>completed</code> 方法：</p>
+
+<pre><code class="language-html">&lt;script&gt;
+export default {
+  // 其他现有代码
+  name: 'TodoList',
+  methods: {
+    completed(index) {
+      this.todos[index].isCompleted = !this.todos[index].isCompleted
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+<p>当点击 <code>check box</code> 或 <code>span</code> 的时候，就调用 <code>completed</code> 方法并传入被点击的 todo item 的索引。在 <code>completed</code> 方法里面，更新数据对象 data 里面对应的 todo item 的 <code>isCompleted</code> 属性。这样就实现了完成 todo 和取消完成 todo 的功能。点击之后如图：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/02.TodoLos%1Ct-2.png" alt="02.TodoLost-2.png" /></p>
+
+<h2 id="todoadd-组件">TodoAdd 组件</h2>
+
+<p>接下来就需要完成添加新的 todo 的功能了。</p>
+
+<p>新建一个文件 <code>src/components/TodoAdd.vue</code>，添加如下代码：</p>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div id=&quot;addTodo&quot;&gt;
+    &lt;input
+      type=&quot;text&quot;
+      name=&quot;&quot;
+      class=&quot;input&quot;
+      value=&quot;&quot;
+      v-model=&quot;todo&quot;
+      @keyup.enter=&quot;addTodo&quot;
+    &gt;
+    &lt;button
+      type=&quot;button&quot;
+      name=&quot;button&quot;
+      @click=&quot;addTodo&quot;
+    &gt;
+        添加
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+  name: 'addTodo',
+  data: () =&gt; ({
+    todo: ''
+  }),
+  methods: {
+    addTodo () {
+      if (this.todo) {
+        this.$emit('add', this.todo)
+        this.todo = ''
+      } else {
+        alert('内容不能为空')
+      }
+    }
+  }
+}
+&lt;/script&gt;
+&lt;style scoped&gt;
+.input {
+  min-width: 200px;
+}
+&lt;/style&gt;
+</code></pre>
+
+<p>首先在组件的数据对象 <code>data</code> 里面有一个 <code>todo</code> 属性，用来存储用户输入的内容。然后在 <code>template</code> 的 <code>input</code> 输入框里，使用 <a href="https://cn.vuejs.org/v2/api/#v-model"><code>v-model</code></a> 实现双向绑定。</p>
+
+<p>当用户按下回车（<code>@keyup.enter=&quot;addTodo&quot;</code>，详见 <a href="https://cn.vuejs.org/v2/guide/events.html#键值修饰符">键值修饰符</a>）或者点击添加按钮（<code>@click=&quot;addTodo&quot;</code>）的时候，就调用 <code>methods</code> 里面的 <code>addTodo</code> 方法。</p>
+
+<p><code>addTodo</code> 方法通过 <a href="https://cn.vuejs.org/v2/api/#vm-emit"><code>vm.$emit</code></a> 触发了一个 <code>add</code> 事件，并将用户输入的内容（即 <code>this.todo</code>）作为参数传递。事件触发之后，将输入框中的内容清空。</p>
+
+<p>接下来就需要监听 <code>add</code> 事件了。监听事件需要在使用组件的模板里面，通过 <code>v-on</code> 来实现。详见 <a href="https://cn.vuejs.org/v2/guide/components.html#使用-v-on-绑定自定义事件">使用-v-on-绑定自定义事件</a>。</p>
+
+<h2 id="完成添加-todo-功能">完成添加 Todo 功能</h2>
+
+<p>在 <code>src/components/TodoList.vue</code> 中使用 <code>AddTodo</code> 这个子组件：</p>
+
+<pre><code class="language-html">&lt;h1&gt;Todo List&lt;/h1&gt;
+&lt;!-- 调用子组件，并使用 v-on 监听 add 方法 --&gt;
+&lt;!-- 当 add 事件触发时，就调用当前组件 addTodo 这个方法 --&gt;
+&lt;todo-add v-on:add=&quot;addTodo&quot;&gt;&lt;/todo-add&gt;
+&lt;ul class=&quot;todos&quot;&gt;
+&lt;!-- // 调用子组件 --&gt;
+
+&lt;script&gt;
+  // 引入子组件
+  import TodoAdd from './TodoAdd.vue'
+  export default {
+    name: 'TodoList',
+    components: {
+      TodoAdd
+    },
+    // ...
+    methods: {
+      // ...
+      // 添加新的 todo
+      addTodo() {
+        this.todos.push({
+          text: todo,
+          isCompleted: false
+        })
+      }
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+
+<p>到此，添加 todo 和完成 todo 功能就实现了。</p>
+
+<h2 id="todo-统计">Todo 统计</h2>
+
+<p>接下来还可以做点别的事情，比如显示总共的 todo 数目，以及完成和未完成的数目。</p>
+
+<p>要实现此功能，方法有很多种。最简单的一种是直接在模板中加入 JS 表达式，来显示总共的数目，比如：</p>
+
+<pre><code class="language-html">&lt;p&gt;总共有 &lt;strong&gt;{{ this.todos.lengt }}&lt;/strong&gt; 个待办事项。&lt;/p&gt;
+</code></pre>
+
+<p>对于简单的逻辑可以很方便用表达式写出来，但如果是比较复杂的逻辑，比如统计未完成数目（当然这个也可以用一个表达式搞定），可能一个表达式看起来就不太清晰。这个时候就可以用<a href="https://cn.vuejs.org/v2/api/#computed">计算属性</a>。</p>
+
+<p>修改 <code>src/components/TodoList.vue</code>：</p>
+
+<pre><code class="language-html">&lt;!-- // ... --&gt;
+&lt;ul class=&quot;todos&quot;&gt;
+&lt;!-- // ... --&gt;
+&lt;/ul&gt;
+&lt;div&gt;
+  &lt;p v-show=&quot;todos.length === 0&quot;&gt;
+    恭喜！所有的事情都已完成！
+  &lt;/p&gt;
+  &lt;p v-show=&quot;todos.length !== 0&quot;&gt;
+    共 &lt;strong&gt;{{ todos.length }}&lt;/strong&gt; 个待办事项。{{ completedCounts }} 个已完成，{{ notCompletedCounts }} 个未完成。
+  &lt;/p&gt;
+&lt;/div&gt;
+
+
+&lt;script&gt;
+// ...
+export default {
+  name: 'TodoList',
+  // ...
+  computed: {
+    completedCounts () {
+      return this.todos.filter(item =&gt; item.isCompleted).length
+    },
+    notCompletedCounts () {
+      return this.todos.filter(item =&gt; !item.isCompleted).length
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+<p>上述代码中通过 <code>completedCounts</code> 和 <code>notCompletedCounts</code> 两个计算属性，来计算出已完成和未完成的 todo。虽然这两个表达式可以直接放在模板中，但表达式比较复杂，看起来也不是很清晰，所以很多时候就可以用计算属性来计算出一个最终值，然后在模板中使用。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>到此，基于 Vue 的 Todo List 就完成了。在该项目中，对组件化、双向绑定、自定义事件的触发与监听、计算属性等概念进行了实践。当然，最重要的不是完成这个 Todo List 的代码，而是从实现功能的过程中举一反三，通过简单的 demo 实现，去思考如何用 vue 开发一个更大更完整的项目。</p>
+
+                </section>
+            </article>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+<script>
+var baiduAnalytics = '39843ea392201290bd6f76173d2e1633';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

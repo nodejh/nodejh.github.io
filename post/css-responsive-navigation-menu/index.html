@@ -47,8 +47,8 @@
                     </h1>
                     <h2 class="headline">
                     Jul 28, 2017 17:03
-                    · 999 words
-                    · 2 minutes read
+                    · 1006 words
+                    · 3 minutes read
                       <span class="tags">
                       
                       
@@ -86,7 +86,9 @@
 
 <h2 id="目标">目标</h2>
 
-<p>本文的目标是实现一个导航菜单，当屏幕变小时，导航菜单由列表自动变为下来菜单。</p>
+<p>本文的目标是实现一个导航菜单，当屏幕变小时，导航菜单由列表自动变为下来菜单。具体效果如下：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif" alt="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif" /></p>
 
 <h2 id="nav-标签">Nav 标签</h2>
 
@@ -169,7 +171,7 @@
 
 <p>这里以 600px 作为断点，因为 <code>nav</code> 标签的定位是 <code>relative</code>，所以这里可以将 <code>&lt;ul&gt;</code> 菜单设置为 <code>absolute</code>，使其固定在 <code>nav</code> 的定部。然后通过 <code>display:none</code> 隐藏所有的 <code>li</code> 标签，使用 <code>.current</code> 这个类，将当前 <code>li</code> 显示为 <code>block</code>。</p>
 
-<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a href="/demo/CSS-Responsive-Navigation-Menu/">demo</a>。</p>
+<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/">demo</a>。</p>
 
 <pre><code class="language-css">@media screen and (max-width: 600px) {
 	.nav {
@@ -231,7 +233,7 @@
 }
 </code></pre>
 
-<p>查看 <a href="/demo/CSS-Responsive-Navigation-Menu/">DEMO</a>。</p>
+<p>查看 <a href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/">DEMO</a>。</p>
 
 <hr />
 

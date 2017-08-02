@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://nodejh.com/post/c&#43;&#43;-commonly-used/</loc>
-    <lastmod>2017-07-30T01:44:54+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://nodejh.com/post/how-to-vertically-middle-align-floated-elements-with-flexbox/</loc>
     <lastmod>2017-07-28T20:53:14+08:00</lastmod>
   </url>
@@ -269,18 +264,6 @@
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/c&#43;&#43;/</loc>
-    <lastmod>2017-07-30T01:44:54+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/c&#43;&#43;/</loc>
-    <lastmod>2017-07-30T01:44:54+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://nodejh.com/categories/</loc>
     <lastmod>2017-07-05T11:41:43+08:00</lastmod>
     <priority>0</priority>
@@ -498,7 +481,7 @@
   
   <url>
     <loc>http://nodejh.com/post/</loc>
-    <lastmod>2017-07-30T01:44:54+08:00</lastmod>
+    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -600,7 +583,7 @@
   
   <url>
     <loc>http://nodejh.com/</loc>
-    <lastmod>2017-07-30T01:44:54+08:00</lastmod>
+    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
     <priority>0</priority>
   </url>
   

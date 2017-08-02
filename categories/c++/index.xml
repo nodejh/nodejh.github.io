@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C&#43;&#43; on nodejh</title>
+    <link>http://nodejh.com/categories/c&#43;&#43;/</link>
+    <description>Recent content in C&#43;&#43; on nodejh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 30 Jul 2017 01:44:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://nodejh.com/categories/c++/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>C&#43;&#43; Commonly Used</title>
+      <link>http://nodejh.com/post/c&#43;&#43;-commonly-used/</link>
+      <pubDate>Sun, 30 Jul 2017 01:44:54 +0800</pubDate>
+      
+      <guid>http://nodejh.com/post/c&#43;&#43;-commonly-used/</guid>
+      <description>最近在用 C++ 刷算法题。由于对 C++ 不熟悉，很多语法都是边查边用。为了方便查阅和记忆，所以在此记录下来。 字符串转数字 string str=&amp;quot;0100&amp;quot;; int i = stoi(str); // 100 数字转字符串及长</description>
+    </item>
+    
+  </channel>
+</rss>

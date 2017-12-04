@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>Setting Environmental Variables in MacOS</title>
+      <title>macOS/Linux 环境变量设置</title>
       <link>http://nodejh.com/post/setting-environmental-variables-in-macos/</link>
       <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
       
@@ -23,14 +23,12 @@
     </item>
     
     <item>
-      <title>macOS Sierra Apache Multiple PHP versions</title>
+      <title>在 MacOS Sierra 上安装 Apache 和多个版本的 PHP</title>
       <link>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</link>
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
       <guid>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</guid>
       <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
-
-&lt;p&gt;通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

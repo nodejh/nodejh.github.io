@@ -12,16 +12,18 @@
     
     
     <item>
-      <title>How To Vertically Middle Align Floated Elements With Flexbox</title>
+      <title>使用 Flexbox 使浮动元素垂直居中</title>
       <link>http://nodejh.com/post/how-to-vertically-middle-align-floated-elements-with-flexbox/</link>
       <pubDate>Fri, 28 Jul 2017 20:53:14 +0800</pubDate>
       
       <guid>http://nodejh.com/post/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
-      <description>垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。 考虑下面的场景： 你正在使用网格布局的框架，比如 Bootstrap、Found</description>
+      <description>&lt;p&gt;垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>CSS Responsive Navigation Menu</title>
+      <title>纯 CSS 实现响应式导航菜单</title>
       <link>http://nodejh.com/post/css-responsive-navigation-menu/</link>
       <pubDate>Fri, 28 Jul 2017 17:03:58 +0800</pubDate>
       

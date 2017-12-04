@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>Architecture And Code Analysis Of Teaching Evaluation</title>
+      <title>一键评教软件设计及代码分析</title>
       <link>http://nodejh.com/post/architecture-and-code-analysis-of-teaching-evaluation/</link>
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
@@ -23,7 +23,7 @@
     </item>
     
     <item>
-      <title>Wechat Development Access Guide</title>
+      <title>微信公众平台开发接入指南</title>
       <link>http://nodejh.com/post/wechat-development-access-guide/</link>
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
@@ -34,7 +34,7 @@
     </item>
     
     <item>
-      <title>Use and Break Promise Chain</title>
+      <title>Promise 的链式调用与中止</title>
       <link>http://nodejh.com/post/use-and-stop-promise-break-chain/</link>
       <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
       
@@ -47,7 +47,7 @@
     </item>
     
     <item>
-      <title>Check Parameters in Express Router</title>
+      <title>检测 Express 路由中的参数合法性</title>
       <link>http://nodejh.com/post/check-parameters-in-express-router/</link>
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
@@ -58,7 +58,7 @@
     </item>
     
     <item>
-      <title>Crawler for SCU Libirary</title>
+      <title>模拟登录某某大学图书馆系统</title>
       <link>http://nodejh.com/post/crawler-for-scu-libirary/</link>
       <pubDate>Fri, 07 Oct 2016 01:03:30 +0800</pubDate>
       
@@ -69,7 +69,7 @@
     </item>
     
     <item>
-      <title>Use Nginx Reverse Proxy Node.js</title>
+      <title>使用 Ngnix 给 Node.js 应用做反向代理</title>
       <link>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</link>
       <pubDate>Sat, 30 Apr 2016 17:19:20 +0800</pubDate>
       

@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>Handy MySQL Commands</title>
+      <title>常用 MySQL 命令</title>
       <link>http://nodejh.com/post/handy-mysql-commands/</link>
       <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
       
@@ -21,7 +21,7 @@
     </item>
     
     <item>
-      <title>The innodb_system data file &#39;ibdata1&#39; must be writeable</title>
+      <title>MySQL ibdata1 文件不可写</title>
       <link>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
@@ -34,7 +34,7 @@
     </item>
     
     <item>
-      <title>Troubleshoot MySQL Start Error</title>
+      <title>MySQL 启动报错问题排查</title>
       <link>http://nodejh.com/post/troubleshoot-mysql-start-error/</link>
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
@@ -45,7 +45,7 @@
     </item>
     
     <item>
-      <title>Create and Manage MySQL User</title>
+      <title>创建 MySQL数据库及用户权限</title>
       <link>http://nodejh.com/post/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
@@ -58,7 +58,7 @@
     </item>
     
     <item>
-      <title>Cannot Connet to MySql With Error Code 61</title>
+      <title>MySQL 连接错误 (61) </title>
       <link>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</link>
       <pubDate>Thu, 07 Apr 2016 01:55:51 +0800</pubDate>
       

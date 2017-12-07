@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Nerual Network on nodejh</title>
+    <title>Nerual Network on node</title>
     <link>http://nodejh.com/tags/nerual-network/</link>
-    <description>Recent content in Nerual Network on nodejh</description>
+    <description>Recent content in Nerual Network on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 09 Oct 2016 18:27:44 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>使用 Python and Keras 构建一个简单的神经网络</title>
-      <link>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</link>
+      <link>http://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</link>
       <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</guid>
+      <guid>http://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&#34;http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/&#34;&gt;A simple neural network with Python and Keras&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;

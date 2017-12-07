@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Blog on nodejh</title>
+    <title>Blog on node</title>
     <link>http://nodejh.com/tags/blog/</link>
-    <description>Recent content in Blog on nodejh</description>
+    <description>Recent content in Blog on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 30 Sep 2016 17:14:37 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>从 Hexo 迁移到 Hugo</title>
-      <link>http://nodejh.com/post/migrate-to-hugo-from-hexo/</link>
+      <link>http://nodejh.com/posts/migrate-to-hugo-from-hexo/</link>
       <pubDate>Fri, 30 Sep 2016 17:14:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/migrate-to-hugo-from-hexo/</guid>
+      <guid>http://nodejh.com/posts/migrate-to-hugo-from-hexo/</guid>
       <description>&lt;p&gt;把博客从 &lt;a href=&#34;http://hexo.io/&#34;&gt;Hexo&lt;/a&gt; 迁移到了 &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;。主要原因有二：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

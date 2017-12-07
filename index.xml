@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>nodejh</title>
+    <title>node</title>
     <link>http://nodejh.com/</link>
-    <description>Recent content on nodejh</description>
+    <description>Recent content on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 28 Jul 2017 20:53:14 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>使用 Flexbox 使浮动元素垂直居中</title>
-      <link>http://nodejh.com/post/how-to-vertically-middle-align-floated-elements-with-flexbox/</link>
+      <link>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</link>
       <pubDate>Fri, 28 Jul 2017 20:53:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
+      <guid>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
       <description>&lt;p&gt;垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -24,64 +24,64 @@
     
     <item>
       <title>纯 CSS 实现响应式导航菜单</title>
-      <link>http://nodejh.com/post/css-responsive-navigation-menu/</link>
+      <link>http://nodejh.com/posts/css-responsive-navigation-menu/</link>
       <pubDate>Fri, 28 Jul 2017 17:03:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/css-responsive-navigation-menu/</guid>
+      <guid>http://nodejh.com/posts/css-responsive-navigation-menu/</guid>
       <description>本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对</description>
     </item>
     
     <item>
       <title>实现一个TodoList - Vue2 Tutorials (二)</title>
-      <link>http://nodejh.com/post/vue2-tutorials-02-todolist/</link>
+      <link>http://nodejh.com/posts/vue2-tutorials-02-todolist/</link>
       <pubDate>Mon, 17 Jul 2017 09:57:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/vue2-tutorials-02-todolist/</guid>
+      <guid>http://nodejh.com/posts/vue2-tutorials-02-todolist/</guid>
       <description>在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &amp;mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、</description>
     </item>
     
     <item>
       <title>Electron 快速入门</title>
-      <link>http://nodejh.com/post/electron-quick-start/</link>
+      <link>http://nodejh.com/posts/electron-quick-start/</link>
       <pubDate>Thu, 06 Jul 2017 15:32:26 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/electron-quick-start/</guid>
+      <guid>http://nodejh.com/posts/electron-quick-start/</guid>
       <description>简介 Electron 是一个可以使用 Web 技术如 JavaScript、HTML 和 CSS 来创建跨平台原生桌面应用的框架。借助 Electron，我们可以使用纯 JavaScript 来调用丰</description>
     </item>
     
     <item>
       <title>快速入门 - Vue2 Tutorials (一)</title>
-      <link>http://nodejh.com/post/vue2-tutorials-01-quick-start/</link>
+      <link>http://nodejh.com/posts/vue2-tutorials-01-quick-start/</link>
       <pubDate>Thu, 06 Jul 2017 14:53:34 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/vue2-tutorials-01-quick-start/</guid>
+      <guid>http://nodejh.com/posts/vue2-tutorials-01-quick-start/</guid>
       <description>Vue 的官方文档 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧</description>
     </item>
     
     <item>
       <title>使用 Hexo 创建项目文档网站</title>
-      <link>http://nodejh.com/post/project-documentation-with-hexo-static-site-generator/</link>
+      <link>http://nodejh.com/posts/project-documentation-with-hexo-static-site-generator/</link>
       <pubDate>Wed, 05 Jul 2017 11:41:43 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/project-documentation-with-hexo-static-site-generator/</guid>
+      <guid>http://nodejh.com/posts/project-documentation-with-hexo-static-site-generator/</guid>
       <description>当我们发布一个开源项目的时候，最重要的事情之一就是要创建项目文档。对使用项目的用户来说，文档是非常有必要的，通常我们可以使用下面这些方式来创</description>
     </item>
     
     <item>
       <title>常用 MySQL 命令</title>
-      <link>http://nodejh.com/post/handy-mysql-commands/</link>
+      <link>http://nodejh.com/posts/handy-mysql-commands/</link>
       <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <guid>http://nodejh.com/posts/handy-mysql-commands/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>深入理解 Oracle 启动原理</title>
-      <link>http://nodejh.com/post/understand-the-oracle-startup-process/</link>
+      <link>http://nodejh.com/posts/understand-the-oracle-startup-process/</link>
       <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/understand-the-oracle-startup-process/</guid>
+      <guid>http://nodejh.com/posts/understand-the-oracle-startup-process/</guid>
       <description>&lt;h2 id=&#34;一-常用启动步骤&#34;&gt;一. 常用启动步骤&lt;/h2&gt;
 
 &lt;p&gt;对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。&lt;/p&gt;
@@ -91,10 +91,10 @@
     
     <item>
       <title>macOS/Linux 环境变量设置</title>
-      <link>http://nodejh.com/post/setting-environmental-variables-in-macos/</link>
+      <link>http://nodejh.com/posts/setting-environmental-variables-in-macos/</link>
       <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/setting-environmental-variables-in-macos/</guid>
+      <guid>http://nodejh.com/posts/setting-environmental-variables-in-macos/</guid>
       <description>&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -102,10 +102,10 @@
     
     <item>
       <title>在 Oracle 中设置自增列</title>
-      <link>http://nodejh.com/post/how-to-create-auto-increment-column-in-oracle/</link>
+      <link>http://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</link>
       <pubDate>Mon, 20 Feb 2017 20:26:33 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-create-auto-increment-column-in-oracle/</guid>
+      <guid>http://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</guid>
       <description>&lt;p&gt;如果你经常使用 MySQL，你肯定对 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 非常熟悉，因为经常要用到它。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -113,10 +113,10 @@
     
     <item>
       <title>JavaScript 是传值调用还是传引用调用？</title>
-      <link>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
+      <link>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
+      <guid>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
       <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
 
 &lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
@@ -126,10 +126,10 @@
     
     <item>
       <title>使用 SQL *Plus 管理 Oracle 数据库</title>
-      <link>http://nodejh.com/post/using-sql-plus-on-oracle/</link>
+      <link>http://nodejh.com/posts/using-sql-plus-on-oracle/</link>
       <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/using-sql-plus-on-oracle/</guid>
+      <guid>http://nodejh.com/posts/using-sql-plus-on-oracle/</guid>
       <description>&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -137,10 +137,10 @@
     
     <item>
       <title>在 VPS 上安装 Shadowsocks Server</title>
-      <link>http://nodejh.com/post/install-shadowsocks-server-in-vps/</link>
+      <link>http://nodejh.com/posts/install-shadowsocks-server-in-vps/</link>
       <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-shadowsocks-server-in-vps/</guid>
+      <guid>http://nodejh.com/posts/install-shadowsocks-server-in-vps/</guid>
       <description>&lt;p&gt;首先关于 Shadowsocks 的使用说明在这里：&lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明&#34;&gt;Shadowsocks 使用说明&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -148,10 +148,10 @@
     
     <item>
       <title>更改 Ubuntu 软件源</title>
-      <link>http://nodejh.com/post/change-source-list-in-ubuntu/</link>
+      <link>http://nodejh.com/posts/change-source-list-in-ubuntu/</link>
       <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/change-source-list-in-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/change-source-list-in-ubuntu/</guid>
       <description>&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
 
 &lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
@@ -161,10 +161,10 @@
     
     <item>
       <title>一键评教软件设计及代码分析</title>
-      <link>http://nodejh.com/post/architecture-and-code-analysis-of-teaching-evaluation/</link>
+      <link>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</link>
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/architecture-and-code-analysis-of-teaching-evaluation/</guid>
+      <guid>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</guid>
       <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -172,10 +172,10 @@
     
     <item>
       <title>在 MacOS Sierra 上安装 Apache 和多个版本的 PHP</title>
-      <link>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</link>
+      <link>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</link>
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</guid>
+      <guid>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</guid>
       <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -183,10 +183,10 @@
     
     <item>
       <title>微信公众平台开发接入指南</title>
-      <link>http://nodejh.com/post/wechat-development-access-guide/</link>
+      <link>http://nodejh.com/posts/wechat-development-access-guide/</link>
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/wechat-development-access-guide/</guid>
+      <guid>http://nodejh.com/posts/wechat-development-access-guide/</guid>
       <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -194,10 +194,10 @@
     
     <item>
       <title>远程登录 VPS 语言错误</title>
-      <link>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</link>
+      <link>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</link>
       <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</guid>
+      <guid>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</guid>
       <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -205,10 +205,10 @@
     
     <item>
       <title>Promise 的链式调用与中止</title>
-      <link>http://nodejh.com/post/use-and-stop-promise-break-chain/</link>
+      <link>http://nodejh.com/posts/use-and-stop-promise-break-chain/</link>
       <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/use-and-stop-promise-break-chain/</guid>
+      <guid>http://nodejh.com/posts/use-and-stop-promise-break-chain/</guid>
       <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 
 &lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
@@ -218,10 +218,10 @@
     
     <item>
       <title>求给定数组的对等差分(symmetric difference) (△ or ⊕)数组</title>
-      <link>http://nodejh.com/post/symmetric-difference/</link>
+      <link>http://nodejh.com/posts/symmetric-difference/</link>
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/symmetric-difference/</guid>
+      <guid>http://nodejh.com/posts/symmetric-difference/</guid>
       <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
@@ -231,10 +231,10 @@
     
     <item>
       <title>在 macOS 中编译安装 MXNet</title>
-      <link>http://nodejh.com/post/install-mxnet-on-macos/</link>
+      <link>http://nodejh.com/posts/install-mxnet-on-macos/</link>
       <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-mxnet-on-macos/</guid>
+      <guid>http://nodejh.com/posts/install-mxnet-on-macos/</guid>
       <description>&lt;p&gt;MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：&lt;a href=&#34;https://github.com/dmlc/mxnet/issues/797&#34;&gt;《MXNet设计和实现简介》&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -242,10 +242,10 @@
     
     <item>
       <title>找出一个数组中的最大值</title>
-      <link>http://nodejh.com/post/get-the-max-number-in-array/</link>
+      <link>http://nodejh.com/posts/get-the-max-number-in-array/</link>
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/get-the-max-number-in-array/</guid>
+      <guid>http://nodejh.com/posts/get-the-max-number-in-array/</guid>
       <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -253,10 +253,10 @@
     
     <item>
       <title>检测 Express 路由中的参数合法性</title>
-      <link>http://nodejh.com/post/check-parameters-in-express-router/</link>
+      <link>http://nodejh.com/posts/check-parameters-in-express-router/</link>
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/check-parameters-in-express-router/</guid>
+      <guid>http://nodejh.com/posts/check-parameters-in-express-router/</guid>
       <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -264,10 +264,10 @@
     
     <item>
       <title>使用 Python and Keras 构建一个简单的神经网络</title>
-      <link>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</link>
+      <link>http://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</link>
       <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/a-simple-neural-network-with-python-and-keras/</guid>
+      <guid>http://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&#34;http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/&#34;&gt;A simple neural network with Python and Keras&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -277,10 +277,10 @@
     
     <item>
       <title>模拟登录某某大学图书馆系统</title>
-      <link>http://nodejh.com/post/crawler-for-scu-libirary/</link>
+      <link>http://nodejh.com/posts/crawler-for-scu-libirary/</link>
       <pubDate>Fri, 07 Oct 2016 01:03:30 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/crawler-for-scu-libirary/</guid>
+      <guid>http://nodejh.com/posts/crawler-for-scu-libirary/</guid>
       <description>&lt;p&gt;本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -288,10 +288,10 @@
     
     <item>
       <title>MySQL ibdata1 文件不可写</title>
-      <link>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
+      <link>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
+      <guid>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
       <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
 
 &lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
@@ -301,10 +301,10 @@
     
     <item>
       <title>从 Hexo 迁移到 Hugo</title>
-      <link>http://nodejh.com/post/migrate-to-hugo-from-hexo/</link>
+      <link>http://nodejh.com/posts/migrate-to-hugo-from-hexo/</link>
       <pubDate>Fri, 30 Sep 2016 17:14:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/migrate-to-hugo-from-hexo/</guid>
+      <guid>http://nodejh.com/posts/migrate-to-hugo-from-hexo/</guid>
       <description>&lt;p&gt;把博客从 &lt;a href=&#34;http://hexo.io/&#34;&gt;Hexo&lt;/a&gt; 迁移到了 &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;。主要原因有二：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -312,10 +312,10 @@
     
     <item>
       <title>在 Atom 中使用 ESlint</title>
-      <link>http://nodejh.com/post/use-eslint-config-airbnb-in-atom/</link>
+      <link>http://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</link>
       <pubDate>Tue, 27 Sep 2016 20:48:24 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/use-eslint-config-airbnb-in-atom/</guid>
+      <guid>http://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</guid>
       <description>&lt;p&gt;ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -323,10 +323,10 @@
     
     <item>
       <title>分别使用 XHR、jQuery 和 Fetch 实现 AJAX</title>
-      <link>http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/</link>
+      <link>http://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</link>
       <pubDate>Mon, 26 Sep 2016 19:58:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/</guid>
+      <guid>http://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</guid>
       <description>&lt;p&gt;本文详细讲述如何使用原生 JS、jQuery 和 Fetch 来实现 AJAX。&lt;/p&gt;
 
 &lt;p&gt;AJAX 即 Asynchronous JavaScript and XML，异步的 JavaScript 和 XML。使用 AJAX 可以无刷新地向服务端发送请求接收服务端响应，并更新页面。&lt;/p&gt;
@@ -336,10 +336,10 @@
     
     <item>
       <title>Webpack 和 React 实战</title>
-      <link>http://nodejh.com/post/start-react-with-webpack/</link>
+      <link>http://nodejh.com/posts/start-react-with-webpack/</link>
       <pubDate>Fri, 09 Sep 2016 04:11:13 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/start-react-with-webpack/</guid>
+      <guid>http://nodejh.com/posts/start-react-with-webpack/</guid>
       <description>&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone https://github.com/nodejh/start-react-with-webpack react-sample
@@ -352,10 +352,10 @@ $ npm run dev
     
     <item>
       <title>在 Mac OS X 上安装 Opencv3 (Python3.5)</title>
-      <link>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</link>
+      <link>http://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</link>
       <pubDate>Mon, 01 Aug 2016 21:17:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</guid>
+      <guid>http://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</guid>
       <description>&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;
@@ -365,10 +365,10 @@ $ npm run dev
     
     <item>
       <title>MySQL 启动报错问题排查</title>
-      <link>http://nodejh.com/post/troubleshoot-mysql-start-error/</link>
+      <link>http://nodejh.com/posts/troubleshoot-mysql-start-error/</link>
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/troubleshoot-mysql-start-error/</guid>
+      <guid>http://nodejh.com/posts/troubleshoot-mysql-start-error/</guid>
       <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -376,10 +376,10 @@ $ npm run dev
     
     <item>
       <title>使用 Ngnix 给 Node.js 应用做反向代理</title>
-      <link>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</link>
+      <link>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
       <pubDate>Sat, 30 Apr 2016 17:19:20 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</guid>
+      <guid>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
       <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -387,10 +387,10 @@ $ npm run dev
     
     <item>
       <title>Webstorm 中 Node.js 核心模块配置</title>
-      <link>http://nodejh.com/post/webstorm-node-js-core-module-source-not-configured/</link>
+      <link>http://nodejh.com/posts/webstorm-node-js-core-module-source-not-configured/</link>
       <pubDate>Tue, 26 Apr 2016 23:37:35 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/webstorm-node-js-core-module-source-not-configured/</guid>
+      <guid>http://nodejh.com/posts/webstorm-node-js-core-module-source-not-configured/</guid>
       <description>&lt;p&gt;在 Webstrom 中引入 Node.js 自带模块的时候，Webstorm 有如下错误提示：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -398,10 +398,10 @@ $ npm run dev
     
     <item>
       <title>JS 判断字符串是否是拼音音节</title>
-      <link>http://nodejh.com/post/get-chinese-phonetic-syllable-with-js/</link>
+      <link>http://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</link>
       <pubDate>Wed, 13 Apr 2016 10:35:40 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/get-chinese-phonetic-syllable-with-js/</guid>
+      <guid>http://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</guid>
       <description>&lt;h2 id=&#34;最终函数&#34;&gt;最终函数&lt;/h2&gt;
 
 &lt;p&gt;最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：&lt;/p&gt;
@@ -411,10 +411,10 @@ $ npm run dev
     
     <item>
       <title>创建 MySQL数据库及用户权限</title>
-      <link>http://nodejh.com/post/create-and-manage-mysql-user/</link>
+      <link>http://nodejh.com/posts/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
+      <guid>http://nodejh.com/posts/create-and-manage-mysql-user/</guid>
       <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
@@ -424,10 +424,10 @@ $ npm run dev
     
     <item>
       <title>MySQL 连接错误 (61) </title>
-      <link>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</link>
+      <link>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</link>
       <pubDate>Thu, 07 Apr 2016 01:55:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</guid>
+      <guid>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</guid>
       <description>&lt;p&gt;远程连接 MySQL 的时候出现如下错误:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)
@@ -438,10 +438,10 @@ $ npm run dev
     
     <item>
       <title>Eclipse JSP/Servlet 环境搭建</title>
-      <link>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</link>
+      <link>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</link>
       <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
+      <guid>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</guid>
       <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
 
 &lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
@@ -456,10 +456,10 @@ $ npm run dev
     
     <item>
       <title>Ubuntu下JAVA开发环境的配置</title>
-      <link>http://nodejh.com/post/how-to-install-java-on-ubuntu/</link>
+      <link>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 16:06:40 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-install-java-on-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
 
 &lt;p&gt;建JAVA开发环境，第一步就是要安装JDK。在这里下载：&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&#34;&gt;Java SE Development Kit 8 - Downloads&lt;/a&gt;&lt;/p&gt;
@@ -469,10 +469,10 @@ $ npm run dev
     
     <item>
       <title>Ubuntu 下 Tomcat 的配置</title>
-      <link>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</link>
+      <link>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
 
 &lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;
@@ -482,19 +482,19 @@ $ npm run dev
     
     <item>
       <title>删除GIT中的.DS_Store</title>
-      <link>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
+      <link>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
       <pubDate>Wed, 24 Feb 2016 14:25:25 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
+      <guid>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Linux 用户和用户组的管理</title>
-      <link>http://nodejh.com/post/linux-users-and-groups/</link>
+      <link>http://nodejh.com/posts/linux-users-and-groups/</link>
       <pubDate>Fri, 23 Jan 2015 20:33:29 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/linux-users-and-groups/</guid>
+      <guid>http://nodejh.com/posts/linux-users-and-groups/</guid>
       <description>&lt;p&gt;Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

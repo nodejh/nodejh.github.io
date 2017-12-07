@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jsp on nodejh</title>
+    <title>Jsp on node</title>
     <link>http://nodejh.com/tags/jsp/</link>
-    <description>Recent content in Jsp on nodejh</description>
+    <description>Recent content in Jsp on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 12 Mar 2016 15:41:58 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Ubuntu 下 Tomcat 的配置</title>
-      <link>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</link>
+      <link>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
 
 &lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;

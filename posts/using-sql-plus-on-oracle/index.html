@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="使用 SQL *Plus 管理 Oracle 数据库"/>
+  <meta name="twitter:description" content="Using SQL Plus on Oracle"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>使用 SQL *Plus 管理 Oracle 数据库 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        使用 SQL *Plus 管理 Oracle 数据库
+                    </h1>
+                    <h2 class="headline">
+                    Feb 17, 2017 15:03
+                    · 1931 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/sqlplus">SQLPlus</a>
+                          
+                              <a href="http://nodejh.comtags/oracle">Oracle</a>
+                          
+                              <a href="http://nodejh.comtags/%E6%95%B0%E6%8D%AE%E5%BA%93">数据库</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#登录-sql-plus">登录 SQL *PLUS</a></li>
+<li><a href="#数据库信息">数据库信息</a>
+<ul>
+<li>
+<ul>
+<li><a href="#查看数据库名">查看数据库名</a></li>
+<li><a href="#查询当前数据库实例名">查询当前数据库实例名</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#用户管理">用户管理</a>
+<ul>
+<li>
+<ul>
+<li><a href="#解锁用户">解锁用户</a></li>
+<li><a href="#密码错误次数">密码错误次数</a></li>
+<li><a href="#密码有效期">密码有效期</a></li>
+<li><a href="#修改密码">修改密码</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#表管理">表管理</a>
+<ul>
+<li>
+<ul>
+<li><a href="#查看用户所拥有的表">查看用户所拥有的表</a></li>
+<li><a href="#查看表空间">查看表空间</a></li>
+<li><a href="#创建表空间">创建表空间</a></li>
+<li><a href="#创建新用户">创建新用户</a></li>
+<li><a href="#分配权限">分配权限</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#权限管理">权限管理</a>
+<ul>
+<li>
+<ul>
+<li><a href="#oracle中的权限">oracle中的权限</a></li>
+<li><a href="#系统权限分类">系统权限分类</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#导入导出">导入导出</a>
+<ul>
+<li>
+<ul>
+<li><a href="#导出">导出</a></li>
+<li><a href="#导入">导入</a></li>
+<li><a href="#执行-sql-文件">执行 SQL 文件</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 <code>SQL</code>、<code>PL/SQL</code>、 和 <code>SQL*Plus</code> 命令：</p>
+
+<p></p>
+
+<ul>
+<li>支持查询、插入和更新数据</li>
+<li>执行 <code>PL/SQL</code> 程序</li>
+<li>查看表和对象的定义</li>
+<li>开发和执行批处理脚本</li>
+<li>进行数据库管理</li>
+</ul>
+
+<h2 id="登录-sql-plus">登录 SQL *PLUS</h2>
+
+<p>直接登录，输入命令后会提示输入用户名密码：</p>
+
+<pre><code>$ sqlplus
+</code></pre>
+
+<p>使用用户名和密码：</p>
+
+<pre><code>$ sqlplus [username]/[user_password]
+</code></pre>
+
+<p>操作系统权限认证的 Oracle SYS 管理员登陆：</p>
+
+<pre><code>$ sqlplus / as sysdba
+</code></pre>
+
+<p>不在终端暴露密码登录：</p>
+
+<pre><code>$ sqlplus /nolog
+SQL&gt; conn [username]/[user_password]
+# 或者
+SQL &gt; conn / as sysdba
+</code></pre>
+
+<p>退出登录：</p>
+
+<pre><code>SQL&gt; exit
+</code></pre>
+
+<h2 id="数据库信息">数据库信息</h2>
+
+<h4 id="查看数据库名">查看数据库名</h4>
+
+<p>通常情况了我们称的 <code>数据库</code>，并不仅指物理的数据集合，而是物理数据、内存、操作系统进程的组合体。</p>
+
+<pre><code>SQL&gt; select name from v$database;
+</code></pre>
+
+<h4 id="查询当前数据库实例名">查询当前数据库实例名</h4>
+
+<blockquote>
+<p>实例是访问Oracle数据库所需的一部分计算机内存和辅助处理后台进程，是由进程和这些进程所使用的内存(SGA)所构成一个集合。</p>
+</blockquote>
+
+<pre><code>SQL&gt; select instance_name from v$instance;
+</code></pre>
+
+<p>数据库实例名用于对外部连接。在操作系统中要取得与数据库的联系，必须使用数据库实例名。比如我们作开发，要连接数据库，就得连接数据库实例名，<code>orcl</code> 就为数据库实例名：</p>
+
+<pre><code>jdbc:oracle:thin:@localhost:1521:orcl
+</code></pre>
+
+<p>一个数据库可以有多个实例，在作数据库服务集群的时候可以用到。</p>
+
+<h2 id="用户管理">用户管理</h2>
+
+<p>Oracle 使用 <code>PROFILE</code> 文件对用户访问资源的权限进行控制。</p>
+
+<p>若不做特殊指定，创建用户时用户默认使用的 <code>PROFILE</code> 就是 <code>DEFAULT</code>。</p>
+
+<p>查看当前用户：</p>
+
+<pre><code>SQL&gt; show user
+</code></pre>
+
+<p>查看数据库用户：</p>
+
+<pre><code>SQL&gt; select * from dba_users;
+</code></pre>
+
+<h4 id="解锁用户">解锁用户</h4>
+
+<p>默认当密码输错 10 次之后，用户就会被锁定：</p>
+
+<pre><code>ORA-28000: the account is locked
+</code></pre>
+
+<p>这个时候就需要管理员来解锁：</p>
+
+<pre><code>$ sqlplus / as sysdba
+SQL&gt; alter user [username] account unlock;
+</code></pre>
+
+<p>有解锁肯定就有锁定：</p>
+
+<pre><code>SQL&gt; alter user [username] account lock;
+</code></pre>
+
+<h4 id="密码错误次数">密码错误次数</h4>
+
+<p>当然，也可以自己修改最大密码错误次数，最大错误次数存储在 <code>dba_profiles</code> 表中。</p>
+
+<p>首先根据 username 查看用户使用的 <code>PROFILE</code>：</p>
+
+<pre><code>SQL&gt; SELECT PROFILE FROM DBA_USERS WHERE USERNAME='[username]'
+</code></pre>
+
+<p>然后根据 username 以及查询到的 <code>PROFILE</code> 查看该用户的最大密码错误次数 <code>FAILED_LOGIN_ATTEMPTS</code> ：</p>
+
+<pre><code>SQL&gt; SELECT * FROM DBA_PROFILES WHERE PROFILE='DEFAULT' AND RESOURCE_NAME='FAILED_LOGIN_ATTEMPTS';
+</code></pre>
+
+<p>将错误次数修改为无限次：</p>
+
+<pre><code>SQL&gt; ALTER PROFILE DEFAULT LIMIT FAILED_LOGIN_ATTEMPTSUNLIMITED;
+</code></pre>
+
+<h4 id="密码有效期">密码有效期</h4>
+
+<p>Oracle 11g 默认用户每三个月（180 天）就要修改一次密码，快到密码过期时间就会提醒：</p>
+
+<pre><code>ORA-28002: the password will expire within 7 days
+</code></pre>
+
+<p>这里同样要先查找到 <code>PROFILE</code> 再查看用户密码剩余过期时间：</p>
+
+<pre><code>SQL&gt; SELECT * FROM DBA_PROFILES WHERE PROFILE='DEFAULT' AND RESOURCE_NAME='PASSWORD_LIFE_TIME';
+</code></pre>
+
+<p>修改密码有效期（不受限）：</p>
+
+<pre><code>SQL&gt; ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIMEUNLIMITED;
+</code></pre>
+
+<p>设置密码过期：</p>
+
+<pre><code>SQL&gt; alter user [username] password expire;
+</code></pre>
+
+<h4 id="修改密码">修改密码</h4>
+
+<p>修改当前登录用户密码：</p>
+
+<pre><code>SQL&gt; password
+</code></pre>
+
+<p>修改某个用户的密码：</p>
+
+<pre><code>SQL&gt; alter user [username] identified by [password];
+</code></pre>
+
+<h2 id="表管理">表管理</h2>
+
+<p>Oracle 的表都是存储在表空间里面的。创建表之前需要先创建一个表空间。</p>
+
+<h4 id="查看用户所拥有的表">查看用户所拥有的表</h4>
+
+<p>查看用户所拥有的表：</p>
+
+<pre><code>SQL&gt; SELECT TABLE_NAME FROM USER_TABLES;
+</code></pre>
+
+<p>查看用户可存取的表：</p>
+
+<pre><code>SQL&gt; SELECT TABLE_NAME FROM ALL_TABLES;
+</code></pre>
+
+<p>数据库中所有表：</p>
+
+<pre><code>SQL&gt; SELECT TABLE_NAME FROM DBA_TABLES;
+</code></pre>
+
+<h4 id="查看表空间">查看表空间</h4>
+
+<p>查看表空间详细数据文件：</p>
+
+<pre><code>SQL&gt; SELECT FILE_NAME,TABLESPACE_NAME from DBA_DATA_FILES;
+</code></pre>
+
+<h4 id="创建表空间">创建表空间</h4>
+
+<pre><code>create tablespace [表空间名称]
+datafile [表空间数据文件路径 ]
+size [表空间大小]
+autoextend on;
+</code></pre>
+
+<p>例如：</p>
+
+<pre><code>SQL&gt; create tablespace SoftwareManagement
+  2  datafile '/data/oracle/oradata/orcl/SoftwareManagement.dbf'
+  3  size 50m
+  4  autoextend on;
+</code></pre>
+
+<h4 id="创建新用户">创建新用户</h4>
+
+<pre><code>CREATE USER [用户名]
+IDENTIFIED BY [密码]
+DEFAULT TABLESPACE [表空间] (默认USERS)
+TEMPORARY TABLESPACE [临时表空间] (默认TEMP)
+</code></pre>
+
+<p>例如：</p>
+
+<pre><code>SQL&gt; create USER software
+  2  identified by 123456
+  3  default tablespace Softwaremanagement;
+</code></pre>
+
+<h4 id="分配权限">分配权限</h4>
+
+<pre><code>SQL&gt; GRANT CONNECT TO [username];
+SQL&gt; GRANT RESOURCE TO [username];
+SQL&gt; GRANT DBA TO [username];  -- DBA为最高级权限，可以创建数据库、表等。
+</code></pre>
+
+<p>到这里，数据库中的表空间、用户以及用户权限都创建并分配好了，接下来用户就可以在自己的表空间中创建表，然后进行开发。</p>
+
+<h2 id="权限管理">权限管理</h2>
+
+<p>在给用户分配权限的时候，分配了 <code>CONNECT</code>、<code>RESOURCE</code> 权限给用户。这两个权限到底是什么呢？</p>
+
+<h4 id="oracle中的权限">oracle中的权限</h4>
+
+<p>Oracle 中的权限分为两类：</p>
+
+<ul>
+<li>系统权限：系统规定用户使用数据库的权限，系统权限是对用户而言。</li>
+<li>实体权限：某种权限的用户对其他用户的表或视图的存取权限，是针对表或者视图而言。如 <code>select</code>、<code>update</code>、<code>insert</code>、<code>delete</code>、<code>alter</code>、<code>index</code>、<code>all</code>，其中 <code>all</code> 包含所有的实体权限。</li>
+</ul>
+
+<h4 id="系统权限分类">系统权限分类</h4>
+
+<ul>
+<li>DBA：拥有全部特权，是系统最高权限，只有DBA才可以创建数据库结构。</li>
+<li>RESOURCE：拥有resource权限的用户只可以创建实体，不可以创建数据库结构。</li>
+<li>CONNECT：拥有connect权限的用户只可以登录oracle，不可以创建实体，不可以创建数据库结构。</li>
+</ul>
+
+<blockquote>
+<p>建议：
+对于普通用户，授予 <code>CONNECT</code>、<code>RESOURCE</code> 权限；
+对于 <code>DBA</code> 管理用户，授予 <code>CONNECT</code>、<code>RESOURCE</code>、<code>DBA</code> 权限。</p>
+</blockquote>
+
+<h2 id="导入导出">导入导出</h2>
+
+<p>数据库的导入导出也是一个很常见的需求。</p>
+
+<h4 id="导出">导出</h4>
+
+<pre><code>$ exp [username]/[password]@[orcl] file=./database.dmp  full=y
+</code></pre>
+
+<ul>
+<li><code>username</code> 是数据库用户名</li>
+<li><code>password</code> 是数据库用户密码</li>
+<li><code>orcl</code> 是数据库实例名称</li>
+<li><code>file</code> 后面的参数是导出的数据库文件存放位置及文件名</li>
+<li><code>full</code> 其值为 <code>y</code> 表示全部导出，默认为 <code>no</code>。</li>
+</ul>
+
+<p>如果只需导出某几张表，可以指定 <code>tables</code> 参数：<code>tables='(tableName, tableName1)'</code>。</p>
+
+<h4 id="导入">导入</h4>
+
+<pre><code>$ imp [username]/[password]@[orcl] file=./database.dmp
+</code></pre>
+
+<p>和导出数据库语法一样，只是关键字不一样。</p>
+
+<h4 id="执行-sql-文件">执行 SQL 文件</h4>
+
+<p>执行 SQL 文件的方法有很多种。如下：</p>
+
+<p><strong>使用 SQL PLUS 命令</strong></p>
+
+<pre><code>$ sqlplus [username]/password@[orcl] @path/file.name
+</code></pre>
+
+<p>或者远程执行：</p>
+
+<pre><code>$ sqlplus [username]/password@server_IP/service_name @path/file.name
+</code></pre>
+
+<p>如果sql脚本文件比较复杂，包含了begin end语句，就会不断显示行号，解决办法就是在 sql 脚本的最后用 <code>/</code> 符号结尾。</p>
+
+<p><strong>在 SQL PLUS 中执行</strong></p>
+
+<pre><code>SQL&gt;start file_path
+</code></pre>
+
+<pre><code>SQL&gt;@ file_path
+</code></pre>
+
+<p>其中 <code>file_path</code> 是文件路径。</p>
+
+<hr />
+
+<p>参考</p>
+
+<ul>
+<li><a href="http://www.cnblogs.com/fnng/archive/2012/08/12/2634485.html">Oracle表空间（tablespaces）</a></li>
+<li><a href="http://zyjustin9.iteye.com/blog/2193804">Oracle数据库，实例，表空间，用户，表之间的关系</a></li>
+<li><a href="http://nvd11.blog.163.com/blog/static/2000183122012111524636835/">Oracle 在Sqlplus 执行sql脚本文件</a></li>
+</ul>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fusing-sql-plus-on-oracle%2f - %e4%bd%bf%e7%94%a8%20SQL%20%2aPlus%20%e7%ae%a1%e7%90%86%20Oracle%20%e6%95%b0%e6%8d%ae%e5%ba%93 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

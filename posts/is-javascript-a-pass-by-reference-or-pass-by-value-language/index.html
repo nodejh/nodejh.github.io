@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="JavaScript 是传值调用还是传引用调用？"/>
+  <meta name="twitter:description" content="Is JavaScript a call by reference or call by value language?"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>JavaScript 是传值调用还是传引用调用？ &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        JavaScript 是传值调用还是传引用调用？
+                    </h1>
+                    <h2 class="headline">
+                    Feb 18, 2017 11:07
+                    · 1512 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/javascript">javascript</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#1-例子">1. 例子</a>
+<ul>
+<li>
+<ul>
+<li><a href="#1-1-基本类型参数传递">1.1. 基本类型参数传递</a></li>
+<li><a href="#1-2-引用类型参数传递">1.2. 引用类型参数传递</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#2-传值还是传引用">2. 传值还是传引用？</a>
+<ul>
+<li>
+<ul>
+<li><a href="#2-1-传值调用-pass-by-value">2.1. 传值调用（Pass by value）</a></li>
+<li><a href="#2-2-传引用调用-pass-by-reference">2.2. 传引用调用（Pass by reference）</a></li>
+<li><a href="#2-3-传共享调用-call-by-sharing">2.3. 传共享调用（Call by sharing）</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#3-代码分析">3 代码分析</a>
+<ul>
+<li>
+<ul>
+<li><a href="#3-1-变量初始化">3.1 变量初始化</a></li>
+<li><a href="#3-2-调用函数">3.2 调用函数</a></li>
+<li><a href="#3-3-执行函数体">3.3 执行函数体</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#4-结论">4. 结论</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="1-例子">1. 例子</h2>
+
+<p>先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。</p>
+
+<p></p>
+
+<h4 id="1-1-基本类型参数传递">1.1. 基本类型参数传递</h4>
+
+<pre><code>function addTen(num) {
+  num += 10;
+  return num;
+}
+
+var count = 20;
+var result = addTen(count);
+alert(count); // 20, 没有变化
+alert(result); // 30
+</code></pre>
+
+<p><strong>书上解释说，JavaScript 参数传递都是按值传参。</strong></p>
+
+<p>所以传递给 <code>addTen</code> 函数的值是 <code>20</code> 这个值，所以函数执行结束原始变量 <code>count</code> 并不会改变。</p>
+
+<h4 id="1-2-引用类型参数传递">1.2. 引用类型参数传递</h4>
+
+<pre><code>function setName(obj) {
+  obj.name = 'Nicholas';
+  obj = new Object();
+  obj.name = 'Greg';
+}
+
+var person = new Object();
+setName(person);
+alert(person.name); // Nicholas
+</code></pre>
+
+<p>为什么结果是 <code>Nicholas</code> 呢？</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-17-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-1.png" alt="变量存储方式" /></p>
+
+<blockquote>
+<p>疑问：如果是传值，那应该是把 person 变量的值（也就是一个指向堆内存中对象的指针）传递到函数中，<code>obj.name = 'Greg';</code> 改变了堆内存中对象的属性，为什么 <code>person.name</code> 还是 <code>Nicholas</code> ？</p>
+</blockquote>
+
+<h2 id="2-传值还是传引用">2. 传值还是传引用？</h2>
+
+<p>让我们再将上面两个例子综合为下面的例子：</p>
+
+<pre><code>function changeStuff(a, b, c) {
+  a = a * 10;
+  b.item = &quot;changed&quot;;
+  c = {item: &quot;changed&quot;};
+}
+
+var num = 10;
+var obj1 = {item: &quot;unchanged&quot;};
+var obj2 = {item: &quot;unchanged&quot;};
+
+changeStuff(num, obj1, obj2);
+
+console.log(num);
+console.log(obj1.item);
+console.log(obj2.item);
+</code></pre>
+
+<p>最终的输出结果是：</p>
+
+<pre><code>10
+changed
+unchanged
+</code></pre>
+
+<p>所以 JS 到底是传值调用还是传引用调用呢？要弄清楚这个问题，首先我们要明白到底什么是<strong>传值调用（Call-ny-value）</strong>和<strong>传引用调用（Call-by-reference）</strong>。</p>
+
+<h4 id="2-1-传值调用-pass-by-value">2.1. 传值调用（Pass by value）</h4>
+
+<p>在传值调用中，传递给函数参数是函数被调用时所传实参的拷贝。在传值调用中实际参数被求值，其值被绑定到函数中对应的变量上（通常是把值复制到新内存区域）。</p>
+
+<p>即 <code>changeStuff</code> 的参数 <code>a</code> <code>b</code> <code>c</code> 是 <code>num1</code> <code>obj1</code> <code>obj2</code> 的拷贝。所以无论 <code>a</code> <code>b</code> <code>c</code> 怎么变化，<code>num1</code> <code>obj1</code> <code>obj2</code> 都保持不变。</p>
+
+<p>问题就在于 <code>obj1</code> 变了。</p>
+
+<h4 id="2-2-传引用调用-pass-by-reference">2.2. 传引用调用（Pass by reference）</h4>
+
+<p>在传引用调用调用中，传递给函数的是它的实际参数的隐式引用而不是实参的拷贝。通常函数能够修改这些参数（比如赋值），而且改变对于调用者是可见的。</p>
+
+<p>也就是说 <code>changeStuff</code> 函数内的 <code>a</code> <code>b</code> <code>c</code> 都分别与 <code>num</code> <code>obj1</code> <code>obj2</code> 指向同一块内存，但不是其拷贝。函数内对 <code>a</code> <code>b</code> <code>c</code> 所做的任何修改，都将反映到 <code>num</code> <code>obj1</code> <code>obj2</code> 上 。</p>
+
+<p>问题就在于 <code>num</code> 和 <code>obj2</code> 没变。</p>
+
+<p>从上面的代码可以看出，JavaScript 中函数参数的传递方式既不是传值，也不是传引用。主要问题出在 JS 的引用类型上面。</p>
+
+<p>JS 引用类型变量的值是一个指针，指向堆内存中的实际对象。</p>
+
+<h4 id="2-3-传共享调用-call-by-sharing">2.3. 传共享调用（Call by sharing）</h4>
+
+<p>还有一种求值策略叫做<a href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy/#call-by-sharing">传共享调用（Call-by-sharing/Call by object/Call by object-sharing）</a>。</p>
+
+<p>传共享调用和传引用调用的不同之处是，该求值策略传递给函数的参数是对象的引用的拷贝，即对象变量指针的拷贝。</p>
+
+<p>也就是说， <code>a</code> <code>b</code> <code>c</code> 三个变量的值是 <code>num</code> <code>obj1</code> <code>obj2</code> 的指针的拷贝。 <code>a</code> <code>b</code> <code>c</code> 的值分别与 <code>num</code> <code>obj1</code> <code>obj2</code> 的值指向同一个对象。函数内部可以对  <code>a</code> <code>b</code> <code>c</code> 进行修改可重新赋值。</p>
+
+<pre><code>function changeStuff(a, b, c) {
+  a = a * 10; // 对 a 赋值，修改 a 的指向，新的值是 a * 10
+  b.item = &quot;changed&quot;; // 因为 b 与 obj1 指向同一个对象，所以这里会修改原始对象 obj1.item 的内容
+  c = {item: &quot;changed&quot;}; // 对 c 重新赋值，修改 c 的指向，其指向的对象内容是 {item: &quot;changed&quot;}
+}
+
+</code></pre>
+
+<h2 id="3-代码分析">3 代码分析</h2>
+
+<p>接下来让我们再来分析一下代码。</p>
+
+<h4 id="3-1-变量初始化">3.1 变量初始化</h4>
+
+<pre><code>var num = 10;
+var obj1 = {item: &quot;unchanged&quot;};
+var obj2 = {item: &quot;unchanged&quot;};
+</code></pre>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-2.png" alt="变量初始化" /></p>
+
+<h4 id="3-2-调用函数">3.2 调用函数</h4>
+
+<pre><code>changeStuff(num, obj1, obj2);
+</code></pre>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-3.png" alt="调用函数" /></p>
+
+<p>可以看到，变量 <code>a</code> 的值就是 <code>num</code> 值的拷贝，变量 <code>b</code> <code>c</code> 分别是 <code>obj1</code> <code>obj2</code> 的指针的拷贝。</p>
+
+<p>函数的参数其实就是函数作用域内部的变量，函数执行完之后就会销毁。</p>
+
+<h4 id="3-3-执行函数体">3.3 执行函数体</h4>
+
+<pre><code>a = a * 10;
+b.item = &quot;changed&quot;;
+c = {item: &quot;changed&quot;};
+</code></pre>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2017-02-19-Is-JavaScript-a-pass-by-reference-or-pass-by-value-language-5.png" alt="执行函数体" /></p>
+
+<p>如图所示，变量 <code>a</code> 的值的改变，并不会影响变量 <code>num</code>。</p>
+
+<p>而 <code>b</code> 因为和 <code>obj1</code> 是指向同一个对象，所以使用 <code>b.item = &quot;changed&quot;;</code> 修改对象的值，会造成 <code>obj1</code> 的值也随之改变。</p>
+
+<p>由于是对 <code>c</code> 重新赋值了，所以修改 <code>c</code> 的对象的值，并不会影响到 <code>obj2</code>。</p>
+
+<h2 id="4-结论">4. 结论</h2>
+
+<p>从上面的例子可以看出，对于 JS 来说：</p>
+
+<ul>
+<li><strong>基本类型是传值调用</strong></li>
+<li><strong>引用类型传共享调用</strong></li>
+</ul>
+
+<p>传值调用本质上传递的是变量的值的拷贝。</p>
+
+<p>传共享调用本质上是传递对象的指针的拷贝，其指针也是变量的值。所以传共享调用也可以说是传值调用。</p>
+
+<p>所以《JavaScript 高级程序设计》说 <strong>JavaScript 参数传递都是按值传参</strong> 也是有道理的。</p>
+
+<hr />
+
+<p>参考</p>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Evaluation_strategy">Evaluation strategy</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%B1%82%E5%80%BC%E7%AD%96%E7%95%A5">求值策略</a></li>
+<li><a href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy">ECMA-262-3 in detail. Chapter 8. Evaluation strategy.</a></li>
+<li><a href="http://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language">Is JavaScript a pass-by-reference or pass-by-value language?</a></li>
+<li><a href="https://github.com/simongong/js-stackoverflow-highest-votes/blob/master/questions21-30/parameter-passed-by-value-or-reference.md">parameter passed by value or reference</a></li>
+<li><a href="http://bosn.me/js/js-call-by-sharing/">JS是按值传递还是按引用传递?</a></li>
+</ul>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fis-javascript-a-pass-by-reference-or-pass-by-value-language%2f - JavaScript%20%e6%98%af%e4%bc%a0%e5%80%bc%e8%b0%83%e7%94%a8%e8%bf%98%e6%98%af%e4%bc%a0%e5%bc%95%e7%94%a8%e8%b0%83%e7%94%a8%ef%bc%9f by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

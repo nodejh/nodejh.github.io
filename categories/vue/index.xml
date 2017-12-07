@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Vue on nodejh</title>
+    <title>Vue on node</title>
     <link>http://nodejh.com/categories/vue/</link>
-    <description>Recent content in Vue on nodejh</description>
+    <description>Recent content in Vue on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 17 Jul 2017 09:57:37 +0800</lastBuildDate>
@@ -13,19 +13,19 @@
     
     <item>
       <title>实现一个TodoList - Vue2 Tutorials (二)</title>
-      <link>http://nodejh.com/post/vue2-tutorials-02-todolist/</link>
+      <link>http://nodejh.com/posts/vue2-tutorials-02-todolist/</link>
       <pubDate>Mon, 17 Jul 2017 09:57:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/vue2-tutorials-02-todolist/</guid>
+      <guid>http://nodejh.com/posts/vue2-tutorials-02-todolist/</guid>
       <description>在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &amp;mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、</description>
     </item>
     
     <item>
       <title>快速入门 - Vue2 Tutorials (一)</title>
-      <link>http://nodejh.com/post/vue2-tutorials-01-quick-start/</link>
+      <link>http://nodejh.com/posts/vue2-tutorials-01-quick-start/</link>
       <pubDate>Thu, 06 Jul 2017 14:53:34 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/vue2-tutorials-01-quick-start/</guid>
+      <guid>http://nodejh.com/posts/vue2-tutorials-01-quick-start/</guid>
       <description>Vue 的官方文档 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧</description>
     </item>
     

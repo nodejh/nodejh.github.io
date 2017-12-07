@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ubuntu on nodejh</title>
+    <title>Ubuntu on node</title>
     <link>http://nodejh.com/tags/ubuntu/</link>
-    <description>Recent content in Ubuntu on nodejh</description>
+    <description>Recent content in Ubuntu on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 07 Feb 2017 13:08:16 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>更改 Ubuntu 软件源</title>
-      <link>http://nodejh.com/post/change-source-list-in-ubuntu/</link>
+      <link>http://nodejh.com/posts/change-source-list-in-ubuntu/</link>
       <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/change-source-list-in-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/change-source-list-in-ubuntu/</guid>
       <description>&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
 
 &lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
@@ -26,10 +26,10 @@
     
     <item>
       <title>远程登录 VPS 语言错误</title>
-      <link>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</link>
+      <link>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</link>
       <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/fix-locale-setting-warning-from-perl/</guid>
+      <guid>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</guid>
       <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -37,10 +37,10 @@
     
     <item>
       <title>Eclipse JSP/Servlet 环境搭建</title>
-      <link>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</link>
+      <link>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</link>
       <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
+      <guid>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</guid>
       <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
 
 &lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
@@ -55,10 +55,10 @@
     
     <item>
       <title>Ubuntu下JAVA开发环境的配置</title>
-      <link>http://nodejh.com/post/how-to-install-java-on-ubuntu/</link>
+      <link>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 16:06:40 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-install-java-on-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
 
 &lt;p&gt;建JAVA开发环境，第一步就是要安装JDK。在这里下载：&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&#34;&gt;Java SE Development Kit 8 - Downloads&lt;/a&gt;&lt;/p&gt;
@@ -68,10 +68,10 @@
     
     <item>
       <title>Ubuntu 下 Tomcat 的配置</title>
-      <link>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</link>
+      <link>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/</guid>
+      <guid>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
       <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
 
 &lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;

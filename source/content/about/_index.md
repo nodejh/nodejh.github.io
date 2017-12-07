@@ -7,6 +7,14 @@ hidden = true
 
 <div style="text-align: center;">
 
+<p>nodejh， 全栈工程师，现就职于阿里巴巴，杭州</p>
+<p>擅长 Node.js/PHP/React.js/React Native，了解 C++/Go</p>
+<hr style="margin-bottom: 10px;margin-top: 0"/>
+<p>nodejh, full stack developer, working in Alibaba Group, Hangzhou</p>
+<p>Good at Node.js/PHP/React.js/React Native, knowledge of C++/Go</p>
+
+<br>
+<br>
 
 <div class="github-card" data-user="nodejh" data-width="100%" data-height="200" style="height: 200"></div>
 <script src="/cards/github/github.js"></script>

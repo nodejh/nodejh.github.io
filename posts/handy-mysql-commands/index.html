@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="常用 MySQL 命令"/>
+  <meta name="twitter:description" content="Handy MySQL Commands"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>常用 MySQL 命令 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        常用 MySQL 命令
+                    </h1>
+                    <h2 class="headline">
+                    Mar 30, 2017 18:06
+                    · 93 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/mysql">MySQL</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">描述</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">登录远程数据库</td>
+<td align="left">mysql -h hostname -u root -p</td>
+</tr>
+
+<tr>
+<td align="left">创建数据库并设置编码</td>
+<td align="left">CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci</td>
+</tr>
+
+<tr>
+<td align="left">查看表结构</td>
+<td align="left">describe [table name]/desc table/show columns from [table name]</td>
+</tr>
+
+<tr>
+<td align="left">删除一列</td>
+<td align="left">alter table [table name] drop column [column name]</td>
+</tr>
+
+<tr>
+<td align="left">添加一列</td>
+<td align="left">alter table [table name] add column [new column name] varchar (20)</td>
+</tr>
+
+<tr>
+<td align="left">修改列名称</td>
+<td align="left">alter table [table name] change [old column name] [new column name] varchar (50)</td>
+</tr>
+</tbody>
+</table>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fhandy-mysql-commands%2f - %e5%b8%b8%e7%94%a8%20MySQL%20%e5%91%bd%e4%bb%a4 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

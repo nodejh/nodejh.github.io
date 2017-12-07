@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>React.js on nodejh</title>
+    <title>React.js on node</title>
     <link>http://nodejh.com/tags/react.js/</link>
-    <description>Recent content in React.js on nodejh</description>
+    <description>Recent content in React.js on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 09 Sep 2016 04:11:13 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Webpack 和 React 实战</title>
-      <link>http://nodejh.com/post/start-react-with-webpack/</link>
+      <link>http://nodejh.com/posts/start-react-with-webpack/</link>
       <pubDate>Fri, 09 Sep 2016 04:11:13 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/start-react-with-webpack/</guid>
+      <guid>http://nodejh.com/posts/start-react-with-webpack/</guid>
       <description>&lt;h2 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone https://github.com/nodejh/start-react-with-webpack react-sample

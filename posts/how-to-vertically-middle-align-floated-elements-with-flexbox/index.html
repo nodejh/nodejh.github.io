@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="使用 Flexbox 使浮动元素垂直居中"/>
+  <meta name="twitter:description" content="How To Vertically Middle Align Floated Elements With Flexbox"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>使用 Flexbox 使浮动元素垂直居中 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        使用 Flexbox 使浮动元素垂直居中
+                    </h1>
+                    <h2 class="headline">
+                    Jul 28, 2017 20:53
+                    · 796 words
+                    · 2 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/css">CSS</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#是否可以使用-vertical-align-middle">是否可以使用 <code>vertical-align:middle</code></a></li>
+<li><a href="#使用-flexbox-解决问题">使用 Flexbox 解决问题</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。</p>
+
+<p></p>
+
+<p>考虑下面的场景：</p>
+
+<ul>
+<li>你正在使用网格布局的框架，比如 <a href="http://getbootstrap.com/">Bootstrap</a>、<a href="http://foundation.zurb.com/grid.html">Foundation</a>、<a href="http://getskeleton.com/"> Skeleton</a>、<a href="http://oddbird.net/susy/">Susy</a> 等。</li>
+<li>你有两个包含动态内容的列（每列都是一个盒模型），你并不知道每列的具体尺寸，也不知道哪个更高。</li>
+<li>你需要这两列能够垂直居中。</li>
+</ul>
+
+<p>我们希望得到的布局就像下面这样：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-01.png" alt="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-01.png" /></p>
+
+<p>但默认情况下，这两列将会顶部对齐：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-02.png" alt="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-02.png" /></p>
+
+<p>所以问题来了，在不改变浮动布局的前提下，我们应该如何是元素垂直居中对齐？到目前为止，这个简单的问题都非常难以解决。</p>
+
+<h2 id="是否可以使用-vertical-align-middle">是否可以使用 <code>vertical-align:middle</code></h2>
+
+<p>很不幸，不能，因为一些不同的原因。</p>
+
+<p>首先，在 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align">MDN-&gt;CSS</a> 中有关于 <code>vertical-align</code> 的描述 <code>The vertical-align CSS property specifies the vertical alignment of an inline or table-cell box.</code>。我们的元素不是 <code>inline</code>、<code>inline-block</code> 或 <code>table-cells</code>，所以在不改变 <code>display</code> 的情况下 <code>vertical-align:middle</code> 并不会生效。</p>
+
+<p>其次，网格布局的框架使用了 <code>float:right</code> 来对我们的两列元素进行定位，在 <a href="https://www.w3.org/TR/CSS22/visuren.html#float-position">W3C-&gt;CSS-&gt;9.5.1 Positioning the float: the &lsquo;float&rsquo; property</a> 第八条有描述 <code>A floating box must be placed as high as possible.</code>。这意味着浮动元素总会被固定在顶部。</p>
+
+<p>第一个问题我们可以通过将 <code>display</code> 改为 <code>inline-block</code> 或者 <code>table-cell</code> 解决，但没有 CSS 技术可以解决第二个问题。我们需要移除浮动规则，但这会破坏基于网格布局的框架的基础。</p>
+
+<h2 id="使用-flexbox-解决问题">使用 Flexbox 解决问题</h2>
+
+<p>像往常一样，Flexbox 对我们的问题有一个简单的解决方案。只需要简单的两步就行了：</p>
+
+<ol>
+<li>为元素添加 <code>display: flex</code> 规则。</li>
+<li>为对元素添加 <code>‘align-items: center</code> 规则。</li>
+</ol>
+
+<p>这样就可以了！下面是一个简单的 HTML 和 CSS 例子：</p>
+
+<pre><code class="language-html">&lt;div class=&quot;container&quot;&gt;
+ &lt;div class=&quot;column-1&quot;&gt;[Dynamic content]&lt;/div&gt;
+ &lt;div class=&quot;column-2&quot;&gt;[Dynamic content]&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<pre><code class="language-css">.container {
+  display: flex;
+  align-items: center;
+}
+
+.column-1,
+.column-2 {
+  float: left;
+  width: 50%;
+}
+</code></pre>
+
+<p><p data-height="265" data-theme-id="light" data-slug-hash="RZWYZX" data-default-tab="html,result" data-user="nodejh" data-embed-version="2" data-pen-title="RZWYZX" class="codepen">See the Pen <a href="https://codepen.io/nodejh/pen/RZWYZX/">RZWYZX</a> by Hang Jiang (<a href="https://codepen.io/nodejh">@nodejh</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script></p>
+
+<p>你可以从下面的动画中看到，两列元素将会根据内容的变化而始终保持垂直居中对齐：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-03.gif" alt="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-03.gif" /></p>
+
+<p>这种解决方法最好的一点是通过添加两个规则，在没有对两列元素的原本样式做任何修改的前提下就实现了垂直居中对齐。现在大部分浏览器都支持 flex，老的浏览器会忽略该规则，元素将保持顶部对齐。</p>
+
+<p>关于 flexbox 的浏览器兼容性可以在 <a href="http://caniuse.com/#search=flex">Can I Use Flexbox</a> 查看得到：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-04.png" alt="http://oh1ywjyqf.bkt.clouddn.com/How-to-Vertically-Middle-Align-Floated-Elements-with-Flexbox-04.png" /></p>
+
+<hr />
+
+<p>参考</p>
+
+<ul>
+<li><a href="https://spin.atomicobject.com/2016/06/18/vertically-center-floated-elements-flexbox/">How to Vertically Middle-Align Floated Elements with Flexbox</a></li>
+</ul>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fhow-to-vertically-middle-align-floated-elements-with-flexbox%2f - %e4%bd%bf%e7%94%a8%20Flexbox%20%e4%bd%bf%e6%b5%ae%e5%8a%a8%e5%85%83%e7%b4%a0%e5%9e%82%e7%9b%b4%e5%b1%85%e4%b8%ad by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Php on nodejh</title>
+    <title>Php on node</title>
     <link>http://nodejh.com/tags/php/</link>
-    <description>Recent content in Php on nodejh</description>
+    <description>Recent content in Php on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 29 Dec 2016 00:04:41 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>在 MacOS Sierra 上安装 Apache 和多个版本的 PHP</title>
-      <link>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</link>
+      <link>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</link>
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/macos-sierra-apache-multiple-php-versions/</guid>
+      <guid>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</guid>
       <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

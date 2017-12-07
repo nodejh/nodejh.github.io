@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Javascript on nodejh</title>
+    <title>Javascript on node</title>
     <link>http://nodejh.com/categories/javascript/</link>
-    <description>Recent content in Javascript on nodejh</description>
+    <description>Recent content in Javascript on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>JavaScript 是传值调用还是传引用调用？</title>
-      <link>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
+      <link>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
+      <guid>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
       <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
 
 &lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Shadowsocks on nodejh</title>
+    <title>Shadowsocks on node</title>
     <link>http://nodejh.com/categories/shadowsocks/</link>
-    <description>Recent content in Shadowsocks on nodejh</description>
+    <description>Recent content in Shadowsocks on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 10 Feb 2017 16:52:15 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>在 VPS 上安装 Shadowsocks Server</title>
-      <link>http://nodejh.com/post/install-shadowsocks-server-in-vps/</link>
+      <link>http://nodejh.com/posts/install-shadowsocks-server-in-vps/</link>
       <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-shadowsocks-server-in-vps/</guid>
+      <guid>http://nodejh.com/posts/install-shadowsocks-server-in-vps/</guid>
       <description>&lt;p&gt;首先关于 Shadowsocks 的使用说明在这里：&lt;a href=&#34;https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明&#34;&gt;Shadowsocks 使用说明&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

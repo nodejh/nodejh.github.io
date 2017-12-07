@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Macos on nodejh</title>
+    <title>Macos on node</title>
     <link>http://nodejh.com/categories/macos/</link>
-    <description>Recent content in Macos on nodejh</description>
+    <description>Recent content in Macos on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 19 Mar 2017 17:15:37 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>macOS/Linux 环境变量设置</title>
-      <link>http://nodejh.com/post/setting-environmental-variables-in-macos/</link>
+      <link>http://nodejh.com/posts/setting-environmental-variables-in-macos/</link>
       <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/setting-environmental-variables-in-macos/</guid>
+      <guid>http://nodejh.com/posts/setting-environmental-variables-in-macos/</guid>
       <description>&lt;p&gt;我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

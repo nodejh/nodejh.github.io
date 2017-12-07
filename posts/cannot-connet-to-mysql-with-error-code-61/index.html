@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="MySQL 连接错误 (61) "/>
+  <meta name="twitter:description" content="Cannot Connet to MySql With Error Code 61"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>MySQL 连接错误 (61)  &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        MySQL 连接错误 (61) 
+                    </h1>
+                    <h2 class="headline">
+                    Apr 7, 2016 01:55
+                    · 125 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/mysql">MySQL</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>远程连接 MySQL 的时候出现如下错误:</p>
+
+<pre><code>Can't connect to MySQL server on '*.*.*.*' (61)
+</code></pre>
+
+<p></p>
+
+<p>这是因为 MySQL 默认的 <code>bind-address</code> 是 <code>127.0.0.1</code>, 也就是限制了只能本地访问.</p>
+
+<p>所以解决方法之一,就是修改 <code>bind-address</code>.</p>
+
+<p>改为 <code>0.0.0.0</code> ,任何远程 IP 都能访问.你也可以把它改为你的电脑的 IP,只能你自己访问.</p>
+
+<p>修改后,重启就好了:</p>
+
+<pre><code>$ sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+# 修改 bind-address
+$ sudo service mysql restart
+</code></pre>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/4">https://github.com/nodejh/nodejh.github.io/issues/4</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fcannot-connet-to-mysql-with-error-code-61%2f - MySQL%20%e8%bf%9e%e6%8e%a5%e9%94%99%e8%af%af%20%2861%29%20 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

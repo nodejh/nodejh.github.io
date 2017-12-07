@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="在 VPS 上安装 Shadowsocks Server"/>
+  <meta name="twitter:description" content="Install Shadowsocks Server in VPS"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>在 VPS 上安装 Shadowsocks Server &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        在 VPS 上安装 Shadowsocks Server
+                    </h1>
+                    <h2 class="headline">
+                    Feb 10, 2017 16:52
+                    · 890 words
+                    · 2 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/shadowsocks">Shadowsocks</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>首先关于 Shadowsocks 的使用说明在这里：<a href="https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-使用说明">Shadowsocks 使用说明</a>。</p>
+
+<p></p>
+
+<p>使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误，以及错误解决办法。</p>
+
+<p>我的 VPS 系统版本是 Ubuntu 16.10：</p>
+
+<pre><code>$ cat /etc/issue
+Ubuntu 16.10 \n \l
+
+# 或
+$ sudo lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.10
+Release:	16.10
+Codename:	yakkety
+</code></pre>
+
+<p>首先安装 pip：</p>
+
+<pre><code>$ sudo apt-get install python-pip
+</code></pre>
+
+<p>然后通过 pip 安装 shadowsocks，结果就报错了：</p>
+
+<pre><code>$ sudo pip install shadowsocks
+Could not import setuptools which is required to install from a source distribution.
+Please install setuptools.
+</code></pre>
+
+<p>这是因为没有安装 setuptools，所以安装一下：</p>
+
+<pre><code>$ sudo pip install -U setuptools
+# 然后再安装 shadowsocks
+$ sudo pip install shadowsocks
+</code></pre>
+
+<p>更具体的内容可在 Github Issues 查看：<a href="https://github.com/pypa/pip/issues/1064">ImportError: No module named setuptools (add details to docs) </a>。</p>
+
+<p>接下来配置 shadowsocks：</p>
+
+<pre><code>$ sudo vim /etc/shadowsocks.json
+</code></pre>
+
+<p>写入下面的配置：</p>
+
+<pre><code>{
+    &quot;server&quot;:&quot;my_server_ip&quot;,
+    &quot;server_port&quot;:8388,
+    &quot;local_address&quot;: &quot;127.0.0.1&quot;,
+    &quot;local_port&quot;:1080,
+    &quot;password&quot;:&quot;mypassword&quot;,
+    &quot;timeout&quot;:300,
+    &quot;method&quot;:&quot;chacha20&quot;,
+    &quot;fast_open&quot;: false
+}
+</code></pre>
+
+<p>Shadowsocks 的配置文件描述在 <a href="https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File">Configuration via Config File</a>。</p>
+
+<p>我的加密算法设置的是 <code>chacha20</code>。之前主流的SS有两种加密算法：<code>RC4-MD5</code> 和 <code>aes-256-cfb</code>。</p>
+
+<p><code>aes-256-cfb</code> 是各种一键包默认的加密方法，但是由于路由器和手机性能的问题，这种算法还是多少会影响到一些速度的。<code>RC4-MD5</code> 主要是加密太简单了，在 GFW 面前加密不加密已经没有什么区别&hellip;所以我们需要密码强度比 <code>RC4-MD5</code> 高,但是速度比 <code>aes-256-cfb</code> 快的加密算法,那就是 <code>chacha20</code> 了。可以说是目前性价比比较高的加密算法。</p>
+
+<p>然后后台启动 shadowsocks：</p>
+
+<pre><code>$ sudo ssserver -c /etc/shadowsocks.json -d start
+</code></pre>
+
+<p>又报错了：</p>
+
+<pre><code>INFO: loading config from /etc/shadowsocks.json
+Traceback (most recent call last):
+  File &quot;/usr/local/bin/ssserver&quot;, line 11, in &lt;module&gt;
+    load_entry_point('shadowsocks==2.8.2', 'console_scripts', 'ssserver')()
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/server.py&quot;, line 34, in main
+    config = shell.get_config(False)
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/shell.py&quot;, line 262, in get_config
+    check_config(config, is_local)
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/shell.py&quot;, line 124, in check_config
+    encrypt.try_cipher(config['password'], config['method'])
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&quot;, line 44, in try_cipher
+    Encryptor(key, method)
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&quot;, line 83, in __init__
+    random_string(self._method_info[1]))
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/encrypt.py&quot;, line 109, in get_cipher
+    return m[2](method, key, iv, op)
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/sodium.py&quot;, line 62, in __init__
+    load_libsodium()
+  File &quot;/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/sodium.py&quot;, line 42, in load_libsodium
+    raise Exception('libsodium not found')
+Exception: libsodium not found
+</code></pre>
+
+<p>因为没有 <code>libsodium</code>，<code>libsodium</code> 是 <code>chacha20</code> 加密算法所需要的一个包。所以接下来就安装它：</p>
+
+<pre><code>$ wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
+tar zxf LATEST.tar.gz
+cd libsodium*
+./configure
+sudo make &amp;&amp; sudo make install
+</code></pre>
+
+<p>编译的时候又报错了：</p>
+
+<pre><code>configure: error: no acceptable C compiler found in $PATH
+</code></pre>
+
+<p>这是因为没有 C 编译器。所以继续安装：</p>
+
+<pre><code>$ sudo apt-get install build-essential
+# 安装成功之后再编译
+$ sudo make &amp;&amp; sudo make install
+</code></pre>
+
+<p>然后将下面的代码加入到 <code>/etc/ld.so.conf</code>：</p>
+
+<pre><code>include ld.so.conf.d/*.conf&quot;
+/lib
+/usr/lib64
+/usr/local/lib
+</code></pre>
+
+<p>再重新载入配置：</p>
+
+<pre><code>$ sudo ldconfig
+</code></pre>
+
+<p>接下来再启动 shadowsocks：</p>
+
+<pre><code>$ sudo ssserver -c /etc/shadowsocks.json -d start
+</code></pre>
+
+<p>查看 shadowsocks 日志：</p>
+
+<pre><code>$ tail -f /var/log/shadowsocks.log
+</code></pre>
+
+<p>然后只需要配置好客户端，就可以愉快地番茄了。</p>
+
+<p>最后分享一下我的 vultr 邀请链接，通过该链接注册您将获得 <code>$20</code> ：<a href="http://www.vultr.com/?ref=7104654-3B">vultr</a>。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2finstall-shadowsocks-server-in-vps%2f - %e5%9c%a8%20VPS%20%e4%b8%8a%e5%ae%89%e8%a3%85%20Shadowsocks%20Server by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

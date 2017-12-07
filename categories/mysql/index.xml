@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mysql on nodejh</title>
+    <title>Mysql on node</title>
     <link>http://nodejh.com/categories/mysql/</link>
-    <description>Recent content in Mysql on nodejh</description>
+    <description>Recent content in Mysql on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 12 Apr 2016 02:40:03 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>创建 MySQL数据库及用户权限</title>
-      <link>http://nodejh.com/post/create-and-manage-mysql-user/</link>
+      <link>http://nodejh.com/posts/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
+      <guid>http://nodejh.com/posts/create-and-manage-mysql-user/</guid>
       <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;

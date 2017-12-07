@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="macOS/Linux 环境变量设置"/>
+  <meta name="twitter:description" content="Setting Environmental Variables in MacOS"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>macOS/Linux 环境变量设置 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        macOS/Linux 环境变量设置
+                    </h1>
+                    <h2 class="headline">
+                    Mar 19, 2017 17:15
+                    · 2003 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/macos">macOS</a>
+                          
+                              <a href="http://nodejh.comtags/shell">SHELL</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#sehll-类型">SEHLL 类型</a></li>
+<li><a href="#环境变量配置文件">环境变量配置文件</a></li>
+<li><a href="#添加环境变量">添加环境变量</a>
+<ul>
+<li>
+<ul>
+<li><a href="#系统环境变量-etc-paths">系统环境变量 <code>/etc/paths</code></a></li>
+<li><a href="#系统环境变量-etc-profile-和-etc-bashrc">系统环境变量 <code>/etc/profile</code> 和 <code>/etc/bashrc</code></a></li>
+<li><a href="#用户环境变量">用户环境变量</a></li>
+<li><a href="#export">export</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>我们安装一个软件后，之所以能够使用一些与该软件相关的命令，是因为该命令被添加到了系统的环境变量里面。</p>
+
+<p></p>
+
+<p>比如安装完 Atom 之后，就可以使用 <code>atom</code> 命令打开文件。有时候我们需要自己设置环境变量，MacOS 设置环境变量有很多种方法，最常用的是编辑当前 SHELL 对应的用户级环境变量配置文件，如 <code>bash</code> 对应的 <code>.bash_profile</code>。</p>
+
+<p>MacOS 和 Linux 都是类 Unix 系统，它们添加环境变量的方式也是类似的。本文以 macOS 为例。</p>
+
+<h2 id="sehll-类型">SEHLL 类型</h2>
+
+<p>在添加环境变量之前，首先要知道使用的是什么 SHELL。MacOS 内置了多种 SHELL，可通过 <code>cat /etc/shells</code> 查看：</p>
+
+<pre><code class="language-bash">$ cat /etc/shells
+/bin/bash
+/bin/csh
+/bin/ksh
+/bin/sh
+/bin/tcsh
+/bin/zsh
+$ echo $SHELL
+/bin/zsh
+</code></pre>
+
+<ul>
+<li><code>sh</code>（全称 Bourne Shell）是UNIX最初使用的 shell，而且在每种 UNIX 上都可以使用。Bourne Shell 在 shell 编程方便相当优秀，但在处理与用户的交互方便作得不如其他几种 shell。</li>
+<li><code>bash</code>（全称 Bourne Again Shell）LinuxOS 默认的，它是 Bourne Shell 的扩展。与 Bourne Shell 完全兼容，并且在 Bourne Shell 的基础上增加了很多特性。可以提供命令补全，命令编辑和命令历史等功能。它还包含了很多 C Shell 和 Korn Shell 中的优点，有灵活和强大的编辑接口，同时又很友好的用户界面。</li>
+<li><code>csh</code>（全称 C Shell）是一种比 Bourne Shell更适合的变种 Shell，它的语法与 C 语言很相似。</li>
+<li><code>Tcsh</code> 是 Linux 提供的 C Shell 的一个扩展版本。</li>
+<li><code>Tcsh</code> 包括命令行编辑，可编程单词补全，拼写校正，历史命令替换，作业控制和类似 C 语言的语法，他不仅和 Bash Shell 提示符兼容，而且还提供比 Bash Shell 更多的提示符参数。</li>
+<li><code>ksh</code>（全称 Korn Shell）集合了 C Shell 和 Bourne Shell 的优点并且和 Bourne Shell 完全兼容。</li>
+<li><code>pdksh</code> 是 Linux 系统提供的 ksh 的扩展。pdksh 支持人物控制，可以在命令行上挂起，后台执行，唤醒或终止程序。</li>
+<li><code>zsh</code> Zsh 是一款功能强大终端（shell）软件，既可以作为一个交互式终端，也可以作为一个脚本解释器。它在兼容 Bash 的同时 （默认不兼容，除非设置成 emulate sh） 还有提供了很多改进，例如：更高效、更好的自动补全、更好的文件名展开（通配符展开）、更好的数组处理、可定制性高。</li>
+</ul>
+
+<h2 id="环境变量配置文件">环境变量配置文件</h2>
+
+<p>macOS 默认的是 <code>Bourne Shell</code>，其环境变量配置文件及加载顺序如下：</p>
+
+<pre><code class="language-bash">/etc/profile
+/etc/bashrc
+/etc/paths
+~/.bash_profile # macOS
+~/.bash_login
+~/.profile
+~/.bashrc # linux
+</code></pre>
+
+<p>其中 <code>/etc/profile</code> <code>/etc/bashrc</code> 和 <code>/etc/paths</code> 是系统级环境变量，对所有用户都有效。但它们的加载时机有所区别：</p>
+
+<ul>
+<li><code>/etc/profile</code> 任何用户登陆时都会读取该文件</li>
+<li><code>/etc/bashrc</code> bash shell执行时，不管是何种方式，读取此文件</li>
+<li><code>/etc/paths</code> 任何用户登陆时都会读取该文件</li>
+</ul>
+
+<p>后面几个是当前用户级的环境变量。macOS 默认用户环境变量配置文件为 <code>~/.bash_profile</code>，Linux 为 <code>~/.bashrc</code>。</p>
+
+<p>如果不存在 <code>~/.bash_profile</code>，则可以自己创建一个 <code>~/.bash_profile</code>。</p>
+
+<ul>
+<li>如果 <code>~/.bash_profile</code> 文件存在，则后面的几个文件就会被忽略</li>
+<li>如果 <code>~/.bash_profile</code> 文件不存在，才会以此类推读取后面的文件</li>
+</ul>
+
+<blockquote>
+<p>如果使用的是 SHELL 类型是 <code>zsh</code>，则还可能存在对应的 <code>/etc/zshrc</code> 和 <code>~/.zshrc</code>。任何用户登录 <code>zsh</code> 的时候，都会读取该文件。某个用户登录的时候，会读取其对应的 <code>~/.zshrc</code>。</p>
+</blockquote>
+
+<h2 id="添加环境变量">添加环境变量</h2>
+
+<h4 id="系统环境变量-etc-paths">系统环境变量 <code>/etc/paths</code></h4>
+
+<p>一般添加系统环境变量，建议通过修改 <code>/etc/paths</code> 的方式进行添加。一般不建议直接修改 <code>/etc/paths</code> 文件，而是将路径写在 <code>/etc/paths.d/</code> 目录下的一个文件里，系统会逐一读取 <code>/etc/paths.d/</code> 下的每个文件。</p>
+
+<p><code>Git</code> 路径就是这样实现的。我们先看看 Git 的例子：</p>
+
+<p>首先 <code>/etc/paths</code> 的文件内容大致如下：</p>
+
+<pre><code class="language-bash">$ cat /etc/paths
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+/opt/local/bin
+/opt/local/sbin
+</code></pre>
+
+<p>然后查看 <code>/etc/paths.d/</code> 目录：</p>
+
+<pre><code class="language-bash">$ ls -l /etc/paths.d
+-rw-r--r--    1 root  wheel    19  6 10  2015 git
+-rw-r--r--    1 root  wheel    17  4 20  2016 go
+</code></pre>
+
+<p>查看 <code>/etc/paths.d/git</code> 文件的内容：</p>
+
+<pre><code class="language-bash">$ cat /etc/paths.d/git
+/usr/local/git/bin
+</code></pre>
+
+<p><code>/usr/local/git/bin</code> 就是 Git 的可执行文件路径。</p>
+
+<p>所以我们如果要添加一个系统环境变量，也可以参考这种方式。</p>
+
+<p>提供一个添加环境变量的的 shell语句，其中 <code>/usr/local/sbin/mypath</code> 就是我们自己的可执行文件的路径：</p>
+
+<pre><code class="language-bash">$ sudo -s 'echo &quot;/usr/local/sbin/mypath&quot; &gt; /etc/paths.d/mypath'
+</code></pre>
+
+<p>但添加完成之后，命令不会立即生效，有两种方法使配置文件生效：</p>
+
+<ul>
+<li>重新登录终端（如果是图形界面，即重新打开 Terminal）</li>
+<li>通过 <code>source</code> 命令加载：<code>source /etc/paths</code></li>
+</ul>
+
+<p>配置生效之后，就可以使用 <code>mypath</code> 命令了。</p>
+
+<h4 id="系统环境变量-etc-profile-和-etc-bashrc">系统环境变量 <code>/etc/profile</code> 和 <code>/etc/bashrc</code></h4>
+
+<blockquote>
+<p>注：一般不建议修改这两个文件</p>
+</blockquote>
+
+<p>添加环境变量的语法为：</p>
+
+<pre><code class="language-bash">export PATH=&quot;$PATH:&lt;PATH 1&gt;:&lt;PATH 2&gt;:&lt;PATH 3&gt;:...:&lt;PATH N&gt;&quot;
+</code></pre>
+
+<p>所以在 <code>/etc/profile</code> 和 <code>/etc/bashrc</code> 中添加环境变量，只需要在文件中加入如下代码：</p>
+
+<pre><code class="language-bash">export PATH=&quot;/Users/jh/anaconda/bin:$PATH&quot;
+</code></pre>
+
+<h4 id="用户环境变量">用户环境变量</h4>
+
+<p>添加用户环境变量，只需要修改 <code>~/.bash_profile</code>（Bourne Shell）或 <code>~/.zshrc</code>（zsh）或其他用户级配置文件即可。添加环境变量的语法也是：</p>
+
+<pre><code class="language-bash">export PATH=&quot;$PATH:&lt;PATH 1&gt;:&lt;PATH 2&gt;:&lt;PATH 3&gt;:...:&lt;PATH N&gt;&quot;
+</code></pre>
+
+<p>下面是我的 <code>~/.zshrc</code> 的部分配置：</p>
+
+<pre><code class="language-bash">export ANDROID_HOME=~/Library/Android/sdk
+export PATH=$PATH:~/Library/Android/sdk/tools:~/Library/Android/sdk/platform-tools
+export PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/support-files
+alias tree=&quot;find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'&quot;
+alias t=&quot;trans&quot;
+export PATH=&quot;/usr/local/sbin:$PATH&quot;
+</code></pre>
+
+<p>可以通过 <code>echo $PATH</code> 命令查看当前环境变量：</p>
+
+<pre><code class="language-bash">echo $PATH
+/usr/local/sbin:/Users/jh/.nvm/versions/node/v7.6.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/Users/jh/Library/Android/sdk/tools:/Users/jh/Library/Android/sdk/platform-tools:/usr/local/mysql/bin:/usr/local/mysql/support-files:/Applications/Sublime Text.app/Contents/SharedSupport/bin
+</code></pre>
+
+<p>修改了配置文件之后，依旧需要重新登录 SHELL 或者使用 <code>source ~/.zshrc</code> 来是配置立即生效。</p>
+
+<h4 id="export">export</h4>
+
+<p>还有一种添加环境变量的方法： <code>export</code> 命令。</p>
+
+<p><code>export</code> 命令用于设置或显示环境变量。通过 <code>export</code> 添加的环境变量仅在此次登陆周期内有效。</p>
+
+<p>比如很多时候我们的开发环境和生产环境，就可以通过设置一个临时环境变量来，然后在程序中根据不同的环境变量来设置不同的参数。</p>
+
+<pre><code class="language-bash"># 设置 NODE_ENV 环境变量。退出 SHELL 时失效
+$ export NODE_ENV=development
+# 查看当前所有环境变量
+$ export -p
+...
+typeset -x NODE_ENV=development
+typeset -x USER=jh
+...
+</code></pre>
+
+<p>在 Node.js 代码中判断当前环境是开发环境还是生产环境：</p>
+
+<pre><code class="language-javascript">if(process.env.NODE_ENV === 'development') {
+    console.log('开发环境');
+} else {
+    console.log('生产环境');
+}
+</code></pre>
+
+<hr />
+
+<p>Github Issues <a href="https://github.com/nodejh/nodejh.github.io/issues/34">https://github.com/nodejh/nodejh.github.io/issues/34</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fsetting-environmental-variables-in-macos%2f - macOS%2fLinux%20%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e8%ae%be%e7%bd%ae by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

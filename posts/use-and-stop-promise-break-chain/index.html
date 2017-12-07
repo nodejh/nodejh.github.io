@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="Promise 的链式调用与中止"/>
+  <meta name="twitter:description" content="Use and Break Promise Chain"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>Promise 的链式调用与中止 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Promise 的链式调用与中止
+                    </h1>
+                    <h2 class="headline">
+                    Nov 24, 2016 22:19
+                    · 3306 words
+                    · 7 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/node.js">Node.js</a>
+                          
+                              <a href="http://nodejh.comtags/promise">Promise</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#can-i-use-promises">Can I use promises</a></li>
+<li><a href="#promise">Promise</a></li>
+<li><a href="#promise-chain">Promise Chain</a></li>
+<li><a href="#how-to-use-promise-chain">How to Use Promise Chain</a></li>
+<li><a href="#how-to-break-promise-chain">How to Break Promise Chain</a></li>
+<li><a href="#refactor-callback-with-promise">Refactor Callback with Promise</a></li>
+<li><a href="#promise-all-promise-race">Promise.all &amp;&amp; Promise.race</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="abstract">Abstract</h2>
+
+<p>本文主要讲的是如何实现 Promise 的链式调用。也就是 <code>promise().then().then().catch()</code> 的形式，然后讨论如何在某一个 <code>then()</code> 里面中止 Promise。</p>
+
+<p></p>
+
+<p>在程序中，只要返回了一个 promise 对象，如果 promise 对象不是 Rejected 或 Fulfilled 状态，then 方法就会继续调用。利用这个特性，可以处理多个异步逻辑。但有时候某个 then 方法的执行结果可能会决定是否需要执行下一个 then，这个时候就需中止 promise，主要思想就是使用 reject 来中止 promise 的 then 继续执行。</p>
+
+<p>“中止”这个词不知道用得是否准确。这里可能还是 <code>break</code> 的含义更精确，跳出本次 promise，不继续执行后面的 then 方法。但 promise 依旧会继续执行。</p>
+
+<h2 id="can-i-use-promises">Can I use promises</h2>
+
+<p>当前浏览器对 Promise 的支持情况见下图：</p>
+
+<p><a href="http://caniuse.com/#search=promise">http://caniuse.com/#search=promise</a></p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163312.jpg" alt="caniusepromise" /></p>
+
+<h2 id="promise">Promise</h2>
+
+<p>先简单复习一下 Promise。Promise 其实很简单，就是一个处理异步的方法。一般可以通过 <code>new</code> 方法来调用 <code>Promise</code> 的构造器实例化一个 promise 对象：</p>
+
+<pre><code>var promise = new Promise((resolve, reject) =&gt; {
+    // 异步处理
+    // 处理结束后，调用 resolve 或 reject
+    //      成功时就调用 resolve
+    //      失败时就调用 reject
+});
+</code></pre>
+
+<p>用 <code>new Promise</code> 实例化的 promise 对象有以下三个状态：</p>
+
+<ul>
+<li><p>&ldquo;has-resolution&rdquo; - Fulfilled。resolve(成功)时，此时会调用 onFulfilled</p></li>
+
+<li><p>&ldquo;has-rejection&rdquo; - Rejected。reject(失败)时，此时会调用 onRejected</p></li>
+
+<li><p>&ldquo;unresolved&rdquo; - Pending。既不是resolve也不是reject的状态，也就是promise对象刚被创建后的初始化状态等</p></li>
+</ul>
+
+<p>关于上面这三种状态的读法，其中左侧为在 ES6 Promises 规范中定义的术语， 而右侧则是在 Promises/A+ 中描述状态的术语。基本上状态在代码中是不会涉及到的，所以名称也无需太在意。</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-Use-and-Stop-Promise-Chain-promise-states.png" alt="promise state" /></p>
+
+<h2 id="promise-chain">Promise Chain</h2>
+
+<p>先来假设一个业务需求：在系统中使用教务系统账号进行登录。首先用户在登录页面输入用户名（教务系统账号）和密码（教务系统密码）；然后判断数据库中是否存在该用户；如果不存在则使用用户名和密码模拟登录教务系统，如果模拟登录成功，则存储用户名和密码，并返回登录成功。</p>
+
+<p>听起来就有点复杂对不对？于是画了个流程图来解释整个业务逻辑：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-163823.jpg" alt="flow char" /></p>
+
+<p>上图只是一个简化版本，比如密码加密、session设置等没有表现出来，大家知道就好。图中 <code>(1)</code>、<code>(2)</code>、<code>(3)</code> 三个地方就是会进行异步处理的地方，一般数据库操作、网络请求都是异步的。</p>
+
+<p>如果用传统的回调函数 <code>callback</code> 来处理上面的逻辑，嵌套的层级就会比较深，上面的业务因为有三个异步操作所以有三层回调，代码大概会是下面的样子：</p>
+
+<pre><code>// 根据 name 查询用户信息
+findUserByName(name, function(err, userinfo) {
+  if (err) {
+    return res.json({
+      code: 1000,
+      message: '查询用户信息，数据库操作数出现异常',
+    });
+  }
+
+
+  if (userinfo.length &gt; 0) {
+  // 用户存在
+  if (userinfo[0].pwd === pwd)
+    // 密码正确
+    return res.json({
+      code: 0,
+      message: '登录成功',
+    });
+  }
+
+  // 数据库中不存在该用户，模拟登录教务系统
+  loginEducationSystem(name, pwd, function(err, result) {
+    if (err) {
+      return res.json({
+        code: 1001,
+        message: '模拟登录教务系统出现异常',
+      });
+    }
+
+    // 约定正确情况下，code 为 0
+    if (result.code !== 0) {
+      return res.json({
+        code: 1002,
+        message: '模拟登录教务系统失败，可能是用户名或密码错误',
+      });
+    }
+
+    // 模拟登录成功，将用户名密码存入数据库
+    saveUserToDB(name, pwd, function(err, result) {
+      if (err) {
+        return res.json({
+          code: 1003,
+          message: '将用户名密码存入数据库出现异常',
+        });
+      }
+      if (result.code !== 0) {
+        return res.json({
+          code: 1004,
+          message: '将用户名密码存入数据库出现异常',
+        });
+      }
+
+      return res.json({
+        code: 0,
+        message: '登录成功!',
+      });
+    });
+  });
+});
+</code></pre>
+
+<p>上面的代码可能存在的不优雅之处：</p>
+
+<ul>
+<li>随着业务逻辑变负责，回调层级会越来越深</li>
+<li>代码耦合度比较高，不易修改</li>
+<li>每一步操作都需要手动进行异常处理，比较麻烦</li>
+</ul>
+
+<p>接下来再用 promise 实现此处的业务需求。使用 promise 编码之前，可以先思考两个问题。</p>
+
+<p>一是如何链式调用，二是如何中止链式调用。</p>
+
+<h2 id="how-to-use-promise-chain">How to Use Promise Chain</h2>
+
+<p>业务中有三个需要异步处理的功能，所以会分别实例化三个 promise 对象，然后对 promise 进行链式调用。那么，如何进行链式调用？</p>
+
+<p>其实也很简单，直接在 promise 的 then 方法里面返回另一个 promise 即可。例如：</p>
+
+<pre><code>function start() {
+  return new Promise((resolve, reject) =&gt; {
+    resolve('start');
+  });
+}
+
+start()
+  .then(data =&gt; {
+    // promise start
+    console.log('result of start: ', data);
+    return Promise.resolve(1); // p1
+  })
+  .then(data =&gt; {
+    // promise p1
+    console.log('result of p1: ', data);
+    return Promise.reject(2); // p2
+  })
+  .then(data =&gt; {
+    // promise p2
+    console.log('result of p2: ', data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&gt; {
+    // promise p3
+    console.log('ex: ', ex);
+    return Promise.resolve(4); // p4
+  })
+  .then(data =&gt; {
+    // promise p4
+    console.log('result of p4: ', data);
+  });
+
+</code></pre>
+
+<p>上面的代码最终会输出：</p>
+
+<pre><code>result of start:  start
+result of p1:  1
+ex:  2
+result of p4:  4
+</code></pre>
+
+<p>代码的执行逻辑如图：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-24-175131.jpg" alt="promise chain" /></p>
+
+<p>从图中可以看出来，代码的执行逻辑是 <code>promise start --&gt; promise p1 --&gt; promise p3 --&gt; promise p4</code>。所以结合输出结果和执行逻辑图，总结出以下几点：</p>
+
+<ul>
+<li>promise 的 then 方法里面可以继续返回一个新的 promise 对象</li>
+<li>下一个 then 方法的参数是上一个 promise 对象的 resolve 参数</li>
+<li>catch 方法的参数是其之前某个 promise 对象的 rejecte 参数</li>
+<li>一旦某个 then 方法里面的 promise 状态改变为了 rejected，则promise 方法连会跳过后面的 then 直接执行 catch</li>
+<li>catch 方法里面依旧可以返回一个新的 promise 对象</li>
+</ul>
+
+<h2 id="how-to-break-promise-chain">How to Break Promise Chain</h2>
+
+<p>接下来就该讨论如何中止 promise 方法链了。</p>
+
+<p>通过上面的例子，我们可以知道 promise 的状态改变为 rejected 后，promise 就会跳过后面的 then 方法。</p>
+
+<p>也就是，某个 then 里面发生异常后，就会跳过 then 方法，直接执行 catch。</p>
+
+<p>所以，当在构造的 promise 方法链中，如果在某个 then 后面，不需要再执行 then 方法了，就可以把它当作一个异常来处理，返回一个异常信息给 catch，其参数可自定义，比如该异常的参数信息为 <code>{ notRealPromiseException: true}</code>，然后在 catch 里面判断一下 <code>notRealPromiseException</code> 是否为 <code>true</code>，如果为 <code>true</code>，就说明不是程序出现异常，而是在正常逻辑里面中止 then 方法的执行。</p>
+
+<p>代码大概就这样：</p>
+
+<pre><code>start()
+  .then(data =&gt; {
+    // promise start
+    console.log('result of start: ', data);
+    return Promise.resolve(1); // p1
+    )
+  .then(data =&gt; {
+    // promise p1
+    console.log('result of p1: ', data);
+    return Promise.reject({
+      notRealPromiseException: true,
+    }); // p2
+  })
+  .then(data =&gt; {
+    // promise p2
+    console.log('result of p2: ', data);
+    return Promise.resolve(3); // p3
+  })
+  .catch(ex =&gt; {
+    console.log('ex: ', ex);
+    if (ex.notRealPromiseException) {
+      // 一切正常，只是通过 catch 方法来中止 promise chain
+      // 也就是中止 promise p2 的执行
+      return true;
+    }
+    // 真正发生异常
+    return false;
+  });
+</code></pre>
+
+<p>这样的做法可能不符合 <code>catch</code> 的语义。不过从某种意义上来说，promise 方法链没有继续执行，也可以算是一种“异常”。</p>
+
+<h2 id="refactor-callback-with-promise">Refactor Callback with Promise</h2>
+
+<p>讲了那么多道理，现在就改来使用 promise 重构之前用回调函数写的异步逻辑了。</p>
+
+<pre><code>// 据 name 查询用户信息
+const findUserByName = (name, pwd) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    // 数据库查询操作
+    if (dbError) {
+      // 数据库查询出错，将 promise 设置为 rejected
+      reject({
+        code: 1000,
+        message: '查询用户信息，数据库操作数出现异常',
+      });
+    }
+    // 将查询结果赋给 userinfo 变量
+    if (userinfo.length === 0) {
+      // 数据库中不存在该用户
+      resolve();
+    }
+    // 数据库存在该用户，判断密码是否正确
+    if (pwd === userinfo[0].pwd) {
+      // 密码正确，中止 promise 执行
+      reject({
+        notRealPromiseException: true,
+        data: {
+          code: 0,
+          message: '密码正确，登录成功',
+        }
+      });
+    }
+    // 密码不正确，登录失败，将 Promise 设置为 Rejected 状态
+    reject({
+      code: 1001,
+      message: '密码不正确，登录失败',
+    });
+  });
+};
+
+
+// 模拟登录教务系统
+const loginEducationSystem = (name, pwd) =&gt; {
+  // 登录逻辑...
+  // 登录成功
+  resolve();
+  // 登录失败
+  reject({
+    code: 1002,
+    message: '模拟登录教务系统失败',
+  });
+};
+
+
+// 将用户名密码存入数据库
+const saveUserToDB(name, pwd) =&gt; {
+  // 数据库存储操作
+  if (dbError) {
+    // 数据库存储出错，将 promise 设置为 rejected
+    reject({
+      code: 1004,
+      message: '数据库存储出错，将出现异常',
+    });
+  }
+  // 数据库存储操作成功
+  resolve();
+};
+
+
+findUserByName(name)
+.then(() =&gt; {
+  return loginEducationSystem(name, pwd);
+})
+.then(() =&gt; {
+  return saveUserToDB(name, pwd);
+})
+.catch(e =&gt; {
+  // 判断异常出现原因
+  if (e.notRealPromiseException) {
+    // 正常中止 promise 而故意设置的异常
+    return res.json(e.data);
+  }
+  // 出现错误或异常
+  return res.json(e);
+});
+</code></pre>
+
+<p>在上面的代码中，实例化了三个 promise 对象，分别实现业务需求中的三个功能。然后通过 promise 方法链来调用。相比用回调函数而言，代码结构更加清晰，也更易读易懂耦合度更低更易扩展了。</p>
+
+<h2 id="promise-all-promise-race">Promise.all &amp;&amp; Promise.race</h2>
+
+<p>仔细观察可以发现，在上面的 promise 代码中，<code>loginEducationSystem</code> 和 <code>saveUserToDB</code> 两个方法执行有先后顺序要求，但没有数据传递。</p>
+
+<p>其实 promise 方法链更好用的一点是，当下一个操作依赖于上一个操作的结果的时候，可以很方便地通过 then 方法的参数来传递数据。前面页提到过，下一个 then 方法的参数就是上一个 then 方法里面 <code>resolve</code> 的参数，所以当然就可以把上一个 then 方法的执行结果作为参数传递给下一个 then 方法了。</p>
+
+<p>还有些时候，可能 then 方法的执行顺序也没有太多要求，只需要 promise 方法链中的两个或多个 promise 全部都执行正确。这时，如果依旧一个一个去写 then 可能就比较麻烦，比如：</p>
+
+<pre><code>function p1() {
+  return new Promise((resolve) =&gt; {
+    console.log(1);
+    resolve();
+  });
+}
+
+function p2() {
+  return new Promise((resolve) =&gt; {
+    console.log(2);
+    resolve();
+  });
+}
+
+function p3() {
+  return new Promise((resolve) =&gt; {
+    console.log(3);
+    resolve();
+  });
+}
+</code></pre>
+
+<p>现在只需要 <code>p1</code> <code>p2</code>  <code>p3</code> 这三个 promise 都执行，并且 promise 最终状态都是 Fulfilled，那么如果还是使用方法链，这是这样调用：</p>
+
+<pre><code>p1()
+.then(() =&gt; {
+  return p2();
+})
+.then(() =&gt; {
+  return p3();
+})
+.then(() =&gt; {
+  console.log('all done');
+})
+.catch(e =&gt; {
+  console.log('e: ', e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+</code></pre>
+
+<p>代码貌似就不那么精炼了。这个时候就有了 <code>Promise.all</code> 这个方法。</p>
+
+<p><code>Promise.all</code> 接收一个 promise对象的数组作为参数，当这个数组里的所有 promise 对象全部变为 resolve 或 reject 状态的时候，它才会去调用 <code>then</code> 方法。</p>
+
+<p>于是，调用这几个 promise 的代码就可以这样写了：</p>
+
+<pre><code>p1()
+.then(() =&gt; {
+  return Promise.all([
+    p2(),
+    p3(),
+  ]);
+})
+.then(() =&gt; {
+  console.log('all done');
+})
+.catch((e) =&gt; {
+  console.log('e: ', e);
+});
+
+// 输出结果：
+// 1
+// 2
+// 3
+// all done
+</code></pre>
+
+<p>这样看起来貌似就精炼些了。</p>
+
+<p>而对于 <code>Promise.race</code>，其参数也跟 <code>Promise.all</code> 一样是一个数组。只是数组中的任何一个 promise 对象如果变为 resolve 或者reject 的话，该函数就会返回，并使用这个 promise 对象的值进行 resolve 或者 reject。</p>
+
+<p>这里就不举例了。</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>到目前为止，我们就基本了解了 Promise 的用法及特点，并实现用 Promise 重构用回调函数写的异步操作。现在对 Promise 的使用，应该驾轻就熟了。</p>
+
+<p>完。</p>
+
+<hr />
+
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/23">https://github.com/nodejh/nodejh.github.io/issues/23</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fuse-and-stop-promise-break-chain%2f - Promise%20%e7%9a%84%e9%93%be%e5%bc%8f%e8%b0%83%e7%94%a8%e4%b8%8e%e4%b8%ad%e6%ad%a2 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

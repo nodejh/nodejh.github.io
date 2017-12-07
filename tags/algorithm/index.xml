@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Algorithm on nodejh</title>
+    <title>Algorithm on node</title>
     <link>http://nodejh.com/tags/algorithm/</link>
-    <description>Recent content in Algorithm on nodejh</description>
+    <description>Recent content in Algorithm on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 29 Oct 2016 00:43:22 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>求给定数组的对等差分(symmetric difference) (△ or ⊕)数组</title>
-      <link>http://nodejh.com/post/symmetric-difference/</link>
+      <link>http://nodejh.com/posts/symmetric-difference/</link>
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/symmetric-difference/</guid>
+      <guid>http://nodejh.com/posts/symmetric-difference/</guid>
       <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
@@ -26,10 +26,10 @@
     
     <item>
       <title>找出一个数组中的最大值</title>
-      <link>http://nodejh.com/post/get-the-max-number-in-array/</link>
+      <link>http://nodejh.com/posts/get-the-max-number-in-array/</link>
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/get-the-max-number-in-array/</guid>
+      <guid>http://nodejh.com/posts/get-the-max-number-in-array/</guid>
       <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

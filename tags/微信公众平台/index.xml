@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>微信公众平台 on nodejh</title>
+    <title>微信公众平台 on node</title>
     <link>http://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</link>
-    <description>Recent content in 微信公众平台 on nodejh</description>
+    <description>Recent content in 微信公众平台 on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 04 Dec 2016 19:32:03 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>微信公众平台开发接入指南</title>
-      <link>http://nodejh.com/post/wechat-development-access-guide/</link>
+      <link>http://nodejh.com/posts/wechat-development-access-guide/</link>
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/wechat-development-access-guide/</guid>
+      <guid>http://nodejh.com/posts/wechat-development-access-guide/</guid>
       <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

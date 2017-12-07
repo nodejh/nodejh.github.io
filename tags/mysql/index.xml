@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mysql on nodejh</title>
+    <title>Mysql on node</title>
     <link>http://nodejh.com/tags/mysql/</link>
-    <description>Recent content in Mysql on nodejh</description>
+    <description>Recent content in Mysql on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
@@ -13,19 +13,19 @@
     
     <item>
       <title>常用 MySQL 命令</title>
-      <link>http://nodejh.com/post/handy-mysql-commands/</link>
+      <link>http://nodejh.com/posts/handy-mysql-commands/</link>
       <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <guid>http://nodejh.com/posts/handy-mysql-commands/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>MySQL ibdata1 文件不可写</title>
-      <link>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
+      <link>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
+      <guid>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
       <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
 
 &lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
@@ -35,10 +35,10 @@
     
     <item>
       <title>MySQL 启动报错问题排查</title>
-      <link>http://nodejh.com/post/troubleshoot-mysql-start-error/</link>
+      <link>http://nodejh.com/posts/troubleshoot-mysql-start-error/</link>
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/troubleshoot-mysql-start-error/</guid>
+      <guid>http://nodejh.com/posts/troubleshoot-mysql-start-error/</guid>
       <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -46,10 +46,10 @@
     
     <item>
       <title>创建 MySQL数据库及用户权限</title>
-      <link>http://nodejh.com/post/create-and-manage-mysql-user/</link>
+      <link>http://nodejh.com/posts/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/create-and-manage-mysql-user/</guid>
+      <guid>http://nodejh.com/posts/create-and-manage-mysql-user/</guid>
       <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
 
 &lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
@@ -59,10 +59,10 @@
     
     <item>
       <title>MySQL 连接错误 (61) </title>
-      <link>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</link>
+      <link>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</link>
       <pubDate>Thu, 07 Apr 2016 01:55:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/cannot-connet-to-mysql-with-error-code-61/</guid>
+      <guid>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</guid>
       <description>&lt;p&gt;远程连接 MySQL 的时候出现如下错误:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)

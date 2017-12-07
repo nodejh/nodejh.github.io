@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Y on nodejh</title>
+    <title>Y on node</title>
     <link>http://nodejh.com/categories/y/</link>
-    <description>Recent content in Y on nodejh</description>
+    <description>Recent content in Y on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>常用 MySQL 命令</title>
-      <link>http://nodejh.com/post/handy-mysql-commands/</link>
+      <link>http://nodejh.com/posts/handy-mysql-commands/</link>
       <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/handy-mysql-commands/</guid>
+      <guid>http://nodejh.com/posts/handy-mysql-commands/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     

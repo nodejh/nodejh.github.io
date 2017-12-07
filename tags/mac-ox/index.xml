@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mac Ox on nodejh</title>
+    <title>Mac Ox on node</title>
     <link>http://nodejh.com/tags/mac-ox/</link>
-    <description>Recent content in Mac Ox on nodejh</description>
+    <description>Recent content in Mac Ox on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 24 Feb 2016 14:25:25 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>删除GIT中的.DS_Store</title>
-      <link>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
+      <link>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
       <pubDate>Wed, 24 Feb 2016 14:25:25 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
+      <guid>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     

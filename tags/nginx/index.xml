@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Nginx on nodejh</title>
+    <title>Nginx on node</title>
     <link>http://nodejh.com/tags/nginx/</link>
-    <description>Recent content in Nginx on nodejh</description>
+    <description>Recent content in Nginx on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 30 Apr 2016 17:19:20 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>使用 Ngnix 给 Node.js 应用做反向代理</title>
-      <link>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</link>
+      <link>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
       <pubDate>Sat, 30 Apr 2016 17:19:20 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/use-nginx-reverse-proxy-nodejs/</guid>
+      <guid>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
       <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

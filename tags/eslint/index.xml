@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Eslint on nodejh</title>
+    <title>Eslint on node</title>
     <link>http://nodejh.com/tags/eslint/</link>
-    <description>Recent content in Eslint on nodejh</description>
+    <description>Recent content in Eslint on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 27 Sep 2016 20:48:24 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>在 Atom 中使用 ESlint</title>
-      <link>http://nodejh.com/post/use-eslint-config-airbnb-in-atom/</link>
+      <link>http://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</link>
       <pubDate>Tue, 27 Sep 2016 20:48:24 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/use-eslint-config-airbnb-in-atom/</guid>
+      <guid>http://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</guid>
       <description>&lt;p&gt;ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

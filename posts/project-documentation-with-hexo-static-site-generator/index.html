@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="使用 Hexo 创建项目文档网站"/>
+  <meta name="twitter:description" content="Project Documentation With Hexo Static Site Generator"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>使用 Hexo 创建项目文档网站 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        使用 Hexo 创建项目文档网站
+                    </h1>
+                    <h2 class="headline">
+                    Jul 5, 2017 11:41
+                    · 4368 words
+                    · 9 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/"></a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#hexo-简介">Hexo 简介</a></li>
+<li><a href="#安装-hexo">安装 Hexo</a>
+<ul>
+<li><a href="#安装-node-js">安装 Node.js</a></li>
+<li><a href="#安装-git">安装 Git</a>
+<ul>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#macos">macOS</a></li>
+<li><a href="#linux-ubuntu-or-debian">Linux – Ubuntu or Debian</a></li>
+<li><a href="#linux-fedora-red-hat-or-centos">Linux – Fedora, Red Hat or CentOS</a></li>
+</ul></li>
+<li><a href="#安装-hexo-cli">安装 Hexo CLI</a></li>
+</ul></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#创建一个主题">创建一个主题</a></li>
+<li><a href="#编写文档">编写文档</a></li>
+<li><a href="#部署到-github-pages">部署到 GitHub Pages</a></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>当我们发布一个开源项目的时候，最重要的事情之一就是要创建项目文档。对使用项目的用户来说，文档是非常有必要的，通常我们可以使用下面这些方式来创建文档：</p>
+
+<!-- more -->
+
+<ul>
+<li><a href="https://help.github.com/articles/about-github-wikis/">GitHub Wiki</a>：在 Github 上我们可以为每个项目都创建一个 wiki。Wiki 是由一系列的 Markdown 文件组成，所以我们可以用 wiki 来做项目文档。但这种方案也有一些缺点：wiki 的贡献者不会出现在项目贡献者列表中；文档的结构和布局都是有限制的，只能是 Github Wikis 的样式；文档存储在第三方平台上。</li>
+<li>README：我们可以为项目创建一个 README.md 文件，它会直接展示在 Github（或 Gitlab、Coding 等 git 仓库）的项目页面。如果文档非常少，这中方案是非常适合的。但如果文档非常多，这个 README.md 文件就会非常大了。而且通常来说，README.md 是用来介绍项目，而不是展示文档。</li>
+<li>自建网站：当然，我们也可以创建一个文档网站，然后放在自己的服务器上。这样我们就可以随意编辑文档。但这种方案的缺点是不便于追踪文档的变化、开发网站和文档维护相比前两种方案麻烦非常多、而且还需要自建主机。</li>
+<li><a href="https://pages.github.com/">Github Pages</a>：Github 也提供了一个托管项目中静态文件的功能。我们可以为项目创建一个 <code>gh-pages</code> 分支，Github 就会将分支中的内容当做静态站点。这种方案好的一方面是文档维护是在一个单独的分支，虽然可能寻找起来比较麻烦。不好的一方面是文档编写是编写成静态文件（html/css/js），修改和维护起来比较麻烦。</li>
+</ul>
+
+<p>以上方案都不完美，所以需要一种综合以上所有优点的方案，简单来说就是：</p>
+
+<ul>
+<li>文档以 MarkDown 文件编写</li>
+<li>使用 hexo 将 MarkDown 文件生成成静态文件</li>
+<li>将静态文件发布到 github pages</li>
+</ul>
+
+<h2 id="hexo-简介">Hexo 简介</h2>
+
+<p><a href="https://hexo.io">Hexo</a> 是一个 Node.js 编写的静态网站生成器。Hexo 主要用来做博客框架，同时 Hexo 也整合了将静态网站部署到 Github 的功能，所以也很适合用来做 Github 项目的文档。</p>
+
+<p>我们可以使用 Hexo，根据写好的 HTML 布局（既 Hexo 的主题），将 MarkDown 文件生成成主题对应的静态 html/css/js 文件。Hexo 提供了将静态文件部署到 Github 分支上的配置。也就是说，我们可以使用 MarkDown 来维护文档，当写好部署配置之后，使用一个命令就可以将文档生成并发布到 Github 的 gh-pages 分支上。</p>
+
+<h2 id="安装-hexo">安装 Hexo</h2>
+
+<p>Hexo 是通过 Node.js 编译的，所以需要安装 Node.js。Hexo 使用 Git 将文件部署到 Github，所以也需要安装 Git。</p>
+
+<h3 id="安装-node-js">安装 Node.js</h3>
+
+<p>推荐使用 Node.js 的版本管理器来安装，比如 <a href="http://nvm.sh/">nvm</a>。当然，也有很多其他的 Node.js 版本管理工具，使用这些工具，我们能很方便地安装 Node.js，以及在不同的 Node.js 的版本中切换。</p>
+
+<p>目前 Node.js 最新的版本是 8.1.3，使用 nvm 来安装：</p>
+
+<pre><code class="language-sh">$ nvm install v8.1.3
+</code></pre>
+
+<p>安装完 Node.js 的同时也会安装对应的 <a href="https://github.com/npm/npm">npm</a>。</p>
+
+<h3 id="安装-git">安装 Git</h3>
+
+<p>我们还需要在系统上安装 Git。如果不确定系统中是否已经安装了 Git，使用下面的命令检查：</p>
+
+<pre><code class="language-sh">$ git --version
+</code></pre>
+
+<p>如果出现了 Git 的版本号，则不需要再安装了。如果没有，则需要安装 Git。</p>
+
+<h4 id="windows">Windows</h4>
+
+<p>Windows 系统直接点此连接 <a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a> 下载 Git 软件，然后运行即可。</p>
+
+<h4 id="macos">macOS</h4>
+
+<p>在 macOS 上安装 Git 有多种不同的方式：</p>
+
+<ul>
+<li><a href="https://sourceforge.net/projects/git-osx-installer/">Git installer</a></li>
+<li><a href="http://brew.sh/">Homebrew</a>：运行 <code>brew install git</code></li>
+<li><a href="https://www.macports.org/">MacPorts</a>：运行 <code>sudo port install git +doc +bash_completion +gitweb</code></li>
+</ul>
+
+<p>我个人推荐使用 Homebrew 来安装软件。当然如果你更喜欢 MacPorts，也没有任何问题。</p>
+
+<h4 id="linux-ubuntu-or-debian">Linux – Ubuntu or Debian</h4>
+
+<p>在 Ubuntu 或 Debian 上，我们可以使用 apt 来安装软件：</p>
+
+<pre><code class="language-sh">$ sudo apt-get install git-core
+</code></pre>
+
+<h4 id="linux-fedora-red-hat-or-centos">Linux – Fedora, Red Hat or CentOS</h4>
+
+<p>在 Fedora、Red Hat 或 CentOS 上，我们可以使用 yum 来安装软件：</p>
+
+<pre><code class="language-sh">$ sudo yum install git-core
+</code></pre>
+
+<h3 id="安装-hexo-cli">安装 Hexo CLI</h3>
+
+<p>在安装完 Node.js 和 Git 之后，我们最后需要安装 Hexo：</p>
+
+<pre><code class="language-sh">$ npm install -g hexo-cli
+</code></pre>
+
+<p>通过下面的命令来检查 hexo 是否正确安装上了：</p>
+
+<pre><code class="language-sh">$ hexo --version
+</code></pre>
+
+<p>如果输出了一系列的版本号，说明所有安装工作都以完成，可以正式使用 hexo 了。</p>
+
+<h2 id="配置">配置</h2>
+
+<p>安装好 hexo 之后，现在我们就可以在 Github 的主分支上来创建我们的文档了。根据该文章，你可以：</p>
+
+<ul>
+<li>在一个已存在的项目中创建文档</li>
+<li>创建一个新的项目 <a href="https://github.com/new">Create a new repository</a></li>
+</ul>
+
+<p>简单起见，假设你是新创建了一个名为 <code>hexo-documentation</code> 的项目，当然你也可以用一个已经存在的项目继续下面的操作。</p>
+
+<p>接下来使用下面的名令在本地 clone 项目：</p>
+
+<pre><code class="language-sh">$ git clone https://github.com/USERNAME/REPOSITORY.git
+</code></pre>
+
+<p>将 <code>USERNAME</code> 替换为你的用户名，<code>REPOSITORY</code> 替换为你的项目名称。例如我执行的命令如下：</p>
+
+<pre><code class="language-sh">$ git clone https://github.com/nodejh/hexo-documentation
+</code></pre>
+
+<p>然后使用 <code>cd</code> 进入项目目录，并创建一个名为 <code>docs</code> 的目录：</p>
+
+<pre><code class="language-sh">$ cd hexo-documentation
+$ mkdir docs
+</code></pre>
+
+<p>docs 目录将存放我们的文档。使用 hexo 初始化 docs 目录：</p>
+
+<pre><code class="language-sh">$ hexo init docs
+</code></pre>
+
+<p>上面的命令将生成 hexo 的一些配置并安装相关依赖。安装完成之后，docs 的目录结构如下：</p>
+
+<ul>
+<li><code>_config.yml</code> 站点配置文件</li>
+<li><code>package.json</code> Node.js 的依赖文化</li>
+<li><code>scaffolds</code> hexo 发布文章的时候使用（本文暂不介绍 hexo 的特性）</li>
+<li><code>source</code> MarkDown 和各种资源文件</li>
+<li><code>themes</code> hexo 的主题</li>
+</ul>
+
+<p>我们可以通过下面的命令来检查网站是否能够正常运行：</p>
+
+<pre><code class="language-sh">$ hexo generate
+$ hexo server
+</code></pre>
+
+<p>第一个命令将根据选用的主题，将 sources 目录中的文件转换成静态网站文件。第二个命令将启动一个 Web 服务器，提供这些静态网站文件，我们可以通过 <code>http://localhost:4000</code> 来访问：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/Project-Documentation-with-Hexo-Static-Site-Generator-01.png" alt="Project-Documentation-with-Hexo-Static-Site-Generator-01" /></p>
+
+<p>目前我们的网站看起来还是一个博客而不是文档，不过我们将要将其改成文档的样子。</p>
+
+<h2 id="创建一个主题">创建一个主题</h2>
+
+<p>要改变网站的外观，我们需要创建一个 hexo 的主题。主题确定了 hexo 生成的网站的样式和布局。<a href="https://hexo.io/themes/">https://hexo.io/themes/</a> 这个网站有很多免费的 hexo 主题可以使用。但在这篇文章里，我们要从零开始创建一个 hexo 主题。</p>
+
+<p>Hexo 有一个名为 landscape 的默认主题，在 <code>docs/themes</code> 这个目录里面。你可以在 <code>themes</code> 目录存放多个主题，但每次只能有一个主题被使用。接下来让我们创建自己的主题。在 themes 目录下创建一个名为 <code>documentation</code> 的目录。</p>
+
+<p>Hexo 的主题包含以下文件和目录：</p>
+
+<ul>
+<li><code>_config.yml</code> 主题配置文件</li>
+<li><code>languages</code> 国际化的语言包</li>
+<li><code>layout</code> 主题布局，即页面结构等</li>
+<li><code>scripts</code> 一些 Hexo 插件脚本</li>
+<li><code>source</code> 资源文件夹，里面的文件名以 <code>_</code> 开头外的所有文件都会被当作网站的静态资源</li>
+</ul>
+
+<p>我们将创建一个简单的静态主题，所以我们不需要 <code>scripts</code> 目录。然后目前仅以中文展示，所以也不需要 <code>languages</code> 目录。</p>
+
+<p>我们需要做的就是编写网站的布局，以及一些 CSS 代码。在本文中我将使<a href="http://sass-lang.com/">Sass</a> 来生成 CSS，但 hexo 并不能直接处理 Sass，但幸运的是有 <a href="https://github.com/knksmith57/hexo-renderer-sass">hexo-renderer-sass</a> 这个插件来帮助 hexo 处理 Sass。</p>
+
+<p>使用 npm 来安装 hexo-renderer-sass，在 <code>./docs</code>（注意不是在 themes 目录里面）运行下面的命令：</p>
+
+<pre><code class="language-sh">$ npm install --save hexo-renderer-sass
+</code></pre>
+
+<p>然后回到 themes 目录里面，配置 Sass，不然 hexo-renderer-sass 插件不会被加载。在 <code>docs/themes/documentation/_config.yml</code> 文件中加入下面的代码：</p>
+
+<pre><code class="language-coffee">node_sass:
+  outputStyle: nested
+  precision: 4
+  sourceComments: false
+</code></pre>
+
+<p>Sass 的所有可配置在 <a href="https://github.com/sass/node-sass#options">node-sass</a></p>
+
+<p>接下来就可以编写 Sass 代码了。不过在本文中我不会详细介绍怎么写 Sass 样式，因为它和本文内容无关，而且范围太大，一时半会儿写不完。你可以在这里 <a href="https://github.com/nodejh/hexo-documentation">https://github.com/nodejh/hexo-documentation</a> 找到这些文件，然后把他们复制到你的项目中，或者你也可以创建自己的样式。</p>
+
+<p>让我们继续回到布局，开始编写代码之前，还有一个重要的事情就是选择模板引擎，如 swig、ejs 等。Hexo 默认使用的模版引擎是 swig，这也是我们将要使用的。</p>
+
+<p>接下来创建文件 <code>docs/themes/documentation/layout/post.swig</code>，并写入下面的代码：</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charSet='utf-8' /&gt;
+  &lt;title&gt;{{config.title + ' - ' + page.title}}&lt;/title&gt;
+  &lt;link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='{{ url_for(&quot;css/docs.css&quot;) }}' rel='stylesheet'&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class='menu'&gt;
+    &lt;div class='logo'&gt;
+      Documentation
+    &lt;/div&gt;
+    &lt;nav class='menu-nav'&gt;
+      {% for section in site.data.nav %}
+        &lt;ul class='nav'&gt;
+          &lt;span&gt;{{ section.title }}&lt;/span&gt;
+          &lt;ul class='nav'&gt;
+            {% for item in section.items %}
+              &lt;li&gt;
+                &lt;a href='{{item.href || url_for(item.id + &quot;.html&quot;) }}'{% if item.id == page.id %} class='active'{% endif %}&gt;{{item.title}}&lt;/a&gt;
+              &lt;/li&gt;
+            {% endfor %}
+          &lt;/ul&gt;
+        &lt;/ul&gt;
+      {% endfor %}
+    &lt;/nav&gt;
+    &lt;a class='footer' href='https://github.com/sitepoint-editors/hexo-documentation'&gt;
+      Project on github
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div class='page'&gt;
+    &lt;div class='page-content'&gt;
+      &lt;h1&gt;{{page.title}}&lt;/h1&gt;
+      {{page.content}}
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class='switch-page'&gt;
+    {% if page.prev %}
+      &lt;a class='previous' href='{{ url_for(page.prev) }}'&gt;Previous&lt;/a&gt;
+    {% endif %}
+    {% if page.next %}
+      &lt;a class='next' href='{{ url_for(page.next) }}'&gt;Next&lt;/a&gt;
+    {% endif %}
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>简单分析一下代码。</p>
+
+<pre><code class="language-html">&lt;head&gt;
+  &lt;meta charSet='utf-8' /&gt;
+  &lt;title&gt;{{config.title + ' - ' + page.title}}&lt;/title&gt;
+  &lt;link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='{{ url_for(&quot;css/docs.css&quot;) }}' rel='stylesheet'&gt;
+&lt;/head&gt;
+</code></pre>
+
+<p>头部主要包括两部分：</p>
+
+<ul>
+<li><code>title</code> Hexo 提供了一些列的<a href="https://hexo.io/zh-cn/docs/variables.html">变量</a>，我们可以使用其中的 <code>config.title</code> 和 <code>page.title</code> 来组成我们的 title</li>
+<li><code>links</code> 链接里面包括 normalize CSS，使默认的样式保持跨浏览器的一致性；Google Fonts，使文本显示更友好；url_for，这是 Hexo 的一个<a href="https://hexo.io/zh-cn/docs/helpers.html">辅助函数</a>，可以在路径前加上根路径</li>
+</ul>
+
+<p>接下来看 body 部分，大体上还是 HTML。一些重点部分稍后会详细介绍。</p>
+
+<pre><code class="language-html">&lt;nav class='menu-nav'&gt;
+  {% for section in site.data.nav %}
+  &lt;ul class='nav'&gt;
+    &lt;span&gt;{{ section.title }}&lt;/span&gt;
+    &lt;ul class='nav'&gt;
+      {% for item in section.items %}
+        &lt;li&gt;
+          &lt;a
+            href='{{ item.href || url_for(item.id + &quot;.html&quot;) }}'
+            {% if item.id == page.id %}
+              class='active'
+            {% endif %}
+          &gt;
+            {{ item.title }}
+          &lt;/a&gt;
+        &lt;/li&gt;
+      {% endfor %}
+    &lt;/ul&gt;
+  &lt;/ul&gt;
+  {% endfor %}
+&lt;/nav&gt;
+</code></pre>
+
+<p>上面的代码会生成网站的菜单部分，菜单项来自于 <code>site.data.nav</code> 这个对象，稍后我们会在 <code>docs/source/_data/nav.yml</code> 中创建。<code>source/_data</code> 是 Hexo 的<a href="https://hexo.io/zh-cn/docs/data-files.html">数据文件</a>。<code>site.data.nav</code> 即 <code>_data</code> 目录中的 <code>nav.yml</code> 文件。<code>nav.yml</code> 中是一个包含 <code>title</code> 和 <code>items</code> 对象的数组。</p>
+
+<p>接下来比较重要的是文章内容这部分：</p>
+
+<pre><code class="language-html">&lt;div class=&quot;page-content&quot;&gt;
+  &lt;h1&gt;{{ page.title }}&lt;/h1&gt;
+  {{ page.content }}
+&lt;/div&gt;
+</code></pre>
+
+<p>这里面包括了文章标题和内容两部分。文章内容是根据 MarkDown 文件生成的 HTML。</p>
+
+<p>最后还包括 “上一页” 和 “下一页” 按钮：</p>
+
+<pre><code class="language-html">{% if page.prev %}
+  &lt;a class='previous' href=&quot;{{ url_for(page.prev) }}&quot;&gt;上一页&lt;/a&gt;
+{% endif %}
+{% if page.next %}
+  &lt;a class='next' href=&quot;{{ url_for(page.next) }}&quot;&gt;下一页&lt;/a&gt;
+{% endif %}
+</code></pre>
+
+<p>上面的代码中，我们假设每个页面都有 “上一页” 和 “下一页” 按钮。</p>
+
+<p>然后创建一个首页 <code>documentation/layout/index.swig</code>：</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charSet='utf-8' /&gt;
+  &lt;title&gt;{{config.title + ' - ' + page.title}}&lt;/title&gt;
+  &lt;link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700' rel='stylesheet' type='text/css'&gt;
+  &lt;link href='{{ url_for(&quot;css/docs.css&quot;) }}' rel='stylesheet'&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class='index'&gt;
+    &lt;a href=&quot;/what-is-it.html&quot;&gt;
+      Get Start
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>现在差不多就完成了！不仅是布局文件完成了，我们的主题也制作好了。最后一件事情就是修改 Hexo 生成静态文件的时候使用的主题。修改 <code>docs/_config.yml</code> 文件中的 <code>theme</code> 属性：</p>
+
+<pre><code class="language-coffee">theme: documentation
+</code></pre>
+
+<p>所有事情都做完了！接下来我们就可以创建文档了。</p>
+
+<h2 id="编写文档">编写文档</h2>
+
+<p>接下来就到了整篇文章最重要的部分了，为我们的项目编写文档。我们将在 <code>docs/source/</code> 目录完成这些事情。这里的文档是网站内容的来源，以及网站的菜单。</p>
+
+<p>首先创建菜单。Hexo 提供了让我们定义一些数据文件，并通过 <code>site.data</code> 来访问。首先在 <code>source</code> 目录里面创建 <code>_data</code> 目录，然后创建名为 <code>nav.yml</code> 的文件：</p>
+
+<pre><code class="language-coffee">- title: Introduction
+  items:
+  - id: what-is-it
+    title: What is it?
+  - id: how-it-works
+    title: How it works
+- title: Usage
+  items:
+  - id: installation
+    title: Installation
+  - id: using
+    title: Using It
+</code></pre>
+
+<p>这样我们就可以通过 <code>site.data.nav</code> 来访问 <code>nav.yml</code> 中的文件。</p>
+
+<p>在上面创建的菜单中，我们创建了两篇文章，每篇文章有两个部分。最后我们就只需要创建页面了。在编写 MarkDown 之前，先创建以下文件，与菜单对应：</p>
+
+<ul>
+<li>what-is-it.md</li>
+<li>how-it-works.md</li>
+<li>installation.md</li>
+<li>using.md</li>
+</ul>
+
+<p>接下来就要往文件中写入内容。文件的开头部分是 <a href="https://hexo.io/zh-cn/docs/front-matter.html">Front-matter</a>，里面是页面的一些设置，Front-matter 是包含在两个 <code>---</code> 之间的 <a href="http://yaml.org/">YAML</a> 格式的。</p>
+
+<p>如 <code>what-is-it.md</code> 所示：</p>
+
+<pre><code class="language-markdown">---
+layout: default
+id: what-is-it
+title: What is it?
+next: how-it-works.html
+---
+
+This is our what it is markdown file
+
+- one
+- two
+- three
+</code></pre>
+
+<p>在 front-matter 中有下面这些设置：</p>
+
+<ul>
+<li><code>layout</code> 页面的布局</li>
+<li><code>id</code> 页面的唯一标识</li>
+<li><code>title</code> 页面标题</li>
+<li><code>next</code> 下一页链接</li>
+</ul>
+
+<p>按照类似的方法编写其他几个 MarkDown 文件。当网站创建好之后，这些 MarkDown 内容会被转换为 HTML。</p>
+
+<p>编辑好了之后，就可以生成静态网站了：</p>
+
+<pre><code class="language-sh">$ hexo generate
+$ hexo server
+</code></pre>
+
+<p>然后通过 <code>http://localhost:4000</code> 就可以看到如下页面：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/Project-Documentation-with-Hexo-Static-Site-Generator-02.png" alt="Project-Documentation-with-Hexo-Static-Site-Generator-02" /></p>
+
+<h2 id="部署到-github-pages">部署到 GitHub Pages</h2>
+
+<p>现在我们的文档网站就全部做好了，接下来需要做的就是将其部署到 Github Pages 上。如果我们手动来实现，就需要创建 gh-pages 分支，生成静态网站，复制网站文件到 gp-pages 分支，commit 并且 push 代码到 GitHub。当修改文档之后，又得重复这些工作。</p>
+
+<p>幸运的是，Hexo 提供了一个很方便地将站点部署到 gh-pages 的方法。首先安装 <a href="https://github.com/hexojs/hexo-deployer-git">hexo-deployer-git</a> 这个包，在 <code>docs/</code> 目录下运行命令：</p>
+
+<pre><code class="language-sh">$ npm install --save hexo-deployer-git
+</code></pre>
+
+<p>然后打开 <code>docs/_config.yml</code>，在文档的最后面，修改部署配置信息，注意将其中的用户名（nodejh）修改为你的用户名：</p>
+
+<pre><code class="language-coffee">deploy:
+  type: git
+  repo: https://github.com/nodejh/hexo-documentation
+  branch: gh-pages
+  message: &quot;Docs updated: {{ now('YYYY-MM-DD HH:mm:ss') }})&quot;
+
+</code></pre>
+
+<p>最后再修改一些其他配置：</p>
+
+<pre><code class="language-coffee"># Site
+title: Hexo documentation
+subtitle: Hexo documentation article
+description: Hexo documentation article
+author: nodejh
+language: zh-cn
+timezone: GMT
+
+# URL
+url: https://nodejh.github.io/hexo-documentation
+root: /hexo-documentation/
+</code></pre>
+
+<p>OK！现在就只剩下一件事情了，就是将网站部署到 Github 上，在终端上运行：</p>
+
+<pre><code class="language-sh">$ hexo generate
+$ hexo deploy
+</code></pre>
+
+<p>Hexo 将生成静态文件，并将其自动部署到 gh-pages 分支上。部署完成之后，我们就可以通过 <a href="https://nodejh.github.io/hexo-documentation">https://nodejh.github.io/hexo-documentation</a> 来访问了。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>如果你想要的项目被被人使用，文档是非常必要的。在 GitHub 上也有很多创建项目文档的方法。对于中大型项目来说，维护一个文档网站也是很有必要的。Hexo 不仅能生成静态网站，同时也提供了部署网站的方案，非常方便我们使用。</p>
+
+<hr />
+
+<ul>
+<li><a href="https://www.sitepoint.com/project-documentation-hexo/">Project Documentation with Hexo Static Site Generator</a></li>
+</ul>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fproject-documentation-with-hexo-static-site-generator%2f - %e4%bd%bf%e7%94%a8%20Hexo%20%e5%88%9b%e5%bb%ba%e9%a1%b9%e7%9b%ae%e6%96%87%e6%a1%a3%e7%bd%91%e7%ab%99 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

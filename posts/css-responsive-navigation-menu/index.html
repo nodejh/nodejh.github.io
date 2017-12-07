@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.comimages/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="纯 CSS 实现响应式导航菜单"/>
+  <meta name="twitter:description" content="CSS Responsive Navigation Menu"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>纯 CSS 实现响应式导航菜单 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.comimages/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.comcss/style.css">
+		<link rel="stylesheet" href="http://nodejh.comcss/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.comcss/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.composts'>Archive</a>
+	<a href='http://nodejh.comtags'>Tags</a>
+	<a href='http://nodejh.comprojects'>Projects</a>
+	<a href='http://nodejh.comabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        纯 CSS 实现响应式导航菜单
+                    </h1>
+                    <h2 class="headline">
+                    Jul 28, 2017 17:03
+                    · 1006 words
+                    · 3 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.comtags/css">CSS</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#目标">目标</a></li>
+<li><a href="#nav-标签">Nav 标签</a></li>
+<li><a href="#css">CSS</a></li>
+<li><a href="#居中和居左对齐">居中和居左对齐</a></li>
+<li><a href="#支持-ie">支持 IE</a></li>
+<li><a href="#响应式">响应式</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对用户也更加友好。菜单上也会有一个指示器，用来表示当前选中的菜单。该导航菜单兼容所有手机和桌面浏览器，甚至 Internet Explorer。</p>
+
+<h2 id="目标">目标</h2>
+
+<p>本文的目标是实现一个导航菜单，当屏幕变小时，导航菜单由列表自动变为下来菜单。具体效果如下：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif" alt="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif" /></p>
+
+<h2 id="nav-标签">Nav 标签</h2>
+
+<p>下面是导航菜单的 HTML 标签。当创建绝对定位（absolute）的下拉菜单的时候，<code>nav</code> 标签是必须的。稍后将详细解释。<code>.current</code> 这个类用来表示当前选中的菜单。</p>
+
+<pre><code class="language-html">&lt;nav class=&quot;nav&quot;&gt;
+  &lt;ul&gt;
+		&lt;li class=&quot;current&quot;&gt;&lt;a href=&quot;#&quot;&gt;HTML&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a href=&quot;#&quot;&gt;CSS&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a href=&quot;#&quot;&gt;JavaScript&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Node.js&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Java&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/nav&gt;
+</code></pre>
+
+<h2 id="css">CSS</h2>
+
+<p>导航菜单的 CSS （桌面视图）是非常直观的，所以我不会详细解释。注意下面 <code>nav li</code> 使用了 <code>display:inline-block</code> 代替了 <code>float: left</code>，来实现列表横向排列。然后通过对 <code>ul</code> 标签制定 <code>text-align</code> 属性，来使得菜单居中、居左或居右。其余CSS 都是一些装饰样式。</p>
+
+<pre><code class="language-css">/* nav */
+.nav {
+	position: relative;
+	margin: 20px 0;
+}
+.nav ul {
+	margin: 0;
+	padding: 0;
+}
+.nav li {
+	margin: 0 5px 10px 0;
+	padding: 0;
+	list-style: none;
+	display: inline-block;
+}
+.nav a {
+	padding: 3px 12px;
+	text-decoration: none;
+	color: #999;
+	line-height: 100%;
+}
+.nav a:hover {
+	color: #000;
+}
+.nav .current a {
+	background: #999;
+	color: #fff;
+	border-radius: 5px;
+}
+</code></pre>
+
+<h2 id="居中和居左对齐">居中和居左对齐</h2>
+
+<p>如上面所说，可以通过改变 <code>text-align</code> 属性的值来改变菜单的对齐方式。</p>
+
+<pre><code class="language-css">/* right nav */
+.nav.right ul {
+	text-align: right;
+}
+
+/* center nav */
+.nav.center ul {
+	text-align: center;
+}
+</code></pre>
+
+<h2 id="支持-ie">支持 IE</h2>
+
+<p>IE8 以及更老的版本不支持HTML5 的 <code>&lt;nav&gt;</code> 标签和媒体查询，可以通过引入 <a href="https://code.google.com/archive/p/css3-mediaqueries-js/">css3-mediaqueries-js</a> (或 <a href="https://github.com/scottjehl/Respond">respond.js</a>) 和 <a href="https://github.com/afarkas/html5shiv">html5shiv</a> 来支持。如果不想使用 html5shim.js，将 <code>&lt;nav&gt;</code> 标签替换为 <code>&lt;div&gt;</code> 标签就可以了。</p>
+
+<pre><code class="language-html">&lt;!--[if lt IE 9]&gt;
+	&lt;script src=&quot;http://css3-mediaqueries-js.googlecode.com/files/css3-mediaqueries.js&quot;&gt;&lt;/script&gt;
+	&lt;script src=&quot;http://html5shim.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</code></pre>
+
+<h2 id="响应式">响应式</h2>
+
+<p>接下来就是比较有趣的一部分了：使用媒体查询使菜单能够自适应。</p>
+
+<p>这里以 600px 作为断点，因为 <code>nav</code> 标签的定位是 <code>relative</code>，所以这里可以将 <code>&lt;ul&gt;</code> 菜单设置为 <code>absolute</code>，使其固定在 <code>nav</code> 的定部。然后通过 <code>display:none</code> 隐藏所有的 <code>li</code> 标签，使用 <code>.current</code> 这个类，将当前 <code>li</code> 显示为 <code>block</code>。</p>
+
+<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/">demo</a>。</p>
+
+<pre><code class="language-css">@media screen and (max-width: 600px) {
+	.nav {
+		position: relative;
+		min-height: 40px;
+	}
+	.nav ul {
+		width: 180px;
+		padding: 5px 0;
+		position: absolute;
+		top: 0;
+		left: 0;
+		border: solid 1px #aaa;
+		background: #fff url(images/icon-menu.png) no-repeat 10px 11px;
+		border-radius: 5px;
+		box-shadow: 0 1px 2px rgba(0,0,0,.3);
+	}
+	.nav li {
+		display: none; /* hide all &lt;li&gt; items */
+		margin: 0;
+	}
+	.nav .current {
+		display: block; /* show only current &lt;li&gt; item */
+	}
+	.nav a {
+		display: block;
+		padding: 5px 5px 5px 32px;
+		text-align: left;
+	}
+	.nav .current a {
+		background: none;
+		color: #666;
+	}
+
+	/* on nav hover */
+	.nav ul:hover {
+		background-image: none;
+	}
+	.nav ul:hover li {
+		display: block;
+		margin: 0 0 5px;
+	}
+	.nav ul:hover .current {
+		background: url(images/icon-check.png) no-repeat 10px 7px;
+	}
+
+	/* right nav */
+	.nav.right ul {
+		left: auto;
+		right: 0;
+	}
+
+	/* center nav */
+	.nav.center ul {
+		left: 50%;
+		margin-left: -90px;
+	}
+
+}
+</code></pre>
+
+<p>查看 <a href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/">DEMO</a>。</p>
+
+<hr />
+
+<p>参考：</p>
+
+<ul>
+<li><a href="http://webdesignerwall.com/tutorials/css-responsive-navigation-menu">CSS Responsive Navigation Menu</a></li>
+</ul>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fcss-responsive-navigation-menu%2f - %e7%ba%af%20CSS%20%e5%ae%9e%e7%8e%b0%e5%93%8d%e5%ba%94%e5%bc%8f%e5%af%bc%e8%88%aa%e8%8f%9c%e5%8d%95 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.comjs/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.comjs/main.js"></script>
+<script src="http://nodejh.comjs/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

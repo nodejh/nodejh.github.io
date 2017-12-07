@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Eclipse on nodejh</title>
+    <title>Eclipse on node</title>
     <link>http://nodejh.com/tags/eclipse/</link>
-    <description>Recent content in Eclipse on nodejh</description>
+    <description>Recent content in Eclipse on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 17 Mar 2016 19:15:01 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Eclipse JSP/Servlet 环境搭建</title>
-      <link>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</link>
+      <link>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</link>
       <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-eclipse-jsp-servlet-develop-environment/</guid>
+      <guid>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</guid>
       <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
 
 &lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;

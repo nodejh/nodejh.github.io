@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Opencv on nodejh</title>
+    <title>Opencv on node</title>
     <link>http://nodejh.com/tags/opencv/</link>
-    <description>Recent content in Opencv on nodejh</description>
+    <description>Recent content in Opencv on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 01 Aug 2016 21:17:51 +0800</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>在 Mac OS X 上安装 Opencv3 (Python3.5)</title>
-      <link>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</link>
+      <link>http://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</link>
       <pubDate>Mon, 01 Aug 2016 21:17:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/post/install-opencv3-for-python3-5-on-mac-os-x/</guid>
+      <guid>http://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</guid>
       <description>&lt;h2 id=&#34;通过-homebrew-安装-opencv&#34;&gt;通过 homebrew 安装 opencv&lt;/h2&gt;
 
 &lt;p&gt;通过 homebrew 安装在 Mac OS X 上安装为 Python3.5 安装 Opencv3：&lt;/p&gt;

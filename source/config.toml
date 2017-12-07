@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "http://nodejh.com"
+baseurl = "http://nodejh.com/"
 languageCode = "zh-cn"
 title = "node"
 theme = "hugo-theme-cactus-plus"

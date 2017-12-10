@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</loc>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</loc>
     <lastmod>2017-07-28T20:53:14+08:00</lastmod>
   </url>
@@ -440,7 +445,7 @@
   
   <url>
     <loc>http://nodejh.com/tags/node.js/</loc>
-    <lastmod>2016-12-30T18:58:19+08:00</lastmod>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -476,7 +481,7 @@
   
   <url>
     <loc>http://nodejh.com/posts/</loc>
-    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -584,7 +589,7 @@
   
   <url>
     <loc>http://nodejh.com/</loc>
-    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -596,13 +601,13 @@
   
   <url>
     <loc>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</loc>
-    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</loc>
-    <lastmod>2016-12-04T19:32:03+08:00</lastmod>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   

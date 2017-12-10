@@ -6,10 +6,19 @@
     <description>Recent content in Posts on node</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 28 Jul 2017 20:53:14 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 09 Dec 2017 21:42:31 +0800</lastBuildDate>
     
 	<atom:link href="http://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>基于公众号的微信扫码登陆实现</title>
+      <link>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</link>
+      <pubDate>Sat, 09 Dec 2017 21:42:31 +0800</pubDate>
+      
+      <guid>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</guid>
+      <description>注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。 微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐</description>
+    </item>
     
     <item>
       <title>使用 Flexbox 使浮动元素垂直居中</title>

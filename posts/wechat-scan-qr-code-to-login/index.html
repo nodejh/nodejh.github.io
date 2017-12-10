@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://nodejh.com/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="基于公众号的微信扫码登陆实现"/>
+  <meta name="twitter:description" content="注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。 微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐"/>
+  
+    <meta name="twitter:site" content="@nodejh"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@nodejh"/>
+  
+
+
+
+		
+		<meta name="author" content="nodejh">
+		<meta name="description" content="Nodejh&#39;s Blog">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>基于公众号的微信扫码登陆实现 &middot; node</title>
+		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
+		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://nodejh.com/posts'>Archive</a>
+	<a href='http://nodejh.com/tags'>Tags</a>
+	<a href='http://nodejh.com/projects'>Projects</a>
+	<a href='http://nodejh.com/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        基于公众号的微信扫码登陆实现
+                    </h1>
+                    <h2 class="headline">
+                    Dec 9, 2017 21:42
+                    · 2502 words
+                    · 5 minutes read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0">微信公众平台</a>
+                          
+                              <a href="http://nodejh.com/tags/node.js">Node.js</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#1-场景">1. 场景</a></li>
+<li><a href="#2-设计方案">2. 设计方案</a>
+<ul>
+<li>
+<ul>
+<li><a href="#2-1-二维码生成">2.1. 二维码生成</a></li>
+<li><a href="#2-2-扫描二维码-获取-token">2.2 扫描二维码，获取 token</a></li>
+<li><a href="#2-3-获取用户-openid">2.3 获取用户 openid</a></li>
+<li><a href="#2-4-存储-token-和-openid">2.4 存储 token 和 openid</a></li>
+<li><a href="#2-5-轮询">2.5 轮询</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#3-改进">3. 改进</a></li>
+<li><a href="#4-总结">4. 总结</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<blockquote>
+<p>注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。</p>
+</blockquote>
+
+<p>微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐号密码；二是方便开发者，通过微信获取用户，并进行用户身份认证。其中最简单的一种方式是使用 <a href="https://open.weixin.qq.com/">微信开放平台</a>。但需要 300 元的认证费用。而且如果已有微信公众平台，微信公众平台大部分功能也需要认证才能使用，而且也需要 300 元。所以对于我这种已经认证过微信公众平台，不想再花钱认证开放平台，只能想一个不使用开放平台的办法了，主要还是因为穷。本文就主要详细介绍如何基于微信公众平台实现扫码登陆，并阐述基于 Node.js 的技术方案和代码示例。</p>
+
+<!-- more -->
+
+<h2 id="1-场景">1. 场景</h2>
+
+<p>扫码登陆的场景很简单，就是用户首先在电脑的浏览器中打开登陆页面，页面上是一个二维码；然后用户使用微信扫一下页面上的二维码；然后就微信中就提示用户登陆成功了，电脑上的网页就自动跳转到登陆后的页面。</p>
+
+<h2 id="2-设计方案">2. 设计方案</h2>
+
+<p>首先熟悉一个微信公众号的几个功能：</p>
+
+<ul>
+<li>对于每个微信用户，微信公众平台都有一个唯一的 openid 来标识该用户的身份，不同公众平台 openid 也不一样</li>
+<li>可以通过<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842">微信网页授权</a>来获取用户的 openid 和个人信息</li>
+</ul>
+
+<p>基于这些功能，我的方案如下：</p>
+
+<p><img src="http://oh1ywjyqf.bkt.clouddn.com/Wechat-Scan-QR-Code-to-Login-structure.png" alt="http://oh1ywjyqf.bkt.clouddn.com/Wechat-Scan-QR-Code-to-Login-structure.png" /></p>
+
+<p>接下来详细介绍图中的几个要点。</p>
+
+<h4 id="2-1-二维码生成">2.1. 二维码生成</h4>
+
+<p>要扫码登陆，首先就要生成二维码。二维码本质上就是存储数据的图片介质，其中的数据可以是 URL 也可以是文本等。通过二维码扫码工具就能扫出其中的数据。比如扫描上面设计图中的二维码，你就可以得到一段文本。所以基于此原理，我们就可以把 URL 存储在二维码中，微信扫码之后，会自动跳转到该 URL。</p>
+
+<p>上面还提到，微信可以通过授权 URL 获取到用户的 openid，而第三步需要该 openi的，所以我们的 URL 需要是一个授权 URL。</p>
+
+<p>在 node.js 中生成授权 URL 可以借助于 <a href="https://github.com/node-webot/wechat-oauth">wechat-oauth</a> 这个包。详细步骤如下：</p>
+
+<pre><code class="language-js">const OAuth = require('wechat-oauth');
+const client = new OAuth('wechat_appid', 'wechat_appsecret');
+const url = client.getAuthorizeURL('redirectUrl', 'state', 'scope');
+</code></pre>
+
+<p>其中 <code>redirectUrl</code> 是网页授权回调域名，<code>scope</code> 是网页授权的方式，有 <code>snsapi_base</code> 和 <code>snsapi_userinfo</code>。<code>state</code> 是我们自定义的一个参数，重定向后会带上该参数，所以一般可以用该参数来表示不同的业务。更详细的信息可以参考 <a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842">微信网页授权</a>。</p>
+
+<p>这样用户访问该 URL 之后就会被重定向到上面设置的 <code>redirectUrl</code>，并带上 <code>code</code> 参数。在第三步的时候，就可以根据 <code>code</code> 来获取用户的 openid。</p>
+
+<p>然后由于还需要确定是哪个用户在进行登陆，即将微信和电脑浏览器对应起来，所以还需要一个唯一字符串来标识。即在 URL 中加上一个唯一 token，这样微信就能根据该 token 知道是哪一个客户端（浏览器，也就是用户）在进行登陆了。</p>
+
+<p>所以我们可以生成一个 uuid 作为 token。生成 uuid 可以使用 <a href="https://github.com/kelektiv/node-uuid">node-uuid</a> 这个包。然后我们可以将 uuid 作为 <code>state</code> 参数来生成授权 URL。</p>
+
+<p>URL 的行使可能就像下面这样：</p>
+
+<pre><code class="language-js">const url = client.getAuthorizeURL('http://nodejh.com', '985123a0-7e4f-11e7-9022-fb7190c856e4', 'snsapi_base');
+console.log(url);
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb8c83c7bd4ac209f&amp;redirect_uri=http%3A%2F%2Fnodejh.com&amp;response_type=code&amp;scope=snsapi_userinfo&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4#wechat_redirect
+</code></pre>
+
+<p>最后根据这个带有 token 的 URL 生成一个二维码。生成二维码最简单的方式是使用 <a href="https://github.com/alexeyten/qr-image">qr-image</a> 这个包。</p>
+
+<pre><code class="language-js">const fs = require('fs');
+const qr = require('qr-image');
+
+const qrSvg = qr.image('I love you!', { type: 'png', ec_level: 'H' });
+qrSvg.pipe(fs.createWriteStream('qrcode.png'));
+</code></pre>
+
+<p>这样就会在当前目录下生成一个名为 <code>qrcode.png</code> 的二维码图片。当用户访问该登陆页面的时候，就返回该图片。</p>
+
+<p>同时还需要做的事情是，将生成二维码的 token 也返回给客户端，因为后面还会用到该 token。可以将其放在 cookie 里面，也可以放在隐藏表单。</p>
+
+<h4 id="2-2-扫描二维码-获取-token">2.2 扫描二维码，获取 token</h4>
+
+<p>当用户用微信扫描登陆页面的二维码时，就会自动跳转到二维码对应的 URL 上。比如上面的例子，就会跳转到 <code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb8c83c7bd4ac209f&amp;redirect_uri=http%3A%2F%2Fnodejh.com&amp;response_type=code&amp;scope=snsapi_userinfo&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4#wechat_redirect</code>。</p>
+
+<p>接下来微信浏览器还将继续跳转回调域名，并带上 <code>code</code> 参数，可能跳转之后的页面就是 <code>http://nodejh.com/?code=CODE&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4</code>。</p>
+
+<p>于是我们就可以自己的后端通过 <code>state</code> 参数中取得 token。</p>
+
+<h4 id="2-3-获取用户-openid">2.3 获取用户 openid</h4>
+
+<p>同时 URL 中还有 <code>code</code> 参数，我们就可以根据 code 来获取到用户的 openid。依旧可以使用 <a href="https://github.com/node-webot/wechat-oauth">wechat-oauth</a>。</p>
+
+<pre><code class="language-js">client.getAccessToken('code', function (err, result) {
+  var accessToken = result.data.access_token;
+  var openid = result.data.openid;
+});
+</code></pre>
+
+<p>这样就可以得到 openid 了。</p>
+
+<p>这里获取 token 和 openid 都是在我们自己的服务器中实现的。微信所做的事情就只是扫码获取二维码中的授权 URL，并生成 <code>code</code> 跳转到回调 URL。</p>
+
+<p>有了 <code>openid</code> 我们还可以获取用户信息</p>
+
+<pre><code class="language-js">client.getUser(openid, function (err, result) {
+  var userInfo = result;
+});
+</code></pre>
+
+<p>这个时候就可以做一些用户账号绑定的事情了。比如如果数据库里面没有该用户，就将用户信息存入；如果有用户，则可以更新用户微信信息，比如微信昵称或头像，可能改变了。</p>
+
+<h4 id="2-4-存储-token-和-openid">2.4 存储 token 和 openid</h4>
+
+<p>有了 token 和 openid，我们还需要将其存储，供客户端使用。可以将其存储到数据库里面，也可以存储到缓存。</p>
+
+<p>当用户在客户端打开登陆页面之后，登陆页面就可以带上 token 轮询服务端，判断是否数据库中有该 token 对应的 openid。如果有，则说明用户已经扫码了，登陆成功；如果没有，则说明没有扫码，继续轮询直到有数据。</p>
+
+<h4 id="2-5-轮询">2.5 轮询</h4>
+
+<p>轮询可以循环发送 HTTP 请求，也可以使用 Web Socket。</p>
+
+<p>当服务端发现用户已经扫码之后，就可以将登陆状态设置为已登陆，如设置 session，然后返回给客户端。客户端发现已登陆成功，则跳转到登陆后的页面。</p>
+
+<h2 id="3-改进">3. 改进</h2>
+
+<p>上面的设计方案存在的主要题是，二维码是一直有效的。如果考虑到二维码失效怎么处理？</p>
+
+<p>这个时候就可以简单改变一下思路。</p>
+
+<p>前面是扫码的时候，将 token 和 openid 存储到数据库（或别的存储），客户端根据 token 轮询判断是否有数据。</p>
+
+<p>考虑到二维码的实效性，则生成二维码的时候，就先将 token 存储到数据库，并设置一个 token 的过期时间。</p>
+
+<p>当用户使用微信扫码的时候，获取到 token 和 openid。首先根据 token 判断一下数据库中是否有该 token 对应的数据，如果没有则不存储；如果有，则判断是否过期；如果有且 token 未过期，则更新 该 token 对应的 openid。这样就能达到二维码实效性的问题。</p>
+
+<h2 id="4-总结">4. 总结</h2>
+
+<p>其实文中大部分内容描述的都不是最优的解决方案。是因为自己最开始思考的不够，没想到那么全。当然，改进部分描述的可能也不是最好的方案。但如果没有之前想到的那些，可能更不会想到可以改进的地方，索性就这么在本文中记录了一下。</p>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fwechat-scan-qr-code-to-login%2f - %e5%9f%ba%e4%ba%8e%e5%85%ac%e4%bc%97%e5%8f%b7%e7%9a%84%e5%be%ae%e4%bf%a1%e6%89%ab%e7%a0%81%e7%99%bb%e9%99%86%e5%ae%9e%e7%8e%b0 by @nodejh"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nodejh'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/nodejh">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/nodejh">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/nodejh">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> nodejh
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
+<script src="http://nodejh.com/js/main.js"></script>
+<script src="http://nodejh.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-84989670-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+    </body>
+</html>

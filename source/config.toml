@@ -2,7 +2,7 @@
 baseurl = "http://nodejh.com/"
 languageCode = "zh-cn"
 title = "node"
-theme = "hugo-theme-cactus-plus"
+theme = "nodejh.com"
 googleAnalytics = "UA-84989670-1"
 # Set the value to true if your site include CJK (Chinese, Japanese, and Korean languages) characters
 hasCJKLanguage = true

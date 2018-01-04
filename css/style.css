@@ -696,11 +696,9 @@ h2.month {
 }
 
 #post-list.archive.readmore {
-    margin-top: 70px;
+    margin-top: 100px;
 }
-#post-list.archive.readmore li {
-    margin-bottom: 0px;
-}
+
 #post-list.archive.readmore h3 {
     font: 400 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-bottom: 30px;
@@ -907,7 +905,7 @@ a.symbol:hover {
  */
 
 #wrapper.tags {
-    max-width: 768px;
+    max-width: 850px;
     padding-top: 0;
 }
 .page-tags {

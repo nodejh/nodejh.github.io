@@ -1,135 +1,107 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-cn">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="description" content="Nodejh&#39;s Blog">
-		<meta name="generator" content="Hugo 0.31.1" />
-		<title>一键评教软件设计及代码分析 &middot; node</title>
-		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
-		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
-		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
-		
+  <head>
+    <title>一键评教软件设计及代码分析 | Hang Jiang</title>
 
-		
-		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
-		
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
 
-		
-		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
-	
-		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
-	
-	<a href='http://nodejh.com/post'>Archive</a>
-	<a href='http://nodejh.com/tags'>Tags</a>
-	<a href='http://nodejh.com/projects'>Projects</a>
-	<a href='http://nodejh.com/about'>About</a>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
 	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
 
 	
-	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
 
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        一键评教软件设计及代码分析
-                    </h1>
-                    <h2 class="headline">
-                    Dec 30, 2016 18:58
-                    · 5087 words
-                    · 11 minutes read
-                      <span class="tags">
-                      
-                      
-                          
-                              <a href="http://nodejh.com/tags/node.js">Node.js</a>
-                          
-                      
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                    <div id="toc">
-                      <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#1-什么是一键评教">1. 什么是一键评教</a></li>
-<li><a href="#2-功能分析">2. 功能分析</a></li>
-<li><a href="#3-软件设计">3. 软件设计</a>
-<ul>
-<li><a href="#3-1-技术选择">3.1 技术选择</a>
-<ul>
-<li><a href="#3-1-1-后端语言">3.1.1 后端语言</a></li>
-<li><a href="#3-1-2-第三方模块">3.1.2 第三方模块</a></li>
-<li><a href="#3-1-3-编码规范">3.1.3 编码规范</a></li>
-<li><a href="#3-1-4-前端技术">3.1.4 前端技术</a></li>
-<li><a href="#3-1-5-前端代码压缩">3.1.5 前端代码压缩</a></li>
-<li><a href="#3-1-6-部署">3.1.6 部署</a></li>
-</ul></li>
-<li><a href="#3-2-软件架构">3.2 软件架构</a></li>
-<li><a href="#3-3-目录结构">3.3 目录结构</a></li>
-</ul></li>
-<li><a href="#4-代码分析">4. 代码分析</a>
-<ul>
-<li><a href="#4-1-app-js">4.1 app.js</a></li>
-<li><a href="#4-2-静态资源服务器">4.2 静态资源服务器</a></li>
-<li><a href="#4-3-模拟登录">4.3 模拟登录</a></li>
-<li><a href="#4-3-获取需要评估的教师列表">4.3 获取需要评估的教师列表</a></li>
-<li><a href="#4-4-进行评教">4.4 进行评教</a></li>
-<li><a href="#4-5-public-js-style-js">4.5 public/js/style.js</a></li>
-</ul></li>
-<li><a href="#5-总结">5. 总结</a></li>
-</ul></li>
-</ul>
-</nav>
-                    </div>
-                  
-                
-                <section id="post-body">
-                    <p>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。</p>
+    <main class="main">
+      
 
-<p></p>
+<section id="single">
+    <h1 class="title">一键评教软件设计及代码分析</h1>
 
+    <div class="tip">
+        <span>
+          Dec 30, 2016 18:58
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            5109 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          11 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。</p>
 <p>如何设计应用逻辑，如何组织代码模块，如何确定目录结构等等， 都需要在编码之前进行考虑。每个人的编码风格不尽相同，写出来的代码也各有千秋。要想得出一个最佳实践，就要不断总结自己的过往经验，学习别人的优秀设计，并再次将其运用于实践才能真正理解其中的奥义。</p>
-
 <p>本文主要就是介绍一键评教程序的软件结构设计，并对代码进行简要分析，同时也会讲述一些自己遇到的问题。</p>
-
-<h2 id="1-什么是一键评教">1. 什么是一键评教</h2>
-
-<p><strong>首先声明，该程序的本质目的是用于学习交流。</strong></p>
-
+<h2 id="1-什么是一键评教">1. 什么是一键评教 <a href="#1-%e4%bb%80%e4%b9%88%e6%98%af%e4%b8%80%e9%94%ae%e8%af%84%e6%95%99" class="anchor">🔗</a></h2><p><strong>首先声明，该程序的本质目的是用于学习交流。</strong></p>
 <p>每学期进行教学评估的时候，都要评很多教师，每个教师都有很多选项，再加上教务系统网站比较老旧，操作不方面，评教总是要花很长时间。</p>
-
-<p>“一键评教，用过都说好”。线上地址 <a href="http://pj.fyscu.com">http://pj.fyscu.com</a>，源码 <a href="https://github.com/nodejh/teach_evaluation">https://github.com/nodejh/teach_evaluation</a> 。</p>
-
+<p>“一键评教，用过都说好”。线上地址 <a 
+    href="http://pj.fyscu.com"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    http://pj.fyscu.com
+</a>，源码 <a 
+    href="https://github.com/nodejh/teach_evaluation"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/teach_evaluation
+</a> 。</p>
 <p>爱美之心人皆有之，我也很喜欢好用又好看的事物，所以我在写代码的时候也尽量做到好看又好用。软件截图如下，是不是很好看：</p>
-
-<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c8.jpg" alt="输入账号的页面" /></p>
-
-<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-12-30-UNADJUSTEDNONRAW_thumb_16c3.jpg" alt="评估结果页面" /></p>
-
-<h2 id="2-功能分析">2. 功能分析</h2>
-
-<p>需求很明确，就是能够在一个网页上实现点击按钮自动评估所有教师。那么要实现这样的需求，该怎么去做呢？</p>
-
+<p><p class="markdown-image">
+  <img src="./images/Architecture-And-Code-Analysis-Of-Teaching-Evaluation-login.jpg" alt="输入账号的页面"  />
+</p></p>
+<p><p class="markdown-image">
+  <img src="./images/Architecture-And-Code-Analysis-Of-Teaching-Evaluation-result.jpg" alt="输入账号的页面"  />
+</p></p>
+<h2 id="2-功能分析">2. 功能分析 <a href="#2-%e5%8a%9f%e8%83%bd%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><p>需求很明确，就是能够在一个网页上实现点击按钮自动评估所有教师。那么要实现这样的需求，该怎么去做呢？</p>
 <p>先来想想我们通常手动评教的步骤：</p>
-
 <ol>
 <li>登录进入教务系统网站</li>
 <li>找到教学评估链接并进入，这个时候就能看到所有需要进行评估的教师列表</li>
@@ -140,416 +112,404 @@
 <li>然后返回到教师列表页面，选择下一个需要评估的教师</li>
 <li>重复 <code>3-7</code> 这五个步骤，直到所有教师评估完毕</li>
 </ol>
-
 <p>要用程序实现一键评教，其实就是用程序模拟上面的步骤。所以程序要实现的主要功能有：</p>
-
 <ul>
 <li>模拟登录，获取 cookie</li>
 <li>获取需要评估的教师列表</li>
 <li>对列表中的每个教师进行评教</li>
 </ul>
-
 <p>然后我们需要一个用户界面来让用户进行操作。这个界面可以是 APP，也可以是网页。由于网页更方便更利于传播，所以我选择了网页。所以我们就还需要一个 HTTP 服务器，用来提供静态页面资源，并且接收并响应用户操作后发送的 HTTP 请求。</p>
-
-<h2 id="3-软件设计">3. 软件设计</h2>
-
-<p>软件设计主要从三个方面来说明。一是技术选择，二是软件架构，三是目录结构。</p>
-
-<h3 id="3-1-技术选择">3.1 技术选择</h3>
-
-<p>首先是各种技术的选择，包括前后端编程语言（语法）、第三方模块的选择、和服务器部署。</p>
-
-<h4 id="3-1-1-后端语言">3.1.1 后端语言</h4>
-
-<p>该程序后端使用的是 Node.js。我的 Node.js 版本是 7.3。大量使用了 ES6 的语法，比如 Promise、模板字符串、箭头函数。只要你的 Node.js 版本 &gt;= 6.0 应该都是可以运行的。</p>
-
-<h4 id="3-1-2-第三方模块">3.1.2 第三方模块</h4>
-
-<p>在开发程序之前，我想要尽量让应用的体积足够小，所以我尽量不使用第三方模块。</p>
-
+<h2 id="3-软件设计">3. 软件设计 <a href="#3-%e8%bd%af%e4%bb%b6%e8%ae%be%e8%ae%a1" class="anchor">🔗</a></h2><p>软件设计主要从三个方面来说明。一是技术选择，二是软件架构，三是目录结构。</p>
+<h3 id="31-技术选择">3.1 技术选择 <a href="#31-%e6%8a%80%e6%9c%af%e9%80%89%e6%8b%a9" class="anchor">🔗</a></h3><p>首先是各种技术的选择，包括前后端编程语言（语法）、第三方模块的选择、和服务器部署。</p>
+<h4 id="311-后端语言">3.1.1 后端语言 <a href="#311-%e5%90%8e%e7%ab%af%e8%af%ad%e8%a8%80" class="anchor">🔗</a></h4><p>该程序后端使用的是 Node.js。我的 Node.js 版本是 7.3。大量使用了 ES6 的语法，比如 Promise、模板字符串、箭头函数。只要你的 Node.js 版本 &gt;= 6.0 应该都是可以运行的。</p>
+<h4 id="312-第三方模块">3.1.2 第三方模块 <a href="#312-%e7%ac%ac%e4%b8%89%e6%96%b9%e6%a8%a1%e5%9d%97" class="anchor">🔗</a></h4><p>在开发程序之前，我想要尽量让应用的体积足够小，所以我尽量不使用第三方模块。</p>
 <p>最终我只使用了 <code>cheerio</code> 和 <code>icon-lite</code> 这两个第三方包。</p>
-
 <ul>
 <li><code>cheerio</code> 主要用来分析抓取到的 HTML 文档。其实最开始也想不用 <code>cheerio</code>，直接使用正则表达式来分析页面的，但正则表达式编写麻烦，我的能力也有限，所以最终选择了使用 <code>cheerio</code>。</li>
 <li><code>icon-lite</code> 则是用来对 <code>GBK</code> 文本进行解码。因为教务系统网站使用的是 GBK 的编码，所以直接抓取的结果是乱码的。除了 <code>icon-lite</code> 这个包，我找不到其他的可以解决乱码问题的方案了。</li>
 </ul>
-
-<h4 id="3-1-3-编码规范">3.1.3 编码规范</h4>
-
-<p>然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 <code>.eslintrc</code> 作了配置。具体配置在源码 <a href="https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc">.eslintrc</a> 中可以看到。</p>
-
-<h4 id="3-1-4-前端技术">3.1.4 前端技术</h4>
-
-<p>为了减小代码体积，提高加载速度，节省带宽，前端没有使用任何第三方 JS 库。并且这只是一个小应用，有没有必须使用庞大（相比该程序而言显得庞大）的第三方库。</p>
-
+<h4 id="313-编码规范">3.1.3 编码规范 <a href="#313-%e7%bc%96%e7%a0%81%e8%a7%84%e8%8c%83" class="anchor">🔗</a></h4><p>然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 <code>.eslintrc</code> 作了配置。具体配置在源码 <a 
+    href="https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    .eslintrc
+</a> 中可以看到。</p>
+<h4 id="314-前端技术">3.1.4 前端技术 <a href="#314-%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af" class="anchor">🔗</a></h4><p>为了减小代码体积，提高加载速度，节省带宽，前端没有使用任何第三方 JS 库。并且这只是一个小应用，有没有必须使用庞大（相比该程序而言显得庞大）的第三方库。</p>
 <p>前端使用的是 ES5 的语法。最开始想用 ES6 来写的，但 ES6 写好的代码还需要编译成 ES5 才能在浏览器运行，并且还需要引入各种 polyfill，最终还是决定使用 ES5。</p>
-
-<p>前端唯一使用了第三方资源的，只有两个字体图标了。一个是 <code>heart</code> 的图标 ❤️，毕竟是用心写的代码，<code>Made with ❤️ by nodejh</code>；还有一个就是“关闭”小图标。图标使用的是 <a href="https://icomoon.io/">IcoMoon</a> 的字体图标库，可以自己在里面找到需要的图标然后下载使用。</p>
-
+<p>前端唯一使用了第三方资源的，只有两个字体图标了。一个是 <code>heart</code> 的图标 ❤️，毕竟是用心写的代码，<code>Made with ❤️ by nodejh</code>；还有一个就是“关闭”小图标。图标使用的是 <a 
+    href="https://icomoon.io/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    IcoMoon
+</a> 的字体图标库，可以自己在里面找到需要的图标然后下载使用。</p>
 <p>该程序只有 <code>index.html</code> 这一个 HTML 文件，所以本质上也是一个单页应用。所有的操作和交互都在这一个页面完成。</p>
-
-<h4 id="3-1-5-前端代码压缩">3.1.5 前端代码压缩</h4>
-
-<p>为了进一步压缩前端资源文件的体积，所以对静态资源进行了压缩。</p>
-
-<p>压缩 CSS 使用的是在线压缩工具 <a href="http://csscompressor.com/">CSS Compressor</a>。</p>
-
-<p>压缩 JS 使用的是 <a href="https://github.com/mishoo/UglifyJS2">UglifyJS2</a>。</p>
-
-<h4 id="3-1-6-部署">3.1.6 部署</h4>
-
-<p>完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 <a href="https://github.com/Unitech/pm2">pm2</a> 进行进程的管理。</p>
-
-<h3 id="3-2-软件架构">3.2 软件架构</h3>
-
-<p>程序的整体架构主要分为三层，可以就将其理解为 MVC 的三个层次。</p>
-
+<h4 id="315-前端代码压缩">3.1.5 前端代码压缩 <a href="#315-%e5%89%8d%e7%ab%af%e4%bb%a3%e7%a0%81%e5%8e%8b%e7%bc%a9" class="anchor">🔗</a></h4><p>为了进一步压缩前端资源文件的体积，所以对静态资源进行了压缩。</p>
+<p>压缩 CSS 使用的是在线压缩工具 <a 
+    href="http://csscompressor.com/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    CSS Compressor
+</a>。</p>
+<p>压缩 JS 使用的是 <a 
+    href="https://github.com/mishoo/UglifyJS2"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    UglifyJS2
+</a>。</p>
+<h4 id="316-部署">3.1.6 部署 <a href="#316-%e9%83%a8%e7%bd%b2" class="anchor">🔗</a></h4><p>完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 <a 
+    href="https://github.com/Unitech/pm2"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    pm2
+</a> 进行进程的管理。</p>
+<h3 id="32-软件架构">3.2 软件架构 <a href="#32-%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" class="anchor">🔗</a></h3><p>程序的整体架构主要分为三层，可以就将其理解为 MVC 的三个层次。</p>
 <p>MVC 是一种设计模式，设计模式不是一层不变的，我们需要根据自己的实际业务灵活运用。MVC 是一个很经典的设计模式，生活中的很多事物，我们也可以根据 MVC 对其进行定义。就拿人来进行类比，大脑就是 C（Controller），控制着人的一切活动。躯体外表就是 V（View） 层，一方面是表现着一个人的外观，另一方面是人的各种活动的外在表现。体内各种器官比如心脏、肺等就相当于 M（Model），从表面可能并不能直观看到 M 层的作用，但它受大脑控制，进行着血液循环呼吸系统等重要功能，而这些器官可能又跟躯体相互作用，比如影响人的精神面貌或高矮胖瘦。</p>
-
 <p>说正经的。</p>
-
 <p>首先是该一键评教程序的 M 层，包括页面抓取、页面分析和评教等功能模块。</p>
-
 <p>然后是 V 层，主要是前端页面，直接给用户使用，与用户交互的界面。比如用户点击“开始”按钮的时候，就向 C 层发送一个 HTTP 请求。</p>
-
 <p>C 是控制中心，接收 V 层的 HTTP 请求，根据 HTTP 请求决定调用哪些 M 层的模块，然后将模块调用后的处理结果返回给 V。</p>
-
 <p>这样一个事件的处理流程可能就是：</p>
-
-<pre><code>V(HTTP 请求)---&gt; C (调用 M 的对应模块)---&gt; M(返回处理结果) ---&gt; C(HTTP 响应) ---&gt; V
-</code></pre>
-
-<h3 id="3-3-目录结构">3.3 目录结构</h3>
-
-<p>了解了软件的整体架构之后，就来看看代码的目录结构，代码的目录结构也完美地印证了这三层架构。</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">V<span style="color:#666">(</span>HTTP 请求<span style="color:#666">)</span>---&gt; C <span style="color:#666">(</span>调用 M 的对应模块<span style="color:#666">)</span>---&gt; M<span style="color:#666">(</span>返回处理结果<span style="color:#666">)</span> ---&gt; C<span style="color:#666">(</span>HTTP 响应<span style="color:#666">)</span> ---&gt; V
+</code></pre></div><h3 id="33-目录结构">3.3 目录结构 <a href="#33-%e7%9b%ae%e5%bd%95%e7%bb%93%e6%9e%84" class="anchor">🔗</a></h3><p>了解了软件的整体架构之后，就来看看代码的目录结构，代码的目录结构也完美地印证了这三层架构。</p>
 <p>代码的主要目录／子目录及其功能如下：</p>
-
-<pre><code>|____app.js  # 入口文件
-|____controller  # C 层目录，定义了各种控制器
-| |____evaluate.js  # 评教的控制器
-| |____evaluationList.js  # 获取需要评教列表的控制器
-| |____staticServer.js  # 静态服务器控制器
-|____helper  # 一些自定义的功能模块
-| |____colors.js  # 十六进制颜色代码，主要是为了改变 console.log 的颜色
-| |____dateformat.js  # 时间格式化
-| |____getContentType.js  # 获取文件后缀名对应的 Content-Type，用于静态服务器
-| |____log.js  # 自定义的彩色 console.log() 输出，告别满屏黑白日志
-| |____request.js  # HTTP 请求的封装
-|____models  # M 层目录，定义了各种模块及实现
-| |____evaluate.js  # 评教功能模块
-| |____getEvaluationList.js  # 获取需要评教的教师列表
-| |____loginZhjw.js  # 模拟登录教务系统
-| |____showEvaluatePage.js  # 显示某个具体的评教页面
-</code></pre>
-
-<p>看完目录结构，再回头看看软件的三层架构，肯定就清晰很多了。</p>
-
-<h2 id="4-代码分析">4. 代码分析</h2>
-
-<p>接下来再对一些重要的功能模块以及涉及到的代码进行简要分析。相信了解完代码的执行流程之后，对软件的整体架构理解，定会再进一步。</p>
-
-<h3 id="4-1-app-js">4.1 app.js</h3>
-
-<p><code>app.js</code> 是整个项目的入口文件，启动项目的时候使用 <code>node app.js</code> 即可启动。</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">|____app.js  <span style="color:#080;font-style:italic"># 入口文件</span>
+|____controller  <span style="color:#080;font-style:italic"># C 层目录，定义了各种控制器</span>
+| |____evaluate.js  <span style="color:#080;font-style:italic"># 评教的控制器</span>
+| |____evaluationList.js  <span style="color:#080;font-style:italic"># 获取需要评教列表的控制器</span>
+| |____staticServer.js  <span style="color:#080;font-style:italic"># 静态服务器控制器</span>
+|____helper  <span style="color:#080;font-style:italic"># 一些自定义的功能模块</span>
+| |____colors.js  <span style="color:#080;font-style:italic"># 十六进制颜色代码，主要是为了改变 console.log 的颜色</span>
+| |____dateformat.js  <span style="color:#080;font-style:italic"># 时间格式化</span>
+| |____getContentType.js  <span style="color:#080;font-style:italic"># 获取文件后缀名对应的 Content-Type，用于静态服务器</span>
+| |____log.js  <span style="color:#080;font-style:italic"># 自定义的彩色 console.log() 输出，告别满屏黑白日志</span>
+| |____request.js  <span style="color:#080;font-style:italic"># HTTP 请求的封装</span>
+|____models  <span style="color:#080;font-style:italic"># M 层目录，定义了各种模块及实现</span>
+| |____evaluate.js  <span style="color:#080;font-style:italic"># 评教功能模块</span>
+| |____getEvaluationList.js  <span style="color:#080;font-style:italic"># 获取需要评教的教师列表</span>
+| |____loginZhjw.js  <span style="color:#080;font-style:italic"># 模拟登录教务系统</span>
+| |____showEvaluatePage.js  <span style="color:#080;font-style:italic"># 显示某个具体的评教页面</span>
+</code></pre></div><p>看完目录结构，再回头看看软件的三层架构，肯定就清晰很多了。</p>
+<h2 id="4-代码分析">4. 代码分析 <a href="#4-%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><p>接下来再对一些重要的功能模块以及涉及到的代码进行简要分析。相信了解完代码的执行流程之后，对软件的整体架构理解，定会再进一步。</p>
+<h3 id="41-appjs">4.1 app.js <a href="#41-appjs" class="anchor">🔗</a></h3><p><code>app.js</code> 是整个项目的入口文件，启动项目的时候使用 <code>node app.js</code> 即可启动。</p>
 <p>在 app.js 里面，主要是创建了 HTTP Server，然后根据请求的路径，调用对应的控制器：</p>
-
-<pre><code>if (method === 'POST' &amp;&amp; pathname === '/api/evaluationList') {
-    // 模拟登录，获取需要评教的老师列表
-    return evaluationListController(req, res);
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">if</span> (method <span style="color:#666">===</span> <span style="color:#b44">&#39;POST&#39;</span> <span style="color:#666">&amp;&amp;</span> pathname <span style="color:#666">===</span> <span style="color:#b44">&#39;/api/evaluationList&#39;</span>) {
+    <span style="color:#080;font-style:italic">// 模拟登录，获取需要评教的老师列表
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> evaluationListController(req, res);
   }
 
-  if (method === 'POST' &amp;&amp; pathname === '/api/evaluate') {
-    // 评教
-    return evaluateController(req, res);
+  <span style="color:#a2f;font-weight:bold">if</span> (method <span style="color:#666">===</span> <span style="color:#b44">&#39;POST&#39;</span> <span style="color:#666">&amp;&amp;</span> pathname <span style="color:#666">===</span> <span style="color:#b44">&#39;/api/evaluate&#39;</span>) {
+    <span style="color:#080;font-style:italic">// 评教
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> evaluateController(req, res);
   }
 
-  if (method === 'GET') {
-    // 所有 GET 请求都当作是请求静态资源
-    return staticServerController(req, res);
+  <span style="color:#a2f;font-weight:bold">if</span> (method <span style="color:#666">===</span> <span style="color:#b44">&#39;GET&#39;</span>) {
+    <span style="color:#080;font-style:italic">// 所有 GET 请求都当作是请求静态资源
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> staticServerController(req, res);
   }
-</code></pre>
-
-<p>当请求方法是 <code>POST</code> 且路径是 <code>/api/evaluationList</code> 时，就说明前端是发送的一个获取需要评估的教师列表的请求，所以紧接着执行 <code>evaluationListController(req, res);</code>，调用该控制器，并且使用 <code>return</code> 来停止代码的执行。</p>
-
+</code></pre></div><p>当请求方法是 <code>POST</code> 且路径是 <code>/api/evaluationList</code> 时，就说明前端是发送的一个获取需要评估的教师列表的请求，所以紧接着执行 <code>evaluationListController(req, res);</code>，调用该控制器，并且使用 <code>return</code> 来停止代码的执行。</p>
 <p>如果有新的 API 的请求，都可以在这里加。</p>
-
 <p>如果所有的自定义的请求及路径都不满足，并且请求的方法是 <code>GET</code>，那就当作是请求静态资源文件，如 HTML、CSS、JS 或图片等。这里就调用 <code>staticServerController(req, res)</code>。<code>staticServerController</code> 是在 Controller 里面定义的返回静态文件的方法。</p>
-
 <p>如果 <code>GET</code> 请求也不是，则返回 <code>400 Bad Request</code>。</p>
-
 <p>然后程序监听了 <code>5000</code> 端口，这样发送请求到 <code>5000</code> 端口，代码就能接收到请求并进行处理了。</p>
-
-<h3 id="4-2-静态资源服务器">4.2 静态资源服务器</h3>
-
-<p>前面已经提到了，<code>staticServerController</code> 是在 Controller 里面定义的返回静态文件的方法，也就是一个静态资源服务器。</p>
-
+<h3 id="42-静态资源服务器">4.2 静态资源服务器 <a href="#42-%e9%9d%99%e6%80%81%e8%b5%84%e6%ba%90%e6%9c%8d%e5%8a%a1%e5%99%a8" class="anchor">🔗</a></h3><p>前面已经提到了，<code>staticServerController</code> 是在 Controller 里面定义的返回静态文件的方法，也就是一个静态资源服务器。</p>
 <p>因为我们的软件很简单，所以完全没有必要使用 express 或 koa 等框架，自己写一个简单的静态服务器完全足够应对所有业务需求了。</p>
-
 <p>主要代码如下，代码优美，注释详尽，通俗易懂：</p>
-
-<pre><code>/**
- * 静态服务器
- * @param  {object} req request
- * @param  {object} res response
- * @return {null}   null
- */
-const staticServerController = (req, res) =&gt; {
-  let pathname = url.parse(req.url).pathname;
-  if (path.extname(pathname) === '') {
-    // 没有扩展名，则指定访问目录
-    pathname += '/';
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic"> * 静态服务器
+</span><span style="color:#080;font-style:italic"> * @param  {object} req request
+</span><span style="color:#080;font-style:italic"> * @param  {object} res response
+</span><span style="color:#080;font-style:italic"> * @return {null}   null
+</span><span style="color:#080;font-style:italic"> */</span>
+<span style="color:#a2f;font-weight:bold">const</span> staticServerController <span style="color:#666">=</span> (req, res) =&gt; {
+  <span style="color:#a2f;font-weight:bold">let</span> pathname <span style="color:#666">=</span> url.parse(req.url).pathname;
+  <span style="color:#a2f;font-weight:bold">if</span> (path.extname(pathname) <span style="color:#666">===</span> <span style="color:#b44">&#39;&#39;</span>) {
+    <span style="color:#080;font-style:italic">// 没有扩展名，则指定访问目录
+</span><span style="color:#080;font-style:italic"></span>    pathname <span style="color:#666">+=</span> <span style="color:#b44">&#39;/&#39;</span>;
   }
 
-  if (pathname.charAt(pathname.length - 1) === '/') {
-    // 如果访问的是目录，则添加默认文件 index.html
-    pathname += 'index.html';
+  <span style="color:#a2f;font-weight:bold">if</span> (pathname.charAt(pathname.length <span style="color:#666">-</span> <span style="color:#666">1</span>) <span style="color:#666">===</span> <span style="color:#b44">&#39;/&#39;</span>) {
+    <span style="color:#080;font-style:italic">// 如果访问的是目录，则添加默认文件 index.html
+</span><span style="color:#080;font-style:italic"></span>    pathname <span style="color:#666">+=</span> <span style="color:#b44">&#39;index.html&#39;</span>;
   }
-  // 拼接实际文件路径
-  const filepath = path.join(__dirname, './../public', pathname);
+  <span style="color:#080;font-style:italic">// 拼接实际文件路径
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#a2f;font-weight:bold">const</span> filepath <span style="color:#666">=</span> path.join(__dirname, <span style="color:#b44">&#39;./../public&#39;</span>, pathname);
   fs.access(filepath, fs.F_OK, (error) =&gt; {
-    if (error) {
-      res.writeHead(404);
-      res.end('&lt;h1&gt;404 Not Found&lt;/h1&gt;');
-      return false;
+    <span style="color:#a2f;font-weight:bold">if</span> (error) {
+      res.writeHead(<span style="color:#666">404</span>);
+      res.end(<span style="color:#b44">&#39;&lt;h1&gt;404 Not Found&lt;/h1&gt;&#39;</span>);
+      <span style="color:#a2f;font-weight:bold">return</span> <span style="color:#a2f;font-weight:bold">false</span>;
     }
-    const contentType = getContentType(filepath);
-    res.writeHead(200, { 'Content-Type': contentType });
-    // 读取文件流并使用管道将文件流传输到HTTP流返回给页面
-    fs.createReadStream(filepath)
+    <span style="color:#a2f;font-weight:bold">const</span> contentType <span style="color:#666">=</span> getContentType(filepath);
+    res.writeHead(<span style="color:#666">200</span>, { <span style="color:#b44">&#39;Content-Type&#39;</span><span style="color:#666">:</span> contentType });
+    <span style="color:#080;font-style:italic">// 读取文件流并使用管道将文件流传输到HTTP流返回给页面
+</span><span style="color:#080;font-style:italic"></span>    fs.createReadStream(filepath)
       .pipe(res);
   });
 };
 
-</code></pre>
-
-<p>这里需要稍微留意的是 <code>getContentType</code> 这个方法，这个方法的定义和实现被放在了 <code>helper/getContentType.js</code> 里面，其主要作用，就是根据请求路径的后缀名来确定 HTTP Response 里面的 <code>Content-Type</code> 类型，以便浏览器或客户端识别：</p>
-
-<pre><code>/**
- * 获取 Content-Type
- * @param  {string} filepath 文件路径
- * @return {string}          文件对应的 Conent-Type
- */
-const getContentType = (filepath) =&gt; {
-  let contentType = '';
-  const ext = path.extname(filepath);
-  switch (ext) {
-    case '.html':
-      contentType = 'text/html';
-      break;
-    case '.js':
-      contentType = 'text/javascript';
-      break;
-    case '.css':
-      contentType = 'text/css';
-      break;
-    case '.gif':
-      contentType = 'image/gif';
-      break;
-    case '.jpg':
-      contentType = 'image/jpeg';
-      break;
-    case '.png':
-      contentType = 'image/png';
-      break;
-    case '.ico':
-      contentType = 'image/icon';
-      break;
-    case '.manifest':
-      contentType = 'text/cache-manifest';
-      break;
-    default:
-      contentType = 'application/octet-stream';
+</code></pre></div><p>这里需要稍微留意的是 <code>getContentType</code> 这个方法，这个方法的定义和实现被放在了 <code>helper/getContentType.js</code> 里面，其主要作用，就是根据请求路径的后缀名来确定 HTTP Response 里面的 <code>Content-Type</code> 类型，以便浏览器或客户端识别：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic"> * 获取 Content-Type
+</span><span style="color:#080;font-style:italic"> * @param  {string} filepath 文件路径
+</span><span style="color:#080;font-style:italic"> * @return {string}          文件对应的 Conent-Type
+</span><span style="color:#080;font-style:italic"> */</span>
+<span style="color:#a2f;font-weight:bold">const</span> getContentType <span style="color:#666">=</span> (filepath) =&gt; {
+  <span style="color:#a2f;font-weight:bold">let</span> contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;&#39;</span>;
+  <span style="color:#a2f;font-weight:bold">const</span> ext <span style="color:#666">=</span> path.extname(filepath);
+  <span style="color:#a2f;font-weight:bold">switch</span> (ext) {
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.html&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;text/html&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.js&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;text/javascript&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.css&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;text/css&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.gif&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;image/gif&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.jpg&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;image/jpeg&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.png&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;image/png&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.ico&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;image/icon&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">case</span> <span style="color:#b44">&#39;.manifest&#39;</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;text/cache-manifest&#39;</span>;
+      <span style="color:#a2f;font-weight:bold">break</span>;
+    <span style="color:#a2f;font-weight:bold">default</span><span style="color:#666">:</span>
+      contentType <span style="color:#666">=</span> <span style="color:#b44">&#39;application/octet-stream&#39;</span>;
   }
-  return contentType;
+  <span style="color:#a2f;font-weight:bold">return</span> contentType;
 };
-</code></pre>
-
-<p>这样我们的一个简单的静态资源文件服务器就成型了，单独把这两段代码拿出去也是完全可以运行的。</p>
-
+</code></pre></div><p>这样我们的一个简单的静态资源文件服务器就成型了，单独把这两段代码拿出去也是完全可以运行的。</p>
 <p>当用户请求 <code>localhost:5000</code> 的时候，根据上面的代码，就会去寻找 <code>public/index.html</code> 这个文件然后返回给客户端。</p>
-
 <p><code>index.html</code> 就是我们的前端页面。</p>
-
-<h3 id="4-3-模拟登录">4.3 模拟登录</h3>
-
-<p>要想获取评教列表或进行评教，第一步就是登录教务系统。经抓包分析，教务系统使用的是 <code>session</code> <code>cookie</code> 的认证机制，关于如何抓包分析，可以看我的另一篇文章《模拟登录某某大学图书馆系统》[<a href="http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的">http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的</a> <code>cookie</code>。</p>
-
+<h3 id="43-模拟登录">4.3 模拟登录 <a href="#43-%e6%a8%a1%e6%8b%9f%e7%99%bb%e5%bd%95" class="anchor">🔗</a></h3><p>要想获取评教列表或进行评教，第一步就是登录教务系统。经抓包分析，教务系统使用的是 <code>session</code> <code>cookie</code> 的认证机制，关于如何抓包分析，可以看我的另一篇文章《模拟登录某某大学图书馆系统》[http://nodejh.com/post/Crawler-for-SCU-Libirary/]。这一步我们需要获取登录后的 <code>cookie</code>。</p>
 <p>登录的时候，是向 <code>http://202.115.47.141/loginAction.do</code> 发送的 POST 请求，请求的 <code>Content-Type</code> 是 <code>application/x-www-form-urlencoded</code> ，参数是 <code>zjh=xx&amp;mm=xx</code>。</p>
-
 <p>曾经教务系统可以使用 GET 方式登录，所有有一种快捷登录方式，就是在浏览器地址栏 <code>http://202.115.47.141/loginAction.do?zjh=[你的学号]&amp;&amp;mm=[你的密码]</code>。而且这种方法可以绕过“登录人数已满”的限制。这在选课时期，这种强制的登录方式还是很好用的。不过 GET 方法也有缺点就是，你的学号和密码就直接暴露了，不安全。曾经还通过 Google 搜索，搜到了某个同学的账号及密码。现在教务系统估计是升级了禁止了这个方法。</p>
-
 <p>模拟登录教务系统的程序在 <code>models/loginZhjw.js</code> 里面，详细代码就不贴了，总的来说，就是通过 Node.js 的 HTTP 模块，设置一个自定义的 HTTP Headers 信息，然后发送 HTTP 请求。当然，其他任何编程语言道理都一样。</p>
-
 <p>模拟登录后，教务系统会返回 HTTP Response。HTTP Response 的 <code>Content-Type</code> 都是 <code>text/html</code>，也就是说返回的始终都是 HTML 文本。所以我们就可以根返回的 HTML 文本的内容判断是否登录成功。</p>
-
 <p>如果文本包含下面 <code>errorText</code> 对象的属性字符串之一，都是登录失败：</p>
-
-<pre><code> const errorText = {
-        number: '你输入的证件号不存在，请您重新输入！',
-        password: '您的密码不正确，请您重新输入！',
-        database: '数据库忙请稍候再试',
-        notLogin: '请您登录后再使用',
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"> <span style="color:#a2f;font-weight:bold">const</span> errorText <span style="color:#666">=</span> {
+        number<span style="color:#666">:</span> <span style="color:#b44">&#39;你输入的证件号不存在，请您重新输入！&#39;</span>,
+        password<span style="color:#666">:</span> <span style="color:#b44">&#39;您的密码不正确，请您重新输入！&#39;</span>,
+        database<span style="color:#666">:</span> <span style="color:#b44">&#39;数据库忙请稍候再试&#39;</span>,
+        notLogin<span style="color:#666">:</span> <span style="color:#b44">&#39;请您登录后再使用&#39;</span>,
       };
-</code></pre>
-
-<p>同时，也经过抓包发现，登录成功后返回的 HTML 文本的 <code>title</code> 部分是：</p>
-
-<pre><code>&lt;title&gt;学分制综合教务&lt;/title&gt;
-</code></pre>
-
-<p>而其他情况都不是。所以就可以大致判断，除了上面几种 <code>errorText</code> 是登录失败之前，只有返回的 HTML 包含 <code>&lt;title&gt;学分制综合教务&lt;/title&gt;</code> 才是返回成功。</p>
-
+</code></pre></div><p>同时，也经过抓包发现，登录成功后返回的 HTML 文本的 <code>title</code> 部分是：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">&lt;title&gt;学分制综合教务&lt;/title&gt;
+</code></pre></div><p>而其他情况都不是。所以就可以大致判断，除了上面几种 <code>errorText</code> 是登录失败之前，只有返回的 HTML 包含 <code>&lt;title&gt;学分制综合教务&lt;/title&gt;</code> 才是返回成功。</p>
 <p>登录成功后的 HTTP Response Headers 部分含有一个 <code>set-cookie</code> 属性，而这个属性的值就是登录成功后的 cookie。我们抓那么多包，做了那么多准备，找的就是它。所以最终从登录成功的响应中取出 cookie 的代码如下：</p>
-
-<pre><code>const cookie = result.headers['set-cookie'].join().split(';')[0];
-</code></pre>
-
-<p>之后获取需要评估的教师列表和评教，都需要在发送 HTTP 请求时在 HTTP Headers 里面带上该 cookie。</p>
-
-<h3 id="4-3-获取需要评估的教师列表">4.3 获取需要评估的教师列表</h3>
-
-<p>获取需要评估的教师列表就简单很多了，发送的是 GET 请求，然后在 HTTP Headers 里面设置 Cookie 即可，其头发送 HTTP 请求的头信息大概如下：</p>
-
-<pre><code>const options = {
-    hostname: '202.115.47.141',
-    port: 80,
-    path: '/jxpgXsAction.do?oper=wjShow',
-    method: 'POST',
-    headers: {
-      Cookie: data.cookie,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData),
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> cookie <span style="color:#666">=</span> result.headers[<span style="color:#b44">&#39;set-cookie&#39;</span>].join().split(<span style="color:#b44">&#39;;&#39;</span>)[<span style="color:#666">0</span>];
+</code></pre></div><p>之后获取需要评估的教师列表和评教，都需要在发送 HTTP 请求时在 HTTP Headers 里面带上该 cookie。</p>
+<h3 id="43-获取需要评估的教师列表">4.3 获取需要评估的教师列表 <a href="#43-%e8%8e%b7%e5%8f%96%e9%9c%80%e8%a6%81%e8%af%84%e4%bc%b0%e7%9a%84%e6%95%99%e5%b8%88%e5%88%97%e8%a1%a8" class="anchor">🔗</a></h3><p>获取需要评估的教师列表就简单很多了，发送的是 GET 请求，然后在 HTTP Headers 里面设置 Cookie 即可，其头发送 HTTP 请求的头信息大概如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> options <span style="color:#666">=</span> {
+    hostname<span style="color:#666">:</span> <span style="color:#b44">&#39;202.115.47.141&#39;</span>,
+    port<span style="color:#666">:</span> <span style="color:#666">80</span>,
+    path<span style="color:#666">:</span> <span style="color:#b44">&#39;/jxpgXsAction.do?oper=wjShow&#39;</span>,
+    method<span style="color:#666">:</span> <span style="color:#b44">&#39;POST&#39;</span>,
+    headers<span style="color:#666">:</span> {
+      Cookie<span style="color:#666">:</span> data.cookie,
+      <span style="color:#b44">&#39;Content-Type&#39;</span><span style="color:#666">:</span> <span style="color:#b44">&#39;application/x-www-form-urlencoded&#39;</span>,
+      <span style="color:#b44">&#39;Content-Length&#39;</span><span style="color:#666">:</span> Buffer.byteLength(postData),
     },
   };
-</code></pre>
-
-<h3 id="4-4-进行评教">4.4 进行评教</h3>
-
-<p>获取到教师列表之后，就可以进行评教了。但这里有一个坑，就是进行评教之前，必须先访问评教页面，再发送评教请求。不然是无法评教成功的。就是这个问题，导致我纠结了好久。</p>
-
+</code></pre></div><h3 id="44-进行评教">4.4 进行评教 <a href="#44-%e8%bf%9b%e8%a1%8c%e8%af%84%e6%95%99" class="anchor">🔗</a></h3><p>获取到教师列表之后，就可以进行评教了。但这里有一个坑，就是进行评教之前，必须先访问评教页面，再发送评教请求。不然是无法评教成功的。就是这个问题，导致我纠结了好久。</p>
 <p>也就是说，用程序模拟评教的时候，就要发送两个 HTTP 请求了，一是发送请求到某个老师的评教页面，对应的是 <code>models/showEvaluatePage.js</code> 这个文件；二是发送评教请求，对应的是 <code>models/evaluate.js</code>。而且这两个请求都是 POST 类型的。所以代码类逻辑似于下面这样：</p>
-
-<pre><code>// 显示评教页面
-showEvalutePage(data)
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">// 显示评教页面
+</span><span style="color:#080;font-style:italic"></span>showEvalutePage(data)
     .then(() =&gt; {
-    // 评教
-    return evaluate(data)
+    <span style="color:#080;font-style:italic">// 评教
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> evaluate(data)
     })
     .then((result) =&gt; {
-    // 评教结果
-    })
-        .catch((exception) =&gt; {
-            // 捕获异常
-        });
-</code></pre>
-
-<h3 id="4-5-public-js-style-js">4.5 public/js/style.js</h3>
-
-<p>前端的 JS 代码都在 <code>style.js</code> 这个文件里面了，主要就是监听了按钮的点击事件，然后发送 HTTP 请求，并根据请求结果增删页面的 DOM。</p>
-
-<p>前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 <a href="http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/">《AJAX: XHR, jQuery and Fetch API》</a>。</p>
-
-<h2 id="5-总结">5. 总结</h2>
-
-<p>到这里，这篇文章就基本完成了。本文讲述的实践，可能也不是最佳的实践，也有很多值得继续商讨和改进之处。只有不断实践，不断总结，才能写出更美的代码。人生不也一样？总结过去的教训，才能更好地前行。</p>
-
-<hr />
-
-<p>Github Issues <a href="https://github.com/nodejh/nodejh.github.io/issues/36">https://github.com/nodejh/nodejh.github.io/issues/36</a></p>
-                </section>
-            </article>
-
-            
-                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2farchitecture-and-code-analysis-of-teaching-evaluation%2f - %e4%b8%80%e9%94%ae%e8%af%84%e6%95%99%e8%bd%af%e4%bb%b6%e8%ae%be%e8%ae%a1%e5%8f%8a%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90 by @nodejh"><span class="icon-twitter"> tweet</span></a>
-
-<a class="facebook" href="#" onclick="
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;"><span class="icon-facebook-rect"> Share</span>
-</a>
-
-            
-
-            
-                <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'nodejh'; 
-
+    <span style="color:#080;font-style:italic">// 评教结果
+</span><span style="color:#080;font-style:italic"></span>    })
+        .<span style="color:#a2f;font-weight:bold">catch</span>((exception) =&gt; {
+            <span style="color:#080;font-style:italic">// 捕获异常
+</span><span style="color:#080;font-style:italic"></span>        });
+</code></pre></div><h3 id="45-publicjsstylejs">4.5 public/js/style.js <a href="#45-publicjsstylejs" class="anchor">🔗</a></h3><p>前端的 JS 代码都在 <code>style.js</code> 这个文件里面了，主要就是监听了按钮的点击事件，然后发送 HTTP 请求，并根据请求结果增删页面的 DOM。</p>
+<p>前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 <a 
+    href="http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/"
+    
+    
      
+      target="_blank" 
+      rel="noopener"
+    
+>
+    《AJAX: XHR, jQuery and Fetch API》
+</a>。</p>
+<h2 id="5-总结">5. 总结 <a href="#5-%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>到这里，这篇文章就基本完成了。本文讲述的实践，可能也不是最佳的实践，也有很多值得继续商讨和改进之处。只有不断实践，不断总结，才能写出更美的代码。人生不也一样？总结过去的教训，才能更好地前行。</p>
+<hr>
+<p>Github Issues <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/36"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/36
+</a></p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/node.js">Node.js</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
     (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </div>
 
-            
+</section>
 
-            
 
-            <footer id="footer">
+    </main>
+    
+    <footer id="footer">
     
         <div id="social">
 
-	
-	
-    <a class="symbol" href="https://www.facebook.com/nodejh">
-        <i class="fa fa-facebook-square"></i>
-    </a>
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.github.com/nodejh">
-        <i class="fa fa-github-square"></i>
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.twitter.com/nodejh">
-        <i class="fa fa-twitter-square"></i>
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
-    
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
 
 
 </div>
 
     
-    <p class="small">
+
+    <p class="copyright">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> 
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
     
     </p>
-    <p class="small">
+    <p class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
     </p>
 </footer>
 
-        </section>
-
-        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
-<script src="http://nodejh.com/js/main.js"></script>
-<script src="http://nodejh.com/js/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-  
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-84989670-1', 'auto');
-ga('send', 'pageview');
-</script>
-
-
-
-
-
-    </body>
+  </body>
 </html>

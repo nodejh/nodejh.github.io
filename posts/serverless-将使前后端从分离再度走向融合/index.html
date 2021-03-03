@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Serverless 将使前后端从分离再度走向融合 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Serverless 将使前后端从分离再度走向融合</h1>
+
+    <div class="tip">
+        <span>
+          May 17, 2019 12:00
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            4716 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          10 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>近日，Serverless 作为新兴的架构模式，与其相关的话题被讨论的如火如荼。Serverless 不需部署、配置和管理传统服务器，这一概念的提出打破了前后端的壁垒，使得前端开发者能够真正做到全栈，掀起新一轮的开发模式变革。</p>
+<h2 id="serverless-的背景和发展历程">Serverless 的背景和发展历程 <a href="#serverless-%e7%9a%84%e8%83%8c%e6%99%af%e5%92%8c%e5%8f%91%e5%b1%95%e5%8e%86%e7%a8%8b" class="anchor">🔗</a></h2><h3 id="infoqserverless-的背景和发展历程是什么">InfoQ：Serverless 的背景和发展历程是什么？ <a href="#infoqserverless-%e7%9a%84%e8%83%8c%e6%99%af%e5%92%8c%e5%8f%91%e5%b1%95%e5%8e%86%e7%a8%8b%e6%98%af%e4%bb%80%e4%b9%88" class="anchor">🔗</a></h3><p>云计算经过了从物理机到虚拟机、从虚拟机到云计算、从云计算到容器这几个阶段，而容器之后的下一个阶段，则是 Serverless。2009 年 Berkeley 在 《Above the Clouds: A Berkeley View of Cloud Computing》 这篇论文中定义了云计算，并提出了云计算的六个优点：</p>
+<ul>
+<li>按需提供无限计算资源。</li>
+<li>消除云用户的前期承诺。</li>
+<li>根据需要在短期内支付使用计算资源的能力。</li>
+<li>由于许多非常大的数据中心，大规模降低成本的规模经济。</li>
+<li>通过资源虚拟化简化操作并提高利用率。</li>
+<li>通过复用来自不同组织的工作负载来提高硬件利用率。</li>
+</ul>
+<p>今天被大家讨论的 Serverless 则最大程度体现了这些优点。从时间上来看，2014 年 11 月，AWS Lambda 的发布，标志则 Serverless 发展的开始。2016 年 Google Cloud Function 和微软 Azure Function 产品的发布，标志着 Serverless 渐渐成熟。2017 年 4 月，阿里云函数计算和腾讯云无服务器函数的发布，则标志着国内 Serverless 发展的成熟。2018 年 9 月，支付宝小程序和微信小程序的云开发功能发布，标志着国内 Serverless 应用场景的落地。</p>
+<h2 id="serverless-的概念及定义">Serverless 的概念及定义 <a href="#serverless-%e7%9a%84%e6%a6%82%e5%bf%b5%e5%8f%8a%e5%ae%9a%e4%b9%89" class="anchor">🔗</a></h2><h3 id="infoq-baas-出现很早但一直没火起来包括-facebook-关闭了-parse-服务为什么现在又认为-serverless-必须依赖它">InfoQ: Baas 出现很早，但一直没火起来，包括 Facebook 关闭了 Parse 服务，为什么现在又认为 Serverless 必须依赖它？ <a href="#infoq-baas-%e5%87%ba%e7%8e%b0%e5%be%88%e6%97%a9%e4%bd%86%e4%b8%80%e7%9b%b4%e6%b2%a1%e7%81%ab%e8%b5%b7%e6%9d%a5%e5%8c%85%e6%8b%ac-facebook-%e5%85%b3%e9%97%ad%e4%ba%86-parse-%e6%9c%8d%e5%8a%a1%e4%b8%ba%e4%bb%80%e4%b9%88%e7%8e%b0%e5%9c%a8%e5%8f%88%e8%ae%a4%e4%b8%ba-serverless-%e5%bf%85%e9%a1%bb%e4%be%9d%e8%b5%96%e5%ae%83" class="anchor">🔗</a></h3><p>现在公认的 Serverless 的定义，是 Serverless = FaaS + BaaS。</p>
+<p>传统的编程中，我们定义一个函数，函数针对输入计算输出，这些函数组成了一个应用程序。而 FaaS 则让我们能够在云端编写、运行函数，并由这些云函数组成应用程序。</p>
+<p>FaaS 本身提供的只有运行函数的功能，并且每个函数的执行都是孤立和短暂的。但我们的应用程序，往往还需要持久存储和临时存储，以及在存储中进行数据管理，所以我们需要 BaaS。BaaS 就是一些列后端的功能的集合，比如云数据库、对象存储、消息队列、通知服务。没有这些 BaaS，函数的能力是非常有限的。整个 BaaS 也都由云供应商厂商提供，开发者不需要关心具体细节、实现，只需要在 FaaS 中使用 BaaS，这样才能构建整个应用。</p>
+<h2 id="serverless-的优缺点">Serverless 的优缺点 <a href="#serverless-%e7%9a%84%e4%bc%98%e7%bc%ba%e7%82%b9" class="anchor">🔗</a></h2><h3 id="infoqserverless-架构与传统架构相比的优势在哪里">InfoQ：Serverless 架构与传统架构相比的优势在哪里？ <a href="#infoqserverless-%e6%9e%b6%e6%9e%84%e4%b8%8e%e4%bc%a0%e7%bb%9f%e6%9e%b6%e6%9e%84%e7%9b%b8%e6%af%94%e7%9a%84%e4%bc%98%e5%8a%bf%e5%9c%a8%e5%93%aa%e9%87%8c" class="anchor">🔗</a></h3><p>我觉得 Serverless 相比传统 Serverfull 架构主要有以下几个优势：</p>
+<ul>
+<li>
+<p>无需运维
+Serverless 架构的核心思想就是，构建和运行程序不需要管理服务器等底层资源。基于 Serverless 架构，应用的部署、扩容、备份、容灾、监控、日志等都不需要开发者关心，这些功能全都由云供应商提供。开发者就可以从以往繁琐的运维工作中解脱出来，专心实现自己的产品。</p>
+</li>
+<li>
+<p>低成本
+传统的 Serverfull 架构，我们需要为资源付费。很多时候我们的云服务器等资源都是空闲的，但也需要计算费用，这就造成了不必要的浪费。但 Serverless 架构，我们只需要为计算付费。函数每执行一次，付一次的费用。比如阿里云函数计算、AWS Lambda、微软 Azure Function 等产品，定价几乎都是 1.33 元 / 百万次 的执行次数，0.00011108/GB-s 的运行时间，如果你的应用比较轻量，每个月的成本是非常低的。</p>
+</li>
+<li>
+<p>更简单
+相比传统架构下的开发，基于 Serverless 架构的开发将变得更简单。云计算平台已经为我们提供了一系列的基础设施，我们只需要在此之上进行应用开发。传统架构，就犹如编程语言中的底层语言，如汇编，我们需要关心每一个细节，细致到 CPU 寄存器这样的级别。而基于 Serverless 的开发，就犹如 Node.js、Python 等高级语言，我们只需要专注于业务逻辑的实现，可以很高效地构建一个应用，并且这个应用天然就是弹性可伸缩的。</p>
+</li>
+</ul>
+<h2 id="serverless-的实践">Serverless 的实践 <a href="#serverless-%e7%9a%84%e5%ae%9e%e8%b7%b5" class="anchor">🔗</a></h2><h3 id="infoq-依据-serverless-的概念定义在实际开发中如何保证性能有实际的解决方案吗如果有的话能具体讲一下怎么实现的吗">InfoQ: 依据 Serverless 的概念定义，在实际开发中如何保证性能？有实际的解决方案吗？如果有的话能具体讲一下怎么实现的吗？ <a href="#infoq-%e4%be%9d%e6%8d%ae-serverless-%e7%9a%84%e6%a6%82%e5%bf%b5%e5%ae%9a%e4%b9%89%e5%9c%a8%e5%ae%9e%e9%99%85%e5%bc%80%e5%8f%91%e4%b8%ad%e5%a6%82%e4%bd%95%e4%bf%9d%e8%af%81%e6%80%a7%e8%83%bd%e6%9c%89%e5%ae%9e%e9%99%85%e7%9a%84%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88%e5%90%97%e5%a6%82%e6%9e%9c%e6%9c%89%e7%9a%84%e8%af%9d%e8%83%bd%e5%85%b7%e4%bd%93%e8%ae%b2%e4%b8%80%e4%b8%8b%e6%80%8e%e4%b9%88%e5%ae%9e%e7%8e%b0%e7%9a%84%e5%90%97" class="anchor">🔗</a></h3><p>Serverless 的性能，也是绝大部分开发者都关注的一个话题。相比传统架构，Serverless 架构下，程序的运行需要经过一些列步骤：</p>
+<ul>
+<li>下载代码</li>
+<li>启动容器</li>
+<li>启动运行环境</li>
+<li>执行代码</li>
+</ul>
+<p>前三步统称为冷启动。传统应用则完全没有冷启动时间。冷启动时间的长短，直接决定了应用性能的高低。
+一方面，冷启动时间需要 Serverless 服务提供商去优化；另一方面，作为开发者，我们也可以从应用的角度去优化。首先就是选用合适的编程语言。因为 Java 等高级语言的冷启动时间大约是 Node.js、Python 等语言的 100 倍。其次是为函数分配合适的内存。一般而言，内存越大，冷启动的时间越短。基于这点，开发者也可以为 Java 分配更大的内存，使其冷启动时间和 Node.js 一样短。但更大的内存意味着更多的支出。所以为函数选用合适的内存很重要。</p>
+<p>还有就是重复利用函数的执行上下文。当一个事件来临，函数冷启动并执行之后，运行环境并不会立即被销毁，而是在一定时间内处于冷冻状态继续等待下一次函数执行。这也是 Serverless 服务平台的一个性能优化方案。基于这样的特点，我们就可以将数据库连接、临时文件等保存在执行上下文中，从而使函数无需在每次运行时都创建这些资源。</p>
+<p>除此，我们还可以对函数进行预热。可以通过定时对函数进行调用的方式，使函数一直处于“温暖”状态，从而避免真实请求到来时函数进行冷启动，进而达到提高性能的目的。</p>
+<h3 id="infoq-serverless-有那些应用场景实际开发中表现如何遇到哪些技术痛点">InfoQ: Serverless 有那些应用场景，实际开发中表现如何？遇到哪些技术痛点？ <a href="#infoq-serverless-%e6%9c%89%e9%82%a3%e4%ba%9b%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af%e5%ae%9e%e9%99%85%e5%bc%80%e5%8f%91%e4%b8%ad%e8%a1%a8%e7%8e%b0%e5%a6%82%e4%bd%95%e9%81%87%e5%88%b0%e5%93%aa%e4%ba%9b%e6%8a%80%e6%9c%af%e7%97%9b%e7%82%b9" class="anchor">🔗</a></h3><p>根据 2018 年的调研，有接近三分之一的用户，将 Serverless 用于接口的开发，还有大部分用来做数据处理、第三方无服务集成或内部工具。</p>
+<p><p class="markdown-image">
+  <img src="./images/serverless-EECS-2019-3.png" alt="serverless-EECS-2019-3"  />
+</p></p>
+<p>图片来源：https://www2.eecs.berkeley.edu/Pubs/TechRpts/2019/EECS-2019-3.pdf</p>
+<p>理论上来说，传统架构能做的事情，Serverless 都能做。Serverless 比较适合有显著波峰波谷的应用或基于事件处理的一些场景。</p>
+<p>比如一个系统白天用户量很大，晚上基本没有用户，使用传统架构，晚上服务器资源就是浪费的；而使用 Serverless 架构，只需要为实际的计算付费。</p>
+<p>再比如上传图片后，需要对图谱进行压缩、裁剪然后再存储，使用 Serverless 用户只需要在函数中定义好处理逻辑，具体的执行由云计算平台来做。上传图片就是触发云计算平台执行代码的事件。</p>
+<p>对于一般应用，实际开发中的痛点，一方面是函数的测试，因为 Serverless 函数往往依赖于第三方服务，如 FaaS 和 BaaS，我们很难对使用了这些服务器的函数进行测试。同时函数是事件驱动的，触发函数执行的事件，在本地也很难模拟。所以要能够方便地对 Serverless 函数进行测试，就需要我们在开发过程中，将函数的业务逻辑和所依赖的第三方服务分离，这样就可以编写单元测试对函数进行测试。另一方面，是函数的性能，性能问题上面已经提到。</p>
+<p>对于一些复杂的大型企业级应用，现在我们还很难基于简单的 FaaS 平台去开发。这可能需要一个能够超越 FaaS 的一个可编程框架。</p>
+<h3 id="infoq-serverless-运行在云服务上这方面会带来什么限制吗">InfoQ: Serverless 运行在云服务上，这方面会带来什么限制吗？ <a href="#infoq-serverless-%e8%bf%90%e8%a1%8c%e5%9c%a8%e4%ba%91%e6%9c%8d%e5%8a%a1%e4%b8%8a%e8%bf%99%e6%96%b9%e9%9d%a2%e4%bc%9a%e5%b8%a6%e6%9d%a5%e4%bb%80%e4%b9%88%e9%99%90%e5%88%b6%e5%90%97" class="anchor">🔗</a></h3><p>最主要的限制就是我们基于 Serverless 的应用严重依赖云服务。云服务的稳定性直接决定了业务的稳定性。当然，我觉得这方面也不用过于担心。云服务肯定会有比我们更专业的开发者去维护。</p>
+<p>其次，应用的多云部署或应用的迁移，也会比较麻烦。因为目前 Serverless 还没有一个统一标准，各个云供应商的 FaaS 和 BaaS 实现也不一样。所以当我们想要把 Serverless 应用从一个云服务迁移到另一个云服务，就会变得很困难。解决这个问题的方法，就是尽量让我们的业务代码和所依赖的云服务分离。这样迁移的时候，就只需要修改依赖云服务的相关代码。</p>
+<p>Serverless 还存在的另一个问题是底层硬件资源的不确定性。由于云供应商可以灵活的选择底层服务器的规格和型号，这就导致了每个云函数运行的物理环境性能不尽相同。这种不确定性其实暴露了云供应商的背后的目的：他们想要最大化的平衡资源的使用和预算。</p>
+<h2 id="serverless-对前端的影响">Serverless 对前端的影响 <a href="#serverless-%e5%af%b9%e5%89%8d%e7%ab%af%e7%9a%84%e5%bd%b1%e5%93%8d" class="anchor">🔗</a></h2><h3 id="infoq-serverless-对前端开发模式带来什么的变化">InfoQ: Serverless 对前端开发模式带来什么的变化？ <a href="#infoq-serverless-%e5%af%b9%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f%e5%b8%a6%e6%9d%a5%e4%bb%80%e4%b9%88%e7%9a%84%e5%8f%98%e5%8c%96" class="anchor">🔗</a></h3><p>纵观整个前端开发模式的演进历程，前端开发由最初的基于 JSP、PHP 等后端语言的模板渲染，演变到了基于 AJAX 的前后端分离，进而再演便到了现在的 BFF（Backend For Frontend）架构模式。</p>
+<p>因为前后端分离后，前端的应用变得更加复杂，端也由 PC 端扩展到移动端、客户端甚至 IoT；后端应用也由单体应用转变为了微服务应用，接口变得更加原子化，前后端接口协调开始变得困难。所以前端开始寻求使用 BFF 来做接口的聚合、裁剪，甚至使用 Node.js 来做全栈开发。不管 BFF 也好、全栈也好，都会涉及到服务器的运维，这恰好是前端工程师所不擅长的。而 Serverless 正好能解决这一问题。</p>
+<p>基于 Serverless，前端工程师将再度回归到 Web 应用工程师这一职能，前后端也将由分离再度走向融合。前后端的协调也不在是基于接口的协调，而是基于 Serverless 函数的协调。前端工程师能够基于 Serverless 去开发函数、实现后端功能。而后端工程师则去实现不适用函数编写的功能，或者供函数使用的一些微服务。对前端工程师来说，后端变得更简单了；对后端工程师来说，后端变得更靠后了。整体而言，应用的开发效率也大幅提升，开发者只需要关注于业务逻辑的实现，我们可以使用更少的技术在更短的时间内得到更多的产出。</p>
+<h3 id="infoq随着前端开发模式的不断演进目前大部分采用-nodejs-开发-serverless-应用为什么选用-nodejs-有什么优势">InfoQ：随着前端开发模式的不断演进，目前大部分采用 Node.js 开发 Serverless 应用，为什么选用 Node.js? 有什么优势？ <a href="#infoq%e9%9a%8f%e7%9d%80%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f%e7%9a%84%e4%b8%8d%e6%96%ad%e6%bc%94%e8%bf%9b%e7%9b%ae%e5%89%8d%e5%a4%a7%e9%83%a8%e5%88%86%e9%87%87%e7%94%a8-nodejs-%e5%bc%80%e5%8f%91-serverless-%e5%ba%94%e7%94%a8%e4%b8%ba%e4%bb%80%e4%b9%88%e9%80%89%e7%94%a8-nodejs-%e6%9c%89%e4%bb%80%e4%b9%88%e4%bc%98%e5%8a%bf" class="anchor">🔗</a></h3><ul>
+<li>第一， Node.js 的足够简单、轻量。
+拿 Node.js 和 Java 来对比，开发同样的功能，Node.js 的代码会比 Java 少很多。Node.js 函数所消耗的内存等资源也比 Java 要少。再如常用的 REST API 接口中，JSON 格式在 Node.js 里面是原生支持的，而 Java 需要使用第三方库来转换。</li>
+<li>第二， Node.js 冷启动时间比 Java、C# 等编译型语言要低很多。
+有测试表明，Node.js 的冷启动时间比 Java 大约低 100 倍。对于 Serverless 应用来说，冷启动时间是函数性能的关键因素，因此从性能上来说 Node.js 也是开发的首选。</li>
+<li>第三，Serverless 对前端友好。
+前端开发者是 Serverless 的主要使用者和受益者，基于 Serverless 架构，前端开发者可以很容易地开发服务端程序，能够很快速地实现一个完整的应用。而前端开发者最熟悉的服务端语言便是 Node.js，因此很多 Serverless 应用使用 Node.js 实现。</li>
+</ul>
+<h3 id="infoq-在-serverless-的大势所趋下对前端开发人员的技能有哪些新的要求">InfoQ: 在 Serverless 的大势所趋下，对前端开发人员的技能有哪些新的要求？ <a href="#infoq-%e5%9c%a8-serverless-%e7%9a%84%e5%a4%a7%e5%8a%bf%e6%89%80%e8%b6%8b%e4%b8%8b%e5%af%b9%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e4%ba%ba%e5%91%98%e7%9a%84%e6%8a%80%e8%83%bd%e6%9c%89%e5%93%aa%e4%ba%9b%e6%96%b0%e7%9a%84%e8%a6%81%e6%b1%82" class="anchor">🔗</a></h3><p>最主要的，当然是对 Serverless 架构的学习和理解。当我们在使用一项新技术的时候，一定要充分了解到它的优缺点、适用和不适用场景。</p>
+<p>对于前端工程师来说，Serverless 使开发变得更简单了，前端工程师可以很方便进行后端的开发。但前端开发后端，依旧存在一定门槛。前端工程师依旧需要学习一些基本的后端开发知识。</p>
+<p>Serverless 也不等于无服务器，只是我们不再需要关心服务器。虽然 Serverless 可以极大程度帮助我们减少运维工作，但我们还是可以了解一些基本的运维知识，这样遇到问题，可以更快速、高效进行排查。</p>
+<h2 id="serverless-未来的发展">Serverless 未来的发展 <a href="#serverless-%e6%9c%aa%e6%9d%a5%e7%9a%84%e5%8f%91%e5%b1%95" class="anchor">🔗</a></h2><h3 id="infoq-您怎么看待-serverless-在未来的发展在其推广普及的道路上会有怎样的际遇">InfoQ: 您怎么看待 Serverless 在未来的发展，在其推广普及的道路上会有怎样的际遇？ <a href="#infoq-%e6%82%a8%e6%80%8e%e4%b9%88%e7%9c%8b%e5%be%85-serverless-%e5%9c%a8%e6%9c%aa%e6%9d%a5%e7%9a%84%e5%8f%91%e5%b1%95%e5%9c%a8%e5%85%b6%e6%8e%a8%e5%b9%bf%e6%99%ae%e5%8f%8a%e7%9a%84%e9%81%93%e8%b7%af%e4%b8%8a%e4%bc%9a%e6%9c%89%e6%80%8e%e6%a0%b7%e7%9a%84%e9%99%85%e9%81%87" class="anchor">🔗</a></h3><p>Serverless 是一种新的架构模式，还在不断发展和完善中。</p>
+<p>未来 Serverless 标准一定会走向统一。目前还没有一个统一的 Serverless 标准，不同的云供应商在实现自己的 Serverless 平台。这给开发者的多云部署或应用迁移带来了极大的挑战，也给 Serverless 发挥其潜力带来了限制。因此社区中需要一个能兼容各个服务供应商、封装好部署函数和管理生命周期的框架。在国外有 Serverless Framework 这样的产品在做这些事情，但它们基本都不支持国内的 Serverless 平台如阿里云、腾讯云，国内现在也没有这样的框架。</p>
+<p>Serverless 架构在未来也一定会成为主流。现在的 Serverless 还存在的很多限制，比如缺乏细粒度模式的存储支持、缺乏细粒度的协调、缺乏标准的通信模式、还有性能问题；一些非常复杂的业务场景、大型的企业级系统也很难基于简单的 FaaS 平台去开发。这也就导致了现在大部分 Serverless 使用者，只是将其用在一些非核心的场景中。一种技术架构走向主流，一定是要经过经过大规模的实践、经过复杂系统的验证。引用一句话，“架构级的演进机会不是年年都有，甚至是 5 年、10 年都不一定能碰到一次，所以这也同样意味着这是个巨大的机会。”</p>
+<h2 id="参考文献">参考文献： <a href="#%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae" class="anchor">🔗</a></h2><ul>
+<li><a 
+    href="https://www2.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-28.pdf"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Above the Clouds: A Berkeley View of Cloud Computing
+</a></li>
+<li><a 
+    href="https://arxiv.org/pdf/1812.03651.pdf"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Serverless Computing: One Step Forward, Two Steps Back
+</a></li>
+<li><a 
+    href="https://www2.eecs.berkeley.edu/Pubs/TechRpts/2019/EECS-2019-3.pdf"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Cloud Programming Simplified: A Berkeley View on Serverless Computing
+</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/serverless">Serverless</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

@@ -1,82 +1,55 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ubuntu on node</title>
-    <link>http://nodejh.com/tags/ubuntu/</link>
-    <description>Recent content in Ubuntu on node</description>
+    <title>Ubuntu on Hang Jiang</title>
+    <link>https://nodejh.com/tags/ubuntu/</link>
+    <description>Recent content in Ubuntu on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 07 Feb 2017 13:08:16 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Fri, 10 Feb 2017 16:52:15 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 VPS 上安装 Shadowsocks Server</title>
+      <link>https://nodejh.com/posts/install-shadowsocks-server-in-vps/</link>
+      <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/install-shadowsocks-server-in-vps/</guid>
+      <description>首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明 。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误</description>
+    </item>
     
     <item>
       <title>更改 Ubuntu 软件源</title>
-      <link>http://nodejh.com/posts/change-source-list-in-ubuntu/</link>
+      <link>https://nodejh.com/posts/change-source-list-in-ubuntu/</link>
       <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/change-source-list-in-ubuntu/</guid>
-      <description>&lt;h2 id=&#34;1-软件管理工具-apt-get&#34;&gt;1. 软件管理工具 apt-get&lt;/h2&gt;
-
-&lt;p&gt;Ubuntu 软件源本质上是一个软件仓库，我们可以通过 &lt;code&gt;sudo apt-get install &amp;lt;package-name&amp;gt;&lt;/code&gt; 命令来从仓库中下载安装软件。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/change-source-list-in-ubuntu/</guid>
+      <description>1. 软件管理工具 apt-get 🔗Ubuntu 软件源本质上是一个软件仓库，我们可以通过 sudo apt-get install &amp;lt;package-name&amp;gt; 命令来从仓库中下载安装软件。 上面命令中提到的 apt-get 则是 Ubuntu 系统中的一</description>
     </item>
     
     <item>
       <title>远程登录 VPS 语言错误</title>
-      <link>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</link>
+      <link>https://nodejh.com/posts/fix-locale-setting-warning-from-perl/</link>
       <pubDate>Fri, 02 Dec 2016 15:58:06 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</guid>
-      <description>&lt;p&gt;当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Eclipse JSP/Servlet 环境搭建</title>
-      <link>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</link>
-      <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
-      
-      <guid>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</guid>
-      <description>&lt;h2 id=&#34;eclipse-jsp-servlet-环境搭建&#34;&gt;Eclipse JSP/Servlet 环境搭建&lt;/h2&gt;
-
-&lt;p&gt;本文假定你已安装了 JDK 环境，如未安装，可参阅：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-java-on-ubuntu/&#34;&gt;Ubuntu下JAVA开发环境的配置&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/&#34;&gt;Ubuntu 下 Tomcat 的配置&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/fix-locale-setting-warning-from-perl/</guid>
+      <description>当使在 VPS 上安装软件的时候，经常遇到同一个警告，如下： perl: warning: Setting locale failed. perl: warning: Please check that your locale settings: LANGUAGE = &amp;#34;en_US:&amp;#34;, LC_ALL = (unset), LC_CTYPE = &amp;#34;zh_CN.UTF-8&amp;#34;, LANG = &amp;#34;en_US&amp;#34; are supported and installed on your system. perl: warning: Falling back to a fallback locale (&amp;#34;en_US&amp;#34;). locale: Cannot set</description>
     </item>
     
     <item>
       <title>Ubuntu下JAVA开发环境的配置</title>
-      <link>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</link>
+      <link>https://nodejh.com/posts/how-to-install-java-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 16:06:40 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</guid>
-      <description>&lt;h3 id=&#34;1-下载-jdk&#34;&gt;1. 下载 JDK&lt;/h3&gt;
-
-&lt;p&gt;建JAVA开发环境，第一步就是要安装JDK。在这里下载：&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&#34;&gt;Java SE Development Kit 8 - Downloads&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/how-to-install-java-on-ubuntu/</guid>
+      <description>1. 下载 JDK 🔗建JAVA开发环境，第一步就是要安装JDK。在这里下载：Java SE Development Kit 8 - Downloads 2. 解压 JDK 压缩文件 🔗首先在 /opt 新建 java 目录，并进入该目录： sudo</description>
     </item>
     
     <item>
       <title>Ubuntu 下 Tomcat 的配置</title>
-      <link>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
+      <link>https://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
       <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
-      <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
-
-&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
+      <description>1. 安装 JAVA 🔗在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。 JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括</description>
     </item>
     
   </channel>

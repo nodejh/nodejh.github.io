@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Ubuntu 下 Tomcat 的配置 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Ubuntu 下 Tomcat 的配置</h1>
+
+    <div class="tip">
+        <span>
+          Mar 12, 2016 15:41
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            1469 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          3 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <h3 id="1-安装-java">1. 安装 JAVA <a href="#1-%e5%ae%89%e8%a3%85-java" class="anchor">🔗</a></h3><p>在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。</p>
+<p>JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
+Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。</p>
+<p>简单来说，假设 <code>http://xxx.com</code> 是一个 Java 写的网站，那么当在浏览器输入网址并敲下回车后，Tomcat 会得到一个希望访问 <code>/</code>（根目录资源）的请求。然后它去配置文件里查根目录对应的模块是什么。假设查到的模块是 <code>root</code> 这个类，那么它会去调用 <code>root.doGet()</code> 方法。而你写一个 Servlet 的时候，必须实现 <code>doGet()</code>方法，此时你的方法被调用，那么你写的代码就运行了。</p>
+<p>当然，实际情况会比这个更复杂。</p>
+<p>如果还没有安装 JAVA 开发环境，可参考：<a 
+    href="http://nodejh.com/post/how-to-install-java-on-ubuntu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Ubuntu下JAVA开发环境的配置
+</a></p>
+<h3 id="2-创建-tomcat-用户">2. 创建 <code>tomcat</code> 用户 <a href="#2-%e5%88%9b%e5%bb%ba-tomcat-%e7%94%a8%e6%88%b7" class="anchor">🔗</a></h3><p>为了安全考虑，Tomcat 需要以普通用户的权限来运行。所以我们将创建一个用户和用户组，来运行 Tomcat 服务。</p>
+<p>首先，创建一个 <code>tomcat</code> 用户组：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo groupadd tomcat
+</code></pre></div><p>然后我们再创建一个 <code>tomcat</code> 用户，该用户有如下条件：</p>
+<ul>
+<li><code>tomcat</code> 用户属于 <code>tomcat</code> 用户组；</li>
+<li><code>tomcat</code> 用户主目录为 <code>/opt/tomcat</code>，这个目录也是我们将用来安装 tomcat 的目录（当然也可以是你喜欢的其他目录）；</li>
+<li><code>tomcat</code> 不能登录</li>
+</ul>
+<p>所创建 <code>tomcat</code> 用户的命令如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+</code></pre></div><h3 id="3-安装-tomcat">3. 安装 Tomcat <a href="#3-%e5%ae%89%e8%a3%85-tomcat" class="anchor">🔗</a></h3><h4 id="下载-tomcat-二进制文件">下载 Tomcat 二进制文件 <a href="#%e4%b8%8b%e8%bd%bd-tomcat-%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h4><p>首先下载 Tomcat。目前 Tomcat 的最新版本是 9.0.0.M3。可以在 <a 
+    href="http://tomcat.apache.org"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    http://tomcat.apache.org
+</a> 找到最新版本的 Tomcat，然后拷贝其二进制链接地址，在终端使用 <code>wget</code> 命令进行下载：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">cd ~
+wget http://apache.fayea.com/tomcat/tomcat-9/v9.0.0.M3/bin/apache-tomcat-9.0.0.M3.tar.gz
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-1.png" alt="how-to-install-tomcat-on-ubuntu-1"  />
+</p></p>
+<p>然后我们需要将 Tomcat 安装到 <code>/opt/tomcat</code> 目录下面。</p>
+<p>接下来创建安装目录，并将下载的二进制包解压到该目录。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo mkdir /opt/tomcat
+sudo tar zxvf apache-tomcat-9.0.0.M3.tar.gz -C /opt/tomcat --strip-components=1
+</code></pre></div><h4 id="设置-tomcat-用户权限">设置 Tomcat 用户权限 <a href="#%e8%ae%be%e7%bd%ae-tomcat-%e7%94%a8%e6%88%b7%e6%9d%83%e9%99%90" class="anchor">🔗</a></h4><p>用户 <code>tomcat</code> 需要有合适的权限来运行 Tomcat 服务，所以接下来需要设置用户权限。</p>
+<p>首先进入到 Tomcat 的安装目录：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">cd /opt/tomcat
+</code></pre></div><p>然后设置 <code>tomcat</code> 用户对 <code>conf</code> 目录的写权限，以及对其子目录的读权限：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo chgrp -R tomcat conf
+sudo chmod g+rwx conf
+</code></pre></div><p>接下来需要设置 <code>tomcat</code> 用户对 <code>work/</code>、<code>temp/</code> 、<code>logs/</code> 这几个目录的所有权：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo chown -R tomcat work/ temp/ logs/
+</code></pre></div><p>完整命令如下图：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-2.png" alt="how-to-install-tomcat-on-ubuntu-2"  />
+</p></p>
+<h4 id="设置环境变量">设置环境变量 <a href="#%e8%ae%be%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" class="anchor">🔗</a></h4><p>Tomcat 运行的时候依赖于 JDK 或 JRE。所以还需要为 Tomcat 指定 JDK 或 JRE 的路径。按理说只要有 JRE 就够了，但要使用 Tomcat 的更多功能，如 debug，还需要 JDK。所以建议设置 JDK 的路径。</p>
+<p>设置环境变量的方法是在 <code>bin/</code> 目录下新建一个 <code>setenv.sh</code> 目录，然后将 <code>JAVA_HOME=/opt/java</code> 写入到该文件：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo vim bin/setenv.sh
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-3.png" alt="how-to-install-tomcat-on-ubuntu-3"  />
+</p></p>
+<p>环境变量设置完毕后就可以通过 <code>catalina.sh</code> 命令来启动 Tomcat 了。因为现在是在 <code>/opt/tomcat</code> 目录下，所以可以使用如图所示的命令来启动 Tomcat：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo bin/catalina.sh start
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-4.png" alt="how-to-install-tomcat-on-ubuntu-4.png"  />
+</p></p>
+<p>如果你是在别的目录下，也可以通过 <code>sudo /opt/tomcat/bin/catalina.sh start</code> 命令来启动 Tomcat 服务。</p>
+<p>一切正常的话，就会提示 Tomcat 启动成功，那么 Tomcat。然后在浏览器中输入 <code>localhost:8080</code> 就可以看到 Tomcat 的主界面：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-5.png" alt="how-to-install-tomcat-on-ubuntu-5.png"  />
+</p></p>
+<h3 id="4-配置-web-管理员接口">4. 配置 Web 管理员接口 <a href="#4-%e9%85%8d%e7%bd%ae-web-%e7%ae%a1%e7%90%86%e5%91%98%e6%8e%a5%e5%8f%a3" class="anchor">🔗</a></h3><p>Tomcat 提供了一个图形用户界面的管理后台，来方便我们管理使用 Tomcat 的 Web 应用。在 Tomcat 主页点击右上角的 <code>Server Status</code> 按钮，会弹出一个登录框，输入用户名和密码就可登录。但 Tomcat 安装后是没有默认的管理员帐户的，需要我们自己去配置。</p>
+<p>如果登录的时候密码错误，就会出现一个 <code>401 Unauthorized</code> 的错误页面，这个页面上有提示信息，告诉我们应该怎么去配置管理员帐户：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-6.png" alt="how-to-install-tomcat-on-ubuntu-6.png"  />
+</p></p>
+<p>接下来就来配置管理员帐户。Tomcat 后台管理员配置文件是 <code>/opt/tomcat/conf/tomcat-users.xml</code>，所以我们要编辑该文件：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo vim /opt/tomcat/conf/tomcat-users.xml
+</code></pre></div><p>然后在最后一行的前面加上如下两行，username 和 password 可自行设置：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&lt;role rolename=&#34;manager-gui&#34; /&gt;
+&lt;user username=&#34;admin&#34; password=&#34;password&#34; roles=&#34;manager-gui&#34;/&gt;
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-7.png" alt="how-to-install-tomcat-on-ubuntu-7.png"  />
+</p></p>
+<p>编辑完了后保存，然后再重新启动 Tomcat 服务：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo /opt/tomcat/bin/catalina.sh stop
+sudo /opt/tomcat/bin/catalina.sh start
+</code></pre></div><p>重启后，再点击 <code>Server Status</code> 按钮，输入刚设置的用户名和密码就可以登录到后台：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-how-to-install-tomcat-on-ubuntu-8.png" alt="how-to-install-tomcat-on-ubuntu-8.png"  />
+</p></p>
+<p>至此，Tomcat 就安装成功！</p>
+<hr>
+<p>Github Issue: <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/17"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/17
+</a></p>
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/ubuntu">Ubuntu</a>
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+                <a href="https://nodejh.com/tags/jsp">JSP</a>
+            
+                <a href="https://nodejh.com/tags/tomcat">Tomcat</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

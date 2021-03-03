@@ -1,25 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Nginx on node</title>
-    <link>http://nodejh.com/tags/nginx/</link>
-    <description>Recent content in Nginx on node</description>
+    <title>Nginx on Hang Jiang</title>
+    <link>https://nodejh.com/tags/nginx/</link>
+    <description>Recent content in Nginx on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 30 Apr 2016 17:19:20 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 30 Apr 2016 17:19:20 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用 Ngnix 给 Node.js 应用做反向代理</title>
-      <link>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
+      <link>https://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
       <pubDate>Sat, 30 Apr 2016 17:19:20 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
-      <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
+      <description>一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例： const http = require(&amp;#39;http&amp;#39;); const hostname = &amp;#39;127.0.0.1&amp;#39;; const port = 3000; const server = http.createServer((req, res) =&amp;gt; { res.statusCode = 200; res.setHeader(&amp;#39;Content-Type&amp;#39;, &amp;#39;text/plain&amp;#39;); res.end(&amp;#39;Hello World\n&amp;#39;); }); server.listen(port, hostname, () =&amp;gt; { console.log(`Server running at http://${hostname}:${port}/`); });</description>
     </item>
     
   </channel>

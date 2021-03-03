@@ -1,15 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>about on node</title>
-    <link>http://nodejh.com/about/</link>
-    <description>Recent content in about on node</description>
+    <title>about on Hang Jiang</title>
+    <link>https://nodejh.com/about/</link>
+    <description>Recent content in about on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Sep 2016 00:53:06 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/about/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 30 Jan 2021 00:53:06 +0800</lastBuildDate><atom:link href="https://nodejh.com/about/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

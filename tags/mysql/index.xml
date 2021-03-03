@@ -1,74 +1,46 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mysql on node</title>
-    <link>http://nodejh.com/tags/mysql/</link>
-    <description>Recent content in Mysql on node</description>
+    <title>MySQL on Hang Jiang</title>
+    <link>https://nodejh.com/tags/mysql/</link>
+    <description>Recent content in MySQL on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 30 Mar 2017 18:06:02 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>常用 MySQL 命令</title>
-      <link>http://nodejh.com/posts/handy-mysql-commands/</link>
-      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
-      
-      <guid>http://nodejh.com/posts/handy-mysql-commands/</guid>
-      <description>&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
+    <lastBuildDate>Sun, 02 Oct 2016 00:53:28 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MySQL ibdata1 文件不可写</title>
-      <link>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
+      <link>https://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</link>
       <pubDate>Sun, 02 Oct 2016 00:53:28 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
-      <description>&lt;p&gt;今天重启电脑后 MySQL 又用不了了！&lt;/p&gt;
-
-&lt;p&gt;然后查看了错误日志 ：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</guid>
+      <description>今天重启电脑后 MySQL 又用不了了！ 然后查看了错误日志 ： $ sudo cat /usr/local/mysql/data/jh.local.err 2016-10-01T15:51:09.6NZ mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/data 2016-10-01T15:51:09.574413Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details). 2016-10-01T15:51:09.574540Z 0 [Warning] &amp;#39;NO_ZERO_DATE&amp;#39;, &amp;#39;NO_ZERO_IN_DATE&amp;#39; and &amp;#39;ERROR_FOR_DIVISION_BY_ZERO&amp;#39; sql modes should be used with</description>
     </item>
     
     <item>
       <title>MySQL 启动报错问题排查</title>
-      <link>http://nodejh.com/posts/troubleshoot-mysql-start-error/</link>
+      <link>https://nodejh.com/posts/troubleshoot-mysql-start-error/</link>
       <pubDate>Sun, 31 Jul 2016 17:05:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/troubleshoot-mysql-start-error/</guid>
-      <description>&lt;p&gt;今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/troubleshoot-mysql-start-error/</guid>
+      <description>今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。 在此记录下整</description>
     </item>
     
     <item>
       <title>创建 MySQL数据库及用户权限</title>
-      <link>http://nodejh.com/posts/create-and-manage-mysql-user/</link>
+      <link>https://nodejh.com/posts/create-and-manage-mysql-user/</link>
       <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/create-and-manage-mysql-user/</guid>
-      <description>&lt;h2 id=&#34;一-创建数据库用户&#34;&gt;一.创建数据库用户&lt;/h2&gt;
-
-&lt;p&gt;首先用root账号进入MySQL：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/create-and-manage-mysql-user/</guid>
+      <description>一.创建数据库用户 🔗首先用root账号进入MySQL： $ mysql -u root -p 然后输入密码即可。 创建数据库并设置编码为 utf8，不然中文可能会乱码： &amp;gt; create database</description>
     </item>
     
     <item>
       <title>MySQL 连接错误 (61) </title>
-      <link>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</link>
+      <link>https://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</link>
       <pubDate>Thu, 07 Apr 2016 01:55:51 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</guid>
-      <description>&lt;p&gt;远程连接 MySQL 的时候出现如下错误:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Can&#39;t connect to MySQL server on &#39;*.*.*.*&#39; (61)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</guid>
+      <description>远程连接 MySQL 的时候出现如下错误: Can&amp;#39;t connect to MySQL server on &amp;#39;*.*.*.*&amp;#39; (61) 这是因为 MySQL 默认的 bind-address 是 127.0.0.1, 也就是限制了只能本地访问. 所以解决方法之一,就是修改 bind-address. 改为 0.0.0.0 ,任何远程 IP</description>
     </item>
     
   </channel>

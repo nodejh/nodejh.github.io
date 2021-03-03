@@ -1,25 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Php on node</title>
-    <link>http://nodejh.com/categories/php/</link>
-    <description>Recent content in Php on node</description>
+    <title>PHP on Hang Jiang</title>
+    <link>https://nodejh.com/categories/php/</link>
+    <description>Recent content in PHP on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 29 Dec 2016 00:04:41 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/categories/php/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 29 Dec 2016 00:04:41 +0800</lastBuildDate><atom:link href="https://nodejh.com/categories/php/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>在 MacOS Sierra 上安装 Apache 和多个版本的 PHP</title>
-      <link>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</link>
+      <link>https://nodejh.com/posts/%E5%9C%A8-macos-sierra-%E4%B8%8A%E5%AE%89%E8%A3%85-apache-%E5%92%8C%E5%A4%9A%E4%B8%AA%E7%89%88%E6%9C%AC%E7%9A%84-php/</link>
       <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</guid>
-      <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/%E5%9C%A8-macos-sierra-%E4%B8%8A%E5%AE%89%E8%A3%85-apache-%E5%92%8C%E5%A4%9A%E4%B8%AA%E7%89%88%E6%9C%AC%E7%9A%84-php/</guid>
+      <description>&lt;p&gt;前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。&lt;/p&gt;</description>
     </item>
     
   </channel>

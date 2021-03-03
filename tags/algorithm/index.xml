@@ -1,38 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Algorithm on node</title>
-    <link>http://nodejh.com/tags/algorithm/</link>
-    <description>Recent content in Algorithm on node</description>
+    <title>Algorithm on Hang Jiang</title>
+    <link>https://nodejh.com/tags/algorithm/</link>
+    <description>Recent content in Algorithm on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 29 Oct 2016 00:43:22 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 29 Oct 2016 00:43:22 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>求给定数组的对等差分(symmetric difference) (△ or ⊕)数组</title>
-      <link>http://nodejh.com/posts/symmetric-difference/</link>
+      <link>https://nodejh.com/posts/symmetric-difference/</link>
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/symmetric-difference/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/symmetric-difference/</guid>
+      <description>题目 创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组. 给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2,</description>
     </item>
     
     <item>
       <title>找出一个数组中的最大值</title>
-      <link>http://nodejh.com/posts/get-the-max-number-in-array/</link>
+      <link>https://nodejh.com/posts/get-the-max-number-in-array/</link>
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/get-the-max-number-in-array/</guid>
-      <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/get-the-max-number-in-array/</guid>
+      <description>本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 🔗var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &amp;lt; arr[i] ) max = arr[i]; findMax(i+1); } findMax(1); console.log(max); 使用 for 循环遍历 🔗v</description>
     </item>
     
   </channel>

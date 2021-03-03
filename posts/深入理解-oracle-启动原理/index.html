@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>深入理解 Oracle 启动原理 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">深入理解 Oracle 启动原理</h1>
+
+    <div class="tip">
+        <span>
+          Mar 26, 2017 00:42
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            4681 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          10 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <h2 id="一-常用启动步骤">一. 常用启动步骤 <a href="#%e4%b8%80-%e5%b8%b8%e7%94%a8%e5%90%af%e5%8a%a8%e6%ad%a5%e9%aa%a4" class="anchor">🔗</a></h2><p>对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。</p>
+<p>如果还需要使用 OEM 来监控数据库服务，则还要启动 OEM。</p>
+<h4 id="11-启动监听器">1.1. 启动监听器 <a href="#11-%e5%90%af%e5%8a%a8%e7%9b%91%e5%90%ac%e5%99%a8" class="anchor">🔗</a></h4><p>Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。</p>
+<p>启动监听器：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ lsnrctl start
+</code></pre></div><h4 id="12-启动数据库">1.2. 启动数据库 <a href="#12-%e5%90%af%e5%8a%a8%e6%95%b0%e6%8d%ae%e5%ba%93" class="anchor">🔗</a></h4><p>我们可以使用 <code>sqlplus</code> 来启动数据库。关于 <code>sqlplus</code> 的详细使用方法请参考 <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/31"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    《使用 SQL *Plus 管理 Oracle 数据库》
+</a>。</p>
+<p>进入 <code>sqlplus</code> ：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ sqlplus / as sysdba
+</code></pre></div><p>启动数据库：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&gt;SQL startup
+</code></pre></div><p>完成这两个步骤，就可以使用数据库了。</p>
+<h4 id="13-启动-oem">1.3. 启动 OEM <a href="#13-%e5%90%af%e5%8a%a8-oem" class="anchor">🔗</a></h4><p>Oracle Enterprise Manager（Oracle企业管理器，简称 OEM ）是一个图形化数据库管理工具，可同时监控管理多个系统上的多个数据库，因而特别适合分布式环境。</p>
+<p>启动 OEM：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ emctl start dbconsole
+</code></pre></div><p>启动成功后就可以通过 <code>http://服务器:1158/em</code> 来访问基于 Web 的监控页面。</p>
+<h2 id="二-启动概述">二. 启动概述 <a href="#%e4%ba%8c-%e5%90%af%e5%8a%a8%e6%a6%82%e8%bf%b0" class="anchor">🔗</a></h2><p>Oracle Serve 由实例（Instance）和数据库（database）组成，每一个运行的 Oracle 数据库都与一个 Oracle 实例关联。</p>
+<p>实例是由一组后台进程和一块称为系统全局区 SGA（System Global Area）的共享内存段组成。后台进程是数据库和操作系统进行交互的通道，后台进程的命名由 ORACLE_SID 决定，Oracle 根据 ORACLE_SID 来寻找参数文件启动实例。数据库是指存储在磁盘上的一组物理文件。</p>
+<p>Oracle 数据库具有四种状态，启动过程具有三个阶段。</p>
+<p>四种状态分别 <code>shutdown</code> <code>nomount</code> <code>mount</code> <code>open</code>，对应三个阶段分别为：</p>
+<ul>
+<li>启动实例 <code>shutdown --&gt; nomount</code></li>
+<li>装载数据库 <code>nomount --&gt; mount</code></li>
+<li>打开数据库 <code>mount --&gt; open</code></li>
+</ul>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">                                                    ^
+                                           open     |
+                                     +--------------|
+                                     |   All files
+                                     |   opened as
+                                     | described by
+                              mount  |  the control
+                       +-------------+ file for this
+                       | Control file    instance
+                       |    opened
+                       |   for this
+               nomount |   instance
+           +-----------+
+           |  Instance
+           |   started
+           |
+  shutdown |
+-----------+
+</code></pre></div><p>启动实例后，Oracle 软件会将实例与特定的数据库关联，这个过程称为装载数据库。接下来可以打开数据库，以便授权用户访问数据库。在同一台计算机上可以并发执行多个实例，每一个实例只访问自己的物理数据库。</p>
+<h2 id="三-启动详解">三. 启动详解 <a href="#%e4%b8%89-%e5%90%af%e5%8a%a8%e8%af%a6%e8%a7%a3" class="anchor">🔗</a></h2><p>为了弄清楚 Oracle 启动过程的详细内容，我们需要用到两个命令：</p>
+<ul>
+<li><code>ps</code> 用来查看系统运行了哪些进程</li>
+<li><code>ipcs</code> 查询进程间通信设施状态，显示使用了共享内存和信号量</li>
+</ul>
+<h4 id="31-shutdown-状态">3.1. <code>shutdown</code> 状态 <a href="#31-shutdown-%e7%8a%b6%e6%80%81" class="anchor">🔗</a></h4><p>当 Oracle 处于该状态的时候，Oracle 的所有文件都静静的躺在磁盘里，一切都还未开始，属于关机状态。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ps -ef | grep oracle
+oracle    4524     1  0 00:54 ?        00:00:39 /data/oracle/product/11.2.0/db_1/bin/emagent
+root     12825   974  0 13:49 ?        00:00:00 sshd: oracle [priv]
+oracle   12832 12825  0 13:49 ?        00:00:00 sshd: oracle@pts/0
+oracle   12833 12832  0 13:49 pts/0    00:00:00 -bash
+oracle   13825 12833  0 13:54 pts/0    00:00:00 ps -ef
+oracle   13826 12833  0 13:54 pts/0    00:00:00 grep --color=auto oracle
+$ ipcs -a
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x011268f0 458753     root       600        1000       8
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+</code></pre></div><h4 id="32-启动实例-shutdown----nomount">3.2. 启动实例 <code>shutdown --&gt; nomount</code> <a href="#32-%e5%90%af%e5%8a%a8%e5%ae%9e%e4%be%8b-shutdown----nomount" class="anchor">🔗</a></h4><p>总体来说，启动数据库实例包括以下操作：</p>
+<ol>
+<li>读取参数文件 <code>SPFILE</code></li>
+<li>分配 SGA</li>
+<li>启动后台进程</li>
+<li>打开告警文件和跟踪文件</li>
+</ol>
+<p>在启动实例时，将为实例创建一系列后台进程和服务进程，并且在内存中创建 SGA 区等内存结构。在实例启动的过程中只会使用到初始化参数文件，数据库是否存在对实例的启动没有影响。如果初化参数设置有误，实例将无法启动。</p>
+<p>启动数据库实例的命令如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ sqlplus / as sysdba
+
+SQL*Plus: Release 11.2.0.1.0 Production on Sun Mar 26 14:05:14 2017
+
+Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+SQL&gt; startup nomount
+ORACLE instance started.
+
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+</code></pre></div><p>启动数据库实例后，只会创建实例（即创建 Oracle 实例的各种内存结构与服务进程），并不加载数据库，也不会打开任何数据文件。</p>
+<p><strong>测试数据文件能否打开：</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> v$datafile;
+<span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> v$datafile
+              <span style="color:#666">*</span>
+ERROR <span style="color:#a2f;font-weight:bold">at</span> line <span style="color:#666">1</span>:
+ORA<span style="color:#666">-</span><span style="color:#666">01507</span>: <span style="color:#a2f;font-weight:bold">database</span> <span style="color:#a2f;font-weight:bold">not</span> mounted
+</code></pre></div><p><code>select * from v$datafile</code> 的时候报错，说明数据库文件在 <code>nomount</code> 状态下是无法访问的，因为数据字典需要从控制文件获取文件的信息，而此时控制文件没有打开所以无法查看。</p>
+<p>但是在 <code>nomount</code> 状态下可以通过参数文件获得控制文件的位置，因为此时参数文件已经打开：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">show</span> <span style="color:#a2f;font-weight:bold">parameter</span> control_files;
+
+NAME				     <span style="color:#a2f;font-weight:bold">TYPE</span>
+<span style="color:#080;font-style:italic">------------------------------------
+</span><span style="color:#080;font-style:italic"></span>VALUE
+<span style="color:#080;font-style:italic">------------------------------
+</span><span style="color:#080;font-style:italic"></span>control_files			     string
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>cont
+rol01.ctl, <span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>flash_
+recovery_area<span style="color:#666">/</span>orcl<span style="color:#666">/</span>control02.<span style="color:#a2f;font-weight:bold">c</span>
+tl
+</code></pre></div><h6 id="321-读取参数文件">3.2.1 读取参数文件 <a href="#321-%e8%af%bb%e5%8f%96%e5%8f%82%e6%95%b0%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h6><p>启动数据库实例首先会读取 <code>SPFILE</code> 文件中的初始化参数，如果 <code>SPFILE</code> 文件不存在，则会读取初始化文件。Linux 系统的 <code>SPFILE</code> 文件在 <code>$ORACLE_HOME/dbs</code> 目录下，Windows NT 和 Windows 2000 中 <code>SPFILE</code> 文件目录在 <code>%ORACLE_HOME%\database</code>。文件的读取顺序如下：</p>
+<ul>
+<li><code>spfile$ORACLE_SID.ora</code></li>
+<li><code>spfile.ora</code></li>
+<li><code>init$ORACLE_SID.ora</code></li>
+</ul>
+<p>其中 <code>spfile$ORACLE_SID.ora</code> 和 <code>spfile.ora</code> 属于 <code>SPFILE</code> 文件，<code>init$ORACLE_SID.ora</code> 是初始化文件。</p>
+<blockquote>
+<p>查看 <code>$ORACLE_HOME</code> 和 <code>$ORACLE_SID</code> 的值可使用 <code>echo</code> 命令，如 <code>echo $ORACLE_HOME</code>。</p>
+</blockquote>
+<h6 id="322-分配-sga">3.2.2 分配 SGA <a href="#322-%e5%88%86%e9%85%8d-sga" class="anchor">🔗</a></h6><p>读取到参数文件之后，Oracle 会根据参数文件分配 SGA（System Global Area）。</p>
+<p>SGA 是一个非常庞大的内存区间，这也是为什么开启 Oracle 之后占用了很大内存的原因。SGA 由所有服务进程和后台进程共享。</p>
+<p>我们可以通过 <code>show sga</code> 或 <code>select * from v$sga</code> 查看 SGA 的大小：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">show</span> sga;
+Total <span style="color:#a2f;font-weight:bold">System</span> <span style="color:#a2f;font-weight:bold">Global</span> Area <span style="color:#666">3273641984</span> bytes
+Fixed <span style="color:#a2f;font-weight:bold">Size</span>		    <span style="color:#666">2217792</span> bytes
+<span style="color:#a2f;font-weight:bold">Variable</span> <span style="color:#a2f;font-weight:bold">Size</span>		 <span style="color:#666">2432698560</span> bytes
+<span style="color:#a2f;font-weight:bold">Database</span> Buffers	  <span style="color:#666">822083584</span> bytes
+Redo Buffers		   <span style="color:#666">16642048</span> bytes
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> v$sga;
+
+NAME					      VALUE
+<span style="color:#080;font-style:italic">---------------------------------------- ----------
+</span><span style="color:#080;font-style:italic"></span>Fixed <span style="color:#a2f;font-weight:bold">Size</span>				    <span style="color:#666">2217792</span>
+<span style="color:#a2f;font-weight:bold">Variable</span> <span style="color:#a2f;font-weight:bold">Size</span>				 <span style="color:#666">2432698560</span>
+<span style="color:#a2f;font-weight:bold">Database</span> Buffers			  <span style="color:#666">822083584</span>
+Redo Buffers				   <span style="color:#666">16642048</span>
+
+</code></pre></div><p>SGA 分为不同的池，我们可以通过视图 <code>v$sgastat</code> 查看：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> pool,<span style="color:#a2f;font-weight:bold">sum</span>(bytes) bytes <span style="color:#a2f;font-weight:bold">from</span> v$sgastat <span style="color:#a2f;font-weight:bold">group</span> <span style="color:#a2f;font-weight:bold">by</span> pool;
+
+POOL			      BYTES
+<span style="color:#080;font-style:italic">------------------------ ----------
+</span><span style="color:#080;font-style:italic"></span>java pool		   <span style="color:#666">16777216</span>
+<span style="color:#a2f;font-weight:bold">large</span> pool		   <span style="color:#666">16777216</span>
+shared pool		 <span style="color:#666">1258295992</span>
+			  <span style="color:#666">840943424</span>
+
+</code></pre></div><h6 id="323-启动后台进程">3.2.3 启动后台进程 <a href="#323-%e5%90%af%e5%8a%a8%e5%90%8e%e5%8f%b0%e8%bf%9b%e7%a8%8b" class="anchor">🔗</a></h6><p>其中有 5 个进程必须启动， DBWR、LGWR、SMON、PMON、CKPT。</p>
+<p><code>SMON</code> 系统监视器（System Monitor）。如果 Oracle 实例失败，则在 SGA 中的任何没有写到磁盘中的数据都会丢失。有许多情况可能引起 Oracle 实例失败，例如操作系统的崩溃就会引起 Oracle 实例的失败。当实例失败之后，如果重新打开该数据库，则后台进程 SMON 自动执行实例的复原操作。</p>
+<p><code>DBWR</code> 数据库书写器（Database Write）。该服务器进程在缓冲存储区中记录所有的变化和数据。DBWR 把来自数据库的缓冲存储区中的脏数据写到数据文件中，以便确保数据库缓冲存储区中有足够的空闲的缓冲存储区。脏数据就是正在使用但是没有写到数据文件中的数据。</p>
+<p><code>LGWR</code> 日志书写器（Log Write）。LGWR 负责把重做日志缓冲存储区中的数据写入到重做日志文件中。</p>
+<p><code>CKPT</code> 检查点（Checkpoint）。该进程可以用来同步化数据库的文件，它可以把日志中的文件写入到数据库中。</p>
+<p><code>PMON</code> 进程监视器（Process Monitor）。当取消当前的事务，或释放进程占用的锁以及释放其它资源之后，PMON 进程清空那些失败的进程。</p>
+<p><strong>查看系统进程和通信设施状态：</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ps -ef | grep oracle
+oracle    4524     1  0 Mar26 ?        00:01:25 /data/oracle/product/11.2.0/db_1/bin/emagent
+root      9797   974  0 00:57 ?        00:00:00 sshd: oracle [priv]
+oracle    9805  9797  0 00:57 ?        00:00:00 sshd: oracle@pts/0
+oracle    9806  9805  0 00:57 pts/0    00:00:00 -bash
+oracle   10020     1  0 00:58 ?        00:00:00 ora_pmon_orcl
+oracle   10022     1  0 00:58 ?        00:00:01 ora_vktm_orcl
+oracle   10026     1  0 00:58 ?        00:00:00 ora_gen0_orcl
+oracle   10028     1  0 00:58 ?        00:00:00 ora_diag_orcl
+oracle   10030     1  0 00:58 ?        00:00:00 ora_dbrm_orcl
+oracle   10032     1  0 00:58 ?        00:00:00 ora_psp0_orcl
+oracle   10034     1  0 00:58 ?        00:00:01 ora_dia0_orcl
+oracle   10036     1  0 00:58 ?        00:00:00 ora_mman_orcl
+oracle   10038     1  0 00:58 ?        00:00:00 ora_dbw0_orcl
+oracle   10040     1  0 00:58 ?        00:00:00 ora_lgwr_orcl
+oracle   10042     1  0 00:58 ?        00:00:00 ora_ckpt_orcl
+oracle   10044     1  0 00:58 ?        00:00:00 ora_smon_orcl
+oracle   10046     1  0 00:58 ?        00:00:00 ora_reco_orcl
+oracle   10048     1  0 00:58 ?        00:00:00 ora_mmon_orcl
+oracle   10050     1  0 00:58 ?        00:00:00 ora_mmnl_orcl
+oracle   10052     1  0 00:58 ?        00:00:00 ora_d000_orcl
+oracle   10054     1  0 00:58 ?        00:00:00 ora_s000_orcl
+oracle   15675  9806  0 01:59 pts/0    00:00:00 ps -ef
+oracle   15676  9806  0 01:59 pts/0    00:00:00 grep --color=auto oracle
+$ ipcs -a
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x011268f0 458753     root       600        1000       9
+0x00000000 524290     oracle     660        4096       0
+0x00000000 557059     oracle     660        4096       0
+0x2a1ee740 589828     oracle     660        4096       0
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+0x19ba9600 1310738    oracle     660        154
+</code></pre></div><p>由 <code>smon</code>、<code>pmon</code> <code>lgwr</code> 等进程可以看出此阶段创建了多个后台进程，并首次报告使用了共享内存和信号量。</p>
+<h6 id="324-打开告警文件和跟踪文件">3.2.4 打开告警文件和跟踪文件 <a href="#324-%e6%89%93%e5%bc%80%e5%91%8a%e8%ad%a6%e6%96%87%e4%bb%b6%e5%92%8c%e8%b7%9f%e8%b8%aa%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h6><p>数据库的启动过程记录在警告追踪文件中，该警告追踪文件中包括数据库启动信息，它存放在参数<code>BACKGOUND_DUMP_DEST</code> 定义的目录下，警告日志的名字为 <code>alert_&lt;sid&gt;.log</code>，<code>sid</code> 是实例的名称：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">show</span> <span style="color:#a2f;font-weight:bold">parameter</span> background_dump_dest;
+
+NAME			           <span style="color:#a2f;font-weight:bold">TYPE</span>               VALUE
+<span style="color:#080;font-style:italic">-------------------- -------------------------------------------------
+</span><span style="color:#080;font-style:italic"></span>background_dump_dest  string  <span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>diag<span style="color:#666">/</span>rdbms<span style="color:#666">/</span>orcl<span style="color:#666">/</span>orcl<span style="color:#666">/</span>trace
+</code></pre></div><p>进入到目录查看警告日志关于 <code>startup nomount</code> 过程记录：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ more alert_orcl.log
+Fri Nov 11 17:04:51 2016
+Starting ORACLE instance (normal)
+LICENSE_MAX_SESSION = 0
+LICENSE_SESSIONS_WARNING = 0
+Shared memory segment for instance monitoring created
+Picked latch-free SCN scheme 3
+Using LOG_ARCHIVE_DEST_1 parameter default value as USE_DB_RECOVERY_FILE_DEST
+Autotune of undo retention is turned on.
+IMODE=BR
+ILAT =27
+LICENSE_MAX_USERS = 0
+SYS auditing is disabled
+Starting up:
+Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options.
+Using parameter settings in client-side pfile /data/oracle/admin/orcl/pfile/init.
+</code></pre></div><p>Oracle 实例的后台进程会在遇到问题的时候将日志写入跟踪文件中。数据库的跟踪文件在目录由 <code>BACKGOUND_DUMP_DEST</code> 参数指定，最大大小由 <code>MAX_DUMP_FILE_SIZE</code> 指定，默认为<code>UNLIMITED</code>。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">show</span> <span style="color:#a2f;font-weight:bold">parameter</span> user_dump_dest;
+
+NAME				     <span style="color:#a2f;font-weight:bold">TYPE</span>
+<span style="color:#080;font-style:italic">------------------------------------ ----------------------
+</span><span style="color:#080;font-style:italic"></span>VALUE
+<span style="color:#080;font-style:italic">------------------------------
+</span><span style="color:#080;font-style:italic"></span>user_dump_dest			     string
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>diag<span style="color:#666">/</span>rdbms<span style="color:#666">/</span>orcl<span style="color:#666">/</span>o
+rcl<span style="color:#666">/</span>trace
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">show</span> <span style="color:#a2f;font-weight:bold">parameter</span> max_dump_file_size;
+
+NAME				     <span style="color:#a2f;font-weight:bold">TYPE</span>
+<span style="color:#080;font-style:italic">------------------------------------ ----------------------
+</span><span style="color:#080;font-style:italic"></span>VALUE
+<span style="color:#080;font-style:italic">------------------------------
+</span><span style="color:#080;font-style:italic"></span>max_dump_file_size		     string
+unlimited
+</code></pre></div><h4 id="33-装载数据库-nomunt----mount">3.3 装载数据库 <code>nomunt --&gt; mount</code> <a href="#33-%e8%a3%85%e8%bd%bd%e6%95%b0%e6%8d%ae%e5%ba%93-nomunt----mount" class="anchor">🔗</a></h4><h6 id="331-装载数据库概述">3.3.1 装载数据库概述 <a href="#331-%e8%a3%85%e8%bd%bd%e6%95%b0%e6%8d%ae%e5%ba%93%e6%a6%82%e8%bf%b0" class="anchor">🔗</a></h6><p>装载数据库就是把数据库文件和实例关联起来，包括以下三个步骤：</p>
+<ul>
+<li>Oracle根据参数文件 <code>SPFILE</code> 中的参数找到控制文件</li>
+<li>打开控制文件</li>
+<li>从控制文件获得数据字典和重做日志文件的名字及位置</li>
+</ul>
+<p>完成以上三步，没有任何错误的情况下，Oracle 就已经把实例和数据库关联起来了。</p>
+<p>装载数据库有两种方式：</p>
+<ul>
+<li>一是直接启动数据库到 <code>mount</code> 状态：<code>startup mount</code></li>
+<li>二是如果数据库已经启动到 <code>nomount</code> 状态，使用 <code>alter database mount</code> 把数据库切换到<code>mount</code> 状态</li>
+</ul>
+<p><code>alert database mount</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">alter</span> <span style="color:#a2f;font-weight:bold">database</span> mount;
+
+<span style="color:#a2f;font-weight:bold">Database</span> altered.
+</code></pre></div><p><code>startup mount</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">SQL&gt; shutdown immediate;
+ORA-01109: database not open
+
+
+Database dismounted.
+ORACLE instance shut down.
+SQL&gt; startup mount;
+ORACLE instance started.
+
+Total System Global Area 3273641984 bytes
+Fixed Size		    2217792 bytes
+Variable Size		 2432698560 bytes
+Database Buffers	  822083584 bytes
+Redo Buffers		   16642048 bytes
+Database mounted.
+</code></pre></div><h6 id="332-可以查询控制文件">3.3.2 可以查询控制文件 <a href="#332-%e5%8f%af%e4%bb%a5%e6%9f%a5%e8%af%a2%e6%8e%a7%e5%88%b6%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h6><p>这个时候我们就可以查询控制文件、数据文件和重做日志文件了。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> status <span style="color:#a2f;font-weight:bold">from</span> v$instance;
+
+STATUS
+<span style="color:#080;font-style:italic">------------------------
+</span><span style="color:#080;font-style:italic"></span>MOUNTED
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> name <span style="color:#a2f;font-weight:bold">from</span> v$controlfile;
+
+NAME
+<span style="color:#080;font-style:italic">--------------------------------------------------------------------------------
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>control01.ctl
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>flash_recovery_area<span style="color:#666">/</span>orcl<span style="color:#666">/</span>control02.ctl
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> name <span style="color:#a2f;font-weight:bold">from</span> v$datafile;
+
+NAME
+<span style="color:#080;font-style:italic">--------------------------------------------------------------------------------
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>system01.dbf
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>sysaux01.dbf
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>undotbs01.dbf
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>users01.dbf
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>example01.dbf
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>SoftwareManagement.dbf
+
+<span style="color:#666">6</span> <span style="color:#a2f;font-weight:bold">rows</span> selected.
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> member <span style="color:#a2f;font-weight:bold">from</span> v$logfile;
+
+MEMBER
+<span style="color:#080;font-style:italic">--------------------------------------------------------------------------------
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>redo03.log
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>redo02.log
+<span style="color:#666">/</span><span style="color:#a2f;font-weight:bold">data</span><span style="color:#666">/</span>oracle<span style="color:#666">/</span>oradata<span style="color:#666">/</span>orcl<span style="color:#666">/</span>redo01.log
+
+</code></pre></div><h6 id="333-不能查询表视图">3.3.3 不能查询表、视图 <a href="#333-%e4%b8%8d%e8%83%bd%e6%9f%a5%e8%af%a2%e8%a1%a8%e8%a7%86%e5%9b%be" class="anchor">🔗</a></h6><p>但此时还不能查询数据库文件，如表和视图。所以对于普通用户而言，这个时候数据库还是不可用的。只有等到经历了最后一步 <code>打开数据库</code> 之后，才能使用数据库。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> tab;
+<span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> tab
+              <span style="color:#666">*</span>
+ERROR <span style="color:#a2f;font-weight:bold">at</span> line <span style="color:#666">1</span>:
+ORA<span style="color:#666">-</span><span style="color:#666">01219</span>: <span style="color:#a2f;font-weight:bold">database</span> <span style="color:#a2f;font-weight:bold">not</span> <span style="color:#a2f;font-weight:bold">open</span>: queries allowed <span style="color:#a2f;font-weight:bold">on</span> fixed tables<span style="color:#666">/</span>views <span style="color:#a2f;font-weight:bold">only</span>
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> scott.dept;
+<span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> scott.dept
+                    <span style="color:#666">*</span>
+ERROR <span style="color:#a2f;font-weight:bold">at</span> line <span style="color:#666">1</span>:
+ORA<span style="color:#666">-</span><span style="color:#666">01219</span>: <span style="color:#a2f;font-weight:bold">database</span> <span style="color:#a2f;font-weight:bold">not</span> <span style="color:#a2f;font-weight:bold">open</span>: queries allowed <span style="color:#a2f;font-weight:bold">on</span> fixed tables<span style="color:#666">/</span>views <span style="color:#a2f;font-weight:bold">only</span>
+</code></pre></div><h4 id="34-打开数据库-mount----open">3.4 打开数据库 <code>mount --&gt; open</code> <a href="#34-%e6%89%93%e5%bc%80%e6%95%b0%e6%8d%ae%e5%ba%93-mount----open" class="anchor">🔗</a></h4><p>打开数据库时，实例将打开所有处于联机状态的数据文件和重做日志文件。</p>
+<p>在此期间，Oracle 服务器将校验所有的数据文件和联机日志文件能否打开，并对数据库作一致性检查。</p>
+<ul>
+<li>如果出现一致性错误，<code>SMON</code> 进程将启动实例恢复</li>
+<li>如果任一数据文件或联机日志文件丢失，Oracle 服务器将报错</li>
+</ul>
+<p>只有将数据库设置为打开状态后，数据库才处于正常状态，这时普通用户才能够访问数据库。</p>
+<p>打开数据库也有两种方式。</p>
+<p><strong>一是使用 <code>alter</code> 命令。</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#666">&gt;</span><span style="color:#a2f;font-weight:bold">SQL</span> <span style="color:#a2f;font-weight:bold">alter</span> <span style="color:#a2f;font-weight:bold">database</span> <span style="color:#a2f;font-weight:bold">open</span>;
+
+<span style="color:#a2f;font-weight:bold">Database</span> altered.
+
+<span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> status <span style="color:#a2f;font-weight:bold">from</span> v$instance;
+
+STATUS
+<span style="color:#080;font-style:italic">------------------------
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">OPEN</span>
+
+</code></pre></div><p><strong>二是直接通过 <code>startup</code> 命令启动。</strong></p>
+<p><code>startup</code> 命令会逐步完成数据库启动的三个步骤（创建实例、装载数据库、打开数据库），将数据库启动到 <code>open</code> 状态：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SQL&gt; startup
+ORACLE instance started.
+
+Total System Global Area <span style="color:#666">3273641984</span> bytes
+Fixed Size		    <span style="color:#666">2217792</span> bytes
+Variable Size		 <span style="color:#666">2432698560</span> bytes
+Database Buffers	  <span style="color:#666">822083584</span> bytes
+Redo Buffers		   <span style="color:#666">16642048</span> bytes
+Database mounted.
+Database opened.
+</code></pre></div><p>启动之后，就可以访问数据文件了：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#a2f;font-weight:bold">SQL</span><span style="color:#666">&gt;</span> <span style="color:#a2f;font-weight:bold">select</span> <span style="color:#666">*</span> <span style="color:#a2f;font-weight:bold">from</span> scott.dept;
+
+    DEPTNO DNAME			LOC
+<span style="color:#080;font-style:italic">---------- ---------------------------- --------------------------
+</span><span style="color:#080;font-style:italic"></span>	<span style="color:#666">10</span> ACCOUNTING			<span style="color:#a2f;font-weight:bold">NEW</span> YORK
+	<span style="color:#666">20</span> RESEARCH			DALLAS
+	<span style="color:#666">30</span> SALES			CHICAGO
+	<span style="color:#666">40</span> OPERATIONS			BOSTON
+</code></pre></div><h2 id="四-关闭数据库">四. 关闭数据库 <a href="#%e5%9b%9b-%e5%85%b3%e9%97%ad%e6%95%b0%e6%8d%ae%e5%ba%93" class="anchor">🔗</a></h2><p>与启动数据库顺序相反，也分三个步骤：</p>
+<ul>
+<li><code>CLOSE</code>  关闭数据库（关闭数据文件）</li>
+<li><code>DISMOUNT</code> 卸载数据库（关闭控制文件）</li>
+<li><code>SHUTDOWN</code> 关闭 Oracle 实例</li>
+</ul>
+<p>同时关闭模式也有多种。</p>
+<h4 id="41-normal">4.1. NORMAL <a href="#41-normal" class="anchor">🔗</a></h4><p>正常的关闭方式。如果对于关闭数据库的时间没有限制，通常采用这种方式。</p>
+<p>以 <code>NORMAL</code> 方式关闭数据库，Oracle 将执行如下操作：</p>
+<ol>
+<li>阻止任何用户建立新的连接</li>
+<li>等待当前所有正在连接的用户主动断开连接</li>
+<li>当前所有用户的都断开连接后，将立即关闭数据库</li>
+</ol>
+<h4 id="42-transaction">4.2. TRANSACTION <a href="#42-transaction" class="anchor">🔗</a></h4><p>事务关闭方式，它的首要任务是保证当前所有活动的事务都可以被提交，并在尽可能短的时间内关闭数据库。</p>
+<p>以事务方式关闭，Oracle将执行如下操作：</p>
+<ol>
+<li>阻止用户建立新连接和开始新事务</li>
+<li>等待所有活动事务提交后，再断开用户连接</li>
+<li>当所有活动事务提交完毕，用户断开连接后，关闭数据库</li>
+</ol>
+<h4 id="43-immediate">4.3. IMMEDIATE <a href="#43-immediate" class="anchor">🔗</a></h4><p>立即关闭方式，可以较快且安全的关闭数据库，是 DBA 经常采用的关闭数据库的方式。</p>
+<p>立即关闭方式 Oracle执行如下操作：</p>
+<ol>
+<li>阻止用户建立新的连接和开始新的事务</li>
+<li>中断当前事务，回滚未提交事务</li>
+<li>强制断开所有用户连接和执行检查点把脏数据写到数据文件中</li>
+<li>关闭数据库</li>
+</ol>
+<h2 id="五-为什么分为三步">五. 为什么分为三步 <a href="#%e4%ba%94-%e4%b8%ba%e4%bb%80%e4%b9%88%e5%88%86%e4%b8%ba%e4%b8%89%e6%ad%a5" class="anchor">🔗</a></h2><p>现在问题来了，明明一步就可以把数据库启动起来，为什么 Oracle 要很麻烦地分为三步呢？</p>
+<p>这样的步骤，对于普通用户来说是多余的，但对于 DBA 来说确实非常重要的。因为这三个步骤中，每一步都会启动对应的进程打开对应的文件，所以维护的时候，我们就可以准对具体的问题，在数据库的某种状态下进行数据库维护工作。</p>
+<p><strong>nomount 状态</strong></p>
+<p><code>nomount</code> 状态不打开任何的控制文件及数据文件，所以我们可以在此阶段数据库创建、控制文件重建、特定的备份恢复等操作。</p>
+<p><strong>mount 状态</strong></p>
+<p>在加载完成以后，数据库还不可以被访问，所以在此阶段我们可以：</p>
+<ul>
+<li>重命名数据文件，移动数据文件位置等</li>
+<li>启用或关闭重做日志文件的归档及非归档模式</li>
+<li>实现数据库的完全恢复</li>
+</ul>
+<h2 id="六-常见连接错误">六. 常见连接错误 <a href="#%e5%85%ad-%e5%b8%b8%e8%a7%81%e8%bf%9e%e6%8e%a5%e9%94%99%e8%af%af" class="anchor">🔗</a></h2><h4 id="1-未启动数据库实例">1. 未启动数据库实例 <a href="#1-%e6%9c%aa%e5%90%af%e5%8a%a8%e6%95%b0%e6%8d%ae%e5%ba%93%e5%ae%9e%e4%be%8b" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Connection Failed
+ORA-12514: TNS:listener does not currently know of service requested in connect descriptor
+</code></pre></div><h4 id="2-未启动监听器">2. 未启动监听器 <a href="#2-%e6%9c%aa%e5%90%af%e5%8a%a8%e7%9b%91%e5%90%ac%e5%99%a8" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Oracle Connection Failed
+ORA 12541: TNS:no listener
+</code></pre></div><hr>
+<p>参考：</p>
+<ul>
+<li><a 
+    href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/start001.htm#ADMIN10063"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Starting Up a Database
+</a></li>
+<li><a 
+    href="http://blog.itpub.net/9399028/viewspace-682015/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle SGA详解
+</a></li>
+<li><a 
+    href="http://blog.itpub.net/25264937/viewspace-694917/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle之内存结构（SGA、PGA）
+</a></li>
+<li><a 
+    href="http://www.dongcoder.com/detail-441242.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle 数据库启动过程
+</a></li>
+<li><a 
+    href="http://blog.itpub.net/29620680/viewspace-1153413/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    oracle数据库启动过程大揭秘 
+</a></li>
+<li><a 
+    href="http://www.zhaokongnuan.com/2015/01/03/Oracle%e5%ad%a6%e4%b9%a0%e4%ba%a4%e6%b5%81%ef%bc%88%e4%ba%8c%ef%bc%89-oracle%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e5%8f%8a%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle学习交流（二）&ndash;oracle体系结构及启动流程
+</a></li>
+<li><a 
+    href="http://blog.csdn.net/leshami/article/details/5542983"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle 数据库实例启动关闭过程
+</a></li>
+<li><a 
+    href="http://www.jellythink.com/archives/1007"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Oracle学习笔记——数据库启动原理
+</a></li>
+</ul>
+<hr>
+<blockquote>
+<p>Github Issues <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/35"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/35
+</a></p>
+</blockquote>
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93">数据库</a>
+            
+                <a href="https://nodejh.com/tags/oracle">Oracle</a>
+            
+                <a href="https://nodejh.com/tags/database">Database</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

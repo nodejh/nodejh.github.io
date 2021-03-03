@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Serverless 掀起新的前端技术变革 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Serverless 掀起新的前端技术变革</h1>
+
+    <div class="tip">
+        <span>
+          May 15, 2019 12:00
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            9105 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          19 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>最近关于 Serverless 的讨论越来越多。看似与前端关系不大的 Serverless，其实早已和前端有了颇深渊源，并且将掀起新的前端技术变革。本文主要就根据个人理解和总结，从前端开发模式的演进、基于 Serverless 的前端开发案例以及 Serverless 开发最佳实践等方面，与大家探讨 Serverless 中的前端开发模式。本人也有幸在 QCon2019 分享了这一主题。</p>
+<h2 id="前端开发模式的演进">前端开发模式的演进 <a href="#%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f%e7%9a%84%e6%bc%94%e8%bf%9b" class="anchor">🔗</a></h2><p>首先回顾一下前端开发模式的演进，我觉得主要有四个阶段。</p>
+<ol>
+<li>基于模板渲染的动态页面</li>
+<li>基于 AJAX 的前后端分离</li>
+<li>基于 Node.js 的前端工程化</li>
+<li>基于 Node.js 的全栈开发</li>
+</ol>
+<h3 id="基于模板渲染的动态页面">基于模板渲染的动态页面 <a href="#%e5%9f%ba%e4%ba%8e%e6%a8%a1%e6%9d%bf%e6%b8%b2%e6%9f%93%e7%9a%84%e5%8a%a8%e6%80%81%e9%a1%b5%e9%9d%a2" class="anchor">🔗</a></h3><p>在早起的互联网时代，我们的网页很简单，就是一些静态或动态的页面，主要目的是用来做信息的展示和传播。这个时候开发一个网页也很容易，主要就是通过 JSP、PHP 等技术写一些动态模板，然后通过 Web Server 将模板解析成一个个 HTML 文件，浏览器只负责渲染这些 HTML 文件。这个阶段还没有前后端的分工，通常是后端工程师顺便写了前端页面。</p>
+<h3 id="基于-ajax-的前后端分离">基于 AJAX 的前后端分离 <a href="#%e5%9f%ba%e4%ba%8e-ajax-%e7%9a%84%e5%89%8d%e5%90%8e%e7%ab%af%e5%88%86%e7%a6%bb" class="anchor">🔗</a></h3><p>2005 年 AJAX 技术的正式提出，翻开了 Web 开发的新篇章。基于 AJAX，我们可以把 Web 分为前端和后端，前端负责界面和交互，后端负责业务逻辑的处理。前后端通过接口进行数据交互。我们也不再需要在各个后端语言里面写着难以维护的 HTML。网页的复杂度也由后端的 Web Server 转向了浏览器端的 JavaScript。也正因如此，开始有了前端工程师这个职位。</p>
+<h3 id="基于-nodejs-的前端工程化">基于 Node.js 的前端工程化 <a href="#%e5%9f%ba%e4%ba%8e-nodejs-%e7%9a%84%e5%89%8d%e7%ab%af%e5%b7%a5%e7%a8%8b%e5%8c%96" class="anchor">🔗</a></h3><p>2009年 Node.js 的出现，对于前端工程师来说，也是一个历史性的时刻。随着 Node.js 一同出现的还有 CommonJS 规范和 npm 包管理机制。随后也出现了 Grunt、Gulp、Webpack 等一系列基于 Node.js 的前端开发构建工具。</p>
+<p>在 2013 年前后，前端三大框架 React.js/Angular/Vue.js 相继发布第一个版本。我们可以从以往基于一个个页面的开发，变为基于一个个组件进行开发。开发完成后使用 webpack 等工具进行打包构建，并通过基于 Node.js 实现的命令行工具将构建结果发布上线。前端开发开始变得规范化、标准化、工程化。</p>
+<h3 id="基于-nodejs-的全栈开发">基于 Node.js 的全栈开发 <a href="#%e5%9f%ba%e4%ba%8e-nodejs-%e7%9a%84%e5%85%a8%e6%a0%88%e5%bc%80%e5%8f%91" class="anchor">🔗</a></h3><p>Node.js 对前端的重要意义还有，以往只能运行在浏览器中的 JavaScript 也可以运行在服务器上，前端工程师可以用自己最熟悉的语言来写服务端的代码。于是前端工程师开始使用 Node.js 做全栈开发，开始由前端工程师向全栈工程师的方向转变。这是前端主动突破自己的边界。</p>
+<p>另一方面，前端在发展，后端也在发展。也差不多在 Node.js 诞生那个时代，后端普遍开始由巨石应用模式由微服务架构转变。这也就导致以往的前后端分工出现了分歧。随着微服务架构的兴起，后端的接口渐渐变得原子性，微服务的接口也不再直接面向页面，前端的调用变得复杂了。于是 BFF（Backend For Frontend）架构应运而生，在微服务和前端中间，加了一个 BFF 层，由 BFF 对接口进行聚合、裁剪后，再输出给前端。而 BFF 这层不是后端本质工作，且距离前端最近和前端关系最大，所以前端工程师自然而然选择了 Node.js 来实现。这也是当前 Node.js 在服务端较为广泛的应用。</p>
+<h3 id="下一代前端开发模式">下一代前端开发模式 <a href="#%e4%b8%8b%e4%b8%80%e4%bb%a3%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f" class="anchor">🔗</a></h3><p>可以看到，每一次前端开发模式的变化，都因某个变革性的技术而起。先是 AJAX，而后是 Node.js。那么下一个变革性的技术是什么？不言而喻，就是 Serverless。</p>
+<h2 id="serverless-服务中的前端解决方案">Serverless 服务中的前端解决方案 <a href="#serverless-%e6%9c%8d%e5%8a%a1%e4%b8%ad%e7%9a%84%e5%89%8d%e7%ab%af%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88" class="anchor">🔗</a></h2><h3 id="serverless-简介">Serverless 简介 <a href="#serverless-%e7%ae%80%e4%bb%8b" class="anchor">🔗</a></h3><p>根据 CNCF 的定义，Serverless 是指构建和运行不需要服务器管理的应用程序的概念。(<a 
+    href="https://github.com/cncf/wg-serverless/tree/master/whitepapers/serverless-overview"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    serverless-overview
+</a>)</p>
+<blockquote>
+<p>Serverless computing refers to the concept of building and running applications that do not require server management.
+&mdash; CNCF</p>
+</blockquote>
+<p>其实 Serverless 早已和前端产生了联系，只是我们可能没有感知。比如 CDN，我们把静态资源发布到 CDN 之后，就不需要关心 CDN 有多少个节点、节点如何分布，也不需要关心它如何做负载均衡、如何实现网络加速，所以 CDN 对前端来说是 Serverless。再比如对象存储，和 CDN 一样，我们只需要将文件上传到对象存储，就可以直接使用了，不需要关心它如何存取文件、如何进行权限控制，所以对象存储对前端工程师来说是 Serverless。甚至一些第三方的 API 服务，也是 Serverless，因为我们使用的时候，不需要去关心服务器。</p>
+<p>当然，有了体感还不够，我们还是需要一个更精确的定义。从技术角度来说，Serverless 就是 FaaS 和 BaaS 的结合。</p>
+<p>Serverless = FaaS + BaaS。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-01.png" alt="serverless"  />
+</p></p>
+<p>简单来讲，FaaS（Function as a Service） 就是一些运行函数的平台，比如阿里云的函数计算、AWS 的 Lambda 等。</p>
+<p>BaaS（Backend as a Service）则是一些后端云服务，比如云数据库、对象存储、消息队列等。利用 BaaS，可以极大简化我们的应用开发难度。</p>
+<p>Serverless 则可以理解为运行在 FaaS 中的，使用了 BaaS 的函数。</p>
+<p>Serverless 的主要特点有：</p>
+<ul>
+<li>事件驱动
+<ul>
+<li>函数在 FaaS 平台中，需要通过一系列的事件来驱动函数执行。</li>
+</ul>
+</li>
+<li>无状态
+<ul>
+<li>因为每次函数执行，可能使用的都是不同的容器，无法进行内存或数据共享。如果要共享数据，则只能通过第三方服务，比如 Redis 等。</li>
+</ul>
+</li>
+<li>无运维
+<ul>
+<li>使用 Serverless 我们不需要关心服务器，不需要关心运维。这也是 Serverless 思想的核心。</li>
+</ul>
+</li>
+<li>低成本
+<ul>
+<li>使用 Serverless 成本很低，因为我们只需要为每次函数的运行付费。函数不运行，则不花钱，也不会浪费服务器资源</li>
+</ul>
+</li>
+</ul>
+<h3 id="serverless-服务中的前端解决方案架构图">Serverless 服务中的前端解决方案架构图 <a href="#serverless-%e6%9c%8d%e5%8a%a1%e4%b8%ad%e7%9a%84%e5%89%8d%e7%ab%af%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88%e6%9e%b6%e6%9e%84%e5%9b%be" class="anchor">🔗</a></h3><p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-02.png" alt="02"  />
+</p></p>
+<p>上图是当前主要的一些 Serverless 服务，以及对应的前端解决方案。</p>
+<p>从下往上，分别是基础设施和开发工具。</p>
+<p>基础设施主要是一些云计算厂商提供，包括云计算平台和各种 BaaS 服务，以及运行函数的 FaaS 平台。</p>
+<p>前端主要是 Serverless 的使用者，所以对前端来说，最重要的开发工具这一层，我们需要依赖开发工具进行 Serverless 开发、调试和部署。</p>
+<h4 id="框架framework">框架（Framework） <a href="#%e6%a1%86%e6%9e%b6framework" class="anchor">🔗</a></h4><p>如今还没有一个统一的 Serverless 标准，不同云计算平台提供的 Serverless 服务很可能是不一样的，这就导致我们的代码，无法平滑迁移。Serverless 框架一个主要功能是简化 Serverless 开发、部署流程，另一主要功能则是屏蔽不同 Serverless 服务中的差异，让我们的函数能够在不改动或者只改动很小一部分的情况下，在其他 Serverless 服务中也能运行。</p>
+<p>常见的 Serverless 框架有 <a 
+    href="https://serverless.com/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Serverless Framework
+</a>、<a 
+    href="https://zeit.co/docs"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    ZEIT Now
+</a>、<a 
+    href="https://apex.run/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Apex
+</a> 等。不过这些基本都是国外公司做的，国内还没有这样的平台。</p>
+<h4 id="web-ide">Web IDE <a href="#web-ide" class="anchor">🔗</a></h4><p>和 Serverless 紧密相关的 Web IDE 主要也是各个云计算平台的 Web IDE。利用 Web IDE，我们可以很方便地在云端开发、调试函数，并且可以直接部署到对应的 FaaS 平台。这样的好处是避免了在本地安装各种开发工具、配置各种环境。常见的 Web IDE 有 AWS 的 Cloud9、阿里云的函数计算 Web IDE、腾讯云的 Cloud Studio。从体验上来说，AWS Cloud9 最好。</p>
+<h4 id="命令行工具">命令行工具 <a href="#%e5%91%bd%e4%bb%a4%e8%a1%8c%e5%b7%a5%e5%85%b7" class="anchor">🔗</a></h4><p>当然，目前最主要的开发方式还是在本地进行开发。所以在本地开发 Serverless 的命令行工具也必不可少。</p>
+<p>命令行工具主要有两类，一类是云计算平台提供的，如 AWS 的 <code>aws</code>、 Azure 的 <code>az</code>、阿里云的 <code>fun</code>；还有一类是 Serverless 框架提供的，如 <code>serverless</code>、<code>now</code>。</p>
+<p>大部分工具如 <code>serverless</code>、<code>fun</code> 等，都是用 Node.js 实现的。</p>
+<p>下面是几个命令行工具的例子。</p>
+<h5 id="创建">创建 <a href="#%e5%88%9b%e5%bb%ba" class="anchor">🔗</a></h5><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#080;font-style:italic"># serverless</span>
+$ serverless create --template aws-nodejs --path myService
+<span style="color:#080;font-style:italic"># fun</span>
+$ fun init -n qcondemo helloworld-nodejs8
+</code></pre></div><h5 id="部署">部署 <a href="#%e9%83%a8%e7%bd%b2" class="anchor">🔗</a></h5><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#080;font-style:italic"># serverless</span>
+$ serverless deploy
+<span style="color:#080;font-style:italic"># fun</span>
+$ fun deploy
+</code></pre></div><h5 id="调试">调试 <a href="#%e8%b0%83%e8%af%95" class="anchor">🔗</a></h5><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#080;font-style:italic"># serverless</span>
+$ serverless invoke <span style="color:#666">[</span>local<span style="color:#666">]</span> --function functionName
+<span style="color:#080;font-style:italic"># fun</span>
+$ fun <span style="color:#a2f">local</span> invoke functionName
+</code></pre></div><h4 id="应用场景">应用场景 <a href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af" class="anchor">🔗</a></h4><p>在开发工具上面一层，则是 Serverless 的一些垂直应用场景。除了使用传统的服务端开发，目前使用 Serverless 技术的还有小程序开发，未来可能还会设计物联网领域（IoT）。</p>
+<h3 id="不同-serverless-服务的对比">不同 Serverless 服务的对比 <a href="#%e4%b8%8d%e5%90%8c-serverless-%e6%9c%8d%e5%8a%a1%e7%9a%84%e5%af%b9%e6%af%94" class="anchor">🔗</a></h3><p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-03.png" alt="03"  />
+</p></p>
+<p>上图从支持语言、触发器、价格等多个方面对不同 Serverless 服务进行了对比，可以发现有差异，也有共性。</p>
+<p>比如几乎所有 Serverless 服务都支持 Node.js/Python/Java 等语言。</p>
+<p>从支持的触发器来看，几乎所有服务也都支持 HTTP、对象存储、定时任务、消息队列等触发器。当然，这些触发器也与平台自己的后端服务相关，比如阿里云的对象存储触发器，是基于阿里云的 OSS 产品的存取等事件触发的；而 AWS 的对象存储触发器，则是基于 AWS 的 S3 的事件触发的，两个平台并不通用。这也是当前 Serverless 面临的一个问题，就是标准不统一。</p>
+<p>从计费的角度来看，各个平台的费用基本一致。在前面也提到，Serverless 的计费是按调用次数计费。对于各个 Serverless，每个月都有 100 万次的免费调用次数，之后差不多 ¥1.3/百万次；以及 400,000 GB-s 的免费执行时间，之后 ¥0.0001108/GB-s。所以在应用体量较小的时候，使用 Serverless 是非常划算的。</p>
+<h2 id="基于-serverless-的前端开发模式">基于 Serverless 的前端开发模式 <a href="#%e5%9f%ba%e4%ba%8e-serverless-%e7%9a%84%e5%89%8d%e7%ab%af%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f" class="anchor">🔗</a></h2><p>在本章节，主要以几个案例来说明基于 Serverless 的前端开发模式，以及它和以往的前端开发有什么不一样。</p>
+<p>在开始具体的案例之前，先看一下传统开发流程。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-04.png" alt="04"  />
+</p></p>
+<p>在传统开发流程中，我们需要前端工程师写页面，后端工程师写接口。后端写完接口之后，把接口部署了，再进行前后端联调。联调完毕后再测试、上线。上线之后，还需要运维工程师对系统进行维护。整个过程涉及多个不同角色，链路较长，沟通协调也是一个问题。</p>
+<p>而基于 Serverless，后端变得非常简单了，以往的后端应用被拆分为一个个函数，只需要写完函数并部署到 Serverless 服务即可，后续也不用关心任何服务器的运维操作。后端开发的门槛大幅度降低了。因此，只需要一个前端工程师就可以完成所有的开发工作。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-05.png" alt="05"  />
+</p></p>
+<p>当然，前端工程师基于 Serverless 去写后端，最好也需要具备一定的后端知识。涉及复杂的后端系统或者 Serverless 不适用的场景，还是需要后端开发，后端变得更靠后了。</p>
+<h3 id="基于-serverless-的-bff">基于 Serverless 的 BFF <a href="#%e5%9f%ba%e4%ba%8e-serverless-%e7%9a%84-bff" class="anchor">🔗</a></h3><p>一方面，对不同的设备需要使用不同的 API，另一方面，由于微服务导致前端接口调用的复杂，所以前端工程师开始使用 BFF 的方式，对接口进行聚合裁剪，以得到适用于前端的接口。</p>
+<p>下面是一个通用的 BFF 架构。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-06.png" alt="06"  />
+</p><!-- raw HTML omitted --><a 
+    href="https://www.thoughtworks.com/insights/blog/bff-soundcloud"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    BFF @ SoundCloud
+</a></p>
+<p>最底层的就是各种后端微服务，最上层就是各种前端应用。在微服务和应用之前，就是通常由前端工程师开发的 BFF。</p>
+<p>这样的架构解决了接口协调的问题，但也带来了一些新的问题。</p>
+<p>比如针对每个设备开发一个 BFF 应用，也会面临一些重复开发的问题。而且以往前端只需要开发页面，关注于浏览器端的渲染即可，现在却需要维护各种 BFF 应用。以往前端也不需要关心并发，现在并发压力却集中到了 BFF 上。总的来说运维成本非常高，通常前端并不擅长运维。</p>
+<p>Serverless 则可以帮我们很好的解决这些问题。基于 Serverless，我们可以使用一个个函数来实各个接口的聚合裁剪。前端向 BFF 发起的请求，就相当于是 FaaS 的一个 HTTP 触发器，触发一个函数的执行，这个函数中来实现针对该请求的业务逻辑，比如调用多个微服务获取数据，然后再将处理结果返回给前端。这样运维的压力，就由以往的 BFF Server 转向了 FaaS 服务，前端再也不用关心服务器了。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-07.png" alt="07"  />
+</p></p>
+<p>上图则是基于 Serverless 的 BFF 架构。为了更好的管理各种 API，我们还可以添加网关层，通过网关来管理所有 API（比如阿里云的网关），比如对 API 进行分组、分环境。基于 API 网关，前端就不直接通过 HTTP 触发器来执行函数，而是将请求发送至网关，再由网关去触发具体的函数来执行。</p>
+<h3 id="基于-serverless-的服务端渲染">基于 Serverless 的服务端渲染 <a href="#%e5%9f%ba%e4%ba%8e-serverless-%e7%9a%84%e6%9c%8d%e5%8a%a1%e7%ab%af%e6%b8%b2%e6%9f%93" class="anchor">🔗</a></h3><p>基于当下最流行的三大前端框架（React.js/Anguler/Vue.js），现在的渲染方式大部分都是客户端渲染。页面初始化的时候，只加载一个简单 HTML 以及对应的 JS 文件，再由 JS 来渲染出一个个页面。这种方式最主要的问题就是白屏时间和 SEO。</p>
+<p>为了解决这个问题，前端又开始尝试服务端渲染。本质思想其实和最早的模板渲染是一样的。都是前端发起一个请求，后端 Server 解析出一个 HTML 文档，然后再返回给浏览器。只不过以往是 JSP、PHP 等服务端语言的模板，现在是基于 React、Vue 等实现的同构应用，这也是如今的服务端渲染方案的优势。</p>
+<p>但服务端渲染又为前端带来了一些额外的问题：运维成本，前端需要维护用于渲染的服务器。</p>
+<p>Serverless 最大的优点就是可以帮我们减少运维，那 Serverless 能不能用于服务端渲染呢？当然也是可以的。</p>
+<p>传统的服务端渲染，每个请求的 path 都对应着服务端的每个路由，由该路由实现对应 path 的 HTML 文档渲染。用于渲染的服务端程序，就是这些集成了这些路由的应用。</p>
+<p>使用 Serverless 来做服务端渲染，就是将以往的每个路由，都拆分为一个个函数，再在 FaaS 上部署对应的函数。这样用户请求的 path，对应的就是每个单独的函数。通过这种方式，就将运维操作转移到了 FaaS 平台，前端做服务端渲染，就不用再关心服务端程序的运维部署了。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-08.png" alt="08"  />
+</p></p>
+<p><a 
+    href="https://zeit.co"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    ZEIT
+</a> 的 <a 
+    href="https://nextjs.org/docs/#serverless-deployment"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Next.js
+</a> 就对基于 Serverless 的服务端渲染做了很好的实现。下面就是一个简单的例子。</p>
+<p>代码结构如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">.
+<span style="">├──</span> next.config.js
+<span style="">├──</span> now.json
+<span style="">├──</span> <span style="color:#a2f;font-weight:bold">package</span>.json
+<span style="">└──</span> pages
+    <span style="">├──</span> about.js
+    <span style="">└──</span> index.js
+</code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#080;font-style:italic">// next.config.js
+</span><span style="color:#080;font-style:italic"></span>module.exports <span style="color:#666">=</span> {
+  target<span style="color:#666">:</span> <span style="color:#b44">&#39;serverless&#39;</span>
+}
+</code></pre></div><p>其中 <code>pages/about.js</code> 和 <code>pages/index.js</code> 就是两个页面，在 <code>next.config.js</code> 配置了使用 Zeit 提供的 Serverless 服务。</p>
+<p>然后使用 <code>now</code> 这个命令，就可以将代码以 Serverless 的方式部署。部署过程中，<code>pages/about.js</code> 和 <code>pages/index.js</code> 就分别转换为两个函数，负责渲染对应的页面。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-09.png" alt="09"  />
+</p></p>
+<h3 id="基于-serverless-的小程序开发">基于 Serverless 的小程序开发 <a href="#%e5%9f%ba%e4%ba%8e-serverless-%e7%9a%84%e5%b0%8f%e7%a8%8b%e5%ba%8f%e5%bc%80%e5%8f%91" class="anchor">🔗</a></h3><p>目前国内使用 Serverless 较多的场景可能就是小程开发了。具体的实现就是小程序云开发，支付宝小程序和微信小程序都提供了云开发功能。</p>
+<p>在传统的小程序开发中，我们需要前端工程师进行小程序端的开发；后端工程师进行服务端的开发。小程序的后端开发和其他的后端应用开发，本质是是一样的，需要关心应用的负载均衡、备份冗灾、监控报警等一些列部署运维操作。如果开发团队人很少，可能还需要前端工程师去实现服务端。</p>
+<p>但基于云开发，就只需要让开发者关注于业务的实现，由一个前端工程师就能够完成整个应用的前后端开发。因为云开发将后端封装为了 BaaS 服务，并提供了对应的 SDK 给开发者，开发者可以像调用函数一样使用各种后端服务。应用的运维也转移到了提供云开发的服务商。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-10.png" alt="10"  />
+</p></p>
+<p>下面分别是使用<a 
+    href="https://docs.alipay.com/mini/developer/todo-basement"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    支付宝云开发（Basement）
+</a>的一些例子，函数就是定义在 FaaS 服务中的函数。</p>
+<p><strong>操作数据库</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#080;font-style:italic">// `basement` 是一个全局变量
+</span><span style="color:#080;font-style:italic">// 操作数据库
+</span><span style="color:#080;font-style:italic"></span>basement.db.collection(<span style="color:#b44">&#39;users&#39;</span>)
+	.insertOne({
+		name<span style="color:#666">:</span> <span style="color:#b44">&#39;node&#39;</span>,
+		age<span style="color:#666">:</span> <span style="color:#666">18</span>,
+	})
+	.then(() =&gt; {
+		resolve({ success<span style="color:#666">:</span> <span style="color:#a2f;font-weight:bold">true</span> });
+	})
+	.<span style="color:#a2f;font-weight:bold">catch</span>(err =&gt; {
+		reject({ success<span style="color:#666">:</span> <span style="color:#a2f;font-weight:bold">false</span> });
+	});
+</code></pre></div><p><strong>上传图片</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#080;font-style:italic">// 上传图片
+</span><span style="color:#080;font-style:italic"></span>basement.file
+	.uploadFile(options)
+	.then((image) =&gt; {
+		<span style="color:#a2f;font-weight:bold">this</span>.setData({
+			iconUrl<span style="color:#666">:</span> image.fileUrl,
+		});
+	})
+	.<span style="color:#a2f;font-weight:bold">catch</span>(console.error);
+</code></pre></div><p><strong>调用函数</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#080;font-style:italic">// 调用函数
+</span><span style="color:#080;font-style:italic"></span>basement.<span style="color:#a2f;font-weight:bold">function</span>
+	.invoke(<span style="color:#b44">&#39;getUserInfo&#39;</span>)
+	.then((res) =&gt; { 
+		<span style="color:#a2f;font-weight:bold">this</span>.setData({ 
+			user<span style="color:#666">:</span> res.result
+		});
+	})
+	.<span style="color:#a2f;font-weight:bold">catch</span>(console.error}
+</code></pre></div><h3 id="通用-serverless-架构">通用 Serverless 架构 <a href="#%e9%80%9a%e7%94%a8-serverless-%e6%9e%b6%e6%9e%84" class="anchor">🔗</a></h3><p>基于上述几个 Serverless 开发的例子，就可以总结出一个通用的 Serverless 架构。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-11.png" alt="11"  />
+</p></p>
+<p>其中最底层就是实现复杂业务的后端微服务（Backend）。然后 FaaS 层通过一系列函数实现业务逻辑，并为前端直接提供服务。对于前端开发者来说，前端可以通过编写函数的方式来实现服务端的逻辑。对于后端开发者来说，后端变得更靠后了。如果业务比较较淡，FaaS 层能够实现，甚至也不需要微服务这一层了。</p>
+<p>同时不管是在后端、FaaS 还是前端，我们都可以去调用云计算平台提供的 BaaS 服务，大大降低开发难度、减少开发成本。小程序云开发，就是直接在前端调用 BaaS 服务的例子。</p>
+<h2 id="serverless-开发最佳实践">Serverless 开发最佳实践 <a href="#serverless-%e5%bc%80%e5%8f%91%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="anchor">🔗</a></h2><p>基于 Serverless 开发模式和传统开发模式最大的不同，就是传统开发中，我们是基于应用的开发。开发完成后，我们需要对应用进行单元测试和集成测试。而基于 Serverless，开发的是一个个函数，那么我们应该如何对 Serverless 函数进行测试？Serverless 函数的测试和普通的单元测试又有什么区别？</p>
+<p>还有一个很重要的点是，基于 Serverless 开发的应用性能如何？应该怎么去提高 Serverless 应用的性能？</p>
+<p>本章主要就介绍一下，基于 Serverless 的函数的测试和函数的性能两个方面的最佳实践。</p>
+<h3 id="函数的测试">函数的测试 <a href="#%e5%87%bd%e6%95%b0%e7%9a%84%e6%b5%8b%e8%af%95" class="anchor">🔗</a></h3><p>虽然使用 Serverless 我们可以简单地进行业务的开发，但它的特性也给我们的测试带来了一些挑战。主要有以下几个方面。</p>
+<p>Serverless 函数是分布式的，我们不知道也无需知道函数是部署或运行在哪台机器上，所以我们需要对每个函数进行单元测试。Serverless 应用是由一组函数组成的，函数内部可能依赖了一些别的后端服务（BaaS），所以我们也需要对 Serverless 应用进行集成测试。</p>
+<p>运行函数的 FaaS 和 BaaS 在本地也难以模拟。除此之外，不同平台提供的 FaaS 环境可能不一致，不平台提供的 BaaS 服务的 SDK 或接口也可能不一致，这不仅给我们的测试带来了一些问题，也增加了应用迁移成本。</p>
+<p>函数的执行是由事件驱动的，驱动函数执行的事件，在本地也难以模拟。</p>
+<p>那么如何解决这些问题呢？</p>
+<p>根据 <a 
+    href="https://www.mountaingoatsoftware.com/blog/the-forgotten-layer-of-the-test-automation-pyramid"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Mike Cohn
+</a> 提出的<a 
+    href="https://martinfowler.com/bliki/TestPyramid.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    测试金字塔
+</a>，单元测试的成本最低，效率最高；UI 测试（集成）测试的成本最高，效率最低，所以我们要尽可能多的进行单元测试，从而减少集成测试。这对 Serverless 的函数测试同样适用。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-12.png" alt="12"  />
+</p><!-- raw HTML omitted -->图片来源: <a 
+    href="https://martinfowler.com/bliki/TestPyramid.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://martinfowler.com/bliki/TestPyramid.html
+</a></p>
+<p>为了能更简单对函数进行单元测试，我们需要做的就是<strong>将业务逻辑和函数依赖的 FaaS（如函数计算） 和 BaaS （如云数据库）分离</strong>。当 FaaS 和 BaaS 分离出去之后，我们就可以像编写传统的单元测试一样，对函数的业务逻辑进行测试。然后再编写集成测试，验证函数和其他服务的集成是否正常工作。</p>
+<h4 id="一个糟糕的例子">一个糟糕的例子 <a href="#%e4%b8%80%e4%b8%aa%e7%b3%9f%e7%b3%95%e7%9a%84%e4%be%8b%e5%ad%90" class="anchor">🔗</a></h4><p>下面是一个使用 Node.js 实现的函数的例子。该函数做的事情就是，首先将用户信息存储到数据库中，然后给用户发送邮件。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a2f;font-weight:bold">const</span> db <span style="color:#666">=</span> require(<span style="color:#b44">&#39;db&#39;</span>).connect();
+<span style="color:#a2f;font-weight:bold">const</span> mailer <span style="color:#666">=</span> require(<span style="color:#b44">&#39;mailer&#39;</span>);
+
+module.exports.saveUser <span style="color:#666">=</span> (event, context, callback) =&gt; {
+  <span style="color:#a2f;font-weight:bold">const</span> user <span style="color:#666">=</span> {
+    email<span style="color:#666">:</span> event.email,
+    created_at<span style="color:#666">:</span> <span style="color:#a2f">Date</span>.now()
+  }
+
+  db.saveUser(user, <span style="color:#a2f;font-weight:bold">function</span> (err) {
+    <span style="color:#a2f;font-weight:bold">if</span> (err) {
+      callback(err);
+    } <span style="color:#a2f;font-weight:bold">else</span> {
+      mailer.sendWelcomeEmail(event.email);
+      callback();
+    }
+  });
+};
+</code></pre></div><p>这个例子主要存在两个问题：</p>
+<ol>
+<li>业务逻辑和 FaaS 耦合在一起。主要就是业务逻辑都在 <code>saveUser</code> 这个函数里，而 <code>saveUser</code> 参数的 <code>event</code> 和 <code>conent</code> 对象，是 FaaS 平台提供的。</li>
+<li>业务逻辑和 BaaS 耦合在一起。具体来说，就是函数内使用了 <code>db</code> 和 <code>mailer</code> 这两个后端服务，测试函数必须依赖于 <code>db</code> 和 <code>mailer</code>。</li>
+</ol>
+<h4 id="编写可测试的函数">编写可测试的函数 <a href="#%e7%bc%96%e5%86%99%e5%8f%af%e6%b5%8b%e8%af%95%e7%9a%84%e5%87%bd%e6%95%b0" class="anchor">🔗</a></h4><p>基于<strong>将业务逻辑和函数依赖的 FaaS 和 BaaS 分离</strong>的原则，对上面的代码进行重构。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a2f;font-weight:bold">class</span> Users {
+  constructor(db, mailer) {
+    <span style="color:#a2f;font-weight:bold">this</span>.db <span style="color:#666">=</span> db;
+    <span style="color:#a2f;font-weight:bold">this</span>.mailer <span style="color:#666">=</span> mailer;
+  }
+
+  save(email, callback) {
+    <span style="color:#a2f;font-weight:bold">const</span> user <span style="color:#666">=</span> {
+      email<span style="color:#666">:</span> email,
+      created_at<span style="color:#666">:</span> <span style="color:#a2f">Date</span>.now()
+    }
+
+    <span style="color:#a2f;font-weight:bold">this</span>.db.saveUser(user, <span style="color:#a2f;font-weight:bold">function</span> (err) {
+      <span style="color:#a2f;font-weight:bold">if</span> (err) {
+        callback(err);
+      } <span style="color:#a2f;font-weight:bold">else</span> {
+        <span style="color:#a2f;font-weight:bold">this</span>.mailer.sendWelcomeEmail(email);
+        callback();
+      }
+  });
+  }
+}
+
+module.exports <span style="color:#666">=</span> Users;
+</code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a2f;font-weight:bold">const</span> db <span style="color:#666">=</span> require(<span style="color:#b44">&#39;db&#39;</span>).connect();
+<span style="color:#a2f;font-weight:bold">const</span> mailer <span style="color:#666">=</span> require(<span style="color:#b44">&#39;mailer&#39;</span>);
+<span style="color:#a2f;font-weight:bold">const</span> Users <span style="color:#666">=</span> require(<span style="color:#b44">&#39;users&#39;</span>);
+
+<span style="color:#a2f;font-weight:bold">let</span> users <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> Users(db, mailer);
+
+module.exports.saveUser <span style="color:#666">=</span> (event, context, callback) =&gt; {
+  users.save(event.email, callback);
+};
+</code></pre></div><p>在重构后的代码中，我们将业务逻辑全都放在了 <code>Users</code> 这个类里面，<code>Users</code> 不依赖任何外部服务。测试的时候，我们也可以不传入真实的 <code>db</code> 或 <code>mailer</code>，而是传入模拟的服务。</p>
+<p>下面是一个模拟 <code>mailer</code> 的例子。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#080;font-style:italic">// 模拟 mailer
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">const</span> mailer <span style="color:#666">=</span> {
+  sendWelcomeEmail<span style="color:#666">:</span> (email) =&gt; {
+	console.log(<span style="color:#b44">`Send email to </span><span style="color:#b68;font-weight:bold">${</span>email<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44"> success!`</span>);
+  },
+};
+</code></pre></div><p>这样只要对 <code>Users</code> 进行充分的单元测试，就能确保业务代码如期运行。</p>
+<p>然后再传入真实的 <code>db</code> 和 <code>mailer</code>，进行简单的集成测试，就能知道整个函数是否能够正常工作。</p>
+<p>重构后的代码还有一个好处是方便函数的迁移。当我们想要把函数从一个平台迁移到另一个平台的时候，只需要根据不同平台提供的参数，修改一下 <code>Users</code> 的调用方式就可以了，而不用再去修改业务逻辑。</p>
+<h4 id="小结">小结 <a href="#%e5%b0%8f%e7%bb%93" class="anchor">🔗</a></h4><p>综上所述，对函数进行测试，就需要牢记金字塔原则，并遵循以下原则：</p>
+<ol>
+<li>将业务逻辑和函数依赖的 FaaS 和 BaaS 分离</li>
+<li>对业务逻辑进行充分的单元测试</li>
+<li>将函数进行集成测试验证代码是否正常工作</li>
+</ol>
+<h3 id="函数的性能">函数的性能 <a href="#%e5%87%bd%e6%95%b0%e7%9a%84%e6%80%a7%e8%83%bd" class="anchor">🔗</a></h3><p>使用 Serverless 进行开发，还有一个大家都关心的问题就是函数的性能怎么样。</p>
+<p>对于传统的应用，我们的程序启动起来之后，就常驻在内存中；而 Serverless 函数则不是这样。</p>
+<p>当驱动函数执行的事件到来的时候，首先需要下载代码，然后启动一个容器，在容器里面再启动一个运行环境，最后才是执行代码。前几步统称为冷启动（Cold Start）。传统的应用没有冷启动的过程。</p>
+<p>下面是函数生命周期的示意图：</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-13.png" alt="13"  />
+</p><!-- raw HTML omitted -->图片来源: <a 
+    href="https://www.youtube.com/watch?v=oQFORsso2go&amp;feature=youtu.be&amp;t=8m5s"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://www.youtube.com/watch?v=oQFORsso2go&amp;feature=youtu.be&amp;t=8m5s
+</a></p>
+<p>冷启动时间的长短，就是函数性能的关键因素。优化函数的性能，也就需要从函数生命周期的各个阶段去优化。</p>
+<h4 id="不同编程语言对冷启动时间的影响">不同编程语言对冷启动时间的影响 <a href="#%e4%b8%8d%e5%90%8c%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80%e5%af%b9%e5%86%b7%e5%90%af%e5%8a%a8%e6%97%b6%e9%97%b4%e7%9a%84%e5%bd%b1%e5%93%8d" class="anchor">🔗</a></h4><p>在此之前，已经有很多人测试过不同编程语言对冷启动时间的影响，比如：</p>
+<ul>
+<li><a 
+    href="https://theburningmonk.com/2017/06/aws-lambda-compare-coldstart-time-with-different-languages-memory-and-code-sizes/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Compare coldstart time with different languages, memory and code sizes
+</a>  -by Yan Cui</li>
+<li><a 
+    href="https://blog.octo.com/en/cold-start-warm-start-with-aws-lambda/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Cold start / Warm start with AWS Lambda
+</a> - by Erwan Alliaume</li>
+<li><a 
+    href="https://mikhail.io/2018/08/serverless-cold-start-war/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Serverless: Cold Start War
+</a> - by Mikhail Shilkov</li>
+</ul>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-14.png" alt="14"  />
+</p><!-- raw HTML omitted -->图片来源: <a 
+    href="https://blog.octo.com/en/cold-start-warm-start-with-aws-lambda/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Cold start / Warm start with AWS Lambda
+</a></p>
+<p>从这些测试中能够得到一些统一的结论：</p>
+<ul>
+<li>增加函数的内存可以减少冷启动时间</li>
+<li>C#、Java 等编程语言的能启动时间大约是 Node.js、Python 的 100 倍</li>
+</ul>
+<p>基于上述结论，如果想要 Java 的冷启动时间达到 Node.js 那么小，可以为 Java 分配更大的内存。但更大的内存意味着更多的成本。</p>
+<h4 id="函数冷启动的时机">函数冷启动的时机 <a href="#%e5%87%bd%e6%95%b0%e5%86%b7%e5%90%af%e5%8a%a8%e7%9a%84%e6%97%b6%e6%9c%ba" class="anchor">🔗</a></h4><p>刚开始接触 Serverless 的开发者可能有一个误区，就是每次函数执行，都需要冷启动。其实并不是这样。</p>
+<p>当第一次请求（驱动函数执行的事件）来临，成功启动运行环境并执行函数之后，运行环境会保留一段时间，以便用于下一次函数执行。这样就能减少冷启动的次数，从而缩短函数运行时间。当请求达到一个运行环境的限制时，FaaS 平台会自动扩展下一个运行环境。</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-15.png" alt="15"  />
+</p></p>
+<blockquote>
+<p>以 AWS Lambda 为例，在执行函数之后，Lambda 会保持执行上下文一段时间，预期用于另一次 Lambda 函数调用。其效果是，服务在 Lambda 函数完成后冻结执行上下文，如果再次调用 Lambda 函数时 AWS Lambda 选择重用上下文，则解冻上下文供重用。</p>
+</blockquote>
+<p>下面以两个小测试来说明上述内容。</p>
+<p>我使用阿里云的函数计算实现了一个 Serverless 函数，并通过 HTTP 事件来驱动。然后使用不同并发数向函数发起 100 个请求。</p>
+<p>首先是一个并发的情况：</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-16.png" alt="16"  />
+</p></p>
+<p>可以看到第一个请求时间为 302ms，其他请求时间基本都在 50ms 左右。基本就能确定，第一个请求对应的函数是冷启动，剩余 99 个请求，都是热启动，直接重复利用了第一个请求的运行环境。</p>
+<p>接下来是并发数为 10 的情况：</p>
+<p><p class="markdown-image">
+  <img src="./images/Serverless-%e6%8e%80%e8%b5%b7%e6%96%b0%e7%9a%84%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af%e5%8f%98%e9%9d%a9-17.png" alt="17"  />
+</p></p>
+<p>可以发现，前 10 个请求，耗时基本在 200ms-300ms，其余请求耗时在 50ms 左右。于是可以得出结论，前 10 个并发请求都是冷启动，同时启动了 10 个运行环境；后面 90 个请求都是热启动。</p>
+<p>这也就印证了之前的结论，函数不是每次都冷启动，而是会在一定时间内复用之前的运行环境。</p>
+<h4 id="执行上下文重用">执行上下文重用 <a href="#%e6%89%a7%e8%a1%8c%e4%b8%8a%e4%b8%8b%e6%96%87%e9%87%8d%e7%94%a8" class="anchor">🔗</a></h4><p>上面的结论对我们提高函数性能有什么帮助呢？当然是有的。既然运行环境能够保留，那就意味着我们能对运行环境中的执行上下文进行重复利用。</p>
+<p>来看一个例子：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a2f;font-weight:bold">const</span> mysql <span style="color:#666">=</span> require(<span style="color:#b44">&#39;mysql&#39;</span>);
+
+module.exports.saveUser <span style="color:#666">=</span> (event, context, callback) =&gt; {
+
+	<span style="color:#080;font-style:italic">// 初始化数据库连接
+</span><span style="color:#080;font-style:italic"></span>	<span style="color:#a2f;font-weight:bold">const</span> connection <span style="color:#666">=</span> mysql.createConnection({ <span style="color:#080;font-style:italic">/* ... */</span> });
+	connection.connect();
+  
+	connection.query(<span style="color:#b44">&#39;...&#39;</span>);
+
+};
+</code></pre></div><p>上面例子实现的功能就是在 <code>saveUser</code> 函数中初始化一个数据库连接。这样的问题就是，每次函数执行的时候，都会重新初始化数据库连接，而连接数据库又是一个比较耗时的操作。显然这样对函数的性能是没有好处的。</p>
+<p>既然在短时间内，函数的执行上下文可以重复利用，那么我们就可以将数据库连接放在函数之外：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a2f;font-weight:bold">const</span> mysql <span style="color:#666">=</span> require(<span style="color:#b44">&#39;mysql&#39;</span>);
+
+<span style="color:#080;font-style:italic">// 初始化数据库连接
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">const</span> connection <span style="color:#666">=</span> mysql.createConnection({ <span style="color:#080;font-style:italic">/* ... */</span> });
+connection.connect();
+
+
+module.exports.saveUser <span style="color:#666">=</span> (event, context, callback) =&gt; {
+
+	connection.query(<span style="color:#b44">&#39;...&#39;</span>);
+
+};
+</code></pre></div><p>这样就只有第一次运行环境启动的时候，才会初始化数据库连接。后续请求来临、执行函数的时候，就可以直接利用执行上下文中的 <code>connection</code>，从而提后续高函数的性能。</p>
+<p>大部分情况下，通过牺牲一个请求的性能，换取大部分请求的性能，是完全可以够接受的。</p>
+<h4 id="给函数预热">给函数预热 <a href="#%e7%bb%99%e5%87%bd%e6%95%b0%e9%a2%84%e7%83%ad" class="anchor">🔗</a></h4><p>既然函数的运行环境会保留一段时间，那么我们也可以通过主动调用函数的方式，隔一段时间就冷启动一个运行环境，这样就能使得其他正常的请求都是热启动，从而避免冷启动时间对函数性能的影响。</p>
+<p>这是目前比较有效的方式，但也需要有一些注意的地方：</p>
+<ol>
+<li>不要过于频繁调用函数，至少频率要大于 5 分钟</li>
+<li>直接调用函数，而不是通过网关等间接调用</li>
+<li>创建专门处理这种预热调用的函数，而不是正常业务函数</li>
+</ol>
+<p>这种方案只是目前行之有效且比较黑科技的方案，可以使用，但如果你的业务允许“牺牲第一个请求的性能换取大部分性能”，那也完全不必使用该方案，</p>
+<h4 id="小结-1">小结 <a href="#%e5%b0%8f%e7%bb%93-1" class="anchor">🔗</a></h4><p>总体而言，优化函数的性能就是优化冷启动时间。上述方案都是开发者方面的优化，当然还一方面主要是 FaaS 平台的性能优化。</p>
+<p>总结一下上述方案，主要是以下几点：</p>
+<ol>
+<li>选用 Node.js / Python 等冷启动时间短的编程语言</li>
+<li>为函数分配合适的运行内存</li>
+<li>执行上下文重用</li>
+<li>为函数预热</li>
+</ol>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>作为前端工程师，我们一直在探讨前端的边界是什么。现在的前端开发早已不是以往的前端开发，前端不仅可以做网页，还可以做小程序，做 APP，做桌面程序，甚至做服务端。而前端之所以在不断拓展自己的边界、不断探索更多的领域，则是希望自己能够产生更大的价值。最好是用我们熟悉的工具、熟悉的方式来创造价值。</p>
+<p>而 Serverless 架构的诞生，则可以最大程度帮助前端工程师实现自己的理想。使用 Serverless，我们不需要再过多关注服务端的运维，不需要关心我们不熟悉的领域，我们只需要专注于业务的开发、专注于产品的实现。我们需要关心的事情变少了，但我们能做的事情更多了。</p>
+<p>Serverless 也必将对前端的开发模式产生巨大的变革，前端工程师的职能也将再度回归到应用工程师的职能。</p>
+<p>如果要用一句话来总结 Serverless，那就是 Less is More。</p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/serverless">Serverless</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

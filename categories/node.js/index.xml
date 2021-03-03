@@ -1,49 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Node.js on node</title>
-    <link>http://nodejh.com/categories/node.js/</link>
-    <description>Recent content in Node.js on node</description>
+    <title>Node.js on Hang Jiang</title>
+    <link>https://nodejh.com/categories/node.js/</link>
+    <description>Recent content in Node.js on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Dec 2016 18:58:19 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/categories/node.js/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 30 Dec 2016 18:58:19 +0800</lastBuildDate><atom:link href="https://nodejh.com/categories/node.js/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>一键评教软件设计及代码分析</title>
-      <link>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</link>
+      <link>https://nodejh.com/posts/%E4%B8%80%E9%94%AE%E8%AF%84%E6%95%99%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/</link>
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</guid>
-      <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/%E4%B8%80%E9%94%AE%E8%AF%84%E6%95%99%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>微信公众平台开发接入指南</title>
-      <link>http://nodejh.com/posts/wechat-development-access-guide/</link>
+      <link>https://nodejh.com/posts/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97/</link>
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/wechat-development-access-guide/</guid>
-      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97/</guid>
+      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a 
+    href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;
+    
+    
+     
+      target=&#34;_blank&#34; 
+      rel=&#34;noopener&#34;
+    
+&gt;
+    公众平台开发者文档-接入指南
+&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Promise 的链式调用与中止</title>
-      <link>http://nodejh.com/posts/use-and-stop-promise-break-chain/</link>
+      <link>https://nodejh.com/posts/promise-%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E4%B8%8E%E4%B8%AD%E6%AD%A2/</link>
       <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/use-and-stop-promise-break-chain/</guid>
-      <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
-
-&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/promise-%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E4%B8%8E%E4%B8%AD%E6%AD%A2/</guid>
+      <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract &lt;a href=&#34;#abstract&#34; class=&#34;anchor&#34;&gt;🔗&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;</description>
     </item>
     
   </channel>

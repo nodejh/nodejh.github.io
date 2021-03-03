@@ -1,27 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Javascript on node</title>
-    <link>http://nodejh.com/categories/javascript/</link>
-    <description>Recent content in Javascript on node</description>
+    <title>javascript on Hang Jiang</title>
+    <link>https://nodejh.com/categories/javascript/</link>
+    <description>Recent content in javascript on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate><atom:link href="https://nodejh.com/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JavaScript 是传值调用还是传引用调用？</title>
-      <link>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
+      <link>https://nodejh.com/posts/javascript-%E6%98%AF%E4%BC%A0%E5%80%BC%E8%B0%83%E7%94%A8%E8%BF%98%E6%98%AF%E4%BC%A0%E5%BC%95%E7%94%A8%E8%B0%83%E7%94%A8/</link>
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
-      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
-
-&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/javascript-%E6%98%AF%E4%BC%A0%E5%80%BC%E8%B0%83%E7%94%A8%E8%BF%98%E6%98%AF%E4%BC%A0%E5%BC%95%E7%94%A8%E8%B0%83%E7%94%A8/</guid>
+      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子 &lt;a href=&#34;#1-%e4%be%8b%e5%ad%90&#34; class=&#34;anchor&#34;&gt;🔗&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;</description>
     </item>
     
   </channel>

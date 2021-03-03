@@ -1,509 +1,495 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-cn">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="description" content="Nodejh&#39;s Blog">
-		<meta name="generator" content="Hugo 0.31.1" />
-		<title>使用 Python and Keras 构建一个简单的神经网络 &middot; node</title>
-		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
-		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
-		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
-		
+  <head>
+    <title>使用 Python and Keras 构建一个简单的神经网络 | Hang Jiang</title>
 
-		
-		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
-		
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
 
-		
-		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
-	
-		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
-	
-	<a href='http://nodejh.com/post'>Archive</a>
-	<a href='http://nodejh.com/tags'>Tags</a>
-	<a href='http://nodejh.com/projects'>Projects</a>
-	<a href='http://nodejh.com/about'>About</a>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
 	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
 
 	
-	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
 
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        使用 Python and Keras 构建一个简单的神经网络
-                    </h1>
-                    <h2 class="headline">
-                    Oct 9, 2016 18:27
-                    · 3092 words
-                    · 7 minutes read
-                      <span class="tags">
-                      
-                      
-                          
-                              <a href="http://nodejh.com/tags/nerual-network">Nerual Network</a>
-                          
-                              <a href="http://nodejh.com/tags/python">Python</a>
-                          
-                      
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                    <div id="toc">
-                      <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#1-使用-python-and-keras-构建-一个简单的神经网络">1. 使用 Python and Keras 构建 一个简单的神经网络</a></li>
-<li><a href="#2-前馈神经网络">2. 前馈神经网络</a></li>
-<li><a href="#3-使用-python-和-keras-实现我们的神经网络">3. 使用 Python 和 Keras 实现我们的神经网络</a></li>
-<li><a href="#4-使用构建的神经网络来分类图片">4. 使用构建的神经网络来分类图片</a></li>
-<li><a href="#5-总结">5. 总结</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
-                    </div>
-                  
-                
-                <section id="post-body">
-                    <blockquote>
-<p>本文翻译自 <a href="http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/">A simple neural network with Python and Keras</a></p>
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">使用 Python and Keras 构建一个简单的神经网络</h1>
+
+    <div class="tip">
+        <span>
+          Oct 9, 2016 18:27
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            3092 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          7 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <blockquote>
+<p>本文翻译自 <a 
+    href="http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    A simple neural network with Python and Keras
+</a></p>
 </blockquote>
-
-<p></p>
-
-<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-a-simple-neural-network-with-python-and-keras-1.png" alt="a-simple-neural-network-with-python-and-keras-1" /></p>
-
-<h4 id="1-使用-python-and-keras-构建-一个简单的神经网络">1. 使用 Python and Keras 构建 一个简单的神经网络</h4>
-
-<p>在开始之前，我们先快速复习一下当前最通用的神经网络架构：前馈网络。</p>
-
+<p><p class="markdown-image">
+  <img src="./images/a-simple-neural-network-with-python-and-keras-1.png" alt="a-simple-neural-network-with-python-and-keras-1"  />
+</p></p>
+<h4 id="1-使用-python-and-keras-构建-一个简单的神经网络">1. 使用 Python and Keras 构建 一个简单的神经网络 <a href="#1-%e4%bd%bf%e7%94%a8-python-and-keras-%e6%9e%84%e5%bb%ba-%e4%b8%80%e4%b8%aa%e7%ae%80%e5%8d%95%e7%9a%84%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c" class="anchor">🔗</a></h4><p>在开始之前，我们先快速复习一下当前最通用的神经网络架构：前馈网络。</p>
 <p>我们接下来将写一个 Python 代码来定义我们的前馈神经网络，然后将其运用到 Kaggle Dogs vs. Cats(<a href="https://www.kaggle.com/c/dogs-vs-cats/data">https://www.kaggle.com/c/dogs-vs-cats/data</a>) 分类比赛中。这比赛的目标是，给出一张图像，然后区分它是猫还是狗。</p>
-
 <p>最后，我们将检查我们的神经网络程序的区分结果，然后再讨论一下如何继续优化我们的架构，使结构更精确。</p>
-
-<h4 id="2-前馈神经网络">2. 前馈神经网络</h4>
-
-<p>目前有很多很多的神经网络架构，其中最通用的一种架构是前馈网络。</p>
-
-<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-a-simple-neural-network-with-python-and-keras-2.png" alt="a-simple-neural-network-with-python-and-keras-2" /></p>
-
+<h4 id="2-前馈神经网络">2. 前馈神经网络 <a href="#2-%e5%89%8d%e9%a6%88%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c" class="anchor">🔗</a></h4><p>目前有很多很多的神经网络架构，其中最通用的一种架构是前馈网络。</p>
+<p><p class="markdown-image">
+  <img src="./images/a-simple-neural-network-with-python-and-keras-2.png" alt="a-simple-neural-network-with-python-and-keras-2"  />
+</p></p>
 <p>上图是一个简单的前馈神经网络示意图，该前馈网络具有三个输入节点，一个具有两个节点的隐藏层，一个具有三个节点的隐藏层，还有两个节点的输出层。</p>
-
 <p>在这种类型的架构中，要在这两个节点之间建立连接，必须要求这两个节点是 <code>layer i</code> 中的节点连接到 <code>layer i+1</code> 中的节点（这也是前馈网络这个术语的由来；前馈网络不允许反向连接，或者层内连接）。</p>
-
 <p>并且，<code>layer i</code> 中的节点，必须完全连接（fully connected）到 <code>layer i+1</code> 中的节点。也就是说，<code>layer i</code> 中的每一个节点，必须连接到 <code>layer i+1</code> 中的每个节点。如上图所示，在 layer 0 和 layer 1 中，一共有 2 x 3 = 6 个节点 &mdash; 这就是完全连接（fully connected），或者可以缩写为 <code>FC</code>。</p>
-
 <p>我们通常使用一系列的整数来快速简洁地描述每个 layer 中的节点。</p>
-
 <p>例如，上图的前馈网络，我们可以称之为 <code>3-2-3-2前馈神经网络</code>：</p>
-
 <ul>
 <li>Layer 0 包含 3 个输入，我们可将其定义为 Xi。这些输入值可能是特征矢量的原始像素强度或矢量条目。</li>
 <li>Layer 1 和 Layer 2 是隐藏层（hidden layers），分别包含两个和三个节点。</li>
 <li>Layer 3 是输出节层（output layer），或叫可见层（output layer）。在这里网们将获得神经网络输出的分类。输出层可能有很多输出节点，每一个分类都对应着一个潜在的输出。在  Kaggle Dogs vs. Cats 的分类中，我们有两个输出节点，猫和狗。如果还有其他分类，就会有另一个与之对应的输出节点。</li>
 </ul>
-
-<h4 id="3-使用-python-和-keras-实现我们的神经网络">3. 使用 Python 和 Keras 实现我们的神经网络</h4>
-
-<p>现在我们已经理解了前馈神经网络的基本知识，接下来让我们使用  Python 和 Keras 实现我们用于图像分类的神经网络。</p>
-
-<p>在开始之前，你需要在你的电脑上安装 <code>Keras</code> 这个框架。</p>
-
-<p>接下来，新建一个名为 <code>simple_neural_network.py</code> 的文件，然后开始编码：</p>
-
-<pre><code># import the necessary packages
-from sklearn.preprocessing import LabelEncoder
-from sklearn.cross_validation import train_test_split
-from keras.models import Sequential
-from keras.layers import Activation
-from keras.optimizers import SGD
-from keras.layers import Dense
-from keras.utils import np_utils
-from imutils import paths
-import numpy as np
-import argparse
-import cv2
-import os
-</code></pre>
-
-<p>在这段代码中，我们引入我们需要的 Python 的包。我们将使用 scikit-learn 和 Keras 来一起实现我们的函数。在这之前，你最好也需要知道怎么配置开发环境中的 Keras。</p>
-
+<h4 id="3-使用-python-和-keras-实现我们的神经网络">3. 使用 Python 和 Keras 实现我们的神经网络 <a href="#3-%e4%bd%bf%e7%94%a8-python-%e5%92%8c-keras-%e5%ae%9e%e7%8e%b0%e6%88%91%e4%bb%ac%e7%9a%84%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c" class="anchor">🔗</a></h4><p>现在我们已经理解了前馈神经网络的基本知识，接下来让我们使用  Python 和 Keras 实现我们用于图像分类的神经网络。</p>
+<p>在开始之前，你需要在你的电脑上安装 <code>Keras </code> 这个框架。</p>
+<p>接下来，新建一个名为 <code>simple_neural_network.py </code> 的文件，然后开始编码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># import the necessary packages</span>
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">sklearn.preprocessing</span> <span style="color:#a2f;font-weight:bold">import</span> LabelEncoder
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">sklearn.cross_validation</span> <span style="color:#a2f;font-weight:bold">import</span> train_test_split
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.models</span> <span style="color:#a2f;font-weight:bold">import</span> Sequential
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.layers</span> <span style="color:#a2f;font-weight:bold">import</span> Activation
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.optimizers</span> <span style="color:#a2f;font-weight:bold">import</span> SGD
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.layers</span> <span style="color:#a2f;font-weight:bold">import</span> Dense
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.utils</span> <span style="color:#a2f;font-weight:bold">import</span> np_utils
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">imutils</span> <span style="color:#a2f;font-weight:bold">import</span> paths
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#a2f;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">np</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">argparse</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">cv2</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">os</span>
+</code></pre></div><p>在这段代码中，我们引入我们需要的 Python 的包。我们将使用 scikit-learn 和 Keras 来一起实现我们的函数。在这之前，你最好也需要知道怎么配置开发环境中的 Keras。</p>
 <p>同时我们也需要用刀 <code>imutils</code> 这个包，这个包可以方便我们使用 OpenCV。如果你还没有安装 imutils，则先安装：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pip install imutils
+</code></pre></div><p>接下来，我们需要定义一个函数，来接收图像，并且得到图像的原始像素强度。</p>
+<p>为了完成这个目标，我们先定一个名为 <code>image_to_feature_vector </code> 的函数，它接受两个输入，一个是 <code>image</code>，另一个是 <code>size</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">image_to_feature_vector</span>(image, size<span style="color:#666">=</span>(<span style="color:#666">32</span>, <span style="color:#666">32</span>)):
+	<span style="color:#080;font-style:italic"># resize the image to a fixed size, then flatten the image into</span>
+	<span style="color:#080;font-style:italic"># a list of raw pixel intensities</span>
+	<span style="color:#a2f;font-weight:bold">return</span> cv2<span style="color:#666">.</span>resize(image, size)<span style="color:#666">.</span>flatten()
 
-<pre><code>pip install imutils
-</code></pre>
-
-<p>接下来，我们需要定义一个函数，来接收图像，并且得到图像的原始像素强度。</p>
-
-<p>为了完成这个目标，我们先定一个名为 <code>image_to_feature_vector</code> 的函数，它接受两个输入，一个是 <code>image</code>，另一个是 <code>size</code>：</p>
-
-<pre><code>def image_to_feature_vector(image, size=(32, 32)):
-	# resize the image to a fixed size, then flatten the image into
-	# a list of raw pixel intensities
-	return cv2.resize(image, size).flatten()
-
-</code></pre>
-
-<p>我们将调整图像，使我们收集到的图像都具有相同的矢量特征大小。这也是我们使用神经网络的一个先决条件，每张图像都必须由一个矢量来表示。</p>
-
+</code></pre></div><p>我们将调整图像，使我们收集到的图像都具有相同的矢量特征大小。这也是我们使用神经网络的一个先决条件，每张图像都必须由一个矢量来表示。</p>
 <p>在这个函数里面，我们需要将图像调整为 32 x 32 像素，然后将图像转化为 32 x 32 x 3 = 3,072-d  的特征矢量。</p>
-
 <p>接下来的代码，将处理解析命令行参数，注意其中的一些初始化操作：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># construct the argument parse and parse the arguments</span>
+ap <span style="color:#666">=</span> argparse<span style="color:#666">.</span>ArgumentParser()
+ap<span style="color:#666">.</span>add_argument(<span style="color:#b44">&#34;-d&#34;</span>, <span style="color:#b44">&#34;--dataset&#34;</span>, required<span style="color:#666">=</span>True,
+	help<span style="color:#666">=</span><span style="color:#b44">&#34;path to input dataset&#34;</span>)
+args <span style="color:#666">=</span> <span style="color:#a2f">vars</span>(ap<span style="color:#666">.</span>parse_args())
 
-<pre><code># construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument(&quot;-d&quot;, &quot;--dataset&quot;, required=True,
-	help=&quot;path to input dataset&quot;)
-args = vars(ap.parse_args())
+<span style="color:#080;font-style:italic"># grab the list of images that we&#39;ll be describing</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] describing images...&#34;</span>)
+imagePaths <span style="color:#666">=</span> <span style="color:#a2f">list</span>(paths<span style="color:#666">.</span>list_images(args[<span style="color:#b44">&#34;dataset&#34;</span>]))
 
-# grab the list of images that we'll be describing
-print(&quot;[INFO] describing images...&quot;)
-imagePaths = list(paths.list_images(args[&quot;dataset&quot;]))
+<span style="color:#080;font-style:italic"># initialize the data matrix and labels list</span>
+data <span style="color:#666">=</span> []
+labels <span style="color:#666">=</span> []
 
-# initialize the data matrix and labels list
-data = []
-labels = []
+</code></pre></div><p>我们使用 <code>--dataset</code> 参数来定义输入  Kaggle Dogs vs. Cats 图像的目录。这些图像图可以从 <a 
+    href="https://www.kaggle.com/c/dogs-vs-cats/data"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://www.kaggle.com/c/dogs-vs-cats/data
+</a> 这里下载。</p>
+<p><code>imagePaths = list(paths.list_images(args[&quot;dataset&quot;]))</code> 这一行用来收集输入的图像。第 31 行 和第 32 分别初始化 <code>data </code> 和 <code>labels </code> 列表。</p>
+<p>现在我们已经有了 <code>imagePaths </code>，接下来就可以循环处理它们中的每一项，把图像转换为特征矢量，然后将其添加到 <code>data</code>  和 <code>labels</code> 列表：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># loop over the input images</span>
+<span style="color:#a2f;font-weight:bold">for</span> (i, imagePath) <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#a2f">enumerate</span>(imagePaths):
+	<span style="color:#080;font-style:italic"># load the image and extract the class label (assuming that our</span>
+	<span style="color:#080;font-style:italic"># path as the format: /path/to/dataset/{class}.{image_num}.jpg</span>
+	image <span style="color:#666">=</span> cv2<span style="color:#666">.</span>imread(imagePath)
+	label <span style="color:#666">=</span> imagePath<span style="color:#666">.</span>split(os<span style="color:#666">.</span>path<span style="color:#666">.</span>sep)[<span style="color:#666">-</span><span style="color:#666">1</span>]<span style="color:#666">.</span>split(<span style="color:#b44">&#34;.&#34;</span>)[<span style="color:#666">0</span>]
 
-</code></pre>
+	<span style="color:#080;font-style:italic"># construct a feature vector raw pixel intensities, then update</span>
+	<span style="color:#080;font-style:italic"># the data matrix and labels list</span>
+	features <span style="color:#666">=</span> image_to_feature_vector(image)
+	data<span style="color:#666">.</span>append(features)
+	labels<span style="color:#666">.</span>append(label)
 
-<p>我们使用 <code>--dataset</code> 参数来定义输入  Kaggle Dogs vs. Cats 图像的目录。这些图像图可以从 <a href="https://www.kaggle.com/c/dogs-vs-cats/data">https://www.kaggle.com/c/dogs-vs-cats/data</a> 这里下载。</p>
+	<span style="color:#080;font-style:italic"># show an update every 1,000 images</span>
+	<span style="color:#a2f;font-weight:bold">if</span> i <span style="color:#666">&gt;</span> <span style="color:#666">0</span> <span style="color:#a2f;font-weight:bold">and</span> i <span style="color:#666">%</span> <span style="color:#666">1000</span> <span style="color:#666">==</span> <span style="color:#666">0</span>:
+		<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] processed {}/{}&#34;</span><span style="color:#666">.</span>format(i, <span style="color:#a2f">len</span>(imagePaths)))
+</code></pre></div><p>现在 <code>data</code> 列表包含每个输入图像的扁平化  32 x 32 x 3 = 3,072-d 表示。当然，在我们开始训练我们的神经网络之前，我们首先要做一些预处理：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># encode the labels, converting them from strings to integers</span>
+le <span style="color:#666">=</span> LabelEncoder()
+labels <span style="color:#666">=</span> le<span style="color:#666">.</span>fit_transform(labels)
 
-<p><code>imagePaths = list(paths.list_images(args[&quot;dataset&quot;]))</code> 这一行用来收集输入的图像。第 31 行 和第 32 分别初始化 <code>data</code> 和 <code>labels</code> 列表。</p>
+<span style="color:#080;font-style:italic"># scale the input image pixels to the range [0, 1], then transform</span>
+<span style="color:#080;font-style:italic"># the labels into vectors in the range [0, num_classes] -- this</span>
+<span style="color:#080;font-style:italic"># generates a vector for each label where the index of the label</span>
+<span style="color:#080;font-style:italic"># is set to `1` and all other entries to `0`</span>
+data <span style="color:#666">=</span> np<span style="color:#666">.</span>array(data) <span style="color:#666">/</span> <span style="color:#666">255.0</span>
+labels <span style="color:#666">=</span> np_utils<span style="color:#666">.</span>to_categorical(labels, <span style="color:#666">2</span>)
 
-<p>现在我们已经有了 <code>imagePaths</code>，接下来就可以循环处理它们中的每一项，把图像转换为特征矢量，然后将其添加到 <code>data</code>  和 <code>labels</code> 列表：</p>
-
-<pre><code># loop over the input images
-for (i, imagePath) in enumerate(imagePaths):
-	# load the image and extract the class label (assuming that our
-	# path as the format: /path/to/dataset/{class}.{image_num}.jpg
-	image = cv2.imread(imagePath)
-	label = imagePath.split(os.path.sep)[-1].split(&quot;.&quot;)[0]
-
-	# construct a feature vector raw pixel intensities, then update
-	# the data matrix and labels list
-	features = image_to_feature_vector(image)
-	data.append(features)
-	labels.append(label)
-
-	# show an update every 1,000 images
-	if i &gt; 0 and i % 1000 == 0:
-		print(&quot;[INFO] processed {}/{}&quot;.format(i, len(imagePaths)))
-</code></pre>
-
-<p>现在 <code>data</code> 列表包含每个输入图像的扁平化  32 x 32 x 3 = 3,072-d 表示。当然，在我们开始训练我们的神经网络之前，我们首先要做一些预处理：</p>
-
-<pre><code># encode the labels, converting them from strings to integers
-le = LabelEncoder()
-labels = le.fit_transform(labels)
-
-# scale the input image pixels to the range [0, 1], then transform
-# the labels into vectors in the range [0, num_classes] -- this
-# generates a vector for each label where the index of the label
-# is set to `1` and all other entries to `0`
-data = np.array(data) / 255.0
-labels = np_utils.to_categorical(labels, 2)
-
-# partition the data into training and testing splits, using 75%
-# of the data for training and the remaining 25% for testing
-print(&quot;[INFO] constructing training/testing split...&quot;)
-(trainData, testData, trainLabels, testLabels) = train_test_split(
-	data, labels, test_size=0.25, random_state=42)
-</code></pre>
-
-<p><code>data = np.array(data) / 255.0</code> 行将输入的数据范围调整到 [0, 1] 之间，<code>labels = np_utils.to_categorical(labels, 2)</code>  这一行将整数转换为矢量（在我们训练神经网络的交叉熵损失函数中需要用到）。</p>
-
+<span style="color:#080;font-style:italic"># partition the data into training and testing splits, using 75%</span>
+<span style="color:#080;font-style:italic"># of the data for training and the remaining 25% for testing</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] constructing training/testing split...&#34;</span>)
+(trainData, testData, trainLabels, testLabels) <span style="color:#666">=</span> train_test_split(
+	data, labels, test_size<span style="color:#666">=</span><span style="color:#666">0.25</span>, random_state<span style="color:#666">=</span><span style="color:#666">42</span>)
+</code></pre></div><p><code>data = np.array(data) / 255.0</code> 行将输入的数据范围调整到 [0, 1] 之间，<code>labels = np_utils.to_categorical(labels, 2)</code>  这一行将整数转换为矢量（在我们训练神经网络的交叉熵损失函数中需要用到）。</p>
 <p>接下来的两行，我们就开始初始化我们的训练和测试代码，75% 的数据用来训练，25% 的数据用来测试。</p>
-
 <p>现在我们将使用 Keras 来定义我们的神经网络：</p>
-
-<pre><code># define the architecture of the network
-model = Sequential()
-model.add(Dense(768, input_dim=3072, init=&quot;uniform&quot;,
-	activation=&quot;relu&quot;))
-model.add(Dense(384, init=&quot;uniform&quot;, activation=&quot;relu&quot;))
-model.add(Dense(2))
-model.add(Activation(&quot;softmax&quot;))
-</code></pre>
-
-<p>上面的代码就即用来构建我们的神经网络结构，一个 3072-768-384-2 前馈神经网络。</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># define the architecture of the network</span>
+model <span style="color:#666">=</span> Sequential()
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">768</span>, input_dim<span style="color:#666">=</span><span style="color:#666">3072</span>, init<span style="color:#666">=</span><span style="color:#b44">&#34;uniform&#34;</span>,
+	activation<span style="color:#666">=</span><span style="color:#b44">&#34;relu&#34;</span>))
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">384</span>, init<span style="color:#666">=</span><span style="color:#b44">&#34;uniform&#34;</span>, activation<span style="color:#666">=</span><span style="color:#b44">&#34;relu&#34;</span>))
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">2</span>))
+model<span style="color:#666">.</span>add(Activation(<span style="color:#b44">&#34;softmax&#34;</span>))
+</code></pre></div><p>上面的代码就即用来构建我们的神经网络结构，一个 3072-768-384-2 前馈神经网络。</p>
 <p>我们的 input layer 有 3072 个节点，在我们输入的扁平化图像厘米，每个节点有 32 x 32 x 3 = 3,072 个原始像素强度。</p>
-
 <p>我们也有两个 hidden layer，分别有 768 和 384 个节点。这些节点的数目通过交叉验证和调整超参数实验来确定。</p>
-
 <p>Output layer 包含两个节点，分别是猫和狗的类标签。</p>
-
-<p>我们将在网络的顶部定义一个名为 <code>softmax</code> 的函数，这个函数将会得出实际输出类标签的概率。</p>
-
-<p>接下来将使用 <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">Stochastic Gradient Descent (SGD)</a> 来训练我们的模型：</p>
-
-<pre><code># train the model using SGD
-print(&quot;[INFO] compiling model...&quot;)
-sgd = SGD(lr=0.01)
-model.compile(loss=&quot;binary_crossentropy&quot;, optimizer=sgd,
-	metrics=[&quot;accuracy&quot;])
-model.fit(trainData, trainLabels, nb_epoch=50, batch_size=128,
-</code></pre>
-
-<p>为了训练我们的模型，我们将SGD的学习率参数设定为0.01。我们将使用 binary_crossentropy 损失函数也是如此。</p>
-
-<p>在大多数情况下，你需要使用交叉熵 <code>crossentropy</code> ，但由于只有两个类标签，所以我们使用 <code>binary_crossentropy</code>。如果类标签数量大于 2，请确保使用交叉熵。</p>
-
+<p>我们将在网络的顶部定义一个名为 <code>softmax </code> 的函数，这个函数将会得出实际输出类标签的概率。</p>
+<p>接下来将使用 [Stochastic Gradient Descent (SGD)] (<a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">https://en.wikipedia.org/wiki/Stochastic_gradient_descent</a>) 来训练我们的模型：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># train the model using SGD</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] compiling model...&#34;</span>)
+sgd <span style="color:#666">=</span> SGD(lr<span style="color:#666">=</span><span style="color:#666">0.01</span>)
+model<span style="color:#666">.</span>compile(loss<span style="color:#666">=</span><span style="color:#b44">&#34;binary_crossentropy&#34;</span>, optimizer<span style="color:#666">=</span>sgd,
+	metrics<span style="color:#666">=</span>[<span style="color:#b44">&#34;accuracy&#34;</span>])
+model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span style="color:#666">=</span><span style="color:#666">50</span>, batch_size<span style="color:#666">=</span><span style="color:#666">128</span>,
+</code></pre></div><p>为了训练我们的模型，我们将SGD的学习率参数设定为0.01。我们将使用 binary_crossentropy 损失函数也是如此。</p>
+<p>在大多数情况下，你需要使用交叉熵 <code>crossentropy </code> ，但由于只有两个类标签，所以我们使用 <code>binary_crossentropy</code>。如果类标签数量大于 2，请确保使用交叉熵。</p>
 <p>这个网络允许对 50 epochs 进行训练，意味着模型将看到对每个图片单独进行 50 次训练，以便了解底层的图案。</p>
-
 <p>最后的代码块评估我们的Keras神经网络的测试数据：</p>
-
-<pre><code># show the accuracy on the testing set
-print(&quot;[INFO] evaluating on testing set...&quot;)
-(loss, accuracy) = model.evaluate(testData, testLabels,
-	batch_size=128, verbose=1)
-print(&quot;[INFO] loss={:.4f}, accuracy: {:.4f}%&quot;.format(loss,
-	accuracy * 100))
-</code></pre>
-
-<h4 id="4-使用构建的神经网络来分类图片">4. 使用构建的神经网络来分类图片</h4>
-
-<p>为了使用 <code>simple_neural_network.py</code> 这个脚本，请确保：</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># show the accuracy on the testing set</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] evaluating on testing set...&#34;</span>)
+(loss, accuracy) <span style="color:#666">=</span> model<span style="color:#666">.</span>evaluate(testData, testLabels,
+	batch_size<span style="color:#666">=</span><span style="color:#666">128</span>, verbose<span style="color:#666">=</span><span style="color:#666">1</span>)
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] loss={:.4f}, accuracy: {:.4f}%&#34;</span><span style="color:#666">.</span>format(loss,
+	accuracy <span style="color:#666">*</span> <span style="color:#666">100</span>))
+</code></pre></div><h4 id="4-使用构建的神经网络来分类图片">4. 使用构建的神经网络来分类图片 <a href="#4-%e4%bd%bf%e7%94%a8%e6%9e%84%e5%bb%ba%e7%9a%84%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e6%9d%a5%e5%88%86%e7%b1%bb%e5%9b%be%e7%89%87" class="anchor">🔗</a></h4><p>为了使用 <code>simple_neural_network.py</code> 这个脚本，请确保：</p>
 <ul>
 <li>使用完整代码</li>
-<li>下载  Kaggle Dogs vs. Cats <a href="[https://www.kaggle.com/c/dogs-vs-cats/data](https://www.kaggle.com/c/dogs-vs-cats/data)"><a href="https://www.kaggle.com/c/dogs-vs-cats/data">https://www.kaggle.com/c/dogs-vs-cats/data</a></a>  的图像，并保存在某个目录如 kaggle_dogs_vs_cats</li>
-</ul>
-
-<p>完整代码如下：</p>
-
-<pre><code># USAGE
-# python simple_neural_network.py --dataset kaggle_dogs_vs_cats
-
-# import the necessary packages
-from sklearn.preprocessing import LabelEncoder
-from sklearn.cross_validation import train_test_split
-from keras.models import Sequential
-from keras.layers import Activation
-from keras.optimizers import SGD
-from keras.layers import Dense
-from keras.utils import np_utils
-from imutils import paths
-import numpy as np
-import argparse
-import cv2
-import os
-
-def image_to_feature_vector(image, size=(32, 32)):
-	# resize the image to a fixed size, then flatten the image into
-	# a list of raw pixel intensities
-	return cv2.resize(image, size).flatten()
-
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument(&quot;-d&quot;, &quot;--dataset&quot;, required=True,
-	help=&quot;path to input dataset&quot;)
-args = vars(ap.parse_args())
-
-# grab the list of images that we'll be describing
-print(&quot;[INFO] describing images...&quot;)
-imagePaths = list(paths.list_images(args[&quot;dataset&quot;]))
-
-# initialize the data matrix and labels list
-data = []
-labels = []
-
-# loop over the input images
-for (i, imagePath) in enumerate(imagePaths):
-	# load the image and extract the class label (assuming that our
-	# path as the format: /path/to/dataset/{class}.{image_num}.jpg
-	image = cv2.imread(imagePath)
-	label = imagePath.split(os.path.sep)[-1].split(&quot;.&quot;)[0]
-
-	# construct a feature vector raw pixel intensities, then update
-	# the data matrix and labels list
-	features = image_to_feature_vector(image)
-	data.append(features)
-	labels.append(label)
-
-	# show an update every 1,000 images
-	if i &gt; 0 and i % 1000 == 0:
-		print(&quot;[INFO] processed {}/{}&quot;.format(i, len(imagePaths)))
-
-# encode the labels, converting them from strings to integers
-le = LabelEncoder()
-labels = le.fit_transform(labels)
-
-# scale the input image pixels to the range [0, 1], then transform
-# the labels into vectors in the range [0, num_classes] -- this
-# generates a vector for each label where the index of the label
-# is set to `1` and all other entries to `0`
-data = np.array(data) / 255.0
-labels = np_utils.to_categorical(labels, 2)
-
-# partition the data into training and testing splits, using 75%
-# of the data for training and the remaining 25% for testing
-print(&quot;[INFO] constructing training/testing split...&quot;)
-(trainData, testData, trainLabels, testLabels) = train_test_split(
-	data, labels, test_size=0.25, random_state=42)
-
-# define the architecture of the network
-model = Sequential()
-model.add(Dense(768, input_dim=3072, init=&quot;uniform&quot;,
-	activation=&quot;relu&quot;))
-model.add(Dense(384, init=&quot;uniform&quot;, activation=&quot;relu&quot;))
-model.add(Dense(2))
-model.add(Activation(&quot;softmax&quot;))
-
-# train the model using SGD
-print(&quot;[INFO] compiling model...&quot;)
-sgd = SGD(lr=0.01)
-model.compile(loss=&quot;binary_crossentropy&quot;, optimizer=sgd,
-	metrics=[&quot;accuracy&quot;])
-model.fit(trainData, trainLabels, nb_epoch=50, batch_size=128,
-	verbose=1)
-
-# show the accuracy on the testing set
-print(&quot;[INFO] evaluating on testing set...&quot;)
-(loss, accuracy) = model.evaluate(testData, testLabels,
-	batch_size=128, verbose=1)
-print(&quot;[INFO] loss={:.4f}, accuracy: {:.4f}%&quot;.format(loss,
-	accuracy * 100))
-</code></pre>
-
-<p>然后，就可以像下面这样运行：</p>
-
-<pre><code>python simple_neural_network.py --dataset kaggle_dogs_vs_cats
-</code></pre>
-
-<p>运行后的程序输出如下：</p>
-
-<p><img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-a-simple-neural-network-with-python-and-keras-3.png" alt="a-simple-neural-network-with-python-and-keras-3" /></p>
-
-<p>在我的 Titan X GPU 的电脑上，整个程序的执行，包括特征提取、训练神经网络、评估测试数据，一共花了 1m 15s。训练数据的准确率大约为 76%，测试数据的准确率大约为 67%。</p>
-
-<p>大概 9% 的准确率差异，也是很常见的，这跟训练测试精度，和有限的测试数据相关。</p>
-
-<p>在上面的程序中，我们最终获得了 67.376％ 的精度，这也是比较高的精度了。当然，我们还可以很容易地通过使用卷积神经网络获得大于 95％ 的准确率。</p>
-
-<h4 id="5-总结">5. 总结</h4>
-
-<p>在上面的内容中，我示范了如何通过 Python and Keras 来构建和训练神经网络。我们将神经网络运用到了 Kaggle Dogs vs. Cats 的测试中，仅仅通过每张图片的原始像素强度，我们就最终得到了  67.376% 的精度。</p>
-
-<hr />
-
-<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/3">https://github.com/nodejh/nodejh.github.io/issues/3</a></p>
-                </section>
-            </article>
-
-            
-                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fa-simple-neural-network-with-python-and-keras%2f - %e4%bd%bf%e7%94%a8%20Python%20and%20Keras%20%e6%9e%84%e5%bb%ba%e4%b8%80%e4%b8%aa%e7%ae%80%e5%8d%95%e7%9a%84%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c by @nodejh"><span class="icon-twitter"> tweet</span></a>
-
-<a class="facebook" href="#" onclick="
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;"><span class="icon-facebook-rect"> Share</span>
-</a>
-
-            
-
-            
-                <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'nodejh'; 
-
+<li>下载  Kaggle Dogs vs. Cats [<a 
+    href="https://www.kaggle.com/c/dogs-vs-cats/data"
+    
+    
      
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://www.kaggle.com/c/dogs-vs-cats/data
+</a>](<a 
+    href="https://www.kaggle.com/c/dogs-vs-cats/data"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://www.kaggle.com/c/dogs-vs-cats/data
+</a>)  的图像，并保存在某个目录如 kaggle_dogs_vs_cats</li>
+</ul>
+<p>完整代码如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># USAGE</span>
+<span style="color:#080;font-style:italic"># python simple_neural_network.py --dataset kaggle_dogs_vs_cats</span>
+
+<span style="color:#080;font-style:italic"># import the necessary packages</span>
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">sklearn.preprocessing</span> <span style="color:#a2f;font-weight:bold">import</span> LabelEncoder
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">sklearn.cross_validation</span> <span style="color:#a2f;font-weight:bold">import</span> train_test_split
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.models</span> <span style="color:#a2f;font-weight:bold">import</span> Sequential
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.layers</span> <span style="color:#a2f;font-weight:bold">import</span> Activation
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.optimizers</span> <span style="color:#a2f;font-weight:bold">import</span> SGD
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.layers</span> <span style="color:#a2f;font-weight:bold">import</span> Dense
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">keras.utils</span> <span style="color:#a2f;font-weight:bold">import</span> np_utils
+<span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">imutils</span> <span style="color:#a2f;font-weight:bold">import</span> paths
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#a2f;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">np</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">argparse</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">cv2</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">os</span>
+
+<span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">image_to_feature_vector</span>(image, size<span style="color:#666">=</span>(<span style="color:#666">32</span>, <span style="color:#666">32</span>)):
+	<span style="color:#080;font-style:italic"># resize the image to a fixed size, then flatten the image into</span>
+	<span style="color:#080;font-style:italic"># a list of raw pixel intensities</span>
+	<span style="color:#a2f;font-weight:bold">return</span> cv2<span style="color:#666">.</span>resize(image, size)<span style="color:#666">.</span>flatten()
+
+<span style="color:#080;font-style:italic"># construct the argument parse and parse the arguments</span>
+ap <span style="color:#666">=</span> argparse<span style="color:#666">.</span>ArgumentParser()
+ap<span style="color:#666">.</span>add_argument(<span style="color:#b44">&#34;-d&#34;</span>, <span style="color:#b44">&#34;--dataset&#34;</span>, required<span style="color:#666">=</span>True,
+	help<span style="color:#666">=</span><span style="color:#b44">&#34;path to input dataset&#34;</span>)
+args <span style="color:#666">=</span> <span style="color:#a2f">vars</span>(ap<span style="color:#666">.</span>parse_args())
+
+<span style="color:#080;font-style:italic"># grab the list of images that we&#39;ll be describing</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] describing images...&#34;</span>)
+imagePaths <span style="color:#666">=</span> <span style="color:#a2f">list</span>(paths<span style="color:#666">.</span>list_images(args[<span style="color:#b44">&#34;dataset&#34;</span>]))
+
+<span style="color:#080;font-style:italic"># initialize the data matrix and labels list</span>
+data <span style="color:#666">=</span> []
+labels <span style="color:#666">=</span> []
+
+<span style="color:#080;font-style:italic"># loop over the input images</span>
+<span style="color:#a2f;font-weight:bold">for</span> (i, imagePath) <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#a2f">enumerate</span>(imagePaths):
+	<span style="color:#080;font-style:italic"># load the image and extract the class label (assuming that our</span>
+	<span style="color:#080;font-style:italic"># path as the format: /path/to/dataset/{class}.{image_num}.jpg</span>
+	image <span style="color:#666">=</span> cv2<span style="color:#666">.</span>imread(imagePath)
+	label <span style="color:#666">=</span> imagePath<span style="color:#666">.</span>split(os<span style="color:#666">.</span>path<span style="color:#666">.</span>sep)[<span style="color:#666">-</span><span style="color:#666">1</span>]<span style="color:#666">.</span>split(<span style="color:#b44">&#34;.&#34;</span>)[<span style="color:#666">0</span>]
+
+	<span style="color:#080;font-style:italic"># construct a feature vector raw pixel intensities, then update</span>
+	<span style="color:#080;font-style:italic"># the data matrix and labels list</span>
+	features <span style="color:#666">=</span> image_to_feature_vector(image)
+	data<span style="color:#666">.</span>append(features)
+	labels<span style="color:#666">.</span>append(label)
+
+	<span style="color:#080;font-style:italic"># show an update every 1,000 images</span>
+	<span style="color:#a2f;font-weight:bold">if</span> i <span style="color:#666">&gt;</span> <span style="color:#666">0</span> <span style="color:#a2f;font-weight:bold">and</span> i <span style="color:#666">%</span> <span style="color:#666">1000</span> <span style="color:#666">==</span> <span style="color:#666">0</span>:
+		<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] processed {}/{}&#34;</span><span style="color:#666">.</span>format(i, <span style="color:#a2f">len</span>(imagePaths)))
+
+<span style="color:#080;font-style:italic"># encode the labels, converting them from strings to integers</span>
+le <span style="color:#666">=</span> LabelEncoder()
+labels <span style="color:#666">=</span> le<span style="color:#666">.</span>fit_transform(labels)
+
+<span style="color:#080;font-style:italic"># scale the input image pixels to the range [0, 1], then transform</span>
+<span style="color:#080;font-style:italic"># the labels into vectors in the range [0, num_classes] -- this</span>
+<span style="color:#080;font-style:italic"># generates a vector for each label where the index of the label</span>
+<span style="color:#080;font-style:italic"># is set to `1` and all other entries to `0`</span>
+data <span style="color:#666">=</span> np<span style="color:#666">.</span>array(data) <span style="color:#666">/</span> <span style="color:#666">255.0</span>
+labels <span style="color:#666">=</span> np_utils<span style="color:#666">.</span>to_categorical(labels, <span style="color:#666">2</span>)
+
+<span style="color:#080;font-style:italic"># partition the data into training and testing splits, using 75%</span>
+<span style="color:#080;font-style:italic"># of the data for training and the remaining 25% for testing</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] constructing training/testing split...&#34;</span>)
+(trainData, testData, trainLabels, testLabels) <span style="color:#666">=</span> train_test_split(
+	data, labels, test_size<span style="color:#666">=</span><span style="color:#666">0.25</span>, random_state<span style="color:#666">=</span><span style="color:#666">42</span>)
+
+<span style="color:#080;font-style:italic"># define the architecture of the network</span>
+model <span style="color:#666">=</span> Sequential()
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">768</span>, input_dim<span style="color:#666">=</span><span style="color:#666">3072</span>, init<span style="color:#666">=</span><span style="color:#b44">&#34;uniform&#34;</span>,
+	activation<span style="color:#666">=</span><span style="color:#b44">&#34;relu&#34;</span>))
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">384</span>, init<span style="color:#666">=</span><span style="color:#b44">&#34;uniform&#34;</span>, activation<span style="color:#666">=</span><span style="color:#b44">&#34;relu&#34;</span>))
+model<span style="color:#666">.</span>add(Dense(<span style="color:#666">2</span>))
+model<span style="color:#666">.</span>add(Activation(<span style="color:#b44">&#34;softmax&#34;</span>))
+
+<span style="color:#080;font-style:italic"># train the model using SGD</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] compiling model...&#34;</span>)
+sgd <span style="color:#666">=</span> SGD(lr<span style="color:#666">=</span><span style="color:#666">0.01</span>)
+model<span style="color:#666">.</span>compile(loss<span style="color:#666">=</span><span style="color:#b44">&#34;binary_crossentropy&#34;</span>, optimizer<span style="color:#666">=</span>sgd,
+	metrics<span style="color:#666">=</span>[<span style="color:#b44">&#34;accuracy&#34;</span>])
+model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span style="color:#666">=</span><span style="color:#666">50</span>, batch_size<span style="color:#666">=</span><span style="color:#666">128</span>,
+	verbose<span style="color:#666">=</span><span style="color:#666">1</span>)
+
+<span style="color:#080;font-style:italic"># show the accuracy on the testing set</span>
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] evaluating on testing set...&#34;</span>)
+(loss, accuracy) <span style="color:#666">=</span> model<span style="color:#666">.</span>evaluate(testData, testLabels,
+	batch_size<span style="color:#666">=</span><span style="color:#666">128</span>, verbose<span style="color:#666">=</span><span style="color:#666">1</span>)
+<span style="color:#a2f;font-weight:bold">print</span>(<span style="color:#b44">&#34;[INFO] loss={:.4f}, accuracy: {:.4f}%&#34;</span><span style="color:#666">.</span>format(loss,
+	accuracy <span style="color:#666">*</span> <span style="color:#666">100</span>))
+</code></pre></div><p>然后，就可以像下面这样运行：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ python simple_neural_network.py --dataset kaggle_dogs_vs_cats
+</code></pre></div><p>运行后的程序输出如下：</p>
+<p><p class="markdown-image">
+  <img src="./images/a-simple-neural-network-with-python-and-keras-3.png" alt="a-simple-neural-network-with-python-and-keras-3"  />
+</p></p>
+<p>在我的 Titan X GPU 的电脑上，整个程序的执行，包括特征提取、训练神经网络、评估测试数据，一共花了 1m 15s。训练数据的准确率大约为 76%，测试数据的准确率大约为 67%。</p>
+<p>大概 9% 的准确率差异，也是很常见的，这跟训练测试精度，和有限的测试数据相关。</p>
+<p>在上面的程序中，我们最终获得了 67.376％ 的精度，这也是比较高的精度了。当然，我们还可以很容易地通过使用卷积神经网络获得大于 95％ 的准确率。</p>
+<h4 id="5-总结">5. 总结 <a href="#5-%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h4><p>在上面的内容中，我示范了如何通过 Python and Keras 来构建和训练神经网络。我们将神经网络运用到了 Kaggle Dogs vs. Cats 的测试中，仅仅通过每张图片的原始像素强度，我们就最终得到了  67.376% 的精度。</p>
+<hr>
+<p>Github Issue: <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/3"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/3
+</a></p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/nerual-network">Nerual Network</a>
+            
+                <a href="https://nodejh.com/tags/python">Python</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
     (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </div>
 
-            
+</section>
 
-            
 
-            <footer id="footer">
+    </main>
+    
+    <footer id="footer">
     
         <div id="social">
 
-	
-	
-    <a class="symbol" href="https://www.facebook.com/nodejh">
-        <i class="fa fa-facebook-square"></i>
-    </a>
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.github.com/nodejh">
-        <i class="fa fa-github-square"></i>
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.twitter.com/nodejh">
-        <i class="fa fa-twitter-square"></i>
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
-    
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
 
 
 </div>
 
     
-    <p class="small">
+
+    <p class="copyright">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> 
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
     
     </p>
-    <p class="small">
+    <p class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
     </p>
 </footer>
 
-        </section>
-
-        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
-<script src="http://nodejh.com/js/main.js"></script>
-<script src="http://nodejh.com/js/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-  
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-84989670-1', 'auto');
-ga('send', 'pageview');
-</script>
-
-
-
-
-
-    </body>
+  </body>
 </html>

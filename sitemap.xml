@@ -1,620 +1,385 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</loc>
+    <loc>https://nodejh.com/about/</loc>
+    <lastmod>2021-01-30T00:53:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/</loc>
+    <lastmod>2021-01-30T00:53:06+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/</loc>
+    <lastmod>2019-05-17T12:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/serverless/</loc>
+    <lastmod>2019-05-17T12:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/serverless-%E5%B0%86%E4%BD%BF%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BB%8E%E5%88%86%E7%A6%BB%E5%86%8D%E5%BA%A6%E8%B5%B0%E5%90%91%E8%9E%8D%E5%90%88/</loc>
+    <lastmod>2019-05-17T12:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/</loc>
+    <lastmod>2019-05-17T12:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/serverless-%E6%8E%80%E8%B5%B7%E6%96%B0%E7%9A%84%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%8F%98%E9%9D%A9/</loc>
+    <lastmod>2019-05-15T12:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/categories/</loc>
     <lastmod>2017-12-09T21:42:31+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</loc>
+    <loc>https://nodejh.com/tags/node.js/</loc>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</loc>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/wechat-scan-qr-code-to-login/</loc>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</loc>
+    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-serverless-%E5%AE%9E%E7%8E%B0%E6%97%A5%E5%BF%97%E6%8A%A5%E8%AD%A6%E5%8A%9F%E8%83%BD/</loc>
+    <lastmod>2017-08-08T22:24:05+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/css/</loc>
     <lastmod>2017-07-28T20:53:14+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/css-responsive-navigation-menu/</loc>
+    <loc>https://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</loc>
+    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/css-responsive-navigation-menu/</loc>
     <lastmod>2017-07-28T17:03:58+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/vue2-tutorials-02-todolist/</loc>
+    <loc>https://nodejh.com/tags/vue/</loc>
     <lastmod>2017-07-17T09:57:37+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/electron-quick-start/</loc>
+    <loc>https://nodejh.com/posts/vue2-tutorials-02-todolist/</loc>
+    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/electron/</loc>
     <lastmod>2017-07-06T15:32:26+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/vue2-tutorials-01-quick-start/</loc>
+    <loc>https://nodejh.com/posts/electron-quick-start/</loc>
+    <lastmod>2017-07-06T15:32:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/vue.js/</loc>
     <lastmod>2017-07-06T14:53:34+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/project-documentation-with-hexo-static-site-generator/</loc>
+    <loc>https://nodejh.com/posts/vue2-tutorials-01-quick-start/</loc>
+    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/project-documentation-with-hexo-static-site-generator/</loc>
     <lastmod>2017-07-05T11:41:43+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/handy-mysql-commands/</loc>
-    <lastmod>2017-03-30T18:06:02+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/posts/understand-the-oracle-startup-process/</loc>
+    <loc>https://nodejh.com/tags/oracle/</loc>
     <lastmod>2017-03-26T00:42:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/setting-environmental-variables-in-macos/</loc>
+    <loc>https://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/understand-the-oracle-startup-process/</loc>
+    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/macos/</loc>
     <lastmod>2017-03-19T17:15:37+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</loc>
+    <loc>https://nodejh.com/posts/setting-environmental-variables-in-macos/</loc>
+    <lastmod>2017-03-19T17:15:37+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</loc>
     <lastmod>2017-02-20T20:26:33+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</loc>
+    <loc>https://nodejh.com/tags/javascript/</loc>
     <lastmod>2017-02-18T11:07:14+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/using-sql-plus-on-oracle/</loc>
+    <loc>https://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</loc>
+    <lastmod>2017-02-18T11:07:14+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/using-sql-plus-on-oracle/</loc>
     <lastmod>2017-02-17T15:03:43+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/install-shadowsocks-server-in-vps/</loc>
+    <loc>https://nodejh.com/tags/ubuntu/</loc>
     <lastmod>2017-02-10T16:52:15+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/change-source-list-in-ubuntu/</loc>
+    <loc>https://nodejh.com/posts/install-shadowsocks-server-in-vps/</loc>
+    <lastmod>2017-02-10T16:52:15+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/change-source-list-in-ubuntu/</loc>
     <lastmod>2017-02-07T13:08:16+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</loc>
+    <loc>https://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</loc>
     <lastmod>2016-12-30T18:58:19+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</loc>
+    <loc>https://nodejh.com/posts/macos-sierra-apache-multiple-php-versions/</loc>
     <lastmod>2016-12-29T00:04:41+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/wechat-development-access-guide/</loc>
+    <loc>https://nodejh.com/posts/wechat-development-access-guide/</loc>
     <lastmod>2016-12-04T19:32:03+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/fix-locale-setting-warning-from-perl/</loc>
+    <loc>https://nodejh.com/posts/fix-locale-setting-warning-from-perl/</loc>
     <lastmod>2016-12-02T15:58:06+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/use-and-stop-promise-break-chain/</loc>
+    <loc>https://nodejh.com/posts/use-and-stop-promise-break-chain/</loc>
     <lastmod>2016-11-24T22:19:49+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/symmetric-difference/</loc>
+    <loc>https://nodejh.com/tags/algorithm/</loc>
     <lastmod>2016-10-29T00:43:22+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/install-mxnet-on-macos/</loc>
+    <loc>https://nodejh.com/posts/symmetric-difference/</loc>
+    <lastmod>2016-10-29T00:43:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/install-mxnet-on-macos/</loc>
     <lastmod>2016-10-27T15:37:29+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/get-the-max-number-in-array/</loc>
+    <loc>https://nodejh.com/posts/get-the-max-number-in-array/</loc>
     <lastmod>2016-10-24T19:20:03+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/check-parameters-in-express-router/</loc>
+    <loc>https://nodejh.com/tags/express/</loc>
     <lastmod>2016-10-15T06:46:05+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</loc>
+    <loc>https://nodejh.com/posts/check-parameters-in-express-router/</loc>
+    <lastmod>2016-10-15T06:46:05+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/nerual-network/</loc>
     <lastmod>2016-10-09T18:27:44+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/crawler-for-scu-libirary/</loc>
+    <loc>https://nodejh.com/tags/python/</loc>
+    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/categories/python/</loc>
+    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/a-simple-neural-network-with-python-and-keras/</loc>
+    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/crawler-for-scu-libirary/</loc>
     <lastmod>2016-10-07T01:03:30+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</loc>
+    <loc>https://nodejh.com/tags/mysql/</loc>
     <lastmod>2016-10-02T00:53:28+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/migrate-to-hugo-from-hexo/</loc>
-    <lastmod>2016-09-30T17:14:37+08:00</lastmod>
+    <loc>https://nodejh.com/posts/the-innodb_system-data-file-ibdata1-must-be-writeable/</loc>
+    <lastmod>2016-10-02T00:53:28+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/projects/</loc>
-    <lastmod>2016-09-30T00:53:06+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/about/</loc>
-    <lastmod>2016-09-30T00:53:06+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</loc>
+    <loc>https://nodejh.com/tags/eslint/</loc>
     <lastmod>2016-09-27T20:48:24+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</loc>
+    <loc>https://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</loc>
+    <lastmod>2016-09-27T20:48:24+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</loc>
     <lastmod>2016-09-26T19:58:03+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/start-react-with-webpack/</loc>
+    <loc>https://nodejh.com/tags/react.js/</loc>
     <lastmod>2016-09-09T04:11:13+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</loc>
+    <loc>https://nodejh.com/tags/webpack/</loc>
+    <lastmod>2016-09-09T04:11:13+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/start-react-with-webpack/</loc>
+    <lastmod>2016-09-09T04:11:13+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/install-opencv3-for-python3-5-on-mac-os-x/</loc>
     <lastmod>2016-08-01T21:17:51+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/troubleshoot-mysql-start-error/</loc>
+    <loc>https://nodejh.com/posts/troubleshoot-mysql-start-error/</loc>
     <lastmod>2016-07-31T17:05:44+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</loc>
+    <loc>https://nodejh.com/tags/nginx/</loc>
     <lastmod>2016-04-30T17:19:20+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/webstorm-node-js-core-module-source-not-configured/</loc>
+    <loc>https://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</loc>
+    <lastmod>2016-04-30T17:19:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/webstorm/</loc>
     <lastmod>2016-04-26T23:37:35+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</loc>
+    <loc>https://nodejh.com/posts/webstorm-node-js-core-module-source-not-configured/</loc>
+    <lastmod>2016-04-26T23:37:35+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</loc>
     <lastmod>2016-04-13T10:35:40+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/create-and-manage-mysql-user/</loc>
+    <loc>https://nodejh.com/posts/create-and-manage-mysql-user/</loc>
     <lastmod>2016-04-12T02:40:03+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</loc>
+    <loc>https://nodejh.com/posts/cannot-connet-to-mysql-with-error-code-61/</loc>
     <lastmod>2016-04-07T01:55:51+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</loc>
+    <loc>https://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/</loc>
     <lastmod>2016-03-17T19:15:01+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/how-to-install-java-on-ubuntu/</loc>
+    <loc>https://nodejh.com/tags/java/</loc>
+    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/posts/how-to-install-java-on-ubuntu/</loc>
     <lastmod>2016-03-12T16:06:40+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</loc>
+    <loc>https://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</loc>
     <lastmod>2016-03-12T15:41:58+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</loc>
+    <loc>https://nodejh.com/tags/git/</loc>
     <lastmod>2016-02-24T14:25:25+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/posts/linux-users-and-groups/</loc>
+    <loc>https://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</loc>
+    <lastmod>2016-02-24T14:25:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nodejh.com/tags/linux/</loc>
     <lastmod>2015-01-23T20:33:29+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://nodejh.com/tags/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/.ds_store/</loc>
-    <lastmod>2016-02-24T14:25:25+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/algorithm/</loc>
-    <lastmod>2016-10-29T00:43:22+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/atom/</loc>
-    <lastmod>2016-09-27T20:48:24+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/blog/</loc>
-    <lastmod>2016-09-30T17:14:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/css/</loc>
-    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/css/</loc>
-    <lastmod>2017-07-28T20:53:14+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/database/</loc>
-    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/database/</loc>
-    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/deep-learning/</loc>
-    <lastmod>2016-10-27T15:37:29+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/eclipse/</loc>
-    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/electron/</loc>
-    <lastmod>2017-07-06T15:32:26+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/electron/</loc>
-    <lastmod>2017-07-06T15:32:26+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/eslint/</loc>
-    <lastmod>2016-09-27T20:48:24+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/express/</loc>
-    <lastmod>2016-10-15T06:46:05+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/git/</loc>
-    <lastmod>2016-02-24T14:25:25+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/hexo/</loc>
-    <lastmod>2016-09-30T17:14:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/hugo/</loc>
-    <lastmod>2016-09-30T17:14:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/java/</loc>
-    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/java/</loc>
-    <lastmod>2016-03-17T19:15:01+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/javascript/</loc>
-    <lastmod>2017-02-18T11:07:14+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/javascript/</loc>
-    <lastmod>2017-02-18T11:07:14+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/jdk/</loc>
-    <lastmod>2016-03-12T16:06:40+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/jsp/</loc>
-    <lastmod>2016-03-12T15:41:58+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/linux/</loc>
+    <loc>https://nodejh.com/posts/linux-users-and-groups/</loc>
     <lastmod>2015-01-23T20:33:29+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/linux/</loc>
-    <lastmod>2015-01-23T20:33:29+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/mac-ox/</loc>
-    <lastmod>2016-02-24T14:25:25+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/macos/</loc>
-    <lastmod>2017-03-19T17:15:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/macos/</loc>
-    <lastmod>2017-03-19T17:15:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/mxnet/</loc>
-    <lastmod>2016-10-27T15:37:29+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/mysql/</loc>
-    <lastmod>2017-03-30T18:06:02+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/mysql/</loc>
-    <lastmod>2016-04-12T02:40:03+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/nerual-network/</loc>
-    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/nginx/</loc>
-    <lastmod>2016-04-30T17:19:20+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/node.js/</loc>
-    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/node.js/</loc>
-    <lastmod>2016-12-30T18:58:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/opencv/</loc>
-    <lastmod>2016-08-01T21:17:51+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/oracle/</loc>
-    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/php/</loc>
-    <lastmod>2016-12-29T00:04:41+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/php/</loc>
-    <lastmod>2016-12-29T00:04:41+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/posts/</loc>
-    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/promise/</loc>
-    <lastmod>2016-11-24T22:19:49+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/python/</loc>
-    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/python/</loc>
-    <lastmod>2016-10-09T18:27:44+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/react.js/</loc>
-    <lastmod>2016-09-09T04:11:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/shadowsocks/</loc>
-    <lastmod>2017-02-10T16:52:15+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/shadowsocks/</loc>
-    <lastmod>2017-02-10T16:52:15+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/shell/</loc>
-    <lastmod>2017-03-19T17:15:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/sqlplus/</loc>
-    <lastmod>2017-02-17T15:03:43+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/</loc>
-    <lastmod>2017-07-05T11:41:43+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/tomcat/</loc>
-    <lastmod>2016-03-12T15:41:58+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/ubuntu/</loc>
-    <lastmod>2017-02-07T13:08:16+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/ubuntu/</loc>
-    <lastmod>2017-02-07T13:08:16+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/vue/</loc>
-    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/vue/</loc>
-    <lastmod>2017-07-17T09:57:37+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/webpack/</loc>
-    <lastmod>2016-09-09T04:11:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/webstorm/</loc>
-    <lastmod>2016-04-26T23:37:35+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/y/</loc>
-    <lastmod>2017-03-30T18:06:02+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/</loc>
-    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/%E5%89%8D%E7%AB%AF/</loc>
-    <lastmod>2017-07-06T14:53:34+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</loc>
-    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</loc>
-    <lastmod>2017-12-09T21:42:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2017-03-26T00:42:23+08:00</lastmod>
-    <priority>0</priority>
   </url>
   
 </urlset>

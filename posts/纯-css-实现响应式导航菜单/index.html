@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>纯 CSS 实现响应式导航菜单 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">纯 CSS 实现响应式导航菜单</h1>
+
+    <div class="tip">
+        <span>
+          Jul 28, 2017 17:03
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            1061 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          3 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对用户也更加友好。菜单上也会有一个指示器，用来表示当前选中的菜单。该导航菜单兼容所有手机和桌面浏览器，甚至 Internet Explorer。</p>
+<h2 id="目标">目标 <a href="#%e7%9b%ae%e6%a0%87" class="anchor">🔗</a></h2><p>本文的目标是实现一个导航菜单，当屏幕变小时，导航菜单由列表自动变为下来菜单。具体效果如下：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif" alt="http://oh1ywjyqf.bkt.clouddn.com/CSS-Responsive-Navigation-Menu-01.gif"  />
+</p></p>
+<h2 id="nav-标签">Nav 标签 <a href="#nav-%e6%a0%87%e7%ad%be" class="anchor">🔗</a></h2><p>下面是导航菜单的 HTML 标签。当创建绝对定位（absolute）的下拉菜单的时候，<code>nav</code> 标签是必须的。稍后将详细解释。<code>.current</code> 这个类用来表示当前选中的菜单。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">nav</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;nav&#34;</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">ul</span>&gt;
+		&lt;<span style="color:#008000;font-weight:bold">li</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;current&#34;</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;#&#34;</span>&gt;HTML&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+		&lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;#&#34;</span>&gt;CSS&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+		&lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;#&#34;</span>&gt;JavaScript&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+		&lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;#&#34;</span>&gt;Node.js&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+		&lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;#&#34;</span>&gt;Java&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+	&lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">nav</span>&gt;
+</code></pre></div><h2 id="css">CSS <a href="#css" class="anchor">🔗</a></h2><p>导航菜单的 CSS （桌面视图）是非常直观的，所以我不会详细解释。注意下面 <code>nav li</code> 使用了 <code>display:inline-block</code> 代替了 <code>float: left</code>，来实现列表横向排列。然后通过对 <code>ul</code> 标签制定 <code>text-align</code> 属性，来使得菜单居中、居左或居右。其余CSS 都是一些装饰样式。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#080;font-style:italic">/* nav */</span>
+.<span style="color:#00f">nav</span> {
+	<span style="color:#a2f;font-weight:bold">position</span>: <span style="color:#a2f;font-weight:bold">relative</span>;
+	<span style="color:#a2f;font-weight:bold">margin</span>: <span style="color:#666">20</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">0</span>;
+}
+.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">ul</span> {
+	<span style="color:#a2f;font-weight:bold">margin</span>: <span style="color:#666">0</span>;
+	<span style="color:#a2f;font-weight:bold">padding</span>: <span style="color:#666">0</span>;
+}
+.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">li</span> {
+	<span style="color:#a2f;font-weight:bold">margin</span>: <span style="color:#666">0</span> <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">10</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">0</span>;
+	<span style="color:#a2f;font-weight:bold">padding</span>: <span style="color:#666">0</span>;
+	<span style="color:#a2f;font-weight:bold">list-style</span>: <span style="color:#a2f;font-weight:bold">none</span>;
+	<span style="color:#a2f;font-weight:bold">display</span>: <span style="color:#a2f;font-weight:bold">inline</span><span style="color:#666">-</span><span style="color:#a2f;font-weight:bold">block</span>;
+}
+.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">a</span> {
+	<span style="color:#a2f;font-weight:bold">padding</span>: <span style="color:#666">3</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">12</span><span style="color:#0b0;font-weight:bold">px</span>;
+	<span style="color:#a2f;font-weight:bold">text-decoration</span>: <span style="color:#a2f;font-weight:bold">none</span>;
+	<span style="color:#a2f;font-weight:bold">color</span>: <span style="color:#666">#999</span>;
+	<span style="color:#a2f;font-weight:bold">line-height</span>: <span style="color:#666">100</span><span style="color:#0b0;font-weight:bold">%</span>;
+}
+.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">a</span>:<span style="color:#a2f">hover</span> {
+	<span style="color:#a2f;font-weight:bold">color</span>: <span style="color:#666">#000</span>;
+}
+.<span style="color:#00f">nav</span> .<span style="color:#00f">current</span> <span style="color:#008000;font-weight:bold">a</span> {
+	<span style="color:#a2f;font-weight:bold">background</span>: <span style="color:#666">#999</span>;
+	<span style="color:#a2f;font-weight:bold">color</span>: <span style="color:#666">#fff</span>;
+	<span style="color:#a2f;font-weight:bold">border-radius</span>: <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span>;
+}
+</code></pre></div><h2 id="居中和居左对齐">居中和居左对齐 <a href="#%e5%b1%85%e4%b8%ad%e5%92%8c%e5%b1%85%e5%b7%a6%e5%af%b9%e9%bd%90" class="anchor">🔗</a></h2><p>如上面所说，可以通过改变 <code>text-align</code> 属性的值来改变菜单的对齐方式。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#080;font-style:italic">/* right nav */</span>
+.<span style="color:#00f">nav</span>.<span style="color:#00f">right</span> <span style="color:#008000;font-weight:bold">ul</span> {
+	<span style="color:#a2f;font-weight:bold">text-align</span>: <span style="color:#a2f;font-weight:bold">right</span>;
+}
+
+<span style="color:#080;font-style:italic">/* center nav */</span>
+.<span style="color:#00f">nav</span>.<span style="color:#00f">center</span> <span style="color:#008000;font-weight:bold">ul</span> {
+	<span style="color:#a2f;font-weight:bold">text-align</span>: <span style="color:#a2f;font-weight:bold">center</span>;
+}
+</code></pre></div><h2 id="支持-ie">支持 IE <a href="#%e6%94%af%e6%8c%81-ie" class="anchor">🔗</a></h2><p>IE8 以及更老的版本不支持HTML5 的 <code>&lt;nav&gt;</code> 标签和媒体查询，可以通过引入 <a 
+    href="https://code.google.com/archive/p/css3-mediaqueries-js/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    css3-mediaqueries-js
+</a> (或 <a 
+    href="https://github.com/scottjehl/Respond"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    respond.js
+</a>) 和 <a 
+    href="https://github.com/afarkas/html5shiv"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    html5shiv
+</a> 来支持。如果不想使用 html5shim.js，将 <code>&lt;nav&gt;</code> 标签替换为 <code>&lt;div&gt;</code> 标签就可以了。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080;font-style:italic">&lt;!--[if lt IE 9]&gt;
+</span><span style="color:#080;font-style:italic">	&lt;script src=&#34;http://css3-mediaqueries-js.googlecode.com/files/css3-mediaqueries.js&#34;&gt;&lt;/script&gt;
+</span><span style="color:#080;font-style:italic">	&lt;script src=&#34;http://html5shim.googlecode.com/svn/trunk/html5.js&#34;&gt;&lt;/script&gt;
+</span><span style="color:#080;font-style:italic">&lt;![endif]--&gt;</span>
+</code></pre></div><h2 id="响应式">响应式 <a href="#%e5%93%8d%e5%ba%94%e5%bc%8f" class="anchor">🔗</a></h2><p>接下来就是比较有趣的一部分了：使用媒体查询使菜单能够自适应。</p>
+<p>这里以 600px 作为断点，因为 <code>nav</code> 标签的定位是 <code>relative</code>，所以这里可以将 <code>&lt;ul&gt;</code> 菜单设置为 <code>absolute</code>，使其固定在 <code>nav</code> 的定部。然后通过 <code>display:none</code> 隐藏所有的 <code>li</code> 标签，使用 <code>.current</code> 这个类，将当前 <code>li</code> 显示为 <code>block</code>。</p>
+<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a 
+    href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    demo
+</a>。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">@<span style="color:#a2f;font-weight:bold">media</span> <span style="color:#008000;font-weight:bold">screen</span> <span style="color:#008000;font-weight:bold">and</span> <span style="color:#666">(</span><span style="color:#008000;font-weight:bold">max-width</span><span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">600px</span><span style="color:#666">)</span> {
+	.<span style="color:#00f">nav</span> {
+		<span style="color:#a2f;font-weight:bold">position</span>: <span style="color:#a2f;font-weight:bold">relative</span>;
+		<span style="color:#a2f;font-weight:bold">min-height</span>: <span style="color:#666">40</span><span style="color:#0b0;font-weight:bold">px</span>;
+	}
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">ul</span> {
+		<span style="color:#a2f;font-weight:bold">width</span>: <span style="color:#666">180</span><span style="color:#0b0;font-weight:bold">px</span>;
+		<span style="color:#a2f;font-weight:bold">padding</span>: <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">0</span>;
+		<span style="color:#a2f;font-weight:bold">position</span>: <span style="color:#a2f;font-weight:bold">absolute</span>;
+		<span style="color:#a2f;font-weight:bold">top</span>: <span style="color:#666">0</span>;
+		<span style="color:#a2f;font-weight:bold">left</span>: <span style="color:#666">0</span>;
+		<span style="color:#a2f;font-weight:bold">border</span>: <span style="color:#a2f;font-weight:bold">solid</span> <span style="color:#666">1</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">#aaa</span>;
+		<span style="color:#a2f;font-weight:bold">background</span>: <span style="color:#666">#fff</span> <span style="color:#a2f">url</span>(<span style="color:#008000">images/icon-menu.png</span>) <span style="color:#a2f;font-weight:bold">no-repeat</span> <span style="color:#666">10</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">11</span><span style="color:#0b0;font-weight:bold">px</span>;
+		<span style="color:#a2f;font-weight:bold">border-radius</span>: <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span>;
+		<span style="color:#a2f;font-weight:bold">box-shadow</span>: <span style="color:#666">0</span> <span style="color:#666">1</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">2</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#a2f">rgba</span>(<span style="color:#666">0</span>,<span style="color:#666">0</span>,<span style="color:#666">0</span>,<span style="color:#666">.3</span>);
+	}
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">li</span> {
+		<span style="color:#a2f;font-weight:bold">display</span>: <span style="color:#a2f;font-weight:bold">none</span>; <span style="color:#080;font-style:italic">/* hide all &lt;li&gt; items */</span>
+		<span style="color:#a2f;font-weight:bold">margin</span>: <span style="color:#666">0</span>;
+	}
+	.<span style="color:#00f">nav</span> .<span style="color:#00f">current</span> {
+		<span style="color:#a2f;font-weight:bold">display</span>: <span style="color:#a2f;font-weight:bold">block</span>; <span style="color:#080;font-style:italic">/* show only current &lt;li&gt; item */</span>
+	}
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">a</span> {
+		<span style="color:#a2f;font-weight:bold">display</span>: <span style="color:#a2f;font-weight:bold">block</span>;
+		<span style="color:#a2f;font-weight:bold">padding</span>: <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">32</span><span style="color:#0b0;font-weight:bold">px</span>;
+		<span style="color:#a2f;font-weight:bold">text-align</span>: <span style="color:#a2f;font-weight:bold">left</span>;
+	}
+	.<span style="color:#00f">nav</span> .<span style="color:#00f">current</span> <span style="color:#008000;font-weight:bold">a</span> {
+		<span style="color:#a2f;font-weight:bold">background</span>: <span style="color:#a2f;font-weight:bold">none</span>;
+		<span style="color:#a2f;font-weight:bold">color</span>: <span style="color:#666">#666</span>;
+	}
+
+	<span style="color:#080;font-style:italic">/* on nav hover */</span>
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">ul</span>:<span style="color:#a2f">hover</span> {
+		<span style="color:#a2f;font-weight:bold">background-image</span>: <span style="color:#a2f;font-weight:bold">none</span>;
+	}
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">ul</span>:<span style="color:#a2f">hover</span> <span style="color:#008000;font-weight:bold">li</span> {
+		<span style="color:#a2f;font-weight:bold">display</span>: <span style="color:#a2f;font-weight:bold">block</span>;
+		<span style="color:#a2f;font-weight:bold">margin</span>: <span style="color:#666">0</span> <span style="color:#666">0</span> <span style="color:#666">5</span><span style="color:#0b0;font-weight:bold">px</span>;
+	}
+	.<span style="color:#00f">nav</span> <span style="color:#008000;font-weight:bold">ul</span>:<span style="color:#a2f">hover</span> .<span style="color:#00f">current</span> {
+		<span style="color:#a2f;font-weight:bold">background</span>: <span style="color:#a2f">url</span>(<span style="color:#008000">images/icon-check.png</span>) <span style="color:#a2f;font-weight:bold">no-repeat</span> <span style="color:#666">10</span><span style="color:#0b0;font-weight:bold">px</span> <span style="color:#666">7</span><span style="color:#0b0;font-weight:bold">px</span>;
+	}
+
+	<span style="color:#080;font-style:italic">/* right nav */</span>
+	.<span style="color:#00f">nav</span>.<span style="color:#00f">right</span> <span style="color:#008000;font-weight:bold">ul</span> {
+		<span style="color:#a2f;font-weight:bold">left</span>: <span style="color:#a2f;font-weight:bold">auto</span>;
+		<span style="color:#a2f;font-weight:bold">right</span>: <span style="color:#666">0</span>;
+	}
+
+	<span style="color:#080;font-style:italic">/* center nav */</span>
+	.<span style="color:#00f">nav</span>.<span style="color:#00f">center</span> <span style="color:#008000;font-weight:bold">ul</span> {
+		<span style="color:#a2f;font-weight:bold">left</span>: <span style="color:#666">50</span><span style="color:#0b0;font-weight:bold">%</span>;
+		<span style="color:#a2f;font-weight:bold">margin-left</span>: <span style="color:#666">-90</span><span style="color:#0b0;font-weight:bold">px</span>;
+	}
+
+}
+</code></pre></div><p>查看 <a 
+    href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    DEMO
+</a>。</p>
+<hr>
+<p>参考：</p>
+<ul>
+<li><a 
+    href="http://webdesignerwall.com/tutorials/css-responsive-navigation-menu"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    CSS Responsive Navigation Menu
+</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/css">CSS</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

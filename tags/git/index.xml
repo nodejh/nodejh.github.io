@@ -1,23 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Git on node</title>
-    <link>http://nodejh.com/tags/git/</link>
-    <description>Recent content in Git on node</description>
+    <title>Git on Hang Jiang</title>
+    <link>https://nodejh.com/tags/git/</link>
+    <description>Recent content in Git on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 24 Feb 2016 14:25:25 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 24 Feb 2016 14:25:25 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>删除GIT中的.DS_Store</title>
-      <link>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
+      <link>https://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</link>
       <pubDate>Wed, 24 Feb 2016 14:25:25 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
-      <description>&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/how-to-remove-ds-store-files-form-git-om-mac-os/</guid>
+      <description>.DS_Store 是什么 🔗使用 Mac 的用户可能会注意到，系统经常会自动在每个目录生成一个隐藏的 .DS_Store 文件。.DS_Store (英文全称 Desktop Services Store)是一种由苹果公</description>
     </item>
     
   </channel>

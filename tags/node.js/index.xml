@@ -1,91 +1,64 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Node.js on node</title>
-    <link>http://nodejh.com/tags/node.js/</link>
-    <description>Recent content in Node.js on node</description>
+    <title>Node.js on Hang Jiang</title>
+    <link>https://nodejh.com/tags/node.js/</link>
+    <description>Recent content in Node.js on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 09 Dec 2017 21:42:31 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 09 Dec 2017 21:42:31 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>基于公众号的微信扫码登陆实现</title>
-      <link>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</link>
+      <link>https://nodejh.com/posts/wechat-scan-qr-code-to-login/</link>
       <pubDate>Sat, 09 Dec 2017 21:42:31 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/wechat-scan-qr-code-to-login/</guid>
+      <guid>https://nodejh.com/posts/wechat-scan-qr-code-to-login/</guid>
       <description>注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。 微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐</description>
     </item>
     
     <item>
       <title>一键评教软件设计及代码分析</title>
-      <link>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</link>
+      <link>https://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</link>
       <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</guid>
-      <description>&lt;p&gt;大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/architecture-and-code-analysis-of-teaching-evaluation/</guid>
+      <description>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。 如何设计应用逻辑，如何</description>
     </item>
     
     <item>
       <title>微信公众平台开发接入指南</title>
-      <link>http://nodejh.com/posts/wechat-development-access-guide/</link>
+      <link>https://nodejh.com/posts/wechat-development-access-guide/</link>
       <pubDate>Sun, 04 Dec 2016 19:32:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/wechat-development-access-guide/</guid>
-      <description>&lt;p&gt;在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 &lt;a href=&#34;http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html&#34;&gt;公众平台开发者文档-接入指南&lt;/a&gt; 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Promise 的链式调用与中止</title>
-      <link>http://nodejh.com/posts/use-and-stop-promise-break-chain/</link>
-      <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
-      
-      <guid>http://nodejh.com/posts/use-and-stop-promise-break-chain/</guid>
-      <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
-
-&lt;p&gt;本文主要讲的是如何实现 Promise 的链式调用。也就是 &lt;code&gt;promise().then().then().catch()&lt;/code&gt; 的形式，然后讨论如何在某一个 &lt;code&gt;then()&lt;/code&gt; 里面中止 Promise。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/wechat-development-access-guide/</guid>
+      <description>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 公众平台开发者文档-接入指南 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代</description>
     </item>
     
     <item>
       <title>检测 Express 路由中的参数合法性</title>
-      <link>http://nodejh.com/posts/check-parameters-in-express-router/</link>
+      <link>https://nodejh.com/posts/check-parameters-in-express-router/</link>
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/check-parameters-in-express-router/</guid>
-      <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/check-parameters-in-express-router/</guid>
+      <description>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。 几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST</description>
     </item>
     
     <item>
       <title>模拟登录某某大学图书馆系统</title>
-      <link>http://nodejh.com/posts/crawler-for-scu-libirary/</link>
+      <link>https://nodejh.com/posts/crawler-for-scu-libirary/</link>
       <pubDate>Fri, 07 Oct 2016 01:03:30 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/crawler-for-scu-libirary/</guid>
-      <description>&lt;p&gt;本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/crawler-for-scu-libirary/</guid>
+      <description>本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉 对于爬虫程序，如果需要抓取的页面，需要登录后才能访问，这时</description>
     </item>
     
     <item>
       <title>使用 Ngnix 给 Node.js 应用做反向代理</title>
-      <link>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
+      <link>https://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</link>
       <pubDate>Sat, 30 Apr 2016 17:19:20 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
-      <description>&lt;p&gt;一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/use-nginx-reverse-proxy-nodejs/</guid>
+      <description>一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例： const http = require(&amp;#39;http&amp;#39;); const hostname = &amp;#39;127.0.0.1&amp;#39;; const port = 3000; const server = http.createServer((req, res) =&amp;gt; { res.statusCode = 200; res.setHeader(&amp;#39;Content-Type&amp;#39;, &amp;#39;text/plain&amp;#39;); res.end(&amp;#39;Hello World\n&amp;#39;); }); server.listen(port, hostname, () =&amp;gt; { console.log(`Server running at http://${hostname}:${port}/`); });</description>
     </item>
     
   </channel>

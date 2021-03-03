@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Serverless on Hang Jiang</title>
+    <link>https://nodejh.com/tags/serverless/</link>
+    <description>Recent content in Serverless on Hang Jiang</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 17 May 2019 12:00:00 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/serverless/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Serverless 将使前后端从分离再度走向融合</title>
+      <link>https://nodejh.com/posts/serverless-%E5%B0%86%E4%BD%BF%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BB%8E%E5%88%86%E7%A6%BB%E5%86%8D%E5%BA%A6%E8%B5%B0%E5%90%91%E8%9E%8D%E5%90%88/</link>
+      <pubDate>Fri, 17 May 2019 12:00:00 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/serverless-%E5%B0%86%E4%BD%BF%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BB%8E%E5%88%86%E7%A6%BB%E5%86%8D%E5%BA%A6%E8%B5%B0%E5%90%91%E8%9E%8D%E5%90%88/</guid>
+      <description>近日，Serverless 作为新兴的架构模式，与其相关的话题被讨论的如火如荼。Serverless 不需部署、配置和管理传统服务器，这一概念的</description>
+    </item>
+    
+    <item>
+      <title>Serverless 掀起新的前端技术变革</title>
+      <link>https://nodejh.com/posts/serverless-%E6%8E%80%E8%B5%B7%E6%96%B0%E7%9A%84%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%8F%98%E9%9D%A9/</link>
+      <pubDate>Wed, 15 May 2019 12:00:00 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/serverless-%E6%8E%80%E8%B5%B7%E6%96%B0%E7%9A%84%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%8F%98%E9%9D%A9/</guid>
+      <description>最近关于 Serverless 的讨论越来越多。看似与前端关系不大的 Serverless，其实早已和前端有了颇深渊源，并且将掀起新的前端技术变革。本文主要就根据个</description>
+    </item>
+    
+    <item>
+      <title>使用 Serverless 实现日志报警</title>
+      <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-serverless-%E5%AE%9E%E7%8E%B0%E6%97%A5%E5%BF%97%E6%8A%A5%E8%AD%A6%E5%8A%9F%E8%83%BD/</link>
+      <pubDate>Tue, 08 Aug 2017 22:24:05 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-serverless-%E5%AE%9E%E7%8E%B0%E6%97%A5%E5%BF%97%E6%8A%A5%E8%AD%A6%E5%8A%9F%E8%83%BD/</guid>
+      <description>最近尝试将应用的页面 JS 错误报警功能通过 Serverless 来实现。本文主要介绍一下具体实现过程，以及遇到的一些问题。 报警功能的需求也很简单，就是定时（如每隔 1</description>
+    </item>
+    
+  </channel>
+</rss>

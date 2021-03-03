@@ -1,88 +1,73 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Javascript on node</title>
-    <link>http://nodejh.com/tags/javascript/</link>
-    <description>Recent content in Javascript on node</description>
+    <title>JavaScript on Hang Jiang</title>
+    <link>https://nodejh.com/tags/javascript/</link>
+    <description>Recent content in JavaScript on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 18 Feb 2017 11:07:14 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JavaScript 是传值调用还是传引用调用？</title>
-      <link>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
+      <link>https://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</link>
       <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
-      <description>&lt;h2 id=&#34;1-例子&#34;&gt;1. 例子&lt;/h2&gt;
-
-&lt;p&gt;先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/is-javascript-a-pass-by-reference-or-pass-by-value-language/</guid>
+      <description>1. 例子 🔗先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。 1.1. 基本类型参数传递 🔗function addTen(num) { num += 10; return num; }</description>
+    </item>
+    
+    <item>
+      <title>Promise 的链式调用与中止</title>
+      <link>https://nodejh.com/posts/use-and-stop-promise-break-chain/</link>
+      <pubDate>Thu, 24 Nov 2016 22:19:49 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/use-and-stop-promise-break-chain/</guid>
+      <description>Abstract 🔗本文主要讲的是如何实现 Promise 的链式调用。也就是 promise().then().then().catch() 的形式，然后讨论如何在某一个 then() 里面中止 Promise。 在程序中，只要返回了一个 promise 对象，如果 promise</description>
     </item>
     
     <item>
       <title>求给定数组的对等差分(symmetric difference) (△ or ⊕)数组</title>
-      <link>http://nodejh.com/posts/symmetric-difference/</link>
+      <link>https://nodejh.com/posts/symmetric-difference/</link>
       <pubDate>Sat, 29 Oct 2016 00:43:22 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/symmetric-difference/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;题目&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/symmetric-difference/</guid>
+      <description>题目 创建一个函数，接受两个或多个数组，返回所给数组的 对等差分(symmetric difference) (△ or ⊕)数组. 给出两个集合 (如集合 A = {1, 2, 3} 和集合 B = {2,</description>
     </item>
     
     <item>
       <title>找出一个数组中的最大值</title>
-      <link>http://nodejh.com/posts/get-the-max-number-in-array/</link>
+      <link>https://nodejh.com/posts/get-the-max-number-in-array/</link>
       <pubDate>Mon, 24 Oct 2016 19:20:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/get-the-max-number-in-array/</guid>
-      <description>&lt;p&gt;本文介绍 JavaScript 的几种从数组中找出最大值的方法。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/get-the-max-number-in-array/</guid>
+      <description>本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 🔗var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &amp;lt; arr[i] ) max = arr[i]; findMax(i+1); } findMax(1); console.log(max); 使用 for 循环遍历 🔗v</description>
     </item>
     
     <item>
       <title>检测 Express 路由中的参数合法性</title>
-      <link>http://nodejh.com/posts/check-parameters-in-express-router/</link>
+      <link>https://nodejh.com/posts/check-parameters-in-express-router/</link>
       <pubDate>Sat, 15 Oct 2016 06:46:05 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/check-parameters-in-express-router/</guid>
-      <description>&lt;p&gt;本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/check-parameters-in-express-router/</guid>
+      <description>本文以 Express 框架为基础，讲诉如何通过一个中间件来检测 Express 路由中传输的参数是否合法。 几乎对于任何应用，前后端都需要进行传输数据。不管是通过 HTTP 请求的 POST</description>
     </item>
     
     <item>
       <title>分别使用 XHR、jQuery 和 Fetch 实现 AJAX</title>
-      <link>http://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</link>
+      <link>https://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</link>
       <pubDate>Mon, 26 Sep 2016 19:58:03 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</guid>
-      <description>&lt;p&gt;本文详细讲述如何使用原生 JS、jQuery 和 Fetch 来实现 AJAX。&lt;/p&gt;
-
-&lt;p&gt;AJAX 即 Asynchronous JavaScript and XML，异步的 JavaScript 和 XML。使用 AJAX 可以无刷新地向服务端发送请求接收服务端响应，并更新页面。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/ajax-xhr-jquery-and-fetch-api/</guid>
+      <description>本文详细讲述如何使用原生 JS、jQuery 和 Fetch 来实现 AJAX。 AJAX 即 Asynchronous JavaScript and XML，异步的 JavaScript 和 XML。使用 AJAX 可以无刷新地向服务端发送请求接收服务</description>
     </item>
     
     <item>
       <title>JS 判断字符串是否是拼音音节</title>
-      <link>http://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</link>
+      <link>https://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</link>
       <pubDate>Wed, 13 Apr 2016 10:35:40 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</guid>
-      <description>&lt;h2 id=&#34;最终函数&#34;&gt;最终函数&lt;/h2&gt;
-
-&lt;p&gt;最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/get-chinese-phonetic-syllable-with-js/</guid>
+      <description>最终函数 🔗最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的</description>
     </item>
     
   </channel>

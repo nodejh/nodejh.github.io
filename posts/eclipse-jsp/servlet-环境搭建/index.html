@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Eclipse JSP/Servlet 环境搭建 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Eclipse JSP/Servlet 环境搭建</h1>
+
+    <div class="tip">
+        <span>
+          Mar 17, 2016 19:15
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            2239 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          5 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <h2 id="eclipse-jspservlet-环境搭建">Eclipse JSP/Servlet 环境搭建 <a href="#eclipse-jspservlet-%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba" class="anchor">🔗</a></h2><p>本文假定你已安装了 JDK 环境，如未安装，可参阅：</p>
+<ul>
+<li><a 
+    href="http://nodejh.com/post/how-to-install-java-on-ubuntu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Ubuntu下JAVA开发环境的配置
+</a></li>
+<li><a 
+    href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Ubuntu 下 Tomcat 的配置
+</a></li>
+</ul>
+<h3 id="1-踩过的坑">1. 踩过的坑 <a href="#1-%e8%b8%a9%e8%bf%87%e7%9a%84%e5%9d%91" class="anchor">🔗</a></h3><h4 id="1-tomcat-版本过新">1) Tomcat 版本过新 <a href="#1-tomcat-%e7%89%88%e6%9c%ac%e8%bf%87%e6%96%b0" class="anchor">🔗</a></h4><p>最近 Tomcat 更新到了 9.0，为了求新我们安装了 Tomcat 9.0，但 Eclipse 目前最高只能识别 Tomcat 8 的版本。如图：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-1.png" alt="ubuntu-eclipse-1.png"  />
+</p></p>
+<p>所以为了解决问题，我们就只能再安装一个 Tomcat 8.0 了。因为 Tomcat 的安装只需要解压到指定目录即可，所以安装多少个版本都是互不影响的。如果你还不知道怎么安装，请参考：<a 
+    href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Ubuntu 下 Tomcat 的配置
+</a>。</p>
+<p>安装 8.0 和 9.0 的唯一区别是，下载的源码版本不同，即 <code>wget</code> 这一步不一样，安装 8.0 可以在链接下载：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">wget http://mirrors.cnnic.cn/apache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
+</code></pre></div><p>下载后可以解压到 <code>/opt/tomcat8</code> 这个目录，以便和之前的 <code>/opt/tomcat</code> 作区分。然后启动 Tomcat 8 当然就使用 <code>sudo /opt/tomcat8/bin/catalina.sh start</code> 这个命令了。</p>
+<h4 id="2-eclispe-运行权限不够无法识别或执行-tomcat-服务器">2) Eclispe 运行权限不够无法识别或执行 Tomcat 服务器 <a href="#2-eclispe-%e8%bf%90%e8%a1%8c%e6%9d%83%e9%99%90%e4%b8%8d%e5%a4%9f%e6%97%a0%e6%b3%95%e8%af%86%e5%88%ab%e6%88%96%e6%89%a7%e8%a1%8c-tomcat-%e6%9c%8d%e5%8a%a1%e5%99%a8" class="anchor">🔗</a></h4><p>假设我们已经将 Tomcat 8.0 安装到了 <code>/opt/tomcat8</code> 这个目录。</p>
+<p>由于最开始我们这个目录给除了 <code>tomcat</code> 用户外的其它用户的权限很小，也就是除了 <code>tomcat</code> 用户，其它用户都不能执行 Tomcat 甚至不能读取该目录。</p>
+<p>所以如果我们的 Eclipse 是以普通用户权限运行的，那么它是没办法正确使用 Tomcat 的。</p>
+<p>解决问题的办法有两个，第一种是更改 <code>/opt/tomcat8</code> 的权限，让普通用户能够访问并执行它；第二种是使用 root 权限来运行 Eclipse。这里把两种方法都写上。任选一种即可。</p>
+<h5 id="方法一更改-opttomcat8-的权限">方法一：更改 <code>/opt/tomcat8</code> 的权限 <a href="#%e6%96%b9%e6%b3%95%e4%b8%80%e6%9b%b4%e6%94%b9-opttomcat8-%e7%9a%84%e6%9d%83%e9%99%90" class="anchor">🔗</a></h5><p>打开终端，执行下面的命了即可，就是这么简单！也推荐就用这种做法：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">cd /opt/
+sudo chmod -R 775 tomcat8
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-2.gif" alt="ubuntu-eclipse-2.gif"  />
+</p></p>
+<h5 id="方法二使用-root-权限运行-eclipse">方法二：使用 root 权限运行 Eclipse <a href="#%e6%96%b9%e6%b3%95%e4%ba%8c%e4%bd%bf%e7%94%a8-root-%e6%9d%83%e9%99%90%e8%bf%90%e8%a1%8c-eclipse" class="anchor">🔗</a></h5><p>为什么把这个方法也写上呢？是因为使用 root 权限运行 Eclipse 的时候也会遇到问题：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-3.gif" alt="ubuntu-eclipse-3.gif"  />
+</p></p>
+<p>使用 root 运行 Eclispe 的时候，Eclispe 找不到 JAVA 运行环境了，也就是找不到 JRE 了。这和我们最初的环境变量设置有关。</p>
+<p>那么如何解决问题呢？其实方法也有很多，可以修改环境变量，也可以用一种更巧妙的方式，就是将解压后的 <code>jre/</code> 目录放在 <code>eclipse.ini</code> 所在的目录，也就是 <code>/opt/eclipse/</code>。</p>
+<p>我们之前已经安装过了 JDK，JDK 的安装目录是 <code>/opt/java</code>，里面就包含了 JRE，也就是 JRE 的目录是 <code>/opt/java/jre</code>。好了，下面就将 <code>jre/</code> 复制过去试试。</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-4.gif" alt="ubuntu-eclipse-4.gif"  />
+</p></p>
+<p>好了，可以看到现在 Eclipse 已经正常启动了。</p>
+<p>更多方法可参考：<a 
+    href="http://stackoverflow.com/questions/2030434/eclipse-no-java-jre-jdk-no-virtual-machine"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Eclipse - no Java (JRE) / (JDK) … no virtual machine
+</a></p>
+<p>之所以举这两个例子，还有一点就是说明，解决一个问题的方法可能有很多种，仁者见仁，智者见智。</p>
+<h3 id="2-关联-eclispe-和-tomcat">2. 关联 Eclispe 和 Tomcat <a href="#2-%e5%85%b3%e8%81%94-eclispe-%e5%92%8c-tomcat" class="anchor">🔗</a></h3><p>假设我们上面是通过第一种方法解决的 Eclispe 不能使用 Tomcat 的问题。</p>
+<p>接下来启动 Tomcat</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">/opt/eclispe/eclipse
+</code></pre></div><p>然后选择菜单栏 <code>Windows--&gt;preferences</code>，弹出如下界面：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-5.gif" alt="ubuntu-eclipse-5.gif"  />
+</p></p>
+<p>上图中，点击&quot;add&quot;的添加按钮，弹出选择 Tomcat 版本的界面。之前说到的 Eclipse 不能识别 Tomcat 9.0 就是这一步不能识别。我们已经又安装了 Tomcat 8.0，所以这里选择 Tomcat 8.0。</p>
+<p>接着点击 <code>Next</code>，选择 Tomcat 的安装目录，并选择我们安装的 Java 环境：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-6.gif" alt="ubuntu-eclipse-6.gif"  />
+</p></p>
+<h3 id="3-使用-eclipse-创建第一个项目">3. 使用 Eclipse 创建第一个项目 <a href="#3-%e4%bd%bf%e7%94%a8-eclipse-%e5%88%9b%e5%bb%ba%e7%ac%ac%e4%b8%80%e4%b8%aa%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h3><h4 id="1-新建动态网站项目">1) 新建动态网站项目 <a href="#1-%e6%96%b0%e5%bb%ba%e5%8a%a8%e6%80%81%e7%bd%91%e7%ab%99%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h4><p>选择 <code>File--&gt;New--&gt;Dynamic Web Project</code>，创建 <code>TomcatTest</code> 项目：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-7.gif" alt="ubuntu-eclipse-7.gif"  />
+</p></p>
+<p>Eclipse 会自动选择默认的 Tomcat 版本。如果没有默认选择 Tomcat 的版本，则需求点击 <code>New Runtime</code> 按钮，选择我们刚才设置的 Tomcat 版本。</p>
+<p>在Eclipse中只要创建一个Dynamic Web Project，就可以根据创建向导创建出一个典型 Java Web 站点的目录结构。除非有特殊需要，在大多数情况下都没有必要修改这个目录结构，这也是 Web 容器的缺省目录结构，我们只要直接使用即可。一般的目录结构如下：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-8.png" alt="ubuntu-eclipse-8.png"  />
+</p></p>
+<ul>
+<li>Deployment Descriptor：部署描述符。部署描述符描述了组件、模块或应用程序（如Web应用程序或企业级软件）应该如何部署。</li>
+<li>JAX-WS Web Services：Java API for XML Web Services（JAX-WS）是 Java 程序设计语言一个用来创建 Web 服务的 API。</li>
+<li>build：放入编译之后的文件。</li>
+<li>WebContent：站点根目录。</li>
+</ul>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">WebContent (站点根目录)
+     |----META-INF (META-INF文件夹)
+     |----|---MANIFEST.MF (MANIFEST.MF配置清单文件)
+     |----WEB-INF (WEB-INF文件夹)
+     |----|----web.xml (站点配置web.xml)
+     |----|----lib (第三方库文件夹)
+
+WEB-INF:是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件   对要访问的文件进行相应映射才能访问。
+
+META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Java 2平台的认可与解释，用来配置应用程序、扩展程序、类加载器和服务。
+</code></pre></div><h4 id="2-新建一个-jsp-文件">2). 新建一个 JSP 文件 <a href="#2-%e6%96%b0%e5%bb%ba%e4%b8%80%e4%b8%aa-jsp-%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h4><p>接下来在 <code>WebContent</code> 文件夹下新建一个 <code>test.jsp</code> 文件：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-9.gif" alt="ubuntu-eclipse-9.gif"  />
+</p></p>
+<p>接着我们修改下 <code>test.jsp</code> 文件。代码如下所示：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&lt;%@ page language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34;
+    pageEncoding=&#34;UTF-8&#34;%&gt;
+&lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD HTML 4.01 Transitional//EN&#34; &#34;http://www.w3.org/TR/html4/loose.dtd&#34;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=UTF-8&#34;&gt;
+&lt;title&gt;Tomcat Test&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;%
+	out.println(&#34;世界,你好!&#34;);
+%&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div><p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-10.gif" alt="ubuntu-eclipse-10.gif"  />
+</p></p>
+<p>然后运行该项目：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-11.gif" alt="ubuntu-eclipse-11.gif"  />
+</p></p>
+<h4 id="3-新建一个-servlet-文件">3). 新建一个 Servlet 文件 <a href="#3-%e6%96%b0%e5%bb%ba%e4%b8%80%e4%b8%aa-servlet-%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h4><p>我们也可以使用以上环境创建 Servlet 文件，选择 <code>File--&gt;New--&gt;Servlet</code>：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-12.gif" alt="ubuntu-eclipse-12.gif"  />
+</p></p>
+<p>文件路径位于 TomcatTest项目的 /TomcatTest/src 目录下创建 &ldquo;HelloServlet&rdquo; 类，包为 &ldquo;com.runoob.test&rdquo;。</p>
+<p>HelloServlet.java 代码如下所示：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a2f;font-weight:bold">package</span> com.test.test;
+
+<span style="color:#a2f;font-weight:bold">import</span> java.io.IOException;
+<span style="color:#a2f;font-weight:bold">import</span> javax.servlet.ServletException;
+<span style="color:#a2f;font-weight:bold">import</span> javax.servlet.annotation.WebServlet;
+<span style="color:#a2f;font-weight:bold">import</span> javax.servlet.http.HttpServlet;
+<span style="color:#a2f;font-weight:bold">import</span> javax.servlet.http.HttpServletRequest;
+<span style="color:#a2f;font-weight:bold">import</span> javax.servlet.http.HttpServletResponse;
+
+<span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic"> * Servlet implementation class HelloWorld
+</span><span style="color:#080;font-style:italic"> */</span>
+<span style="">@</span><span style="color:#00a000">WebServlet</span>(<span style="color:#b44">&#34;/HelloWorld&#34;</span>)
+public class HelloWorld extends HttpServlet {
+	private static final long serialVersionUID = <span style="color:#666">1</span>L;
+
+    <span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic">     * @see HttpServlet#HttpServlet()
+</span><span style="color:#080;font-style:italic">     */</span>
+    public <span style="color:#00a000">HelloWorld</span>() {
+        <span style="color:#00a000">super</span>();
+        <span style="color:#080;font-style:italic">// TODO Auto-generated constructor stub
+</span><span style="color:#080;font-style:italic"></span>    }
+
+	<span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic">	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+</span><span style="color:#080;font-style:italic">	 */</span>
+	protected void <span style="color:#00a000">doGet</span>(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		<span style="color:#080;font-style:italic">// TODO Auto-generated method stub
+</span><span style="color:#080;font-style:italic"></span>		response.<span style="color:#00a000">getWriter</span>().<span style="color:#a2f">append</span>(<span style="color:#b44">&#34;Served at: &#34;</span>).<span style="color:#a2f">append</span>(request.<span style="color:#00a000">getContextPath</span>());
+	}
+
+	<span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic">	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+</span><span style="color:#080;font-style:italic">	 */</span>
+	protected void <span style="color:#00a000">doPost</span>(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		<span style="color:#080;font-style:italic">// TODO Auto-generated method stub
+</span><span style="color:#080;font-style:italic"></span>		<span style="color:#00a000">doGet</span>(request, response);
+	}
+
+}
+</code></pre></div><p>关于 JSP 和 Servlet 的关系，这里简单作几点说明：</p>
+<ul>
+<li>
+<p>JSP 是 HTML 内嵌 JAVA 代码。从本质上讲，JSP 是 Servlet 的扩展，是简易版的 Servlet。Servlet 则完全和 HTML 分离开来，只运用在 JAVA 文件中。</p>
+</li>
+<li>
+<p>JSP引擎从磁盘中载入JSP文件，然后将它们转化为servlet。这种转化只是简单地将所有模板文本改用println()语句，并且将所有的JSP元素转化成Java代码。</p>
+</li>
+<li>
+<p>JSP引擎将servlet编译成可执行类。</p>
+</li>
+</ul>
+<p>然后我们在运行一下 <code>HelloWorld.java</code>：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/blog/2016-11-22-install-eclipse-jsp-servlet-develop-environment-13.gif" alt="ubuntu-eclipse-13.gif"  />
+</p></p>
+<hr>
+<p>Github Issue: <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/19"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/19
+</a></p>
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/ubuntu">Ubuntu</a>
+            
+                <a href="https://nodejh.com/tags/eclipse">Eclipse</a>
+            
+                <a href="https://nodejh.com/tags/java">JAVA</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

@@ -1,137 +1,100 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-cn">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="description" content="Nodejh&#39;s Blog">
-		<meta name="generator" content="Hugo 0.31.1" />
-		<title>快速入门 - Vue2 Tutorials (一) &middot; node</title>
-		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
-		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
-		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
-		
+  <head>
+    <title>快速入门 - Vue2 Tutorials (一) | Hang Jiang</title>
 
-		
-		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
-		
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
 
-		
-		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
-	
-		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
-	
-	<a href='http://nodejh.com/post'>Archive</a>
-	<a href='http://nodejh.com/tags'>Tags</a>
-	<a href='http://nodejh.com/projects'>Projects</a>
-	<a href='http://nodejh.com/about'>About</a>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
 	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
 
 	
-	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
 
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        快速入门 - Vue2 Tutorials (一)
-                    </h1>
-                    <h2 class="headline">
-                    Jul 6, 2017 14:53
-                    · 2830 words
-                    · 6 minutes read
-                      <span class="tags">
-                      
-                      
-                          
-                              <a href="http://nodejh.com/tags/vue">vue</a>
-                          
-                              <a href="http://nodejh.com/tags/%E5%89%8D%E7%AB%AF">前端</a>
-                          
-                      
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                    <div id="toc">
-                      <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#命令行工具">命令行工具</a>
-<ul>
-<li><a href="#安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目</a></li>
-<li><a href="#安装依赖">安装依赖</a></li>
-</ul></li>
-<li><a href="#代码分析">代码分析</a>
-<ul>
-<li><a href="#main-js">main.js</a>
-<ul>
-<li><a href="#el">el</a></li>
-<li><a href="#components">components</a></li>
-<li><a href="#template">template</a></li>
-</ul></li>
-<li><a href="#src-app-vue">src/App.vue</a></li>
-<li><a href="#src-components-hello-vue">src/components/Hello.vue</a></li>
-</ul></li>
-<li><a href="#模板语法">模板语法</a>
-<ul>
-<li><a href="#插值">插值</a>
-<ul>
-<li><a href="#文本插值">文本插值</a></li>
-<li><a href="#纯-html">纯 HTML</a></li>
-<li><a href="#js-表达式">JS 表达式</a></li>
-</ul></li>
-<li><a href="#指令">指令</a>
-<ul>
-<li><a href="#v-bind">v-bind</a></li>
-<li><a href="#v-on">v-on</a></li>
-<li><a href="#v-if">v-if</a></li>
-<li><a href="#v-for">v-for</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#实践">实践</a></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-</ul>
-</nav>
-                    </div>
-                  
-                
-                <section id="post-body">
-                    
+    <main class="main">
+      
 
-<p>Vue 的<a href="https://cn.vuejs.org/v2/guide/">官方文档</a> 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧不能立即立即 vue-cli 创建的项目代码。所以本文 vue-cli 构建的项目为基础，详细解释其代码及对应的概念，并进行简单的实践。</p>
+<section id="single">
+    <h1 class="title">快速入门 - Vue2 Tutorials (一)</h1>
 
+    <div class="tip">
+        <span>
+          Jul 6, 2017 14:53
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            2926 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          6 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>Vue 的<a 
+    href="https://cn.vuejs.org/v2/guide/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    官方文档
+</a> 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧不能立即立即 vue-cli 创建的项目代码。所以本文 vue-cli 构建的项目为基础，详细解释其代码及对应的概念，并进行简单的实践。</p>
 <blockquote>
-<p>本文的代码在 <a href="https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart">https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart</a></p>
+<p>本文的代码在 <a 
+    href="https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart
+</a></p>
 </blockquote>
-
-<h2 id="命令行工具">命令行工具</h2>
-
-<h3 id="安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目</h3>
-
-<p>首先要全局安装 vue-cl：</p>
-
-<pre><code class="language-shell">$ npm install --global vue-cli
-</code></pre>
-
-<p>然后使用 vue-cli 初始化一个基于 webpack 模板的新项目，除了 <code>Install vue-router?</code> 选 <code>N (No)</code>，其余都可以直接回车选 <code>Y (Yes)</code>，因为我们暂时不会讲到 <code>vue-router</code>：</p>
-
-<pre><code class="language-shell">$ vue init webpack demo
+<h2 id="命令行工具">命令行工具 <a href="#%e5%91%bd%e4%bb%a4%e8%a1%8c%e5%b7%a5%e5%85%b7" class="anchor">🔗</a></h2><h3 id="安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目 <a href="#%e5%ae%89%e8%a3%85-vue-cli-%e5%b9%b6%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h3><p>首先要全局安装 vue-cl：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ npm install --global vue-cli
+</code></pre></div><p>然后使用 vue-cli 初始化一个基于 webpack 模板的新项目，除了 <code>Install vue-router?</code> 选 <code>N (No)</code>，其余都可以直接回车选 <code>Y (Yes)</code>，因为我们暂时不会讲到 <code>vue-router</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vue init webpack demo
 ? Project name demo
 ? Project description A Vue.js project
 
@@ -142,482 +105,423 @@
 ? Pick an ESLint preset Standard
 ? Setup unit tests with Karma + Mocha? Yes
 ? Setup e2e tests with Nightwatch? Yes
-</code></pre>
-
-<h3 id="安装依赖">安装依赖</h3>
-
-<pre><code class="language-shell">$ cd demo
+</code></pre></div><h3 id="安装依赖">安装依赖 <a href="#%e5%ae%89%e8%a3%85%e4%be%9d%e8%b5%96" class="anchor">🔗</a></h3><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#a2f">cd</span> demo
 $ npm install
 $ npm run dev
-</code></pre>
-
-<p>然后打开浏览器，输入 <code>http://localhost:8080</code> 就能看到界面。</p>
-
+</code></pre></div><p>然后打开浏览器，输入 <code>http://localhost:8080</code> 就能看到界面。</p>
 <p>接下来分析一下代码。</p>
-
-<h2 id="代码分析">代码分析</h2>
-
-<p>项目目录结构如下：</p>
-
-<pre><code class="language-shell">├── README.md
-├── build    # 编译项目的配置文件目录
-├── config    # 配置文件目录
-├── src    # 项目主要代码目录
-├── static    # 静态资源
-├── test    # 测试文件目录
-</code></pre>
-
-<p>开发阶段的主要代码都在 <code>src</code> 目录中编写，vue-cli 默认生成了一些代码：</p>
-
-<pre><code class="language-shell">src
+<h2 id="代码分析">代码分析 <a href="#%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><p>项目目录结构如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">├── README.md
+├── build    <span style="color:#080;font-style:italic"># 编译项目的配置文件目录</span>
+├── config    <span style="color:#080;font-style:italic"># 配置文件目录</span>
+├── src    <span style="color:#080;font-style:italic"># 项目主要代码目录</span>
+├── static    <span style="color:#080;font-style:italic"># 静态资源</span>
+├── <span style="color:#a2f">test</span>    <span style="color:#080;font-style:italic"># 测试文件目录</span>
+</code></pre></div><p>开发阶段的主要代码都在 <code>src</code> 目录中编写，vue-cli 默认生成了一些代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">src
 ├── App.vue
 ├── assets
 │   └── logo.png
 ├── components
 │   └── Hello.vue
 └── main.js
-</code></pre>
-
-<p>可以发现，代码的后缀名有两种：</p>
-
+</code></pre></div><p>可以发现，代码的后缀名有两种：</p>
 <ul>
 <li><code>.js</code> JS 文件</li>
 <li><code>.vue</code> Vue 组件，里面定义了 Vue 实例、模板、样式等。需要由 webpack 等工具来转换为 js 代码</li>
 </ul>
-
 <p>接下来会逐一解释这些文件及代码。</p>
-
-<h3 id="main-js">main.js</h3>
-
-<p><code>main.js</code> 是项目的入口文件，也是 webpack 打包的入口文件。里面最代码很少，主要就是通过 <code>new Vue()</code> 创建 Vue 实例：</p>
-
-<pre><code class="language-js">new Vue({
-  el: '#app',
-  template: '&lt;App/&gt;',
-  components: { App },
+<h3 id="mainjs">main.js <a href="#mainjs" class="anchor">🔗</a></h3><p><code>main.js</code> 是项目的入口文件，也是 webpack 打包的入口文件。里面最代码很少，主要就是通过 <code>new Vue()</code> 创建 Vue 实例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">new</span> Vue({
+  el<span style="color:#666">:</span> <span style="color:#b44">&#39;#app&#39;</span>,
+  template<span style="color:#666">:</span> <span style="color:#b44">&#39;&lt;App/&gt;&#39;</span>,
+  components<span style="color:#666">:</span> { App },
 });
-</code></pre>
-
-<p>每个 Vue.js 应用都是通过构造函数 Vue 创建一个 Vue 的根实例启动的。</p>
-
+</code></pre></div><p>每个 Vue.js 应用都是通过构造函数 Vue 创建一个 Vue 的根实例启动的。</p>
 <p>在实例化 Vue 时，传入一个了一个对象，对象包含以下几个选项。</p>
-
-<h4 id="el">el</h4>
-
-<p><code>el</code> 的值是 Vue 实例的挂载目标，这里是 <code>#app</code>，也就是 <code>demo/index.html</code> 中 <code>id=&quot;app&quot;</code> 这个元素：</p>
-
-<pre><code class="language-html">&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
-</code></pre>
-
-<p><code>el</code> 必须是一个已存在的元素。</p>
-
-<p><a href="https://cn.vuejs.org/v2/api/#el">api/#el</a></p>
-
-<h4 id="components">components</h4>
-
-<p>在说 <code>template</code> 之前，先来看看 <code>components</code> 属性。</p>
-
+<h4 id="el">el <a href="#el" class="anchor">🔗</a></h4><p><code>el</code> 的值是 Vue 实例的挂载目标，这里是 <code>#app</code>，也就是 <code>demo/index.html</code> 中 <code>id=&quot;app&quot;</code> 这个元素：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;app&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</code></pre></div><p><code>el</code> 必须是一个已存在的元素。</p>
+<p><a 
+    href="https://cn.vuejs.org/v2/api/#el"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    api/#el
+</a></p>
+<h4 id="components">components <a href="#components" class="anchor">🔗</a></h4><p>在说 <code>template</code> 之前，先来看看 <code>components</code> 属性。</p>
 <p><code>components: { App }</code> 等价于 <code>components: { App: App }</code>，是一个包含了对 Vue 实例可见的组件的哈希表。只有在 <code>components</code> 里面列出来的组件，才可以在 <code>template</code> 里面使用。</p>
-
 <p>如果我们把 <code>components: { App }</code> 改为 <code>components: { App }</code> 改为 <code>components: { MyApp: App }</code>，那么在 <code>template</code> 里面就需要这样使用：<code>template: '&lt;my-app /&gt;'</code>。</p>
-
-<p>由于 HTML 标签不区分大小写，所以 <code>components</code> 里面的驼峰命名会自动转换为短横线。详见 <a href="https://cn.vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case">camelCase vs. kebab-case</a></p>
-
-<h4 id="template">template</h4>
-
-<p><code>template</code> 就是挂载到页面的模板。</p>
-
+<p>由于 HTML 标签不区分大小写，所以 <code>components</code> 里面的驼峰命名会自动转换为短横线。详见 <a 
+    href="https://cn.vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    camelCase vs. kebab-case
+</a></p>
+<h4 id="template">template <a href="#template" class="anchor">🔗</a></h4><p><code>template</code> 就是挂载到页面的模板。</p>
 <p>这里的值是 <code>&lt;App/&gt;</code> 组件就是 <code>components</code> 属性中的 <code>App</code>，也就是通过 <code>import</code> 引入的 <code>App</code> 这个模板。</p>
-
-<pre><code class="language-js">new Vue({
-  el: '#app',
-  // 这里的 &lt;App/&gt; 就是 components 属性的值 App
-  template: '&lt;App/&gt;',
-  components: { App },
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">new</span> Vue({
+  el<span style="color:#666">:</span> <span style="color:#b44">&#39;#app&#39;</span>,
+  <span style="color:#080;font-style:italic">// 这里的 &lt;App/&gt; 就是 components 属性的值 App
+</span><span style="color:#080;font-style:italic"></span>  template<span style="color:#666">:</span> <span style="color:#b44">&#39;&lt;App/&gt;&#39;</span>,
+  components<span style="color:#666">:</span> { App },
 });
-</code></pre>
-
-<p>所以这段代码的含义就是，将 <code>&lt;App/&gt;</code> 这个模板挂载到元素 <code>#app</code> 上。</p>
-
-<h3 id="src-app-vue">src/App.vue</h3>
-
-<p><code>src/App.vue</code> 是一个典型的<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">单文件组件</a>。实际在项目中，我们写的基本都是组件，再根据需要用组件组成页面，这其实就是组件化。组件与组件之间相互独立，项目结构更加清晰，也更有利于维护。</p>
-
+</code></pre></div><p>所以这段代码的含义就是，将 <code>&lt;App/&gt;</code> 这个模板挂载到元素 <code>#app</code> 上。</p>
+<h3 id="srcappvue">src/App.vue <a href="#srcappvue" class="anchor">🔗</a></h3><p><code>src/App.vue</code> 是一个典型的<a 
+    href="https://cn.vuejs.org/v2/guide/single-file-components.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    单文件组件
+</a>。实际在项目中，我们写的基本都是组件，再根据需要用组件组成页面，这其实就是组件化。组件与组件之间相互独立，项目结构更加清晰，也更有利于维护。</p>
 <p>一个组件里面封装了 HTML、CSS 和 JS，有自己独立的样式和逻辑。</p>
-
 <p><code>&lt;template&gt;</code> 就是组件中的模板，模板的代码都在 <code>&lt;template&gt;</code> 标签中，除 <code>&lt;hello&gt;</code> 之外都是普通的 HTML。因为 <code>hello</code> 也是一个组件，然后通过标签的形式注入到模板中。</p>
-
 <p>为什么模板中能使用 <code>hello</code> 这个组件呢？</p>
-
 <p>这是因为 <code>&lt;script&gt;&lt;/script&gt;</code> 标签里面定义了 <code>Hello</code>（首字母大写）这个组件：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">import</span> Hello from <span style="color:#b44">&#39;./components/Hello&#39;</span>
 
-<pre><code class="language-js">import Hello from './components/Hello'
-
-export default {
-  name: 'app',
-  components: {
-    // Hello 组件，即 ./components/Hello 的一个引用
-    Hello  
+<span style="color:#a2f;font-weight:bold">export</span> <span style="color:#a2f;font-weight:bold">default</span> {
+  name<span style="color:#666">:</span> <span style="color:#b44">&#39;app&#39;</span>,
+  components<span style="color:#666">:</span> {
+    <span style="color:#080;font-style:italic">// Hello 组件，即 ./components/Hello 的一个引用
+</span><span style="color:#080;font-style:italic"></span>    Hello  
   }
 }
-</code></pre>
-
-<p>这里 <code>components</code> 属性的含义，在之前已经提到过了，只有在 <code>components</code> 里面列出来的组件，才能被模板使用。这里列出了 <code>Hello</code> 这个组件，所以在 <code>&lt;template&gt;</code> 中我们可以使用 <code>&lt;hello&gt;</code>（前面也提到过， vue 会自动将驼峰法命名转为短横线）。</p>
-
+</code></pre></div><p>这里 <code>components</code> 属性的含义，在之前已经提到过了，只有在 <code>components</code> 里面列出来的组件，才能被模板使用。这里列出了 <code>Hello</code> 这个组件，所以在 <code>&lt;template&gt;</code> 中我们可以使用 <code>&lt;hello&gt;</code>（前面也提到过， vue 会自动将驼峰法命名转为短横线）。</p>
 <p>而 <code>components</code> 属性里面的 <code>Hello</code>，则是 <code>./components/Hello</code> 这个组件的一个引用：</p>
-
-<pre><code class="language-js">import Hello from './components/Hello'
-</code></pre>
-
-<p>最后就是 <code>&lt;style&gt;</code> 标签，里面就是普通的 CSS 了。</p>
-
-<h3 id="src-components-hello-vue">src/components/Hello.vue</h3>
-
-<p>最后再来看看 <code>src/components/Hello.vue</code> 这个组件的代码。</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">import</span> Hello from <span style="color:#b44">&#39;./components/Hello&#39;</span>
+</code></pre></div><p>最后就是 <code>&lt;style&gt;</code> 标签，里面就是普通的 CSS 了。</p>
+<h3 id="srccomponentshellovue">src/components/Hello.vue <a href="#srccomponentshellovue" class="anchor">🔗</a></h3><p>最后再来看看 <code>src/components/Hello.vue</code> 这个组件的代码。</p>
 <p>基本跟 <code>src/App.vue</code> 是一样的，除了下面这两个地方之外：</p>
-
-<pre><code class="language-html">&lt;h1&gt;{{ msg }}&lt;/h1&gt;
-</code></pre>
-
-<pre><code class="language-js">data () {
-  return {
-    msg: 'Welcome to Your Vue.js App'
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">h1</span>&gt;{{ msg }}&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
+</code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">data () {
+  <span style="color:#a2f;font-weight:bold">return</span> {
+    msg<span style="color:#666">:</span> <span style="color:#b44">&#39;Welcome to Your Vue.js App&#39;</span>
   }
 }
-</code></pre>
-
-<p>恭喜你！看到这里，我们就可以真正开始写代码了。</p>
-
+</code></pre></div><p>恭喜你！看到这里，我们就可以真正开始写代码了。</p>
 <p><code>{{}}</code> 是 Vue 的一个模板语法，文本插值。如上面的例子所示，我们在 <code>data</code> 里面定义一个对象，就可以在模板中通过 <code>{{ }}</code> 来访问。</p>
-
 <p><code>data</code> 虽然是一个函数，但它执行之后就等价于：</p>
-
-<pre><code class="language-js">data: {
-  msg: 'Welcome to Your Vue.js App'
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">data<span style="color:#666">:</span> {
+  msg<span style="color:#666">:</span> <span style="color:#b44">&#39;Welcome to Your Vue.js App&#39;</span>
 }
-</code></pre>
-
-<p>当我们改变 <code>msg</code> 的值，在页面上渲染出来的数据也会改变。也就是数据和 DOM 绑定在了一起。</p>
-
-<h2 id="模板语法">模板语法</h2>
-
-<h3 id="插值">插值</h3>
-
-<h4 id="文本插值">文本插值</h4>
-
-<p>上面我们已经接触到了文本插值 <code>{{}}</code>，<code>{{ msg }}</code> 将会被替代为对应数据对象上 msg 属性的值。无论何时，绑定的数据对象（即 <code>data</code>）上 msg 属性发生了改变，插值处的内容都会更新。</p>
-
+</code></pre></div><p>当我们改变 <code>msg</code> 的值，在页面上渲染出来的数据也会改变。也就是数据和 DOM 绑定在了一起。</p>
+<h2 id="模板语法">模板语法 <a href="#%e6%a8%a1%e6%9d%bf%e8%af%ad%e6%b3%95" class="anchor">🔗</a></h2><h3 id="插值">插值 <a href="#%e6%8f%92%e5%80%bc" class="anchor">🔗</a></h3><h4 id="文本插值">文本插值 <a href="#%e6%96%87%e6%9c%ac%e6%8f%92%e5%80%bc" class="anchor">🔗</a></h4><p>上面我们已经接触到了文本插值 <code>{{}}</code>，<code>{{ msg }}</code> 将会被替代为对应数据对象上 msg 属性的值。无论何时，绑定的数据对象（即 <code>data</code>）上 msg 属性发生了改变，插值处的内容都会更新。</p>
 <p>通过使用 v-once 指令，我们也能执行一次性地插值，当数据改变时，插值处的内容不会更新。但请留心这会影响到该节点上所有的数据绑定：</p>
-
-<pre><code class="language-html">&lt;h1 v-once&gt;This will never change: {{ msg }}&lt;/h1&gt;
-</code></pre>
-
-<h4 id="纯-html">纯 HTML</h4>
-
-<p>双大括号会将数据解释为纯文本，而非 HTML 。为了输出真正的 HTML ，需要使用 <code>v-html</code> 指令：</p>
-
-<pre><code class="language-html">&lt;div v-html=&quot;rawHtml&quot;&gt;&lt;/div&gt;
-</code></pre>
-
-<p>这个 div 的内容将会被替换成为属性值 rawHtml，直接作为 HTML —— 数据绑定会被忽略。注意，你不能使用 v-html 来复合局部模板，因为 Vue 不是基于字符串的模板引擎。组件更适合担任 UI 重用与复合的基本单元。</p>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">h1</span> <span style="color:#b44">v-once</span>&gt;This will never change: {{ msg }}&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
+</code></pre></div><h4 id="纯-html">纯 HTML <a href="#%e7%ba%af-html" class="anchor">🔗</a></h4><p>双大括号会将数据解释为纯文本，而非 HTML 。为了输出真正的 HTML ，需要使用 <code>v-html</code> 指令：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">v-html</span><span style="color:#666">=</span><span style="color:#b44">&#34;rawHtml&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</code></pre></div><p>这个 div 的内容将会被替换成为属性值 rawHtml，直接作为 HTML —— 数据绑定会被忽略。注意，你不能使用 v-html 来复合局部模板，因为 Vue 不是基于字符串的模板引擎。组件更适合担任 UI 重用与复合的基本单元。</p>
 <blockquote>
 <p>你的站点上动态渲染的任意 HTML 可能会非常危险，因为它很容易导致 XSS 攻击。请只对可信内容使用 HTML 插值，绝不要对用户提供的内容插值。</p>
 </blockquote>
+<h4 id="js-表达式">JS 表达式 <a href="#js-%e8%a1%a8%e8%be%be%e5%bc%8f" class="anchor">🔗</a></h4><p><code>{{}}</code> 中也可以写 JS 表达式：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">{{ number <span style="color:#666">+</span> <span style="color:#666">1</span> }}
+{{ ok <span style="color:#666">?</span> <span style="color:#b44">&#39;YES&#39;</span> <span style="color:#666">:</span> <span style="color:#b44">&#39;NO&#39;</span> }}
+{{ message.split(<span style="color:#b44">&#39;&#39;</span>).reverse().join(<span style="color:#b44">&#39;&#39;</span>) }}
 
-<h4 id="js-表达式">JS 表达式</h4>
+<span style="color:#666">&lt;</span>div v<span style="color:#666">-</span>bind<span style="color:#666">:</span>id<span style="color:#666">=</span><span style="color:#b44">&#34;&#39;list-&#39; + id&#34;</span><span style="color:#666">&gt;&lt;</span><span style="">/div&gt;</span>
+</code></pre></div><h3 id="指令">指令 <a href="#%e6%8c%87%e4%bb%a4" class="anchor">🔗</a></h3><p>指令（Directives）是带有 <code>v-</code> 前缀的特殊属性。</p>
+<h4 id="v-bind">v-bind <a href="#v-bind" class="anchor">🔗</a></h4><p><code>{{}}</code> 不能在 HTML 属性中使用。针对 HTML 属性需要使用 <code>v-bind</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">v-bind:id</span><span style="color:#666">=</span><span style="color:#b44">&#34;dynamicId&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</code></pre></div><p>这对布尔值的属性也有效 —— 如果条件被求值为 <code>false</code> 的话该属性会被移除：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">button</span> <span style="color:#b44">v-bind:disabled</span><span style="color:#666">=</span><span style="color:#b44">&#34;isButtonDisabled&#34;</span>&gt;Button&lt;/<span style="color:#008000;font-weight:bold">button</span>&gt;
+</code></pre></div><p><code>v-bind</code> 也可以缩写：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">:id</span><span style="color:#666">=</span><span style="color:#b44">&#34;dynamicId&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+&lt;<span style="color:#008000;font-weight:bold">button</span> <span style="color:#b44">:disabled</span><span style="color:#666">=</span><span style="color:#b44">&#34;isButtonDisabled&#34;</span>&gt;Button&lt;/<span style="color:#008000;font-weight:bold">button</span>&gt;
+</code></pre></div><h4 id="v-on">v-on <a href="#v-on" class="anchor">🔗</a></h4><p><code>v-on</code> 用来监听 DOM 事件：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">button</span> <span style="color:#b44">v-on:click</span><span style="color:#666">=</span><span style="color:#b44">&#34;doSomething&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">button</span>&gt;
+</code></pre></div><p>也可以缩写成下面这样：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">button</span> <span style="">@</span><span style="color:#b44">click</span><span style="color:#666">=</span><span style="color:#b44">&#34;doSomething&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">button</span>&gt;
+</code></pre></div><h4 id="v-if">v-if <a href="#v-if" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">template</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">p</span> <span style="color:#b44">v-if</span><span style="color:#666">=</span><span style="color:#b44">&#34;seen&#34;</span>&gt;Now you see me&lt;/<span style="color:#008000;font-weight:bold">p</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">template</span>&gt;
 
-<p><code>{{}}</code> 中也可以写 JS 表达式：</p>
-
-<pre><code class="language-js">{{ number + 1 }}
-{{ ok ? 'YES' : 'NO' }}
-{{ message.split('').reverse().join('') }}
-
-&lt;div v-bind:id=&quot;'list-' + id&quot;&gt;&lt;/div&gt;
-</code></pre>
-
-<h3 id="指令">指令</h3>
-
-<p>指令（Directives）是带有 <code>v-</code> 前缀的特殊属性。</p>
-
-<h4 id="v-bind">v-bind</h4>
-
-<p><code>{{}}</code> 不能在 HTML 属性中使用。针对 HTML 属性需要使用 <code>v-bind</code>：</p>
-
-<pre><code class="language-html">&lt;div v-bind:id=&quot;dynamicId&quot;&gt;&lt;/div&gt;
-</code></pre>
-
-<p>这对布尔值的属性也有效 —— 如果条件被求值为 <code>false</code> 的话该属性会被移除：</p>
-
-<pre><code class="language-html">&lt;button v-bind:disabled=&quot;isButtonDisabled&quot;&gt;Button&lt;/button&gt;
-</code></pre>
-
-<p><code>v-bind</code> 也可以缩写：</p>
-
-<pre><code class="language-html">&lt;div :id=&quot;dynamicId&quot;&gt;&lt;/div&gt;
-&lt;button :disabled=&quot;isButtonDisabled&quot;&gt;Button&lt;/button&gt;
-</code></pre>
-
-<h4 id="v-on">v-on</h4>
-
-<p><code>v-on</code> 用来监听 DOM 事件：</p>
-
-<pre><code class="language-html">&lt;button v-on:click=&quot;doSomething&quot;&gt;&lt;/button&gt;
-</code></pre>
-
-<p>也可以缩写成下面这样：</p>
-
-<pre><code class="language-html">&lt;button @click=&quot;doSomething&quot;&gt;&lt;/button&gt;
-</code></pre>
-
-<h4 id="v-if">v-if</h4>
-
-<pre><code class="language-html">&lt;template&gt;
-  &lt;p v-if=&quot;seen&quot;&gt;Now you see me&lt;/p&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-export default {
-  name: 'hello',
-  data: {
-    seen: true
+&lt;<span style="color:#008000;font-weight:bold">script</span>&gt;
+<span style="color:#a2f;font-weight:bold">export</span> <span style="color:#a2f;font-weight:bold">default</span> {
+  name<span style="color:#666">:</span> <span style="color:#b44">&#39;hello&#39;</span>,
+  data<span style="color:#666">:</span> {
+    seen<span style="color:#666">:</span> <span style="color:#a2f;font-weight:bold">true</span>
   }
 }
-&lt;/script&gt;
-</code></pre>
-
-<p>这里 <code>v-if</code> 指令将根据表达式 <code>seen</code> 的值的真假来移除/插入 <code>&lt;p&gt;</code> 元素。</p>
-
-<h4 id="v-for">v-for</h4>
-
-<p><code>v-for</code> 指令可以绑定数组的数据来渲染一个项目列表：</p>
-
-<pre><code class="language-html">&lt;template&gt;
-  &lt;ol&gt;
-    &lt;li v-for=&quot;todo in todos&quot;&gt;
+&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</code></pre></div><p>这里 <code>v-if</code> 指令将根据表达式 <code>seen</code> 的值的真假来移除/插入 <code>&lt;p&gt;</code> 元素。</p>
+<h4 id="v-for">v-for <a href="#v-for" class="anchor">🔗</a></h4><p><code>v-for</code> 指令可以绑定数组的数据来渲染一个项目列表：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">template</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">ol</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">li</span> <span style="color:#b44">v-for</span><span style="color:#666">=</span><span style="color:#b44">&#34;todo in todos&#34;</span>&gt;
       {{ todo.text }}
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/template&gt;
+    &lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;/<span style="color:#008000;font-weight:bold">ol</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">template</span>&gt;
 
-&lt;script&gt;
-  export default {
-    data: {
-      todos: [
-        { text: '学习 JavaScript' },
-        { text: '学习 Vue' },
-        { text: '整个牛项目' }
+&lt;<span style="color:#008000;font-weight:bold">script</span>&gt;
+  <span style="color:#a2f;font-weight:bold">export</span> <span style="color:#a2f;font-weight:bold">default</span> {
+    data<span style="color:#666">:</span> {
+      todos<span style="color:#666">:</span> [
+        { text<span style="color:#666">:</span> <span style="color:#b44">&#39;学习 JavaScript&#39;</span> },
+        { text<span style="color:#666">:</span> <span style="color:#b44">&#39;学习 Vue&#39;</span> },
+        { text<span style="color:#666">:</span> <span style="color:#b44">&#39;整个牛项目&#39;</span> }
       ]
     }
   }
-&lt;/script&gt;
-</code></pre>
-
-<h2 id="实践">实践</h2>
-
-<p>让我们把目光回到 <code>Hello.vue</code>。在这个组件里面有一些链接列表， Essential Links 和 Ecosystem，这些列表直接使用 HTML 编写：</p>
-
-<pre><code class="language-html">&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://vuejs.org&quot; target=&quot;_blank&quot;&gt;Core Docs&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://forum.vuejs.org&quot; target=&quot;_blank&quot;&gt;Forum&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://gitter.im/vuejs/vue&quot; target=&quot;_blank&quot;&gt;Gitter Chat&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/vuejs&quot; target=&quot;_blank&quot;&gt;Twitter&lt;/a&gt;&lt;/li&gt;
-  &lt;br&gt;
-  &lt;li&gt;&lt;a href=&quot;http://vuejs-templates.github.io/webpack/&quot; target=&quot;_blank&quot;&gt;Docs for This Template&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Ecosystem&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://router.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vue-router&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://vuex.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vuex&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://vue-loader.vuejs.org/&quot; target=&quot;_blank&quot;&gt;vue-loader&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/vuejs/awesome-vue&quot; target=&quot;_blank&quot;&gt;awesome-vue&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</code></pre>
-
-<p>按照传统的写法，如果我们需要往里面添加链接的时候，每次我们都得添加 <code>&lt;li&gt;</code> 和 <code>&lt;a&gt;</code> 标签。思考两个问题：</p>
-
+&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</code></pre></div><h2 id="实践">实践 <a href="#%e5%ae%9e%e8%b7%b5" class="anchor">🔗</a></h2><p>让我们把目光回到 <code>Hello.vue</code>。在这个组件里面有一些链接列表， Essential Links 和 Ecosystem，这些列表直接使用 HTML 编写：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">ul</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://vuejs.org&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Core Docs&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://forum.vuejs.org&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Forum&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://gitter.im/vuejs/vue&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Gitter Chat&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://twitter.com/vuejs&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Twitter&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">br</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;http://vuejs-templates.github.io/webpack/&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Docs for This Template&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
+&lt;<span style="color:#008000;font-weight:bold">h2</span>&gt;Ecosystem&lt;/<span style="color:#008000;font-weight:bold">h2</span>&gt;
+&lt;<span style="color:#008000;font-weight:bold">ul</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;http://router.vuejs.org/&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;vue-router&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;http://vuex.vuejs.org/&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;vuex&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;http://vue-loader.vuejs.org/&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;vue-loader&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://github.com/vuejs/awesome-vue&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;awesome-vue&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
+</code></pre></div><p>按照传统的写法，如果我们需要往里面添加链接的时候，每次我们都得添加 <code>&lt;li&gt;</code> 和 <code>&lt;a&gt;</code> 标签。思考两个问题：</p>
 <ul>
 <li>添加几个链接还好，如果要添加非常非常多呢？难到要复制几十次 <code>&lt;li&gt;</code> 和 <code>&lt;a&gt;</code> 标签？</li>
 <li>如果要动态改变链接列表呢？难道要使用 <code>innerHTML</code> 等方法修改 DOM？</li>
 </ul>
-
 <p>聪明的你可能已经想到了，很明显不需要这么做，我们可以使用模板语法。将链接信息写到 Vue 的数据对象 <code>data</code> 里面，然后通过动态绑定的方式，将数据绑定到 DOM。</p>
-
 <p>所以修改如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">template</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;hello&#34;</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">h1</span>&gt;{{ msg }}&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">h2</span>&gt;Essential Links&lt;/<span style="color:#008000;font-weight:bold">h2</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">ul</span>&gt;
+      &lt;<span style="color:#008000;font-weight:bold">li</span> <span style="color:#b44">v-for</span><span style="color:#666">=</span><span style="color:#b44">&#34;essentialLink in essentialLinks&#34;</span>&gt;
+        &lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">:href</span><span style="color:#666">=</span><span style="color:#b44">&#34;essentialLink.link&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;{{ essentialLink.text }}&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;
+      &lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+      &lt;<span style="color:#008000;font-weight:bold">br</span>&gt;
+      &lt;<span style="color:#008000;font-weight:bold">li</span>&gt;&lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;http://vuejs-templates.github.io/webpack/&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;Docs for This Template&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+    &lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">h2</span>&gt;Ecosystem&lt;/<span style="color:#008000;font-weight:bold">h2</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">ul</span>&gt;
+      &lt;<span style="color:#008000;font-weight:bold">li</span> <span style="color:#b44">v-for</span><span style="color:#666">=</span><span style="color:#b44">&#34;ecosystem in ecosystems&#34;</span>&gt;
+        &lt;<span style="color:#008000;font-weight:bold">a</span> <span style="color:#b44">:href</span><span style="color:#666">=</span><span style="color:#b44">&#34;ecosystem.link&#34;</span> <span style="color:#b44">target</span><span style="color:#666">=</span><span style="color:#b44">&#34;_blank&#34;</span>&gt;{{ ecosystem.text }}&lt;/<span style="color:#008000;font-weight:bold">a</span>&gt;
+      &lt;/<span style="color:#008000;font-weight:bold">li</span>&gt;
+    &lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
+  &lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">template</span>&gt;
 
-<pre><code class="language-html">&lt;template&gt;
-  &lt;div class=&quot;hello&quot;&gt;
-    &lt;h1&gt;{{ msg }}&lt;/h1&gt;
-    &lt;h2&gt;Essential Links&lt;/h2&gt;
-    &lt;ul&gt;
-      &lt;li v-for=&quot;essentialLink in essentialLinks&quot;&gt;
-        &lt;a :href=&quot;essentialLink.link&quot; target=&quot;_blank&quot;&gt;{{ essentialLink.text }}&lt;/a&gt;
-      &lt;/li&gt;
-      &lt;br&gt;
-      &lt;li&gt;&lt;a href=&quot;http://vuejs-templates.github.io/webpack/&quot; target=&quot;_blank&quot;&gt;Docs for This Template&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;h2&gt;Ecosystem&lt;/h2&gt;
-    &lt;ul&gt;
-      &lt;li v-for=&quot;ecosystem in ecosystems&quot;&gt;
-        &lt;a :href=&quot;ecosystem.link&quot; target=&quot;_blank&quot;&gt;{{ ecosystem.text }}&lt;/a&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-export default {
-  name: 'hello',
+&lt;<span style="color:#008000;font-weight:bold">script</span>&gt;
+<span style="color:#a2f;font-weight:bold">export</span> <span style="color:#a2f;font-weight:bold">default</span> {
+  name<span style="color:#666">:</span> <span style="color:#b44">&#39;hello&#39;</span>,
   data () {
-    return {
-      msg: 'Welcome to Your Vue.js App',
-      ecosystems: [
+    <span style="color:#a2f;font-weight:bold">return</span> {
+      msg<span style="color:#666">:</span> <span style="color:#b44">&#39;Welcome to Your Vue.js App&#39;</span>,
+      ecosystems<span style="color:#666">:</span> [
         {
-          link: 'http://router.vuejs.org/',
-          text: 'vue-router'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;http://router.vuejs.org/&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;vue-router&#39;</span>
         },
         {
-          link: 'http://vuex.vuejs.org/',
-          text: 'vuex'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;http://vuex.vuejs.org/&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;vuex&#39;</span>
         },
         {
-          link: 'http://vue-loader.vuejs.org/',
-          text: 'vue-loader'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;http://vue-loader.vuejs.org/&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;vue-loader&#39;</span>
         },
         {
-          link: 'https://github.com/vuejs/awesome-vue',
-          text: 'awesome-vue'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://github.com/vuejs/awesome-vue&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;awesome-vue&#39;</span>
         }
       ],
-      essentialLinks: [
+      essentialLinks<span style="color:#666">:</span> [
         {
-          link: 'https://vuejs.org',
-          text: 'Core Docs'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://vuejs.org&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;Core Docs&#39;</span>
         },
         {
-          link: 'https://forum.vuejs.org',
-          text: 'Forum'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://forum.vuejs.org&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;Forum&#39;</span>
         },
         {
-          link: 'https://gitter.im/vuejs/vue',
-          text: 'Gitter Chat'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://gitter.im/vuejs/vue&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;Gitter Chat&#39;</span>
         },
         {
-          link: 'https://github.com/vuejs/awesome-vue',
-          text: 'awesome-vue'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://github.com/vuejs/awesome-vue&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;awesome-vue&#39;</span>
         },
         {
-          link: 'https://twitter.com/vuejs',
-          text: 'Twitter'
+          link<span style="color:#666">:</span> <span style="color:#b44">&#39;https://twitter.com/vuejs&#39;</span>,
+          text<span style="color:#666">:</span> <span style="color:#b44">&#39;Twitter&#39;</span>
         }
       ]
     }
   }
 }
-&lt;/script&gt;
-</code></pre>
-
-<p>这样我们就把数据和视图分开了，模板里面的代码也简洁了很多，不再需要写很多重复的代码。并且根据不同数据，我们也能展示出不同的 UI。</p>
-
-<h2 id="总结">总结</h2>
-
-<p>本文详细讲解了 vue-cli 初始化的项目代码，并且在讲解代码的过程中，介绍了构造 vue 对象的一些参数，以及 vue 的一些基本概念，比如模板语法中的插值和指令。最后通过修改代码对以上知识点进行实践。</p>
-
-<p>相信看到了这里，你对如何使用 vue 写一个项目已经有了初步了解。当然，看完本文，可能还有很多概念理解不清楚，这时推荐去看一下 vue 的<a href="https://cn.vuejs.org/">官方文档</a>，这个时候再去看<a href="https://cn.vuejs.org/">官方文档</a>，应该就会轻松很多了。</p>
-
-                </section>
-            </article>
-
-            
-                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fvue2-tutorials-01-quick-start%2f - %e5%bf%ab%e9%80%9f%e5%85%a5%e9%97%a8%20-%20Vue2%20Tutorials%20%28%e4%b8%80%29 by @nodejh"><span class="icon-twitter"> tweet</span></a>
-
-<a class="facebook" href="#" onclick="
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;"><span class="icon-facebook-rect"> Share</span>
-</a>
-
-            
-
-            
-                <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'nodejh'; 
-
+&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</code></pre></div><p>这样我们就把数据和视图分开了，模板里面的代码也简洁了很多，不再需要写很多重复的代码。并且根据不同数据，我们也能展示出不同的 UI。</p>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>本文详细讲解了 vue-cli 初始化的项目代码，并且在讲解代码的过程中，介绍了构造 vue 对象的一些参数，以及 vue 的一些基本概念，比如模板语法中的插值和指令。最后通过修改代码对以上知识点进行实践。</p>
+<p>相信看到了这里，你对如何使用 vue 写一个项目已经有了初步了解。当然，看完本文，可能还有很多概念理解不清楚，这时推荐去看一下 vue 的<a 
+    href="https://cn.vuejs.org/"
+    
+    
      
+      target="_blank" 
+      rel="noopener"
+    
+>
+    官方文档
+</a>，这个时候再去看<a 
+    href="https://cn.vuejs.org/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    官方文档
+</a>，应该就会轻松很多了。</p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/vue.js">Vue.js</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
     (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </div>
 
-            
+</section>
 
-            
 
-            <footer id="footer">
+    </main>
+    
+    <footer id="footer">
     
         <div id="social">
 
-	
-	
-    <a class="symbol" href="https://www.facebook.com/nodejh">
-        <i class="fa fa-facebook-square"></i>
-    </a>
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.github.com/nodejh">
-        <i class="fa fa-github-square"></i>
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.twitter.com/nodejh">
-        <i class="fa fa-twitter-square"></i>
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
-    
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
 
 
 </div>
 
     
-    <p class="small">
+
+    <p class="copyright">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> 
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
     
     </p>
-    <p class="small">
+    <p class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
     </p>
 </footer>
 
-        </section>
-
-        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
-<script src="http://nodejh.com/js/main.js"></script>
-<script src="http://nodejh.com/js/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-  
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-84989670-1', 'auto');
-ga('send', 'pageview');
-</script>
-
-
-
-
-
-    </body>
+  </body>
 </html>

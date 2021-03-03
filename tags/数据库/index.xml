@@ -1,49 +1,37 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>数据库 on node</title>
-    <link>http://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
-    <description>Recent content in 数据库 on node</description>
+    <title>数据库 on Hang Jiang</title>
+    <link>https://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <description>Recent content in 数据库 on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 26 Mar 2017 00:42:23 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>深入理解 Oracle 启动原理</title>
-      <link>http://nodejh.com/posts/understand-the-oracle-startup-process/</link>
+      <link>https://nodejh.com/posts/understand-the-oracle-startup-process/</link>
       <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/understand-the-oracle-startup-process/</guid>
-      <description>&lt;h2 id=&#34;一-常用启动步骤&#34;&gt;一. 常用启动步骤&lt;/h2&gt;
-
-&lt;p&gt;对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/understand-the-oracle-startup-process/</guid>
+      <description>一. 常用启动步骤 🔗对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。 如果还需要使用 OEM 来监控数据库服务，则还要启动</description>
     </item>
     
     <item>
       <title>在 Oracle 中设置自增列</title>
-      <link>http://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</link>
+      <link>https://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</link>
       <pubDate>Mon, 20 Feb 2017 20:26:33 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</guid>
-      <description>&lt;p&gt;如果你经常使用 MySQL，你肯定对 &lt;code&gt;AUTO_INCREMENT&lt;/code&gt; 非常熟悉，因为经常要用到它。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/how-to-create-auto-increment-column-in-oracle/</guid>
+      <description>如果你经常使用 MySQL，你肯定对 AUTO_INCREMENT 非常熟悉，因为经常要用到它。 一、什么是自增列 ？ 🔗自增列是数据库中值随插入的每个行自动增加的一列。它最常用</description>
     </item>
     
     <item>
       <title>使用 SQL *Plus 管理 Oracle 数据库</title>
-      <link>http://nodejh.com/posts/using-sql-plus-on-oracle/</link>
+      <link>https://nodejh.com/posts/using-sql-plus-on-oracle/</link>
       <pubDate>Fri, 17 Feb 2017 15:03:43 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/using-sql-plus-on-oracle/</guid>
-      <description>&lt;p&gt;SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 &lt;code&gt;SQL&lt;/code&gt;、&lt;code&gt;PL/SQL&lt;/code&gt;、 和 &lt;code&gt;SQL*Plus&lt;/code&gt; 命令：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/using-sql-plus-on-oracle/</guid>
+      <description>SQL *Plus 是基于命令行的 Oracle 管理工具，可以用来执行 SQL、PL/SQL、 和 SQL*Plus 命令： 支持查询、插入和更新数据 执行 PL/SQL 程序 查看表和对象的定义 开发和执行批处</description>
     </item>
     
   </channel>

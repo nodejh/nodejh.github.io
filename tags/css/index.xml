@@ -1,33 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Css on node</title>
-    <link>http://nodejh.com/tags/css/</link>
-    <description>Recent content in Css on node</description>
+    <title>CSS on Hang Jiang</title>
+    <link>https://nodejh.com/tags/css/</link>
+    <description>Recent content in CSS on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 28 Jul 2017 20:53:14 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/css/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 28 Jul 2017 20:53:14 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/css/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用 Flexbox 使浮动元素垂直居中</title>
-      <link>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</link>
+      <link>https://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</link>
       <pubDate>Fri, 28 Jul 2017 20:53:14 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
-      <description>&lt;p&gt;垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
+      <description>垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。 考虑下面的场景： 你正在使用网格布局的框架，比如 Bootstrap 、Foundation 、Sk</description>
     </item>
     
     <item>
       <title>纯 CSS 实现响应式导航菜单</title>
-      <link>http://nodejh.com/posts/css-responsive-navigation-menu/</link>
+      <link>https://nodejh.com/posts/css-responsive-navigation-menu/</link>
       <pubDate>Fri, 28 Jul 2017 17:03:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/css-responsive-navigation-menu/</guid>
+      <guid>https://nodejh.com/posts/css-responsive-navigation-menu/</guid>
       <description>本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对</description>
     </item>
     

@@ -1,166 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on node</title>
-    <link>http://nodejh.com/categories/</link>
-    <description>Recent content in Categories on node</description>
+    <title>Categories on Hang Jiang</title>
+    <link>https://nodejh.com/categories/</link>
+    <description>Recent content in Categories on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 05 Jul 2017 11:41:43 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 09 Dec 2017 21:42:31 +0800</lastBuildDate><atom:link href="https://nodejh.com/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title></title>
-      <link>http://nodejh.com/categories/</link>
-      <pubDate>Wed, 05 Jul 2017 11:41:43 +0800</pubDate>
+      <title>前端</title>
+      <link>https://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</link>
+      <pubDate>Sat, 09 Dec 2017 21:42:31 +0800</pubDate>
       
-      <guid>http://nodejh.com/categories/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Css</title>
-      <link>http://nodejh.com/categories/css/</link>
-      <pubDate>Fri, 28 Jul 2017 20:53:14 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/css/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Database</title>
-      <link>http://nodejh.com/categories/database/</link>
-      <pubDate>Sun, 26 Mar 2017 00:42:23 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/database/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Electron</title>
-      <link>http://nodejh.com/categories/electron/</link>
-      <pubDate>Thu, 06 Jul 2017 15:32:26 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/electron/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>http://nodejh.com/categories/java/</link>
-      <pubDate>Thu, 17 Mar 2016 19:15:01 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/java/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Javascript</title>
-      <link>http://nodejh.com/categories/javascript/</link>
-      <pubDate>Sat, 18 Feb 2017 11:07:14 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/javascript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Linux</title>
-      <link>http://nodejh.com/categories/linux/</link>
-      <pubDate>Fri, 23 Jan 2015 20:33:29 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Macos</title>
-      <link>http://nodejh.com/categories/macos/</link>
-      <pubDate>Sun, 19 Mar 2017 17:15:37 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/macos/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Mysql</title>
-      <link>http://nodejh.com/categories/mysql/</link>
-      <pubDate>Tue, 12 Apr 2016 02:40:03 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/mysql/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Node.js</title>
-      <link>http://nodejh.com/categories/node.js/</link>
-      <pubDate>Fri, 30 Dec 2016 18:58:19 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/node.js/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Php</title>
-      <link>http://nodejh.com/categories/php/</link>
-      <pubDate>Thu, 29 Dec 2016 00:04:41 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/php/</guid>
+      <guid>https://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>http://nodejh.com/categories/python/</link>
+      <link>https://nodejh.com/categories/python/</link>
       <pubDate>Sun, 09 Oct 2016 18:27:44 +0800</pubDate>
       
-      <guid>http://nodejh.com/categories/python/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Shadowsocks</title>
-      <link>http://nodejh.com/categories/shadowsocks/</link>
-      <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/shadowsocks/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Ubuntu</title>
-      <link>http://nodejh.com/categories/ubuntu/</link>
-      <pubDate>Tue, 07 Feb 2017 13:08:16 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/ubuntu/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vue</title>
-      <link>http://nodejh.com/categories/vue/</link>
-      <pubDate>Mon, 17 Jul 2017 09:57:37 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/vue/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Y</title>
-      <link>http://nodejh.com/categories/y/</link>
-      <pubDate>Thu, 30 Mar 2017 18:06:02 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/y/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>前端</title>
-      <link>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</link>
-      <pubDate>Sat, 09 Dec 2017 21:42:31 +0800</pubDate>
-      
-      <guid>http://nodejh.com/categories/%E5%89%8D%E7%AB%AF/</guid>
+      <guid>https://nodejh.com/categories/python/</guid>
       <description></description>
     </item>
     

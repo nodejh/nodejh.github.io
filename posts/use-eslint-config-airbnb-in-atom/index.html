@@ -1,1092 +1,1073 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-cn">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="description" content="Nodejh&#39;s Blog">
-		<meta name="generator" content="Hugo 0.31.1" />
-		<title>在 Atom 中使用 ESlint &middot; node</title>
-		<link rel="shortcut icon" href="http://nodejh.com/images/favicon.ico">
-		<link rel="stylesheet" href="http://nodejh.com/css/style.css">
-		<link rel="stylesheet" href="http://nodejh.com/css/highlight.css">
-		
+  <head>
+    <title>在 Atom 中使用 ESlint | Hang Jiang</title>
 
-		
-		<link rel="stylesheet" href="http://nodejh.com/css/font-awesome.min.css">
-		
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
 
-		
-		<link href="http://nodejh.com/index.xml" rel="alternate" type="application/rss+xml" title="node" />
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
-	
-		<a href='http://nodejh.com/'> <span class="arrow">←</span>Home</a>
-	
-	<a href='http://nodejh.com/post'>Archive</a>
-	<a href='http://nodejh.com/tags'>Tags</a>
-	<a href='http://nodejh.com/projects'>Projects</a>
-	<a href='http://nodejh.com/about'>About</a>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
 	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
 
 	
-	<a class="cta" href="http://nodejh.com/index.xml">Subscribe</a>
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
 
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        在 Atom 中使用 ESlint
-                    </h1>
-                    <h2 class="headline">
-                    Sep 27, 2016 20:48
-                    · 7945 words
-                    · 16 minutes read
-                      <span class="tags">
-                      
-                      
-                          
-                              <a href="http://nodejh.com/tags/eslint">ESLint</a>
-                          
-                              <a href="http://nodejh.com/tags/atom">Atom</a>
-                          
-                      
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                    <div id="toc">
-                      <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint</a></li>
-<li><a href="#2-在项目中使用-eslint-config-airbnb">2. 在项目中使用 eslint-config-airbnb</a></li>
-<li><a href="#3-自定义-eslint-规则">3. 自定义 ESLint 规则</a></li>
-<li><a href="#4-eslint-规则说明">4. ESLint 规则说明</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#2017-03-11-更新">2017.03.11 更新</a>
-<ul>
-<li>
-<ul>
-<li><a href="#快速使用">快速使用</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
-                    </div>
-                  
-                
-                <section id="post-body">
-                    <p>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。</p>
+    <main class="main">
+      
 
-<p></p>
+<section id="single">
+    <h1 class="title">在 Atom 中使用 ESlint</h1>
 
-<p>关于 ESLint 的详细介绍可看<a href="http://eslint.org">官方文档</a>。</p>
+    <div class="tip">
+        <span>
+          Sep 27, 2016 20:48
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            8008 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          16 minute read
+        </span>
+    </div>
 
-<h4 id="1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint</h4>
-
-<pre><code class="language-shell">$ apm install linter linter-eslint
-</code></pre>
-
-<h4 id="2-在项目中使用-eslint-config-airbnb">2. 在项目中使用 eslint-config-airbnb</h4>
-
-<p><a href="https://www.npmjs.com/package/eslint-config-airbnb#improving-this-config">eslint-config-airbnb</a> 是一个基于 <a href="https://github.com/airbnb/javascript"> Airbnb&rsquo;s Javascript styleguide</a> 的 ESLint 配置。安装方法如下：</p>
-
-<pre><code class="language-shell">$ npm install --save-dev eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb
-</code></pre>
-
-<p>然后在项目根目录添加一个 <code>.eslintrc</code> 文件，并在其中添加如下代码：</p>
-
-<pre><code class="language-json">{
-	&quot;extends&quot;: &quot;airbnb&quot;
+    <div class="content">
+      <p>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。</p>
+<p>关于 ESLint 的详细介绍可看<a 
+    href="http://eslint.org"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    官方文档
+</a>。</p>
+<h4 id="1-在-atom-中安装-eslint">1. 在 Atom 中安装 ESLint <a href="#1-%e5%9c%a8-atom-%e4%b8%ad%e5%ae%89%e8%a3%85-eslint" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ apm install linter linter-eslint
+</code></pre></div><h4 id="2-在项目中使用-eslint-config-airbnb">2. 在项目中使用 eslint-config-airbnb <a href="#2-%e5%9c%a8%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8-eslint-config-airbnb" class="anchor">🔗</a></h4><p><a 
+    href="https://www.npmjs.com/package/eslint-config-airbnb#improving-this-config"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    eslint-config-airbnb
+</a> 是一个基于 <a 
+    href="https://github.com/airbnb/javascript"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+     Airbnb&rsquo;s Javascript styleguide
+</a> 的 ESLint 配置。安装方法如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ npm install --save-dev eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb
+</code></pre></div><p>然后在项目根目录添加一个 <code>.eslintrc</code> 文件，并在其中添加如下代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#008000;font-weight:bold">&#34;extends&#34;</span>: <span style="color:#b44">&#34;airbnb&#34;</span>
 }
-</code></pre>
+</code></pre></div><h4 id="3-自定义-eslint-规则">3. 自定义 ESLint 规则 <a href="#3-%e8%87%aa%e5%ae%9a%e4%b9%89-eslint-%e8%a7%84%e5%88%99" class="anchor">🔗</a></h4><p>eslint-config-airbnb 中的规则，可能并不完全符合自己的编码习惯，我们还可以在 <code>.eslintrc</code> 中添加一些自定义的规则。</p>
+<h4 id="4-eslint-规则说明">4. ESLint 规则说明 <a href="#4-eslint-%e8%a7%84%e5%88%99%e8%af%b4%e6%98%8e" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#b44">&#34;rules&#34;</span><span style="">:</span> {
 
-<h4 id="3-自定义-eslint-规则">3. 自定义 ESLint 规则</h4>
+        <span style="">/*Possible</span> <span style="">Errors*/</span>
 
-<p>eslint-config-airbnb 中的规则，可能并不完全符合自己的编码习惯，我们还可以在 <code>.eslintrc</code> 中添加一些自定义的规则。</p>
+        <span style="">//</span> <span style="">数组和对象键值对最后一个逗号，</span>
 
-<h4 id="4-eslint-规则说明">4. ESLint 规则说明</h4>
+        <span style="">//</span> <span style="">never参数：不能带末尾的逗号,</span>
 
-<pre><code>&quot;rules&quot;: {
+        <span style="">//</span> <span style="">always参数：必须带末尾的逗号，</span>
 
-        /*Possible Errors*/
+        <span style="">//</span> <span style="">always-multiline：多行模式必须带逗号，单行模式不能带逗号</span>
 
-        // 数组和对象键值对最后一个逗号，
+        <span style="color:#008000;font-weight:bold">&#34;comma-dangle&#34;</span>: [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>],
 
-        // never参数：不能带末尾的逗号,
+        <span style="">//禁止在条件表达式中使用赋值语句</span>
 
-        // always参数：必须带末尾的逗号，
+        <span style="color:#008000;font-weight:bold">&#34;no-cond-assign&#34;</span>: <span style="color:#666">2</span>,
 
-        // always-multiline：多行模式必须带逗号，单行模式不能带逗号
+        <span style="">//禁止使用console</span>
 
-        &quot;comma-dangle&quot;: [2, &quot;never&quot;],
+        <span style="color:#008000;font-weight:bold">&#34;no-console&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止在条件表达式中使用赋值语句
+        <span style="">//禁止在条件中使用常量表达式</span> <span style="">if(true)</span> <span style="">if(1)</span>
 
-        &quot;no-cond-assign&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-constant-condition&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止使用console
+        <span style="">//禁止在正则表达式中使用控制符</span>
 
-        &quot;no-console&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-control-regex&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止在条件中使用常量表达式 if(true) if(1)
+        <span style="">//禁止使用debugger语句</span>
 
-        &quot;no-constant-condition&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-debugger&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止在正则表达式中使用控制符
+        <span style="">//函数参数禁止重名</span>
 
-        &quot;no-control-regex&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-dupe-args&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止使用debugger语句
+        <span style="">//在创建对象字面量时不允许键重复</span>
 
-        &quot;no-debugger&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-dupe-keys&#34;</span>: <span style="color:#666">2</span>,
 
-        //函数参数禁止重名
+        <span style="">//在switch语句中禁止重复的case</span>
 
-        &quot;no-dupe-args&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-duplicate-case&#34;</span>: <span style="color:#666">2</span>,
 
-        //在创建对象字面量时不允许键重复
+        <span style="">//代码块的内容不能为空，禁止空代码块</span>
 
-        &quot;no-dupe-keys&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-empty&#34;</span>: <span style="color:#666">2</span>,
 
-        //在switch语句中禁止重复的case
+        <span style="">//正则表达式的内容不能为空，禁止使用不匹配任何字符串的正则表达式</span>
 
-        &quot;no-duplicate-case&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-empty-character-class&#34;</span>: <span style="color:#666">2</span>,
 
-        //代码块的内容不能为空，禁止空代码块
+        <span style="">//禁止对catch语句中的异常进行赋值</span>
 
-        &quot;no-empty&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-ex-assign&#34;</span>: <span style="color:#666">2</span>,
 
-        //正则表达式的内容不能为空，禁止使用不匹配任何字符串的正则表达式
+        <span style="">//禁止不必要的bool转换</span>
 
-        &quot;no-empty-character-class&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-extra-boolean-cast&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止对catch语句中的异常进行赋值
+        <span style="">//禁止使用多余的圆括号</span>
 
-        &quot;no-ex-assign&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-extra-parens&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止不必要的bool转换
+        <span style="">//禁止多余的冒号</span>
 
-        &quot;no-extra-boolean-cast&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-extra-semi&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止使用多余的圆括号
+        <span style="">//禁止重复的函数声明</span>
 
-        &quot;no-extra-parens&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-func-assign&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止多余的冒号
+        <span style="">//禁止在块语句中声明变量或函数</span>
 
-        &quot;no-extra-semi&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-inner-declarations&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止重复的函数声明
+        <span style="">//禁止使用无效的正则语句</span>
 
-        &quot;no-func-assign&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-invalid-regexp&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止在块语句中声明变量或函数
+        <span style="">//禁止使用不合法或者不规则的空白符</span>
 
-        &quot;no-inner-declarations&quot;: 2,
+        <span style="color:#008000;font-weight:bold">&#34;no-irregular-whitespace&#34;</span>: <span style="color:#666">2</span>,
 
-        //禁止使用无效的正则语句
+        <span style="">//在in操作符左边的操作项不能用!</span> <span style="">例如这样写不对的：if</span> <span style="">(</span> <span style="">!a</span> <span style="">in</span> <span style="">b)</span> <span style="">{</span> <span style="">//dosomething</span> }
 
-        &quot;no-invalid-regexp&quot;: 2,
+        <span style="color:#b44">&#34;no-negated-in-lhs&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用不合法或者不规则的空白符
+        <span style="">//禁止把全局对象当函数调用，比如下面写法错误的：Math(),</span> <span style="">JSON()</span>
 
-        &quot;no-irregular-whitespace&quot;: 2,
+        <span style="color:#b44">&#34;no-obj-calls&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在in操作符左边的操作项不能用! 例如这样写不对的：if ( !a in b) { //dosomething }
+        <span style="">//禁止在正则表达式字面量中使用多个空格</span> <span style="">/foo</span> <span style="">bar/</span>
 
-        &quot;no-negated-in-lhs&quot;: 2,
+        <span style="color:#b44">&#34;no-regex-spaces&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止把全局对象当函数调用，比如下面写法错误的：Math(), JSON()
+        <span style="">//禁止稀疏数组，清除多余的逗号申明</span>  <span style="">比如</span>[<span style="color:#666">1</span>,,<span style="color:#666">2</span>]
 
-        &quot;no-obj-calls&quot;: 2,
+        <span style="color:#b44">&#34;no-sparse-arrays&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止在正则表达式字面量中使用多个空格 /foo bar/
+        <span style="">//为了保证两行不相关的代码不会意外的被当做一行代码来解析</span>
 
-        &quot;no-regex-spaces&quot;: 2,
+        <span style="color:#b44">&#34;no-unexpected-multiline&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止稀疏数组，清除多余的逗号申明  比如[1,,2]
+        <span style="">//禁止有执行不到的代码</span>
 
-        &quot;no-sparse-arrays&quot;: 2,
+        <span style="color:#b44">&#34;no-unreachable&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //为了保证两行不相关的代码不会意外的被当做一行代码来解析
+        <span style="">//禁止和NaN作比较,推荐使用isNaN方法</span>
 
-        &quot;no-unexpected-multiline&quot;: 2,
+        <span style="color:#b44">&#34;use-isnan&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止有执行不到的代码
+        <span style="">//用来检测JSDoc是否完整和合法</span>
 
-        &quot;no-unreachable&quot;: 2,
+        <span style="color:#b44">&#34;valid-jsdoc&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止和NaN作比较,推荐使用isNaN方法
+        <span style="">//typeof操作符返回的结果会是</span> <span style="color:#b44">&#34;undefined&#34;</span><span style="">,</span>  <span style="color:#b44">&#34;object&#34;</span><span style="">,</span>  <span style="color:#b44">&#34;boolean&#34;</span><span style="">,</span> <span style="color:#b44">&#34;number&#34;</span><span style="">,</span> <span style="color:#b44">&#34;string&#34;</span><span style="">,</span> <span style="">和</span>  <span style="color:#b44">&#34;function&#34;</span><span style="">之一。</span>
 
-        &quot;use-isnan&quot;: 2,
+        <span style="">//保证typeof</span> <span style="">操作符返回的结果必须和上面六个字符串作比较</span>
 
-        //用来检测JSDoc是否完整和合法
+        <span style="color:#b44">&#34;valid-typeof&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;valid-jsdoc&quot;: 2,
 
-        //typeof操作符返回的结果会是 &quot;undefined&quot;,  &quot;object&quot;,  &quot;boolean&quot;, &quot;number&quot;, &quot;string&quot;, 和  &quot;function&quot;之一。
 
-        //保证typeof 操作符返回的结果必须和上面六个字符串作比较
+        <span style="">/*Best</span> <span style="">Practices*/</span>
 
-        &quot;valid-typeof&quot;: 2,
+        <span style="">//在声明对象时getter和setter需成对出现</span>
 
+        <span style="color:#b44">&#34;accessor-pairs&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
+        <span style="">//数值方法的回调函数中强制写return语句</span>
 
-        /*Best Practices*/
+        <span style="color:#b44">&#34;array-callback-return&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在声明对象时getter和setter需成对出现
+        <span style="">//当在代码块中用var声明变量，并在代码块外使用时报错</span>
 
-        &quot;accessor-pairs&quot;: 2,
+        <span style="color:#b44">&#34;block-scoped-var&#34;</span><span style="">:</span> <span style="color:#666">0</span><span style="">,</span>
 
-        //数值方法的回调函数中强制写return语句
+        <span style="">//用来控制函数的复杂度，分支超过</span><span style="color:#666">5</span><span style="">时报错</span>
 
-        &quot;array-callback-return&quot;: 2,
+        <span style="color:#b44">&#34;complexity&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">5</span>]<span style="">,</span>
 
-        //当在代码块中用var声明变量，并在代码块外使用时报错
+        <span style="">//不同分支的return语句不能返回不同的类型，要么一致要么都没有</span>
 
-        &quot;block-scoped-var&quot;: 0,
+        <span style="color:#b44">&#34;consistent-return&#34;</span><span style="">:</span> <span style="color:#666">0</span><span style="">,</span>
 
-        //用来控制函数的复杂度，分支超过5时报错
+        <span style="">//</span> <span style="">if</span> <span style="">else</span> <span style="">while</span> <span style="">for</span> <span style="">do后面的代码块是否需要</span>{ }<span style="">包围，参数：</span>
 
-        &quot;complexity&quot;: [2, 5],
+        <span style="">//</span> <span style="">multi</span>         <span style="">只有块中有多行语句时才需要</span>{ }<span style="">包围</span>
 
-        //不同分支的return语句不能返回不同的类型，要么一致要么都没有
+        <span style="">//</span> <span style="">multi-line</span>    <span style="">只有块中有多行语句时才需要</span>{ }<span style="">包围,</span> <span style="">但是块中的执行语句只有一行时，块中的语句只能跟和if语句在同一行。</span>
 
-        &quot;consistent-return&quot;: 0,
+        <span style="">//</span>                <span style="">if</span> <span style="">(foo)</span> <span style="">foo++;</span> <span style="">else</span> <span style="">doSomething();</span>
 
-        // if else while for do后面的代码块是否需要{ }包围，参数：
+        <span style="">//</span> <span style="">multi-or-nest</span> <span style="">只有块中有多行语句时才需要</span>{ }<span style="">包围,</span> <span style="">如果块中的执行语句只有一行，执行语句可以另起一行也可以跟在if语句后面</span>
 
-        // multi         只有块中有多行语句时才需要{ }包围
+        <span style="">//</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;multi&#34;</span>, <span style="color:#b44">&#34;consistent&#34;</span>] <span style="">保持前后语句的</span>{ }<span style="">一致</span>
 
-        // multi-line    只有块中有多行语句时才需要{ }包围, 但是块中的执行语句只有一行时，块中的语句只能跟和if语句在同一行。
+        <span style="">//</span> <span style="">default:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;all&#34;</span>] <span style="">全都需要</span>{ }<span style="">包围</span>
 
-        //                if (foo) foo++; else doSomething();
+        <span style="color:#b44">&#34;curly&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        // multi-or-nest 只有块中有多行语句时才需要{ }包围, 如果块中的执行语句只有一行，执行语句可以另起一行也可以跟在if语句后面
+        <span style="">//所有的switch语句都必须要有一个default分支</span>
 
-        // [2, &quot;multi&quot;, &quot;consistent&quot;] 保持前后语句的{ }一致
+        <span style="color:#b44">&#34;default-case&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        // default: [2, &quot;all&quot;] 全都需要{ }包围
+        <span style="">//</span> <span style="">在书写对象的属性或方法时，新的一行代码可以以.</span> <span style="">开头，也可以以.</span> <span style="">结束。</span>
 
-        &quot;curly&quot;: 2,
+        <span style="">//</span> <span style="">强制统一object.key中</span> <span style="">.</span> <span style="">的位置，参数:</span>
 
-        //所有的switch语句都必须要有一个default分支
+        <span style="">//</span>      <span style="">property，&#39;.&#39;号应与属性在同一行</span>
 
-        &quot;default-case&quot;: 2,
+        <span style="">//</span>      <span style="">object,</span> <span style="">&#39;.&#39;</span> <span style="">号应与对象名在同一行</span>
 
-        // 在书写对象的属性或方法时，新的一行代码可以以. 开头，也可以以. 结束。
+        <span style="color:#b44">&#34;dot-location&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;property&#34;</span>]<span style="">,</span>
 
-        // 强制统一object.key中 . 的位置，参数:
+        <span style="">//</span> <span style="">强制使用.号取属性</span>
 
-        //      property，'.'号应与属性在同一行
+        <span style="">//</span> <span style="">参数：</span> <span style="">allowKeywords：</span><span style="color:#a2f;font-weight:bold">true</span>  <span style="">使用保留字做属性名时，只能使用.方式取属性</span>
 
-        //      object, '.' 号应与对象名在同一行
+        <span style="">//</span>                       <span style="color:#a2f;font-weight:bold">false</span> <span style="">使用保留字做属性名时,</span> <span style="">只能使用</span>[]<span style="">方式取属性</span>
 
-        &quot;dot-location&quot;: [2, &quot;property&quot;],
+        <span style="">//</span>                       <span style="">e.g</span> [<span style="color:#666">2</span>, {<span style="color:#008000;font-weight:bold">&#34;allowKeywords&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>}]
 
-        // 强制使用.号取属性
+        <span style="">//</span>        <span style="">allowPattern:</span>  <span style="">当属性名匹配提供的正则表达式时，允许使用</span>[]<span style="">方式取值,否则只能用.号取值</span>
 
-        // 参数： allowKeywords：true  使用保留字做属性名时，只能使用.方式取属性
+        <span style="">//</span>                       <span style="">e.g</span> [<span style="color:#666">2</span>, {<span style="color:#008000;font-weight:bold">&#34;allowPattern&#34;</span>: <span style="color:#b44">&#34;^[a-z]+(_[a-z]+)+$&#34;</span>}]
 
-        //                       false 使用保留字做属性名时, 只能使用[]方式取属性
+        <span style="color:#b44">&#34;dot-notation&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;allowKeywords&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        //                       e.g [2, {&quot;allowKeywords&quot;: false}]
+        <span style="">//在进行比较时，必须使用全等===</span> <span style="">和完全不等!==</span>
 
-        //        allowPattern:  当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值
+        <span style="color:#b44">&#34;eqeqeq&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;allow-null&#34;</span>]<span style="">,</span>
 
-        //                       e.g [2, {&quot;allowPattern&quot;: &quot;^[a-z]+(_[a-z]+)+$&quot;}]
+        <span style="">//在for-in</span> <span style="">循环中要使用if语句</span>
 
-        &quot;dot-notation&quot;: [2, { &quot;allowKeywords&quot;: true }],
+        <span style="color:#b44">&#34;guard-for-in&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在进行比较时，必须使用全等=== 和完全不等!==
+        <span style="">//代码中禁止使用alert,</span> <span style="">confirm,</span> <span style="">and</span> <span style="">prompt</span>
 
-        &quot;eqeqeq&quot;: [2, &quot;allow-null&quot;],
+        <span style="color:#b44">&#34;no-alert&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在for-in 循环中要使用if语句
+        <span style="">//禁止使用arguments.caller和arguments.callee</span>
 
-        &quot;guard-for-in&quot;: 2,
+        <span style="color:#b44">&#34;no-caller&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //代码中禁止使用alert, confirm, and prompt
+        <span style="">//禁止在case/default语句中使用lexical</span> <span style="">declarations，例如let,</span> <span style="">const,</span> <span style="">function</span> <span style="">and</span> <span style="">class</span>
 
-        &quot;no-alert&quot;: 2,
+        <span style="">//因为在case/default中的声明，在整个switch语句中都能够访问到，如果需要声明变量，可以加大括号。</span>
 
-        //禁止使用arguments.caller和arguments.callee
+        <span style="color:#b44">&#34;no-case-declarations&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;no-caller&quot;: 2,
+        <span style="">//不能使用看起来像除法的正则表达式</span>
 
-        //禁止在case/default语句中使用lexical declarations，例如let, const, function and class
+        <span style="">//用来消除/</span> <span style="">(除号)操作符对程序员的迷惑，比如在正则表达式/=foo/中，我们并不能够确定第一个/是除号还是正则表达式，因此我们需要在等号前面加一个转移符/\=foo/</span>
 
-        //因为在case/default中的声明，在整个switch语句中都能够访问到，如果需要声明变量，可以加大括号。
+        <span style="color:#b44">&#34;no-div-regex&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;no-case-declarations&quot;: 2,
+        <span style="">//在if</span> <span style="">else语句中，如果else语句中只含有一个return语句，那么完全可以不使用else语句，直接return。</span>
 
-        //不能使用看起来像除法的正则表达式
+        <span style="color:#b44">&#34;no-else-return&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //用来消除/ (除号)操作符对程序员的迷惑，比如在正则表达式/=foo/中，我们并不能够确定第一个/是除号还是正则表达式，因此我们需要在等号前面加一个转移符/\=foo/
+        <span style="">//不允许空函数</span>
 
-        &quot;no-div-regex&quot;: 2,
+        <span style="color:#b44">&#34;no-empty-function&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在if else语句中，如果else语句中只含有一个return语句，那么完全可以不使用else语句，直接return。
+        <span style="">//在结构赋值时，模式不能为空。在ECMAScript</span><span style="color:#666">2015</span><span style="">的结构赋值中，模式为空是不会报错的，只是这样的结构赋值没有任何效果，该条规则就保证了模式不能为空，也就保证了结构赋值的有效性。</span>
 
-        &quot;no-else-return&quot;: 2,
+        <span style="color:#b44">&#34;no-empty-pattern&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不允许空函数
+        <span style="">//保证了在和null比较时使用===和!==，而不能够使用==和!=</span>
 
-        &quot;no-empty-function&quot;: 2,
+        <span style="color:#b44">&#34;no-eq-null&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在结构赋值时，模式不能为空。在ECMAScript2015的结构赋值中，模式为空是不会报错的，只是这样的结构赋值没有任何效果，该条规则就保证了模式不能为空，也就保证了结构赋值的有效性。
+        <span style="">//禁止使用eval函数</span>
 
-        &quot;no-empty-pattern&quot;: 2,
+        <span style="color:#b44">&#34;no-eval&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //保证了在和null比较时使用===和!==，而不能够使用==和!=
+        <span style="">//禁止扩展native对象，不能向native的对象上面添加属性</span>
 
-        &quot;no-eq-null&quot;: 2,
+        <span style="color:#b44">&#34;no-extend-native&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用eval函数
+        <span style="">//保证了调用bind方法的函数体内有this对象。规避了不必要的使用bind方法的情况。</span>
 
-        &quot;no-eval&quot;: 2,
+        <span style="">//箭头函数中没有this对象，也就不能够使用bind()方法。该规则保证了在所有的箭头函数中使用bind方法将被视为错误。</span>
 
-        //禁止扩展native对象，不能向native的对象上面添加属性
+        <span style="color:#b44">&#34;no-extra-bind&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;no-extend-native&quot;: 2,
+        <span style="">//如果</span> <span style="">loop中没有内嵌的loops或switches,</span> <span style="">loop标签是不必要的.</span>
 
-        //保证了调用bind方法的函数体内有this对象。规避了不必要的使用bind方法的情况。
+        <span style="color:#b44">&#34;no-extra-label&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //箭头函数中没有this对象，也就不能够使用bind()方法。该规则保证了在所有的箭头函数中使用bind方法将被视为错误。
+        <span style="">//在case语句中尽量加break，避免不必要的fallthrough错误，消除从一个case到另一个case的非故意的「fall</span> <span style="">through」。</span>
 
-        &quot;no-extra-bind&quot;: 2,
+        <span style="">//如果没有添加break等终止语句或者没有添加注释语句，将会抛出错误</span>
 
-        //如果 loop中没有内嵌的loops或switches, loop标签是不必要的.
+        <span style="color:#b44">&#34;no-fallthrough&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;no-extra-label&quot;: 2,
+        <span style="">//在使用浮点小数时，不能够省略小数点前面的数或者后面的数，必须写。比如.</span><span style="color:#666">2</span> <span style="color:#666">2</span><span style="">.</span> <span style="">应该写</span><span style="color:#666">2.2</span> <span style="color:#666">2.0</span>
 
-        //在case语句中尽量加break，避免不必要的fallthrough错误，消除从一个case到另一个case的非故意的「fall through」。
+        <span style="color:#b44">&#34;no-floating-decimal&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //如果没有添加break等终止语句或者没有添加注释语句，将会抛出错误
+        <span style="">//禁止隐式转换，为了消除简写的类型转换</span>
 
-        &quot;no-fallthrough&quot;: 2,
+        <span style="color:#b44">&#34;no-implicit-coercion&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在使用浮点小数时，不能够省略小数点前面的数或者后面的数，必须写。比如.2 2. 应该写2.2 2.0
+        <span style="">//禁止在全局作用域里声明变量或函数</span>
 
-        &quot;no-floating-decimal&quot;: 2,
+        <span style="color:#b44">&#34;no-implicit-globals&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止隐式转换，为了消除简写的类型转换
+        <span style="">//在setTimeout(),</span> <span style="">setInterval()</span> <span style="">or</span> <span style="">execScript()中消除隐式eval的使用</span>
 
-        &quot;no-implicit-coercion&quot;: 2,
+        <span style="color:#b44">&#34;no-implied-eval&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止在全局作用域里声明变量或函数
+        <span style="">//禁止无效的this，只能用在构造器，类，对象字面量</span>
 
-        &quot;no-implicit-globals&quot;: 2,
+        <span style="color:#b44">&#34;no-invalid-this&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在setTimeout(), setInterval() or execScript()中消除隐式eval的使用
+        <span style="">//禁止使用__iterator__属性</span>
 
-        &quot;no-implied-eval&quot;: 2,
+        <span style="color:#b44">&#34;no-iterator&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止无效的this，只能用在构造器，类，对象字面量
+        <span style="">//禁止使用label语句，以避免无限循环</span>
 
-        &quot;no-invalid-this&quot;: 2,
+        <span style="color:#b44">&#34;no-labels&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;allowLoop&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>, <span style="color:#008000;font-weight:bold">&#34;allowSwitch&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span> }]<span style="">,</span>
 
-        //禁止使用__iterator__属性
+        <span style="">//禁止使用不必要的嵌套代码块</span>
 
-        &quot;no-iterator&quot;: 2,
+        <span style="color:#b44">&#34;no-lone-blocks&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用label语句，以避免无限循环
+        <span style="">//禁止在循环体中定义函数并且函数引用了外部变量</span>
 
-        &quot;no-labels&quot;: [2, { &quot;allowLoop&quot;: false, &quot;allowSwitch&quot;: false }],
+        <span style="">//在循环中定义了函数，但是函数内部没有引用外部变量，或者使用let定义的代码块变量，视为合法</span>
 
-        //禁止使用不必要的嵌套代码块
+        <span style="color:#b44">&#34;no-loop-func&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;no-lone-blocks&quot;: 2,
+        <span style="">//禁止使用魔法数字，建议使用常量来代替</span>
 
-        //禁止在循环体中定义函数并且函数引用了外部变量
+        <span style="color:#b44">&#34;no-magic-numbers&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在循环中定义了函数，但是函数内部没有引用外部变量，或者使用let定义的代码块变量，视为合法
+        <span style="">//保证了在逻辑表达式、条件表达式、申明语句、数组元素、对象属性、sequences、函数参数中不使用超过一个的空白符。</span>
 
-        &quot;no-loop-func&quot;: 2,
+        <span style="color:#b44">&#34;no-multi-spaces&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用魔法数字，建议使用常量来代替
+        <span style="">//该规则保证了字符串不分行书写。</span>
 
-        &quot;no-magic-numbers&quot;: 2,
+        <span style="color:#b44">&#34;no-multi-str&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //保证了在逻辑表达式、条件表达式、申明语句、数组元素、对象属性、sequences、函数参数中不使用超过一个的空白符。
+        <span style="">//该规则保证了不重写原生对象。</span>
 
-        &quot;no-multi-spaces&quot;: 2,
+        <span style="color:#b44">&#34;no-native-reassign&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //该规则保证了字符串不分行书写。
+        <span style="">//在使用new来调用构造函数后，必须把生成的实例赋值给一个变量</span>
 
-        &quot;no-multi-str&quot;: 2,
+        <span style="color:#b44">&#34;no-new&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //该规则保证了不重写原生对象。
+        <span style="">//禁止使用new</span> <span style="">Function();</span> <span style="">语句。</span>
 
-        &quot;no-native-reassign&quot;: 2,
+        <span style="color:#b44">&#34;no-new-func&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在使用new来调用构造函数后，必须把生成的实例赋值给一个变量
+        <span style="">//禁止使用new创建String,Number,</span> <span style="">and</span> <span style="">Boolean实例</span>
 
-        &quot;no-new&quot;: 2,
+        <span style="color:#b44">&#34;no-new-wrappers&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用new Function(); 语句。
+        <span style="">//禁止使用八进制数字</span>
 
-        &quot;no-new-func&quot;: 2,
+        <span style="color:#b44">&#34;no-octal&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用new创建String,Number, and Boolean实例
+        <span style="">//禁止使用八进制转义序列，比如</span> <span style="">var</span> <span style="">foo</span> <span style="">=</span> <span style="color:#b44">&#34;Copyright \251&#34;</span><span style="">;</span>
 
-        &quot;no-new-wrappers&quot;: 2,
+        <span style="color:#b44">&#34;no-octal-escape&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用八进制数字
+        <span style="">//禁止对函数的参数重新进行无意义的赋值</span>
 
-        &quot;no-octal&quot;: 2,
+        <span style="color:#b44">&#34;no-param-reassign&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用八进制转义序列，比如 var foo = &quot;Copyright \251&quot;;
+        <span style="">//禁止使用__proto__属性</span>
 
-        &quot;no-octal-escape&quot;: 2,
+        <span style="color:#b44">&#34;no-proto&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止对函数的参数重新进行无意义的赋值
+        <span style="">//避免重复声明一个变量</span>
 
-        &quot;no-param-reassign&quot;: 2,
+        <span style="color:#b44">&#34;no-redeclare&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;builtinGlobals&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        //禁止使用__proto__属性
+        <span style="">//不要在return语句中使用赋值语句</span>
 
-        &quot;no-proto&quot;: 2,
+        <span style="color:#b44">&#34;no-return-assign&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>]<span style="">,</span>
 
-        //避免重复声明一个变量
+        <span style="">//禁止代码中使用类似javascript:void(</span><span style="color:#666">0</span><span style="">)的javascript:</span> <span style="">urls.</span>
 
-        &quot;no-redeclare&quot;: [2, { &quot;builtinGlobals&quot;: true }],
+        <span style="color:#b44">&#34;no-script-url&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不要在return语句中使用赋值语句
+        <span style="">//禁止给自身赋值</span>
 
-        &quot;no-return-assign&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;no-self-assign&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止代码中使用类似javascript:void(0)的javascript: urls.
+        <span style="">//禁止和自身作比较</span>
 
-        &quot;no-script-url&quot;: 2,
+        <span style="color:#b44">&#34;no-self-compare&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止给自身赋值
+        <span style="">//禁止可能导致结果不明确的逗号操作符</span>
 
-        &quot;no-self-assign&quot;: 2,
+        <span style="color:#b44">&#34;no-sequences&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止和自身作比较
+        <span style="">//通过throw语句抛出的对象必须是Error对象本身或者通过Error对象定义的对象。有些情况除外，见官网</span>
 
-        &quot;no-self-compare&quot;: 2,
+        <span style="color:#b44">&#34;no-throw-literal&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止可能导致结果不明确的逗号操作符
+        <span style="">//禁止使用不被修改的循环条件</span>
 
-        &quot;no-sequences&quot;: 2,
+        <span style="color:#b44">&#34;no-unmodified-loop-condition&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //通过throw语句抛出的对象必须是Error对象本身或者通过Error对象定义的对象。有些情况除外，见官网
+        <span style="">//禁止在代码中出现没有被使用到的表达式或值</span>
 
-        &quot;no-throw-literal&quot;: 2,
+        <span style="color:#b44">&#34;no-unused-expressions&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;allowShortCircuit&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;allowTernary&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        //禁止使用不被修改的循环条件
+        <span style="">//禁止在代码中出现没有被使用到的标签</span>
 
-        &quot;no-unmodified-loop-condition&quot;: 2,
+        <span style="color:#b44">&#34;no-unused-labels&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止在代码中出现没有被使用到的表达式或值
+        <span style="">//避免使用没有意义的call()</span> <span style="">和</span> <span style="">apply()</span>
 
-        &quot;no-unused-expressions&quot;: [2, { &quot;allowShortCircuit&quot;: true, &quot;allowTernary&quot;: true }],
+        <span style="color:#b44">&#34;no-useless-call&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止在代码中出现没有被使用到的标签
+        <span style="">//避免使用不必要的字符串拼接</span>
 
-        &quot;no-unused-labels&quot;: 2,
+        <span style="color:#b44">&#34;no-useless-concat&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //避免使用没有意义的call() 和 apply()
+        <span style="">//不要使用void操作符</span>
 
-        &quot;no-useless-call&quot;: 2,
+        <span style="color:#b44">&#34;no-void&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //避免使用不必要的字符串拼接
+        <span style="">//生产代码中不能出现warning-comments包含的注释</span>
 
-        &quot;no-useless-concat&quot;: 2,
+        <span style="color:#b44">&#34;no-warning-comments&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;terms&#34;</span>: [<span style="color:#b44">&#34;todo&#34;</span>, <span style="color:#b44">&#34;fixme&#34;</span>, <span style="color:#b44">&#34;any other term&#34;</span>], <span style="color:#008000;font-weight:bold">&#34;location&#34;</span>: <span style="color:#b44">&#34;anywhere&#34;</span> }]<span style="">,</span>
 
-        //不要使用void操作符
+        <span style="">//不要使用with语句</span>
 
-        &quot;no-void&quot;: 2,
+        <span style="color:#b44">&#34;no-with&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //生产代码中不能出现warning-comments包含的注释
+        <span style="">//在使用parseInt()方法时，必须要传递第二个参数来帮助解析。</span>
 
-        &quot;no-warning-comments&quot;: [2, { &quot;terms&quot;: [&quot;todo&quot;, &quot;fixme&quot;, &quot;any other term&quot;], &quot;location&quot;: &quot;anywhere&quot; }],
+        <span style="color:#b44">&#34;radix&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不要使用with语句
+        <span style="">//在通过var声明变量时，应该放在代码所在作用域的顶部</span>
 
-        &quot;no-with&quot;: 2,
+        <span style="color:#b44">&#34;vars-on-top&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在使用parseInt()方法时，必须要传递第二个参数来帮助解析。
+        <span style="">//立即执行函数需要通过圆括号包围</span>
 
-        &quot;radix&quot;: 2,
+        <span style="color:#b44">&#34;wrap-iife&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在通过var声明变量时，应该放在代码所在作用域的顶部
+        <span style="">//yoda条件语句就是对象字面量应该写在比较操作符的左边，而变量应该写在比较操作符的右边</span>
 
-        &quot;vars-on-top&quot;: 2,
+        <span style="">//默认的规则要求，变量写在左边而字面量写在右边</span>
 
-        //立即执行函数需要通过圆括号包围
+        <span style="color:#b44">&#34;yoda&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        &quot;wrap-iife&quot;: 2,
 
-        //yoda条件语句就是对象字面量应该写在比较操作符的左边，而变量应该写在比较操作符的右边
 
-        //默认的规则要求，变量写在左边而字面量写在右边
+        <span style="">/*Strict</span> <span style="">Mode*/</span>
 
-        &quot;yoda&quot;: 2,
+        <span style="">//使用严格模式</span>
 
+        <span style="color:#b44">&#34;strict&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
 
-        /*Strict Mode*/
 
-        //使用严格模式
 
-        &quot;strict&quot;: 2,
 
+        <span style="">/*Variables*/</span>
 
+        <span style="">//变量声明时必须赋初值</span>
 
+        <span style="color:#b44">&#34;init-declarations&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
+        <span style="">//In</span> <span style="">IE</span> <span style="color:#666">8</span> <span style="">and</span> <span style="">earlier，禁止catch子句参数与外部作用域变量同名</span>
 
-        /*Variables*/
+        <span style="color:#b44">&#34;no-catch-shadow&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //变量声明时必须赋初值
+        <span style="">//禁止使用delete删除var声明的变量</span>
 
-        &quot;init-declarations&quot;: 2,
+        <span style="color:#b44">&#34;no-delete-var&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //In IE 8 and earlier，禁止catch子句参数与外部作用域变量同名
+        <span style="">//防止label和声明的变量重名</span>
 
-        &quot;no-catch-shadow&quot;: 2,
+        <span style="color:#b44">&#34;no-label-var&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用delete删除var声明的变量
+        <span style="">//禁止使用某些全局变量</span>
 
-        &quot;no-delete-var&quot;: 2,
+        <span style="color:#b44">&#34;no-restricted-globals&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;event&#34;</span>]<span style="">,</span>
 
-        //防止label和声明的变量重名
+        <span style="">//禁止声明外部作用域中已定义的变量</span>
 
-        &quot;no-label-var&quot;: 2,
+        <span style="color:#b44">&#34;no-shadow&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用某些全局变量
+        <span style="">//声明变量时禁止覆盖JavaScript中的一些保留关键字，比如NaN、Infinity、undefined、eval、arguments等。</span>
 
-        &quot;no-restricted-globals&quot;: [2, &quot;event&quot;],
+        <span style="color:#b44">&#34;no-shadow-restricted-names&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止声明外部作用域中已定义的变量
+        <span style="">//禁止使用未被定义的变量，除非已在配置文件的global中进行了说明。</span>
 
-        &quot;no-shadow&quot;: 2,
+        <span style="color:#b44">&#34;no-undef&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //声明变量时禁止覆盖JavaScript中的一些保留关键字，比如NaN、Infinity、undefined、eval、arguments等。
+        <span style="">//禁止初始化变量为undefined</span>
 
-        &quot;no-shadow-restricted-names&quot;: 2,
+        <span style="color:#b44">&#34;no-undef-init&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用未被定义的变量，除非已在配置文件的global中进行了说明。
+        <span style="">//禁止把undefined作为变量名</span>
 
-        &quot;no-undef&quot;: 2,
+        <span style="color:#b44">&#34;no-undefined&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止初始化变量为undefined
+        <span style="">//不允许定义的变量在后面的代码中没有被使用到</span>
 
-        &quot;no-undef-init&quot;: 2,
+        <span style="color:#b44">&#34;no-unused-vars&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止把undefined作为变量名
+        <span style="">//所有的变量都应该先定义后使用</span>
 
-        &quot;no-undefined&quot;: 2,
+        <span style="color:#b44">&#34;no-use-before-define&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不允许定义的变量在后面的代码中没有被使用到
 
-        &quot;no-unused-vars&quot;: 2,
 
-        //所有的变量都应该先定义后使用
 
-        &quot;no-use-before-define&quot;: 2,
 
 
 
+        <span style="">/*Node.js</span> <span style="">and</span> <span style="">CommonJS*/</span>
 
+        <span style="">//强制回调后return，避免多次调用回调</span>
 
+        <span style="color:#b44">&#34;callback-return&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
+        <span style="">//强制require()出现在模块作用域的顶部</span>
 
-        /*Node.js and CommonJS*/
+        <span style="color:#b44">&#34;global-require&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //强制回调后return，避免多次调用回调
+        <span style="">//</span> <span style="">如果函数有err入参(err或者error),在函数体内必须进行处理</span>
 
-        &quot;callback-return&quot;: 2,
+        <span style="color:#b44">&#34;handle-callback-err&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;^(err|error)$&#34;</span>]<span style="">,</span>
 
-        //强制require()出现在模块作用域的顶部
+        <span style="">//声明时不能混用声明类型</span>
 
-        &quot;global-require&quot;: 2,
+        <span style="color:#b44">&#34;no-mixed-requires&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        // 如果函数有err入参(err或者error),在函数体内必须进行处理
+        <span style="">//禁止把require方法和new操作符一起使用。</span>
 
-        &quot;handle-callback-err&quot;: [2, &quot;^(err|error)$&quot;],
+        <span style="color:#b44">&#34;no-new-require&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //声明时不能混用声明类型
+        <span style="">//不能使用__dirname或__filename做路径拼接</span>
 
-        &quot;no-mixed-requires&quot;: 2,
+        <span style="color:#b44">&#34;no-path-concat&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止把require方法和new操作符一起使用。
+        <span style="">//禁止使用process.env</span>
 
-        &quot;no-new-require&quot;: 2,
+        <span style="color:#b44">&#34;no-process-env&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不能使用__dirname或__filename做路径拼接
+        <span style="">//禁止使用process.exit()</span>
 
-        &quot;no-path-concat&quot;: 2,
+        <span style="color:#b44">&#34;no-process-exit&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用process.env
+        <span style="">//禁用使用指定模块，使用了就会报错</span>
 
-        &quot;no-process-env&quot;: 2,
+        <span style="color:#b44">&#34;no-restricted-modules&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;fs&#34;</span>]<span style="">,</span>
 
-        //禁止使用process.exit()
+        <span style="">//禁止使用同步方法，建议使用异步方法</span>
 
-        &quot;no-process-exit&quot;: 2,
+        <span style="color:#b44">&#34;no-sync&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁用使用指定模块，使用了就会报错
 
-        &quot;no-restricted-modules&quot;: [2, &quot;fs&quot;],
 
-        //禁止使用同步方法，建议使用异步方法
 
-        &quot;no-sync&quot;: 2,
 
+        <span style="">/*Stylistic</span> <span style="">Issues*/</span>
 
+        <span style="">//</span> <span style="">用数组字面量定义数组时数组元素前后是否加空格，</span>
 
+        <span style="">//</span> <span style="">never参数：</span> <span style="">数组元素前后不能带空格，</span>
 
+        <span style="">//</span> <span style="">always参数：数组元素前后必须留空格</span>
 
-        /*Stylistic Issues*/
+        <span style="color:#b44">&#34;array-bracket-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>]<span style="">,</span>
 
-        // 用数组字面量定义数组时数组元素前后是否加空格，
+        <span style="">//在单行代码块中，代码块前后是否需要留空格</span>
 
-        // never参数： 数组元素前后不能带空格，
+        <span style="">//</span> <span style="">always参数：默认，前后必须留空格</span>
 
-        // always参数：数组元素前后必须留空格
+        <span style="">//</span> <span style="">never参数：</span> <span style="">前后不能带空格</span>
 
-        &quot;array-bracket-spacing&quot;: [2, &quot;never&quot;],
+        <span style="color:#b44">&#34;block-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>]<span style="">,</span>
 
-        //在单行代码块中，代码块前后是否需要留空格
+        <span style="">//大括号的样式，比如下面的大括号语法采用『</span><span style="color:#666">1</span><span style="">tbs』,允许单行样式</span>
 
-        // always参数：默认，前后必须留空格
+        <span style="color:#b44">&#34;brace-style&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;1tbs&#34;</span>, { <span style="color:#008000;font-weight:bold">&#34;allowSingleLine&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        // never参数： 前后不能带空格
+        <span style="">//强制使用驼峰命名</span>
 
-        &quot;block-spacing&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;camelcase&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //大括号的样式，比如下面的大括号语法采用『1tbs』,允许单行样式
+        <span style="">//规定了逗号前后的空白，默认配置规定逗号前面没有空白，而逗号后面需要留空白</span>
 
-        &quot;brace-style&quot;: [2, &quot;1tbs&quot;, { &quot;allowSingleLine&quot;: true }],
+        <span style="color:#b44">&#34;comma-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;before&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>, <span style="color:#008000;font-weight:bold">&#34;after&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        //强制使用驼峰命名
+        <span style="">//规定了逗号放的位置，默认配置逗号应该放在行末，如果设置为first，逗号就应放在行首</span>
 
-        &quot;camelcase&quot;: 2,
+        <span style="color:#b44">&#34;comma-style&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;last&#34;</span>]<span style="">,</span>
 
-        //规定了逗号前后的空白，默认配置规定逗号前面没有空白，而逗号后面需要留空白
+        <span style="">//是否在对象的动态属性（computed</span> <span style="">properties：</span> <span style="">ES</span><span style="color:#666">6</span><span style="">引入）中添加空白，默认配置不添加空白</span>
 
-        &quot;comma-spacing&quot;: [2, { &quot;before&quot;: false, &quot;after&quot;: true }],
+        <span style="color:#b44">&#34;computed-property-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>]<span style="">,</span>
 
-        //规定了逗号放的位置，默认配置逗号应该放在行末，如果设置为first，逗号就应放在行首
+        <span style="">//统一this的别名（this赋值的变量名）保证整个应用程序代码的统一。</span>
 
-        &quot;comma-style&quot;: [2, &quot;last&quot;],
+        <span style="">//如果一个变量被指定为this对象的别名，那么这个变量就不能够用来赋其他值，只能够用来保存this对象。</span>
 
-        //是否在对象的动态属性（computed properties： ES6引入）中添加空白，默认配置不添加空白
+        <span style="">//如果this对象明确被赋值给了一个变量，那么这个变量应该是配置中指定的那个变量名。</span>
 
-        &quot;computed-property-spacing&quot;: [2, &quot;never&quot;],
+        <span style="color:#b44">&#34;consistent-this&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;self&#34;</span>]<span style="">,</span>
 
-        //统一this的别名（this赋值的变量名）保证整个应用程序代码的统一。
+        <span style="">//该规则规定文件最后强制换行，仅需留一空行</span>
 
-        //如果一个变量被指定为this对象的别名，那么这个变量就不能够用来赋其他值，只能够用来保存this对象。
+        <span style="color:#b44">&#34;eol-last&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //如果this对象明确被赋值给了一个变量，那么这个变量应该是配置中指定的那个变量名。
+        <span style="">//要求给函数表达式命名，便于debug</span>
 
-        &quot;consistent-this&quot;: [2, &quot;self&quot;],
+        <span style="color:#b44">&#34;func-names&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //该规则规定文件最后强制换行，仅需留一空行
+        <span style="">//在JavaScript中有两种方式定义函数:函数声明和函数表达式。</span>
 
-        &quot;eol-last&quot;: 2,
+        <span style="">//函数声明就是把function关键词写在最前面，后面跟一个函数名。我们可以在函数申明代码前调用函数</span>
 
-        //要求给函数表达式命名，便于debug
+        <span style="">//函数表达式是通过var等声明变量的关键字开头，然后跟函数名，再后面是function本身。在使用函数表达式定义函数前调用函数会报错</span>
 
-        &quot;func-names&quot;: 2,
+        <span style="">//</span> <span style="">统一定义函数是所采用的方式，参数：</span>
 
-        //在JavaScript中有两种方式定义函数:函数声明和函数表达式。
+        <span style="">//</span>    <span style="">declaration:</span> <span style="">强制使用方法声明的方式，function</span> <span style="">f()</span>{} <span style="">e.g</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;declaration&#34;</span>]
 
-        //函数声明就是把function关键词写在最前面，后面跟一个函数名。我们可以在函数申明代码前调用函数
+        <span style="">//</span>    <span style="">expression：强制使用方法表达式的方式，默认方式，var</span> <span style="">f</span> <span style="">=</span> <span style="">function()</span> {}  <span style="">e.g</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;expression&#34;</span>]
 
-        //函数表达式是通过var等声明变量的关键字开头，然后跟函数名，再后面是function本身。在使用函数表达式定义函数前调用函数会报错
+        <span style="">//</span>    <span style="">allowArrowFunctions:</span> <span style="">declaration风格中允许箭头函数。</span> <span style="">e.g</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;declaration&#34;</span>, {<span style="color:#008000;font-weight:bold">&#34;allowArrowFunctions&#34;</span>:<span style="color:#a2f;font-weight:bold">true</span>}]
 
-        // 统一定义函数是所采用的方式，参数：
+        <span style="color:#b44">&#34;func-style&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;expression&#34;</span>]<span style="">,</span>
 
-        //    declaration: 强制使用方法声明的方式，function f(){} e.g [2, &quot;declaration&quot;]
+        <span style="">//规定了标识符命名的黑名单</span>
 
-        //    expression：强制使用方法表达式的方式，默认方式，var f = function() {}  e.g [2, &quot;expression&quot;]
+        <span style="color:#b44">&#34;id-blacklist&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;data&#34;</span>, <span style="color:#b44">&#34;err&#34;</span>, <span style="color:#b44">&#34;e&#34;</span>, <span style="color:#b44">&#34;cb&#34;</span>, <span style="color:#b44">&#34;callback&#34;</span>]<span style="">,</span>
 
-        //    allowArrowFunctions: declaration风格中允许箭头函数。 e.g [2, &quot;declaration&quot;, {&quot;allowArrowFunctions&quot;:true}]
+        <span style="">//规定标识符的长度，默认配置标识符最少两个字符</span>
 
-        &quot;func-style&quot;: [2, &quot;expression&quot;],
+        <span style="color:#b44">&#34;id-length&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;min&#34;</span>: <span style="color:#666">2</span> }]<span style="">,</span>
 
-        //规定了标识符命名的黑名单
+        <span style="">//命名检测，标识符命名需和配置中的正则表达式匹配，但是该规则对函数调用无效。</span>
 
-        &quot;id-blacklist&quot;: [2, &quot;data&quot;, &quot;err&quot;, &quot;e&quot;, &quot;cb&quot;, &quot;callback&quot;],
+        <span style="color:#b44">&#34;id-match&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;^[a-z]+([A-Z][a-z]+)*$&#34;</span>, { <span style="color:#008000;font-weight:bold">&#34;properties&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span> }]<span style="">,</span>
 
-        //规定标识符的长度，默认配置标识符最少两个字符
+        <span style="">//</span> <span style="">统一代码缩进方式，默认值是</span><span style="color:#666">4</span> <span style="">spaces.</span>
 
-        &quot;id-length&quot;: [2, { &quot;min&quot;: 2 }],
+        <span style="color:#b44">&#34;indent&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //命名检测，标识符命名需和配置中的正则表达式匹配，但是该规则对函数调用无效。
+        <span style="">//规定了在JSX中的属性值是使用单引号还是双引号,默认使用双引号</span>
 
-        &quot;id-match&quot;: [2, &quot;^[a-z]+([A-Z][a-z]+)*$&quot;, { &quot;properties&quot;: false }],
+        <span style="color:#b44">&#34;jsx-quotes&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;prefer-double&#34;</span>]<span style="">,</span>
 
-        // 统一代码缩进方式，默认值是4 spaces.
+        <span style="">//该规则规定了在对象字面量语法中key和value之间的空白，冒号前不要留空格，冒号后面需留一个空格</span>
 
-        &quot;indent&quot;: 2,
+        <span style="color:#b44">&#34;key-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;beforeColon&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>, <span style="color:#008000;font-weight:bold">&#34;afterColon&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }]<span style="">,</span>
 
-        //规定了在JSX中的属性值是使用单引号还是双引号,默认使用双引号
+        <span style="">//</span> <span style="">规定了keyword前后是否需要留一个空格</span>
 
-        &quot;jsx-quotes&quot;: [2, &quot;prefer-double&quot;],
+        <span style="color:#b44">&#34;keyword-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;before&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;after&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;overrides&#34;</span>: {} }]<span style="">,</span>
 
-        //该规则规定了在对象字面量语法中key和value之间的空白，冒号前不要留空格，冒号后面需留一个空格
+        <span style="">//统一换行符，</span><span style="color:#b44">&#34;\n&#34;</span> <span style="">unix(for</span> <span style="">LF)</span> <span style="">and</span> <span style="color:#b44">&#34;\r\n&#34;</span> <span style="">for</span> <span style="">windows(CRLF)，默认unix</span>
 
-        &quot;key-spacing&quot;: [2, { &quot;beforeColon&quot;: false, &quot;afterColon&quot;: true }],
+        <span style="color:#b44">&#34;linebreak-style&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        // 规定了keyword前后是否需要留一个空格
+        <span style="">//规定注释和代码块之间是否留空行</span>
 
-        &quot;keyword-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true, &quot;overrides&quot;: {} }],
+        <span style="color:#b44">&#34;lines-around-comment&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //统一换行符，&quot;\n&quot; unix(for LF) and &quot;\r\n&quot; for windows(CRLF)，默认unix
+        <span style="">//规定代码最多可以嵌套多少层</span>
 
-        &quot;linebreak-style&quot;: 2,
+        <span style="color:#b44">&#34;max-depth&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">4</span>]<span style="">,</span>
 
-        //规定注释和代码块之间是否留空行
+        <span style="">//规定了代码单行的最大长度</span>
 
-        &quot;lines-around-comment&quot;: 2,
+        <span style="color:#b44">&#34;max-len&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">80</span>, <span style="color:#666">4</span>]<span style="">,</span>
 
-        //规定代码最多可以嵌套多少层
+        <span style="">//规定了回调的最大嵌套层数</span>
 
-        &quot;max-depth&quot;: [2, 4],
+        <span style="color:#b44">&#34;max-nested-callbacks&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">10</span>]<span style="">,</span>
 
-        //规定了代码单行的最大长度
+        <span style="">//规定了函数参数的最大个数</span>
 
-        &quot;max-len&quot;: [2, 80, 4],
+        <span style="color:#b44">&#34;max-params&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">3</span>]<span style="">,</span>
 
-        //规定了回调的最大嵌套层数
+        <span style="">//规定了函数中代码不能够超过多少行</span>
 
-        &quot;max-nested-callbacks&quot;: [2, 10],
+        <span style="color:#b44">&#34;max-statements&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#666">10</span>]<span style="">,</span>
 
-        //规定了函数参数的最大个数
+        <span style="">//使用构造函数(new)时首字母需大写，首字母大写的函数需用new操作符</span>
 
-        &quot;max-params&quot;: [2, 3],
+        <span style="color:#b44">&#34;new-cap&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //规定了函数中代码不能够超过多少行
+        <span style="">//使用构造函数(new)时必须圆括号不能省略</span>
 
-        &quot;max-statements&quot;: [2, 10],
+        <span style="color:#b44">&#34;new-parens&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //使用构造函数(new)时首字母需大写，首字母大写的函数需用new操作符
+        <span style="">//规定了变量声明后是否需要空行</span>
 
-        &quot;new-cap&quot;: 2,
+        <span style="color:#b44">&#34;newline-after-var&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //使用构造函数(new)时必须圆括号不能省略
+        <span style="">//规定了return语句前是否是否需要空行</span>
 
-        &quot;new-parens&quot;: 2,
+        <span style="color:#b44">&#34;newline-before-return&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //规定了变量声明后是否需要空行
+        <span style="">//规定了方法链式调用时是否需换行</span>
 
-        &quot;newline-after-var&quot;: 2,
+        <span style="color:#b44">&#34;newline-per-chained-call&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //规定了return语句前是否是否需要空行
+        <span style="">//禁止使用Array构造函数</span>
 
-        &quot;newline-before-return&quot;: 2,
+        <span style="color:#b44">&#34;no-array-constructor&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //规定了方法链式调用时是否需换行
+        <span style="">//禁止使用位操作符</span>
 
-        &quot;newline-per-chained-call&quot;: 2,
+        <span style="color:#b44">&#34;no-bitwise&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用Array构造函数
+        <span style="">//禁止使用continue</span>
 
-        &quot;no-array-constructor&quot;: 2,
+        <span style="color:#b44">&#34;no-continue&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用位操作符
+        <span style="">//禁止使用行内注释</span>
 
-        &quot;no-bitwise&quot;: 2,
+        <span style="color:#b44">&#34;no-inline-comments&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用continue
+        <span style="">//禁止在if-else控制语句中，else代码块中仅包含一个if语句</span>
 
-        &quot;no-continue&quot;: 2,
+        <span style="color:#b44">&#34;no-lonely-if&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用行内注释
+        <span style="">//禁止混用tab和空格</span>
 
-        &quot;no-inline-comments&quot;: 2,
+        <span style="color:#b44">&#34;no-mixed-spaces-and-tabs&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止在if-else控制语句中，else代码块中仅包含一个if语句
+        <span style="">//不要留超过规定数目的空白行</span>
 
-        &quot;no-lonely-if&quot;: 2,
+        <span style="color:#b44">&#34;no-multiple-empty-lines&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;max&#34;</span>: <span style="color:#666">2</span> }]<span style="">,</span>
 
-        //禁止混用tab和空格
+        <span style="">//在if语句中使用了否定表达式，同时else语句又不为空，那么这样的if-else语句将被视为不合法，为什么不将其反过来这样代码更容易理解，该规则同样适用于三元操作符</span>
 
-        &quot;no-mixed-spaces-and-tabs&quot;: 2,
+        <span style="color:#b44">&#34;no-negated-condition&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //不要留超过规定数目的空白行
+        <span style="">//三元操作符禁止嵌套</span>
 
-        &quot;no-multiple-empty-lines&quot;: [2, { &quot;max&quot;: 2 }],
+        <span style="color:#b44">&#34;no-nested-ternary&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //在if语句中使用了否定表达式，同时else语句又不为空，那么这样的if-else语句将被视为不合法，为什么不将其反过来这样代码更容易理解，该规则同样适用于三元操作符
+        <span style="">//禁止使用new</span> <span style="">Object()来构造对象</span>
 
-        &quot;no-negated-condition&quot;: 2,
+        <span style="color:#b44">&#34;no-new-object&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //三元操作符禁止嵌套
+        <span style="">//禁止使用++，--</span>
 
-        &quot;no-nested-ternary&quot;: 2,
+        <span style="color:#b44">&#34;no-plusplus&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用new Object()来构造对象
+        <span style="">//禁止使用某些特定的JavaScript语法，例如FunctionDeclaration</span> <span style="">和</span> <span style="">WithStatement</span>
 
-        &quot;no-new-object&quot;: 2,
+        <span style="color:#b44">&#34;no-restricted-syntax&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;FunctionExpression&#34;</span>, <span style="color:#b44">&#34;WithStatement&#34;</span>]<span style="">,</span>
 
-        //禁止使用++，--
+        <span style="">//函数调用时，函数名和圆括号之间不能有空格</span>
 
-        &quot;no-plusplus&quot;: 2,
+        <span style="color:#b44">&#34;no-spaced-func&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用某些特定的JavaScript语法，例如FunctionDeclaration 和 WithStatement
+        <span style="">//禁止使用三元操作符</span>
 
-        &quot;no-restricted-syntax&quot;: [2, &quot;FunctionExpression&quot;, &quot;WithStatement&quot;],
+        <span style="color:#b44">&#34;no-ternary&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //函数调用时，函数名和圆括号之间不能有空格
+        <span style="">//禁止行末加空格</span>
 
-        &quot;no-spaced-func&quot;: 2,
+        <span style="color:#b44">&#34;no-trailing-spaces&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止使用三元操作符
+        <span style="">//禁止在标识符前后使用下划线</span>
 
-        &quot;no-ternary&quot;: 2,
+        <span style="color:#b44">&#34;no-underscore-dangle&#34;</span><span style="">:</span> <span style="color:#666">2</span><span style="">,</span>
 
-        //禁止行末加空格
+        <span style="">//禁止使用没有必要的三元操作符，因为用有些三元操作符可以使用其他语句替换</span>
 
-        &quot;no-trailing-spaces&quot;: 2,
+        <span style="color:#b44">&#34;no-unneeded-ternary&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;defaultAssignment&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span> }]<span style="">,</span>
 
-        //禁止在标识符前后使用下划线
+        <span style="">//禁止属性操作符.的前后和</span>[<span style="">之前有空格</span>
 
-        &quot;no-underscore-dangle&quot;: 2,
+        <span style="color:#b44">&#34;no-whitespace-before-property&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //禁止使用没有必要的三元操作符，因为用有些三元操作符可以使用其他语句替换
+        <span style="">//规定对象字面量中大括号内是否允许加空格，也适用于ES</span><span style="color:#666">6</span><span style="">中的结构赋值和模块import和export</span>
 
-        &quot;no-unneeded-ternary&quot;: [2, { &quot;defaultAssignment&quot;: false }],
+        <span style="color:#b44">&#34;object-curly-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>],
 
-        //禁止属性操作符.的前后和[之前有空格
+        <span style="">//规定了在每个函数中声明变量是否只使用一次var，该规则同样适用于let和const</span>
 
-        &quot;no-whitespace-before-property&quot;: 2,
+        <span style="color:#b44">&#34;one-var&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;initialized&#34;</span>: <span style="color:#b44">&#34;never&#34;</span> }],
 
-        //规定对象字面量中大括号内是否允许加空格，也适用于ES6中的结构赋值和模块import和export
+        <span style="">//规定了使用赋值操作符的简写形式</span>
 
-        &quot;object-curly-spacing&quot;: [2, &quot;never&quot;],
+        <span style="color:#b44">&#34;operator-assignment&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //规定了在每个函数中声明变量是否只使用一次var，该规则同样适用于let和const
+        <span style="">//在换行时操作符应该放在行首还是行尾。还可对某些操作符进行重写。</span>
 
-        &quot;one-var&quot;: [2, { &quot;initialized&quot;: &quot;never&quot; }],
+        <span style="color:#b44">&#34;operator-linebreak&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;after&#34;</span>, { <span style="color:#008000;font-weight:bold">&#34;overrides&#34;</span>: { <span style="color:#008000;font-weight:bold">&#34;?&#34;</span>: <span style="color:#b44">&#34;before&#34;</span>, <span style="color:#008000;font-weight:bold">&#34;:&#34;</span>: <span style="color:#b44">&#34;before&#34;</span> } }],
 
-        //规定了使用赋值操作符的简写形式
+        <span style="">//在代码块中，代码块的开始和结尾是否应该留一个空行</span>
 
-        &quot;operator-assignment&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;padded-blocks&#34;</span><span style="">:</span> <span style="color:#666">0</span>,
 
-        //在换行时操作符应该放在行首还是行尾。还可对某些操作符进行重写。
+        <span style="">//对象的属性名是否强制加双引号</span>
 
-        &quot;operator-linebreak&quot;: [2, &quot;after&quot;, { &quot;overrides&quot;: { &quot;?&quot;: &quot;before&quot;, &quot;:&quot;: &quot;before&quot; } }],
+        <span style="color:#b44">&#34;quote-props&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //在代码块中，代码块的开始和结尾是否应该留一个空行
+        <span style="">//在JavaScript中有三种方式定义字符串，双引号、单引号、反义符（ECMAScript</span><span style="color:#666">2015</span><span style="">）。规定了字符串定义的方式</span>
 
-        &quot;padded-blocks&quot;: 0,
+        <span style="color:#b44">&#34;quotes&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;single&#34;</span>, <span style="color:#b44">&#34;avoid-escape&#34;</span>],
 
-        //对象的属性名是否强制加双引号
+        <span style="">//注释格式要求JSDoc格式</span>
 
-        &quot;quote-props&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;require-jsdoc&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, {
 
-        //在JavaScript中有三种方式定义字符串，双引号、单引号、反义符（ECMAScript2015）。规定了字符串定义的方式
+            <span style="color:#008000;font-weight:bold">&#34;require&#34;</span>: {
 
-        &quot;quotes&quot;: [2, &quot;single&quot;, &quot;avoid-escape&quot;],
+                <span style="color:#008000;font-weight:bold">&#34;FunctionDeclaration&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
 
-        //注释格式要求JSDoc格式
+                <span style="color:#008000;font-weight:bold">&#34;MethodDefinition&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>,
 
-        &quot;require-jsdoc&quot;: [2, {
-
-            &quot;require&quot;: {
-
-                &quot;FunctionDeclaration&quot;: true,
-
-                &quot;MethodDefinition&quot;: false,
-
-                &quot;ClassDeclaration&quot;: false
+                <span style="color:#008000;font-weight:bold">&#34;ClassDeclaration&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>
 
             }
 
         }],
 
-        //JavaScript不要求在每行末尾加上分号，这是因为JavaScript引擎会决定是否需要在行末加上分号，然后自动帮我们在行末加上分号，这一特性被成为ASI(automatic semicolon insertion)，也是JavaScript语言最富争议的特性之一
+        <span style="">//JavaScript不要求在每行末尾加上分号，这是因为JavaScript引擎会决定是否需要在行末加上分号，然后自动帮我们在行末加上分号，这一特性被成为ASI(automatic</span> <span style="">semicolon</span> <span style="">insertion)，也是JavaScript语言最富争议的特性之一</span>
 
-        //尽管ASI允许我们使用更加自由的代码风格，但是它也可能使得你的代码并不是按你期许的方式运行
+        <span style="">//尽管ASI允许我们使用更加自由的代码风格，但是它也可能使得你的代码并不是按你期许的方式运行</span>
 
-        //两个可选参数，always 和never
+        <span style="">//两个可选参数，always</span> <span style="">和never</span>
 
-        //默认配置always，要求在行末加上分号。
+        <span style="">//默认配置always，要求在行末加上分号。</span>
 
-        &quot;semi&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;semi&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //该规则用来规定分号前后是否加空格，默认配置如下
+        <span style="">//该规则用来规定分号前后是否加空格，默认配置如下</span>
 
-        &quot;semi-spacing&quot;: [2, { &quot;before&quot;: false, &quot;after&quot;: true }],
+        <span style="color:#b44">&#34;semi-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;before&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>, <span style="color:#008000;font-weight:bold">&#34;after&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }],
 
-        //要求对同一个模块里的import声明按字母排序
+        <span style="">//要求对同一个模块里的import声明按字母排序</span>
 
-        &quot;sort-imports&quot;: 2,
+        <span style="color:#b44">&#34;sort-imports&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //规定在同一个变量声明代码块中，要对变量的声明按字母排序
+        <span style="">//规定在同一个变量声明代码块中，要对变量的声明按字母排序</span>
 
-        &quot;sort-vars&quot;: 2,
+        <span style="color:#b44">&#34;sort-vars&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //规定了在代码块前是否需要加空格
+        <span style="">//规定了在代码块前是否需要加空格</span>
 
-        &quot;space-before-blocks&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;space-before-blocks&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //函数定义时，function关键字后面的小括号前是否需要加空格
+        <span style="">//函数定义时，function关键字后面的小括号前是否需要加空格</span>
 
-        &quot;space-before-function-paren&quot;: [2, &quot;always&quot;],
+        <span style="color:#b44">&#34;space-before-function-paren&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //规定圆括号内部的空格。规定是否需要在(右边，或者)左边加空格。
+        <span style="">//规定圆括号内部的空格。规定是否需要在(右边，或者)左边加空格。</span>
 
-        &quot;space-in-parens&quot;: [2, &quot;never&quot;],
+        <span style="color:#b44">&#34;space-in-parens&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>],
 
-        //中綴操作符左右是否添加空格
+        <span style="">//中綴操作符左右是否添加空格</span>
 
-        &quot;space-infix-ops&quot;: 2,
+        <span style="color:#b44">&#34;space-infix-ops&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //规定在一元操作符前后是否需要加空格，单词类操作符需要加，而非单词类操作符不用加
+        <span style="">//规定在一元操作符前后是否需要加空格，单词类操作符需要加，而非单词类操作符不用加</span>
 
-        //words - applies to unary word operators such as: new, delete, typeof, void, yield
+        <span style="">//words</span> <span style="">-</span> <span style="">applies</span> <span style="">to</span> <span style="">unary</span> <span style="">word</span> <span style="">operators</span> <span style="">such</span> <span style="">as:</span> <span style="">new</span>, <span style="">delete</span>, <span style="">typeof</span>, <span style="">void</span>, <span style="">yield</span>
 
-        //nonwords - applies to unary operators such as: -, +, --, ++, !, !!
+        <span style="">//nonwords</span> <span style="">-</span> <span style="">applies</span> <span style="">to</span> <span style="">unary</span> <span style="">operators</span> <span style="">such</span> <span style="">as:</span> <span style="">-</span>, <span style="">+</span>, <span style="">--</span>, <span style="">++</span>, <span style="">!</span>, <span style="">!!</span>
 
-        &quot;space-unary-ops&quot;: [2, { &quot;words&quot;: true, &quot;nonwords&quot;: false }],
+        <span style="color:#b44">&#34;space-unary-ops&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;words&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;nonwords&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span> }],
 
-        //规定是否需要在代码注释起始符// or /*后面至少紧跟一个空格
+        <span style="">//规定是否需要在代码注释起始符//</span> <span style="">or</span> <span style="">/*后面至少紧跟一个空格</span>
 
-        &quot;spaced-comment&quot;: [2, &quot;always&quot;, { &quot;markers&quot;: [&quot;global&quot;, &quot;globals&quot;, &quot;eslint&quot;, &quot;eslint-disable&quot;, &quot;*package&quot;, &quot;!&quot;, &quot;,&quot;] }],
+        <span style="color:#b44">&#34;spaced-comment&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>, { <span style="color:#008000;font-weight:bold">&#34;markers&#34;</span>: [<span style="color:#b44">&#34;global&#34;</span>, <span style="color:#b44">&#34;globals&#34;</span>, <span style="color:#b44">&#34;eslint&#34;</span>, <span style="color:#b44">&#34;eslint-disable&#34;</span>, <span style="color:#b44">&#34;*package&#34;</span>, <span style="color:#b44">&#34;!&#34;</span>, <span style="color:#b44">&#34;,&#34;</span>] }],
 
-        //要求在正则表达式的双斜杠外面加一个圆括号，来消除歧义
+        <span style="">//要求在正则表达式的双斜杠外面加一个圆括号，来消除歧义</span>
 
-        &quot;wrap-regex&quot;: 2,
-
-
+        <span style="color:#b44">&#34;wrap-regex&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
 
 
-        /*ECMAScript 6*/
 
-        //箭头函数中，如果函数体里只有一句代码时可以省略大括号
 
-        //规定是否可以省略大括号
+        <span style="">/*ECMAScript</span> <span style="color:#666">6</span><span style="">*/</span>
 
-        &quot;arrow-body-style&quot;: 2,
+        <span style="">//箭头函数中，如果函数体里只有一句代码时可以省略大括号</span>
 
-        //箭头函数中，只有一个参数时可以省略圆括号
+        <span style="">//规定是否可以省略大括号</span>
 
-        //规定了参数是否需要圆括号包围
+        <span style="color:#b44">&#34;arrow-body-style&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;arrow-parens&quot;: [2, &quot;always&quot;],
+        <span style="">//箭头函数中，只有一个参数时可以省略圆括号</span>
 
-        //规定了箭头函数的箭头前后是否加空格
+        <span style="">//规定了参数是否需要圆括号包围</span>
 
-        &quot;arrow-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true }],
+        <span style="color:#b44">&#34;arrow-parens&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;always&#34;</span>],
 
-        //保证constructor函数中super()应正确出现，比如在继承的classes中（派生类）必须使用super，否则（非派生类）不要使用super。
+        <span style="">//规定了箭头函数的箭头前后是否加空格</span>
 
-        &quot;constructor-super&quot;: 2,
+        <span style="color:#b44">&#34;arrow-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;before&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;after&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }],
 
-        //规定generator函数中星号前后的空白
+        <span style="">//保证constructor函数中super()应正确出现，比如在继承的classes中（派生类）必须使用super，否则（非派生类）不要使用super。</span>
 
-        &quot;generator-star-spacing&quot;: [2, { &quot;before&quot;: true, &quot;after&quot;: true }],
+        <span style="color:#b44">&#34;constructor-super&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //禁止覆盖class命名，也就是说变量名不要和class名重名
+        <span style="">//规定generator函数中星号前后的空白</span>
 
-        &quot;no-class-assign&quot;: 2,
+        <span style="color:#b44">&#34;generator-star-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, { <span style="color:#008000;font-weight:bold">&#34;before&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>, <span style="color:#008000;font-weight:bold">&#34;after&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span> }],
 
-        //箭头函数的箭头和比较操作符 (&gt;, &lt;, &lt;=, and &gt;=)很相似，该规则要求在和比较操作符容易发生混淆时禁止使用箭头函数语法
+        <span style="">//禁止覆盖class命名，也就是说变量名不要和class名重名</span>
 
-        &quot;no-confusing-arrow&quot;: 2,
+        <span style="color:#b44">&#34;no-class-assign&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //禁止修改const声明的变量
+        <span style="">//箭头函数的箭头和比较操作符</span> <span style="">(&gt;</span>, <span style="">&lt;</span>, <span style="">&lt;=</span>, <span style="">and</span> <span style="">&gt;=)很相似，该规则要求在和比较操作符容易发生混淆时禁止使用箭头函数语法</span>
 
-        &quot;no-const-assign&quot;: 2,
+        <span style="color:#b44">&#34;no-confusing-arrow&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //class中的成员不允许有相同的名字
+        <span style="">//禁止修改const声明的变量</span>
 
-        &quot;no-dupe-class-members&quot;: 2,
+        <span style="color:#b44">&#34;no-const-assign&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //禁止在Symbol对象前使用new操作符
+        <span style="">//class中的成员不允许有相同的名字</span>
 
-        &quot;no-new-symbol&quot;: 2,
+        <span style="color:#b44">&#34;no-dupe-class-members&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //该规则可以定义不允许在应用中导入的模块
+        <span style="">//禁止在Symbol对象前使用new操作符</span>
 
-        &quot;no-restricted-imports&quot;: [2,
+        <span style="color:#b44">&#34;no-new-symbol&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-            &quot;assert&quot;, &quot;buffer&quot;, &quot;child_process&quot;, &quot;cluster&quot;, &quot;crypto&quot;, &quot;dgram&quot;, &quot;dns&quot;, &quot;domain&quot;, &quot;events&quot;, &quot;freelist&quot;, &quot;fs&quot;, &quot;http&quot;, &quot;https&quot;, &quot;module&quot;, &quot;net&quot;, &quot;os&quot;, &quot;path&quot;, &quot;punycode&quot;, &quot;querystring&quot;, &quot;readline&quot;, &quot;repl&quot;, &quot;smalloc&quot;, &quot;stream&quot;, &quot;string_decoder&quot;, &quot;sys&quot;, &quot;timers&quot;, &quot;tls&quot;, &quot;tracing&quot;, &quot;tty&quot;, &quot;url&quot;, &quot;util&quot;, &quot;vm&quot;, &quot;zlib&quot;
+        <span style="">//该规则可以定义不允许在应用中导入的模块</span>
+
+        <span style="color:#b44">&#34;no-restricted-imports&#34;</span><span style="">:</span> [<span style="color:#666">2</span>,
+
+            <span style="color:#b44">&#34;assert&#34;</span>, <span style="color:#b44">&#34;buffer&#34;</span>, <span style="color:#b44">&#34;child_process&#34;</span>, <span style="color:#b44">&#34;cluster&#34;</span>, <span style="color:#b44">&#34;crypto&#34;</span>, <span style="color:#b44">&#34;dgram&#34;</span>, <span style="color:#b44">&#34;dns&#34;</span>, <span style="color:#b44">&#34;domain&#34;</span>, <span style="color:#b44">&#34;events&#34;</span>, <span style="color:#b44">&#34;freelist&#34;</span>, <span style="color:#b44">&#34;fs&#34;</span>, <span style="color:#b44">&#34;http&#34;</span>, <span style="color:#b44">&#34;https&#34;</span>, <span style="color:#b44">&#34;module&#34;</span>, <span style="color:#b44">&#34;net&#34;</span>, <span style="color:#b44">&#34;os&#34;</span>, <span style="color:#b44">&#34;path&#34;</span>, <span style="color:#b44">&#34;punycode&#34;</span>, <span style="color:#b44">&#34;querystring&#34;</span>, <span style="color:#b44">&#34;readline&#34;</span>, <span style="color:#b44">&#34;repl&#34;</span>, <span style="color:#b44">&#34;smalloc&#34;</span>, <span style="color:#b44">&#34;stream&#34;</span>, <span style="color:#b44">&#34;string_decoder&#34;</span>, <span style="color:#b44">&#34;sys&#34;</span>, <span style="color:#b44">&#34;timers&#34;</span>, <span style="color:#b44">&#34;tls&#34;</span>, <span style="color:#b44">&#34;tracing&#34;</span>, <span style="color:#b44">&#34;tty&#34;</span>, <span style="color:#b44">&#34;url&#34;</span>, <span style="color:#b44">&#34;util&#34;</span>, <span style="color:#b44">&#34;vm&#34;</span>, <span style="color:#b44">&#34;zlib&#34;</span>
 
         ],
 
-        //在构造函数中，禁止在super()调用前使用this/super对象
+        <span style="">//在构造函数中，禁止在super()调用前使用this/super对象</span>
 
-        &quot;no-this-before-super&quot;: 2,
+        <span style="color:#b44">&#34;no-this-before-super&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //ES2015提供了默认的空构造函数，禁止使用不必要的空构造函数
+        <span style="">//ES</span><span style="color:#666">2015</span><span style="">提供了默认的空构造函数，禁止使用不必要的空构造函数</span>
 
-        &quot;no-useless-constructor&quot;: 2,
+        <span style="color:#b44">&#34;no-useless-constructor&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //禁用var，用let和const代替var
+        <span style="">//禁用var，用let和const代替var</span>
 
-        &quot;no-var&quot;: 2,
+        <span style="color:#b44">&#34;no-var&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //ES6中提供了定义对象字面量的方法和属性的简写形式。强制要求在对象字面量中使用方法和属性的简写形式
+        <span style="">//ES</span><span style="color:#666">6</span><span style="">中提供了定义对象字面量的方法和属性的简写形式。强制要求在对象字面量中使用方法和属性的简写形式</span>
 
-        &quot;object-shorthand&quot;: 2,
+        <span style="color:#b44">&#34;object-shorthand&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //函数作为函数的参数传入时，传入的函数需要是箭头函数
+        <span style="">//函数作为函数的参数传入时，传入的函数需要是箭头函数</span>
 
-        //箭头函数中的this对象直接绑定到了其外面包围的函数的this对象。
+        <span style="">//箭头函数中的this对象直接绑定到了其外面包围的函数的this对象。</span>
 
-        &quot;prefer-arrow-callback&quot;: 2,
+        <span style="color:#b44">&#34;prefer-arrow-callback&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //如果一个变量声明后不再被修改，那么应使用const来声明该变量
+        <span style="">//如果一个变量声明后不再被修改，那么应使用const来声明该变量</span>
 
-        &quot;prefer-const&quot;: 2,
+        <span style="color:#b44">&#34;prefer-const&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //推荐使用Reflect上的方法替代以前老方法
+        <span style="">//推荐使用Reflect上的方法替代以前老方法</span>
 
-        &quot;prefer-reflect&quot;: 2,
+        <span style="color:#b44">&#34;prefer-reflect&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        // 在ES2015(ES6)中推荐使用剩余参数(...rest)代替arguments变量
+        <span style="">//</span> <span style="">在ES</span><span style="color:#666">2015</span><span style="">(ES</span><span style="color:#666">6</span><span style="">)中推荐使用剩余参数(...rest)代替arguments变量</span>
 
-        &quot;prefer-rest-params&quot;: 2,
+        <span style="color:#b44">&#34;prefer-rest-params&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //在ES2015(ES6)中推荐使用扩展符替代apply()方法
+        <span style="">//在ES</span><span style="color:#666">2015</span><span style="">(ES</span><span style="color:#666">6</span><span style="">)中推荐使用扩展符替代apply()方法</span>
 
-        &quot;prefer-spread&quot;: 2,
+        <span style="color:#b44">&#34;prefer-spread&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //在ES2015(ES6)中推荐使用模板代替以前的字符串拼接
+        <span style="">//在ES</span><span style="color:#666">2015</span><span style="">(ES</span><span style="color:#666">6</span><span style="">)中推荐使用模板代替以前的字符串拼接</span>
 
-        &quot;prefer-template &quot;: 2,
+        <span style="color:#b44">&#34;prefer-template &#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //生成器函数中必须有yield关键字，如果没有会报错。
+        <span style="">//生成器函数中必须有yield关键字，如果没有会报错。</span>
 
-        &quot;require-yield&quot;: 2,
+        <span style="color:#b44">&#34;require-yield&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        //模板字符串中使用${ 和 } 包含的表达式前后是否需要留空格，默认规则禁止花括号内有空格
+        <span style="">//模板字符串中使用$</span>{ <span style="">和</span> } <span style="">包含的表达式前后是否需要留空格，默认规则禁止花括号内有空格</span>
 
-        &quot;template-curly-spacing&quot;: [2, &quot;never&quot;],
+        <span style="color:#b44">&#34;template-curly-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;never&#34;</span>],
 
-        //yield*表达式中的*号前后是否留空格，默认after，比如yield* other()
+        <span style="">//yield*表达式中的*号前后是否留空格，默认after，比如yield*</span> <span style="">other()</span>
 
-        &quot;yield-star-spacing&quot;: [2, &quot;after&quot;],
+        <span style="color:#b44">&#34;yield-star-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;after&#34;</span>],
 
 
 
@@ -1096,246 +1077,273 @@
 
 
 
-        /*eslint-plugin-standard*/
+        <span style="">/*eslint-plugin-standard*/</span>
 
-        &quot;standard/object-curly-even-spacing&quot;: [2, &quot;either&quot;],
+        <span style="color:#b44">&#34;standard/object-curly-even-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;either&#34;</span>],
 
-        &quot;standard/array-bracket-even-spacing&quot;: [2, &quot;either&quot;],
+        <span style="color:#b44">&#34;standard/array-bracket-even-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;either&#34;</span>],
 
-        &quot;standard/computed-property-even-spacing&quot;: [2, &quot;even&quot;],
+        <span style="color:#b44">&#34;standard/computed-property-even-spacing&#34;</span><span style="">:</span> [<span style="color:#666">2</span>, <span style="color:#b44">&#34;even&#34;</span>],
 
 
 
 
 
-        /* eslint-plugin-promise*/
+        <span style="">/*</span> <span style="">eslint-plugin-promise*/</span>
 
-        &quot;promise/param-names&quot;: 2,
+        <span style="color:#b44">&#34;promise/param-names&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;promise/always-return&quot;: 2,
+        <span style="color:#b44">&#34;promise/always-return&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;promise/catch-or-return&quot;: 2,
+        <span style="color:#b44">&#34;promise/catch-or-return&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
 
 
-        /*eslint-plugin-react*/
+        <span style="">/*eslint-plugin-react*/</span>
 
-        &quot;react/jsx-boolean-value&quot;: 2,
+        <span style="color:#b44">&#34;react/jsx-boolean-value&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/jsx-quotes&quot;: 2,
+        <span style="color:#b44">&#34;react/jsx-quotes&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/jsx-no-undef&quot;: 2,
+        <span style="color:#b44">&#34;react/jsx-no-undef&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/jsx-sort-props&quot;: 0,
+        <span style="color:#b44">&#34;react/jsx-sort-props&#34;</span><span style="">:</span> <span style="color:#666">0</span>,
 
-        &quot;react/jsx-sort-prop-types&quot;: 0,
+        <span style="color:#b44">&#34;react/jsx-sort-prop-types&#34;</span><span style="">:</span> <span style="color:#666">0</span>,
 
-        &quot;react/jsx-uses-react&quot;: 2,
+        <span style="color:#b44">&#34;react/jsx-uses-react&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/jsx-uses-vars&quot;: 2,
+        <span style="color:#b44">&#34;react/jsx-uses-vars&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/no-did-mount-set-state&quot;: 2,
+        <span style="color:#b44">&#34;react/no-did-mount-set-state&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/no-did-update-set-state&quot;: 2,
+        <span style="color:#b44">&#34;react/no-did-update-set-state&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/no-multi-comp&quot;: 2,
+        <span style="color:#b44">&#34;react/no-multi-comp&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/no-unknown-property&quot;: 1,
+        <span style="color:#b44">&#34;react/no-unknown-property&#34;</span><span style="">:</span> <span style="color:#666">1</span>,
 
-        &quot;react/prop-types&quot;: 1,
+        <span style="color:#b44">&#34;react/prop-types&#34;</span><span style="">:</span> <span style="color:#666">1</span>,
 
-        &quot;react/react-in-jsx-scope&quot;: 2,
+        <span style="color:#b44">&#34;react/react-in-jsx-scope&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/self-closing-comp&quot;: 2,
+        <span style="color:#b44">&#34;react/self-closing-comp&#34;</span><span style="">:</span> <span style="color:#666">2</span>,
 
-        &quot;react/wrap-multilines&quot;: 0
+        <span style="color:#b44">&#34;react/wrap-multilines&#34;</span><span style="">:</span> <span style="color:#666">0</span>
 
-    }
-</code></pre>
-
-<h2 id="2017-03-11-更新">2017.03.11 更新</h2>
-
-<h4 id="快速使用">快速使用</h4>
-
-<p>在 Atom 上安装 <code>linter</code> <code>linter-eslint</code> 之后，配置 <code>package.json</code>。</p>
-
+    <span style="">}</span>
+</code></pre></div><h2 id="20170311-更新">2017.03.11 更新 <a href="#20170311-%e6%9b%b4%e6%96%b0" class="anchor">🔗</a></h2><h4 id="快速使用">快速使用 <a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="anchor">🔗</a></h4><p>在 Atom 上安装 <code>linter</code> <code>linter-eslint</code> 之后，配置 <code>package.json</code>。</p>
 <p>在项目的 <code>package.json</code> 里面添加如下配置：</p>
-
-<pre><code>&quot;devDependencies&quot;: {
-  &quot;webpack&quot;: &quot;^2.2.1&quot;,
-  &quot;babel-eslint&quot;: &quot;^7.1.1&quot;,
-  &quot;eslint&quot;: &quot;^3.14.0&quot;,
-  &quot;eslint-config-airbnb&quot;: &quot;^14.0.0&quot;,
-  &quot;eslint-plugin-import&quot;: &quot;^2.2.0&quot;,
-  &quot;eslint-plugin-jsx-a11y&quot;: &quot;^3.0.2&quot;,
-  &quot;eslint-plugin-react&quot;: &quot;^6.9.0&quot;
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#b44">&#34;devDependencies&#34;</span><span style="">:</span> {
+  <span style="color:#008000;font-weight:bold">&#34;webpack&#34;</span>: <span style="color:#b44">&#34;^2.2.1&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;babel-eslint&#34;</span>: <span style="color:#b44">&#34;^7.1.1&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;eslint&#34;</span>: <span style="color:#b44">&#34;^3.14.0&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;eslint-config-airbnb&#34;</span>: <span style="color:#b44">&#34;^14.0.0&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-import&#34;</span>: <span style="color:#b44">&#34;^2.2.0&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-jsx-a11y&#34;</span>: <span style="color:#b44">&#34;^3.0.2&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-react&#34;</span>: <span style="color:#b44">&#34;^6.9.0&#34;</span>
 }
-</code></pre>
-
-<p>添加完成之后，整个 <code>package.json</code> 看起来如下：</p>
-
-<pre><code>{
-  &quot;name&quot;: &quot;node-translate-cli&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;node-translate-cli&quot;,
-  &quot;repository&quot;: &quot;https://github.com/nodejh/node-translate-cli.git&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;directories&quot;: {
-    &quot;doc&quot;: &quot;doc&quot;
+</code></pre></div><p>添加完成之后，整个 <code>package.json</code> 看起来如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#008000;font-weight:bold">&#34;name&#34;</span>: <span style="color:#b44">&#34;node-translate-cli&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;version&#34;</span>: <span style="color:#b44">&#34;1.0.0&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;description&#34;</span>: <span style="color:#b44">&#34;node-translate-cli&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;repository&#34;</span>: <span style="color:#b44">&#34;https://github.com/nodejh/node-translate-cli.git&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;main&#34;</span>: <span style="color:#b44">&#34;index.js&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;directories&#34;</span>: {
+    <span style="color:#008000;font-weight:bold">&#34;doc&#34;</span>: <span style="color:#b44">&#34;doc&#34;</span>
   },
-  &quot;scripts&quot;: {
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  <span style="color:#008000;font-weight:bold">&#34;scripts&#34;</span>: {
+    <span style="color:#008000;font-weight:bold">&#34;test&#34;</span>: <span style="color:#b44">&#34;echo \&#34;Error: no test specified\&#34; &amp;&amp; exit 1&#34;</span>
   },
-  &quot;devDependencies&quot;: {
-    &quot;webpack&quot;: &quot;^2.2.1&quot;,
-    &quot;babel-eslint&quot;: &quot;^7.1.1&quot;,
-    &quot;eslint&quot;: &quot;^3.14.0&quot;,
-    &quot;eslint-config-airbnb&quot;: &quot;^14.0.0&quot;,
-    &quot;eslint-plugin-import&quot;: &quot;^2.2.0&quot;,
-    &quot;eslint-plugin-jsx-a11y&quot;: &quot;^3.0.2&quot;,
-    &quot;eslint-plugin-react&quot;: &quot;^6.9.0&quot;
+  <span style="color:#008000;font-weight:bold">&#34;devDependencies&#34;</span>: {
+    <span style="color:#008000;font-weight:bold">&#34;webpack&#34;</span>: <span style="color:#b44">&#34;^2.2.1&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;babel-eslint&#34;</span>: <span style="color:#b44">&#34;^7.1.1&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;eslint&#34;</span>: <span style="color:#b44">&#34;^3.14.0&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;eslint-config-airbnb&#34;</span>: <span style="color:#b44">&#34;^14.0.0&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-import&#34;</span>: <span style="color:#b44">&#34;^2.2.0&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-jsx-a11y&#34;</span>: <span style="color:#b44">&#34;^3.0.2&#34;</span>,
+    <span style="color:#008000;font-weight:bold">&#34;eslint-plugin-react&#34;</span>: <span style="color:#b44">&#34;^6.9.0&#34;</span>
 },
-  &quot;author&quot;: &quot;nodejh&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
+  <span style="color:#008000;font-weight:bold">&#34;author&#34;</span>: <span style="color:#b44">&#34;nodejh&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;license&#34;</span>: <span style="color:#b44">&#34;ISC&#34;</span>
 }
-</code></pre>
-
-<p>然后执行 <code>npm i</code> 安装依赖包。</p>
-
+</code></pre></div><p>然后执行 <code>npm i</code> 安装依赖包。</p>
 <p>安装完成之后，再创建一个 <code>.eslintrc</code>  文件就可以了。下面是我的 <code>.eslintrc</code> 配置。具体规则请参考上文。</p>
-
-<pre><code>{
-  &quot;extends&quot;: &quot;airbnb&quot;,
-  &quot;parser&quot;: &quot;babel-eslint&quot;,
-  &quot;env&quot;: {
-    &quot;browser&quot;: true,
-    &quot;node&quot;: true,
-    &quot;es6&quot;: true,
-    &quot;mocha&quot;: true
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#008000;font-weight:bold">&#34;extends&#34;</span>: <span style="color:#b44">&#34;airbnb&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;parser&#34;</span>: <span style="color:#b44">&#34;babel-eslint&#34;</span>,
+  <span style="color:#008000;font-weight:bold">&#34;env&#34;</span>: {
+    <span style="color:#008000;font-weight:bold">&#34;browser&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+    <span style="color:#008000;font-weight:bold">&#34;node&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+    <span style="color:#008000;font-weight:bold">&#34;es6&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+    <span style="color:#008000;font-weight:bold">&#34;mocha&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>
   },
-  &quot;rules&quot;: {
-    &quot;react/jsx-filename-extension&quot;: 0,
-    &quot;valid-jsdoc&quot;: [&quot;error&quot;, {
-      &quot;requireReturn&quot;: true,
-      &quot;requireReturnType&quot;: true,
-      &quot;requireParamDescription&quot;: true,
-      &quot;requireReturnDescription&quot;: true
+  <span style="color:#008000;font-weight:bold">&#34;rules&#34;</span>: {
+    <span style="color:#008000;font-weight:bold">&#34;react/jsx-filename-extension&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;valid-jsdoc&#34;</span>: [<span style="color:#b44">&#34;error&#34;</span>, {
+      <span style="color:#008000;font-weight:bold">&#34;requireReturn&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+      <span style="color:#008000;font-weight:bold">&#34;requireReturnType&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+      <span style="color:#008000;font-weight:bold">&#34;requireParamDescription&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+      <span style="color:#008000;font-weight:bold">&#34;requireReturnDescription&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>
     }],
-    &quot;require-jsdoc&quot;: [&quot;error&quot;, {
-        &quot;require&quot;: {
-            &quot;FunctionDeclaration&quot;: true,
-            &quot;MethodDefinition&quot;: false,
-            &quot;ClassDeclaration&quot;: false
+    <span style="color:#008000;font-weight:bold">&#34;require-jsdoc&#34;</span>: [<span style="color:#b44">&#34;error&#34;</span>, {
+        <span style="color:#008000;font-weight:bold">&#34;require&#34;</span>: {
+            <span style="color:#008000;font-weight:bold">&#34;FunctionDeclaration&#34;</span>: <span style="color:#a2f;font-weight:bold">true</span>,
+            <span style="color:#008000;font-weight:bold">&#34;MethodDefinition&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>,
+            <span style="color:#008000;font-weight:bold">&#34;ClassDeclaration&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>
         }
     }],
-    &quot;consistent-return&quot;: 0,
-    &quot;no-param-reassign&quot;: [&quot;error&quot;, { &quot;props&quot;: false }],
-    &quot;equire-jsdoc&quot;: 0,
-    &quot;class-methods-use-this&quot;: 0,
-    &quot;no-underscore-dangle&quot;: 0,
-    &quot;no-console&quot;: 0,
-    &quot;new-cap&quot;: 0,
-    &quot;arrow-body-style&quot;: 0,
-    &quot;no-plusplus&quot;: 0
+    <span style="color:#008000;font-weight:bold">&#34;consistent-return&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;no-param-reassign&#34;</span>: [<span style="color:#b44">&#34;error&#34;</span>, { <span style="color:#008000;font-weight:bold">&#34;props&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span> }],
+    <span style="color:#008000;font-weight:bold">&#34;equire-jsdoc&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;class-methods-use-this&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;no-underscore-dangle&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;no-console&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;new-cap&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;arrow-body-style&#34;</span>: <span style="color:#666">0</span>,
+    <span style="color:#008000;font-weight:bold">&#34;no-plusplus&#34;</span>: <span style="color:#666">0</span>
   }
 }
-</code></pre>
-
-<hr />
-
-<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/21">https://github.com/nodejh/nodejh.github.io/issues/21</a></p>
-                </section>
-            </article>
-
-            
-                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fnodejh.com%2fposts%2fuse-eslint-config-airbnb-in-atom%2f - %e5%9c%a8%20Atom%20%e4%b8%ad%e4%bd%bf%e7%94%a8%20ESlint by @nodejh"><span class="icon-twitter"> tweet</span></a>
-
-<a class="facebook" href="#" onclick="
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;"><span class="icon-facebook-rect"> Share</span>
-</a>
-
-            
-
-            
-                <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'nodejh'; 
-
+</code></pre></div><hr>
+<p>Github Issue: <a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/21"
+    
+    
      
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/21
+</a></p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/eslint">ESLint</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
     (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </div>
 
-            
+</section>
 
-            
 
-            <footer id="footer">
+    </main>
+    
+    <footer id="footer">
     
         <div id="social">
 
-	
-	
-    <a class="symbol" href="https://www.facebook.com/nodejh">
-        <i class="fa fa-facebook-square"></i>
-    </a>
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.github.com/nodejh">
-        <i class="fa fa-github-square"></i>
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
-    <a class="symbol" href="https://www.twitter.com/nodejh">
-        <i class="fa fa-twitter-square"></i>
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
     </a>
-    
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
 
 
 </div>
 
     
-    <p class="small">
+
+    <p class="copyright">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> 
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
     
     </p>
-    <p class="small">
+    <p class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
     </p>
 </footer>
 
-        </section>
-
-        <script src="http://nodejh.com/js/jquery-2.2.4.min.js"></script>
-<script src="http://nodejh.com/js/main.js"></script>
-<script src="http://nodejh.com/js/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-  
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-84989670-1', 'auto');
-ga('send', 'pageview');
-</script>
-
-
-
-
-
-    </body>
+  </body>
 </html>

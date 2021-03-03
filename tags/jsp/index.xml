@@ -1,27 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jsp on node</title>
-    <link>http://nodejh.com/tags/jsp/</link>
-    <description>Recent content in Jsp on node</description>
+    <title>JSP on Hang Jiang</title>
+    <link>https://nodejh.com/tags/jsp/</link>
+    <description>Recent content in JSP on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 12 Mar 2016 15:41:58 +0800</lastBuildDate>
-    
-	<atom:link href="http://nodejh.com/tags/jsp/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 12 Mar 2016 15:41:58 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/jsp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ubuntu 下 Tomcat 的配置</title>
-      <link>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</link>
+      <link>https://nodejh.com/posts/ubuntu-%E4%B8%8B-tomcat-%E7%9A%84%E9%85%8D%E7%BD%AE/</link>
       <pubDate>Sat, 12 Mar 2016 15:41:58 +0800</pubDate>
       
-      <guid>http://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/</guid>
-      <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA&lt;/h3&gt;
-
-&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <guid>https://nodejh.com/posts/ubuntu-%E4%B8%8B-tomcat-%E7%9A%84%E9%85%8D%E7%BD%AE/</guid>
+      <description>&lt;h3 id=&#34;1-安装-java&#34;&gt;1. 安装 JAVA &lt;a href=&#34;#1-%e5%ae%89%e8%a3%85-java&#34; class=&#34;anchor&#34;&gt;🔗&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。&lt;/p&gt;</description>
     </item>
     
   </channel>

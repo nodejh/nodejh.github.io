@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Electron 快速入门 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Electron 快速入门</h1>
+
+    <div class="tip">
+        <span>
+          Jul 6, 2017 15:32
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            2733 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          6 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <h2 id="简介">简介 <a href="#%e7%ae%80%e4%bb%8b" class="anchor">🔗</a></h2><p>Electron 是一个可以使用 Web 技术如 JavaScript、HTML 和 CSS 来创建跨平台原生桌面应用的框架。借助 Electron，我们可以使用纯 JavaScript 来调用丰富的原生 APIs。</p>
+<!-- raw HTML omitted -->
+<p>Electron用 web 页面作为它的 GUI，而不是绑定了 GUI 库的 JavaScript。它结合了 Chromium、Node.js 和用于调用操作系统本地功能的 APIs（如打开文件窗口、通知、图标等）。</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/Electron-Quick-Start-00.jpeg" alt="Electron-Quick-Start-00"  />
+</p></p>
+<p>现在已经有很多由 Electron 开发应用，比如 <a 
+    href="https://atom.io/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Atom
+</a>、<a 
+    href="https://insomnia.rest/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Insomnia
+</a>、<a 
+    href="https://code.visualstudio.com/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Visual Studio Code
+</a> 等。查看更多使用 Electron 构建的项目可以访问 <a 
+    href="https://electron.atom.io/apps/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Apps Built on Electron
+
+</a></p>
+<h2 id="安装">安装 <a href="#%e5%ae%89%e8%a3%85" class="anchor">🔗</a></h2><p>安装 electron 之前，需要安装 Node.js。如果没有安装，推荐使用 <a 
+    href="https://github.com/creationix/nvm/blob/master/README.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    nvm
+</a> 等 Node.js 版本管理工具进行安装。</p>
+<p>然后建议修改 electron 的源为国内源：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#a2f">export</span> <span style="color:#b8860b">ELECTRON_MIRROR</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://npm.taobao.org/mirrors/electron/&#34;</span>
+</code></pre></div><p>不然会出现如下错误：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Error: connect ETIMEDOUT 54.231.50.42:443
+    at Object.exports._errnoException <span style="color:#666">(</span>util.js:1016:11<span style="color:#666">)</span>
+    at exports._exceptionWithHostPort <span style="color:#666">(</span>util.js:1039:20<span style="color:#666">)</span>
+    at TCPConnectWrap.afterConnect <span style="color:#666">[</span>as oncomplete<span style="color:#666">]</span> <span style="color:#666">(</span>net.js:1138:14<span style="color:#666">)</span>
+</code></pre></div><p>安装 electron：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install electron -g
+</code></pre></div><h2 id="进程">进程 <a href="#%e8%bf%9b%e7%a8%8b" class="anchor">🔗</a></h2><p>Electron 的进程分为主进程和渲染进程。</p>
+<h3 id="主进程">主进程 <a href="#%e4%b8%bb%e8%bf%9b%e7%a8%8b" class="anchor">🔗</a></h3><p>在 electron 里面，运行 <code>package.json</code> 里面 <code>main</code> 脚本的进程成为主进程。主进程控制整个应用的生命周期，在主进程中可以创建 Web 形式的 GUI，而且整个 Node API 是内置其中。</p>
+<h3 id="渲染进程">渲染进程 <a href="#%e6%b8%b2%e6%9f%93%e8%bf%9b%e7%a8%8b" class="anchor">🔗</a></h3><p>每个 electron 的页面都运行着自己的进程，称为渲染进程。</p>
+<h3 id="主进程与渲染进程的联系及区别">主进程与渲染进程的联系及区别 <a href="#%e4%b8%bb%e8%bf%9b%e7%a8%8b%e4%b8%8e%e6%b8%b2%e6%9f%93%e8%bf%9b%e7%a8%8b%e7%9a%84%e8%81%94%e7%b3%bb%e5%8f%8a%e5%8c%ba%e5%88%ab" class="anchor">🔗</a></h3><p>主进程使用 <code>BrowserWindow</code> 实例创建页面。每个 <code>BrowserWindow</code> 实例都在自己的渲染进程里运行页面。当一个 <code>BrowserWindow</code> 实例被销毁后，相应的渲染进程也会被终止。</p>
+<p>主进程管理所有页面和与之对应的渲染进程。每个渲染进程都是相互独立的，并且只关心他们自己的页面。</p>
+<p>在 electron 中，页面不直接调用底层 APIs，而是通过主进程进行调用。所以如果你想在网页里使用 GUI 操作，其对应的渲染进程必须与主进程进行通讯，请求主进程进行相关的 GUI 操作。</p>
+<p>在 electron 中，主进程和渲染进程的通信主要有以下几种方式：</p>
+<ul>
+<li>ipcMain、ipcRender</li>
+<li>Remote 模块</li>
+</ul>
+<p>进程通信将稍后详细介绍。</p>
+<h2 id="打造第一个-electron-应用">打造第一个 Electron 应用 <a href="#%e6%89%93%e9%80%a0%e7%ac%ac%e4%b8%80%e4%b8%aa-electron-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h2><blockquote>
+<p>以下所有代码可以在 <a 
+    href="https://github.com/nodejh/electron-quick-start"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/electron-quick-start
+</a> 找到。</p>
+</blockquote>
+<p>一个最简单的 electron 应用目录结构如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">electron-demo/
+├── package.json
+├── main.js
+└── index.html
+</code></pre></div><p><code>package.json</code> 与 Node.js 的完全一致，所以我们可以使用 <code>npm init</code> 来生成。然后将 <code>&quot;main&quot;: &quot;index.js&quot;</code> 修改为 <code>&quot;main&quot;: &quot;main.js&quot;</code>。之所以命名为 <code>main.js</code>，主要是为了与主进程这个概念对应。</p>
+<h3 id="mainjs">main.js <a href="#mainjs" class="anchor">🔗</a></h3><p>创建 <code>main.js</code> 文件并添加如下代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> electron <span style="color:#666">=</span> require(<span style="color:#b44">&#39;electron&#39;</span>);
+
+<span style="color:#a2f;font-weight:bold">const</span> {
+  app, <span style="color:#080;font-style:italic">// 控制应用生命周期的模块
+</span><span style="color:#080;font-style:italic"></span>  BrowserWindow, <span style="color:#080;font-style:italic">// 创建原生浏览器窗口的模块
+</span><span style="color:#080;font-style:italic"></span>} <span style="color:#666">=</span> electron;
+
+<span style="color:#080;font-style:italic">// 保持一个对于 window 对象的全局引用，如果不这样做，
+</span><span style="color:#080;font-style:italic">// 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">let</span> mainWindow;
+
+<span style="color:#a2f;font-weight:bold">function</span> createWindow() {
+  <span style="color:#080;font-style:italic">// 创建浏览器窗口。
+</span><span style="color:#080;font-style:italic"></span>  mainWindow <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> BrowserWindow({width<span style="color:#666">:</span> <span style="color:#666">800</span>, height<span style="color:#666">:</span> <span style="color:#666">600</span>});
+
+  <span style="color:#080;font-style:italic">// 加载应用的 index.html。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#080;font-style:italic">// 这里使用的是 file 协议，加载当前目录下的 index.html 文件。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#080;font-style:italic">// 也可以使用 http 协议，如 mainWindow.loadURL(&#39;http://nodejh.com&#39;)。
+</span><span style="color:#080;font-style:italic"></span>  mainWindow.loadURL(<span style="color:#b44">`file://</span><span style="color:#b68;font-weight:bold">${</span>__dirname<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">/index.html`</span>);
+
+  <span style="color:#080;font-style:italic">// 启用开发工具。
+</span><span style="color:#080;font-style:italic"></span>  mainWindow.webContents.openDevTools();
+
+  <span style="color:#080;font-style:italic">// 当 window 被关闭，这个事件会被触发。
+</span><span style="color:#080;font-style:italic"></span>  mainWindow.on(<span style="color:#b44">&#39;closed&#39;</span>, () =&gt; {
+    <span style="color:#080;font-style:italic">// 取消引用 window 对象，如果你的应用支持多窗口的话，
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#080;font-style:italic">// 通常会把多个 window 对象存放在一个数组里面，
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#080;font-style:italic">// 与此同时，你应该删除相应的元素。
+</span><span style="color:#080;font-style:italic"></span>    mainWindow <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span>;
+  });
+}
+
+<span style="color:#080;font-style:italic">// Electron 会在初始化后并准备
+</span><span style="color:#080;font-style:italic">// 创建浏览器窗口时，调用这个函数。
+</span><span style="color:#080;font-style:italic">// 部分 API 在 ready 事件触发后才能使用。
+</span><span style="color:#080;font-style:italic"></span>app.on(<span style="color:#b44">&#39;ready&#39;</span>, createWindow);
+
+<span style="color:#080;font-style:italic">// 当全部窗口关闭时退出。
+</span><span style="color:#080;font-style:italic"></span>app.on(<span style="color:#b44">&#39;window-all-closed&#39;</span>, () =&gt; {
+  <span style="color:#080;font-style:italic">// 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#080;font-style:italic">// 否则绝大部分应用及其菜单栏会保持激活。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#a2f;font-weight:bold">if</span> (process.platform <span style="color:#666">!==</span> <span style="color:#b44">&#39;darwin&#39;</span>) {
+    app.quit();
+  }
+});
+
+app.on(<span style="color:#b44">&#39;activate&#39;</span>, () =&gt; {
+  <span style="color:#080;font-style:italic">// 在 macOS 上，当点击 dock 图标并且该应用没有打开的窗口时，
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#080;font-style:italic">// 绝大部分应用会重新创建一个窗口。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#a2f;font-weight:bold">if</span> (mainWindow <span style="color:#666">===</span> <span style="color:#a2f;font-weight:bold">null</span>) {
+    createWindow();
+  }
+});
+</code></pre></div><p>关于 <code>app</code> 和 <code>BrowserWindow</code> 对象和实例的更多用法可参考 electron 的文档：</p>
+<ul>
+<li><a 
+    href="https://github.com/electron/electron/blob/master/docs/api/app.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    app
+</a></li>
+<li><a 
+    href="https://github.com/electron/electron/blob/master/docs/api/browser-window.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    BrowserWindow
+</a></li>
+</ul>
+<h3 id="indexhtml">index.html <a href="#indexhtml" class="anchor">🔗</a></h3><p>然后编辑需要展示的 <code>index.html</code>：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#008000;font-weight:bold">html</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">head</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">meta</span> <span style="color:#b44">charset</span><span style="color:#666">=</span><span style="color:#b44">&#34;utf-8&#34;</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">title</span>&gt;Hello World!&lt;/<span style="color:#008000;font-weight:bold">title</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">style</span> <span style="color:#b44">media</span><span style="color:#666">=</span><span style="color:#b44">&#34;screen&#34;</span>&gt;
+      .<span style="color:#00f">version</span> {
+        <span style="color:#a2f;font-weight:bold">color</span>: <span style="color:#a2f;font-weight:bold">red</span>;
+      }
+    &lt;/<span style="color:#008000;font-weight:bold">style</span>&gt;
+  &lt;/<span style="color:#008000;font-weight:bold">head</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">body</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">h1</span>&gt;Hello World!&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
+    We are using Node.js
+    &lt;<span style="color:#008000;font-weight:bold">span</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;version-node&#34;</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;version&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">span</span>&gt;
+    and Electron
+    &lt;<span style="color:#008000;font-weight:bold">span</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;version-electron&#34;</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;version&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">span</span>&gt;
+    &lt;<span style="color:#008000;font-weight:bold">script</span> <span style="color:#b44">type</span><span style="color:#666">=</span><span style="color:#b44">&#34;text/javascript&#34;</span>&gt;
+      console.log(<span style="color:#b44">&#39;process: &#39;</span>, process);
+      <span style="color:#a2f;font-weight:bold">var</span> versionNode <span style="color:#666">=</span> process.version;
+      <span style="color:#a2f;font-weight:bold">var</span> versionElectron <span style="color:#666">=</span> process.versions[<span style="color:#b44">&#39;electron&#39;</span>];
+      <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;version-node&#39;</span>).innerText <span style="color:#666">=</span> versionNode
+      <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;version-electron&#39;</span>).innerText <span style="color:#666">=</span> versionElectron
+    &lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+  &lt;/<span style="color:#008000;font-weight:bold">body</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">html</span>&gt;
+</code></pre></div><p>在这个例子中，我们显示出了 electron 使用的 Node.js 版本和 electron 的版本。<code>index.html</code> 跟网页的 HTML 一摸一样，只是多了一些 electron 的全局对象。</p>
+<h2 id="运行">运行 <a href="#%e8%bf%90%e8%a1%8c" class="anchor">🔗</a></h2><p>因为前面已经全局安装了 electron，所以我们可以使用 electron 命令来运行项目。在 <code>electron-demo/</code> 目录里面运行下面的命令：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ electron .
+</code></pre></div><p>然后会弹出一个 electron 应用客户端，如图所示：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/Electron-Quick-Start-01.png" alt="Electron-Quick-Start-01"  />
+</p></p>
+<p>因为在主进程中启用了开发模式 <code>mainWindow.webContents.openDevTools()</code>，所以默认启动开发者工具。</p>
+<p>如果是局部安装的 electron，即 <code>npm install --save electron</code>，则可以运行下面的命令来启动应用：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ./node_modules/.bin/electron .
+</code></pre></div><h2 id="进行通信">进行通信 <a href="#%e8%bf%9b%e8%a1%8c%e9%80%9a%e4%bf%a1" class="anchor">🔗</a></h2><p>对于 electron 来说，主进程和渲染进程直接的通信是必不可少的。</p>
+<p>前面提到过 electron 进程间的通信的方式主要有两种，一种是用于发送消息的 <a 
+    href="https://github.com/electron/electron/blob/master/docs/api/ipc-main.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    ipcMain
+</a> 和 <a 
+    href="https://github.com/electron/electron/blob/master/docs/api/ipc-renderer.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    ipcRenderer
+</a> 模块，一种用于 RPC 的 <a 
+    href="https://github.com/electron/electron/blob/master/docs/api/remote.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    remote
+</a> 模块。</p>
+<p>现在假设一个业务场景，用户在页面中输入文本消息，渲染进程将消息发送给主进程，主进程处理后将处理结果返回给页面。为了方便起见，主进程的处理就假设为翻转文本。当然，这个功能在前端完全可以实现，这里只是为了演示进程通信。</p>
+<h3 id="ipcmain-和-ipcrenderer">ipcMain 和 ipcRenderer <a href="#ipcmain-%e5%92%8c-ipcrenderer" class="anchor">🔗</a></h3><p>首先在渲染进程中添加一个输入框和一个按钮，并实现点击按钮获取输入框的内容。然后使用 ipcRenderer 发送消息。主进程接收到消息并处理之后，会返回处理结果。所以渲染进程中还需要接收主进程的消息。</p>
+<p>修改 <code>index.html</code>，添加下面的代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080;font-style:italic">&lt;!-- 在 body 部分添加一个输入框和按钮 --&gt;</span>
+&lt;<span style="color:#008000;font-weight:bold">div</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">input</span> <span style="color:#b44">type</span><span style="color:#666">=</span><span style="color:#b44">&#34;text&#34;</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;message&#34;</span> <span style="color:#b44">name</span><span style="color:#666">=</span><span style="color:#b44">&#34;&#34;</span> <span style="color:#b44">value</span><span style="color:#666">=</span><span style="color:#b44">&#34;&#34;</span>&gt;
+  &lt;<span style="color:#008000;font-weight:bold">br</span>/&gt;
+  &lt;<span style="color:#008000;font-weight:bold">button</span> <span style="color:#b44">type</span><span style="color:#666">=</span><span style="color:#b44">&#34;button&#34;</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;button&#34;</span> <span style="color:#b44">name</span><span style="color:#666">=</span><span style="color:#b44">&#34;button&#34;</span>&gt;click me&lt;/<span style="color:#008000;font-weight:bold">button</span>&gt;
+&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+
+&lt;<span style="color:#008000;font-weight:bold">script</span> <span style="color:#b44">type</span><span style="color:#666">=</span><span style="color:#b44">&#34;text/javascript&#34;</span>&gt;
+  <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>
+  <span style="color:#080;font-style:italic">// 添加下面的代码。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#080;font-style:italic">// 引入 ipcRenderer 模块。
+</span><span style="color:#080;font-style:italic"></span>  <span style="color:#a2f;font-weight:bold">var</span> ipcRenderer <span style="color:#666">=</span> require(<span style="color:#b44">&#39;electron&#39;</span>).ipcRenderer;
+  <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;button&#39;</span>).onclick <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span> () {
+    <span style="color:#a2f;font-weight:bold">var</span> message <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;message&#39;</span>).value;
+    <span style="color:#080;font-style:italic">// 使用 ipcRenderer.send 向主进程发送消息。
+</span><span style="color:#080;font-style:italic"></span>    ipcRenderer.send(<span style="color:#b44">&#39;asynchronous-message&#39;</span>, message);
+  }
+
+  <span style="color:#080;font-style:italic">// 监听主进程返回的消息
+</span><span style="color:#080;font-style:italic"></span>  ipcRenderer.on(<span style="color:#b44">&#39;asynchronous-reply&#39;</span>, <span style="color:#a2f;font-weight:bold">function</span> (event, arg) {
+    alert(arg);
+  });
+&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</code></pre></div><p>接下来在主进程中接收渲染进程的消息，并进行处理（翻转字符串），然后将处理结果发送给主进程。修改 <code>main.js</code> 如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">//...
+</span><span style="color:#080;font-style:italic"></span>
+<span style="color:#080;font-style:italic">// 监听渲染进程发送的消息
+</span><span style="color:#080;font-style:italic"></span>ipcMain.on(<span style="color:#b44">&#39;asynchronous-message&#39;</span>, (event, arg) =&gt; {
+  <span style="color:#a2f;font-weight:bold">const</span> reply <span style="color:#666">=</span> arg.split(<span style="color:#b44">&#39;&#39;</span>).reverse().join(<span style="color:#b44">&#39;&#39;</span>);
+  console.log(<span style="color:#b44">&#39;reply: &#39;</span>, reply);
+  <span style="color:#080;font-style:italic">// 发送消息到主进程
+</span><span style="color:#080;font-style:italic"></span>  event.sender.send(<span style="color:#b44">&#39;asynchronous-reply&#39;</span>, reply);
+});
+</code></pre></div><p>然后重新运行项目。在页面的输入框内输入字符，点击按钮，就能弹出如下的弹出框，说明渲染进程与主进程通信成功：</p>
+<p><p class="markdown-image">
+  <img src="http://oh1ywjyqf.bkt.clouddn.com/Electron-Quick-Start-02.png" alt="http://oh1ywjyqf.bkt.clouddn.com/Electron-Quick-Start-02.png"  />
+</p></p>
+<h3 id="remote">remote <a href="#remote" class="anchor">🔗</a></h3><p><a 
+    href="https://github.com/electron/electron/blob/master/docs/api/remote.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    remote
+</a> 模块提供了一种在渲染进程（网页）和主进程之间进行进程间通讯（IPC）的简便途径。</p>
+<p>使用 remote 模块，我们可以很方便地调用主进程对象的方法，而不需要发送消息。</p>
+<p>在 <code>index.html</code> 的 <code>&lt;script&gt;</code> 标签中添加如下代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">// 引入 remote 模块
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">var</span> remote <span style="color:#666">=</span> require(<span style="color:#b44">&#39;electron&#39;</span>).remote;
+<span style="color:#080;font-style:italic">// 获取主进程中的 BrowserWindow 对象
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">var</span> BrowserWindow <span style="color:#666">=</span> remote.BrowserWindow;
+<span style="color:#080;font-style:italic">// 创建一个渲染进程
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">var</span> win <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> BrowserWindow({ width<span style="color:#666">:</span> <span style="color:#666">200</span>, height<span style="color:#666">:</span> <span style="color:#666">150</span> });
+win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
+</code></pre></div><p>然后使用 <code>ctr + r</code> 组合键刷新应用，就会看到创建出的一个新窗口。</p>
+<h2 id="打包">打包 <a href="#%e6%89%93%e5%8c%85" class="anchor">🔗</a></h2><p>Electron 应用开发完成之后，还需要将其打包成对应平台的客户端。常用的打包工具有 <a 
+    href="https://github.com/electron-userland/electron-packager"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    electron-packager
+</a> 和 <a 
+    href="https://github.com/electron/asar"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    asar
+</a>。</p>
+<p>这里以 electron-packager 为例。首先全局安装 electron-packager：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install electron-packager -g
+</code></pre></div><p>然后在项目中安装 electron：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install electron --save-dev
+</code></pre></div><p>然后打包：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ electron-packager . electron-demo
+</code></pre></div><h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>本文首先对 electron 做了简单的介绍，然后讲解了 electron 进程的概念，其进程包括主进程和渲染进程。然后创建了一个简单的 electron 应用，并通过实现一个简单的应用场景，对 electron 进程间的通信做了实践。总体来说，使用 electron 创建桌面客户端的开发体验跟写 Node.js 和网页差不多。但本文对内置模块比如 app、ipcMain、ipcRender、remote 等的介绍比较粗浅，涉及到一些内置模块的使用，还需要继续查询 electron 的<a 
+    href="https://github.com/electron/electron/blob/master/docs/README.md"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    官方文档
+</a>，只有实践越多，才能越熟悉。</p>
+<blockquote>
+<p><a 
+    href="https://github.com/nodejh/nodejh.github.io/issues/39"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/nodejh.github.io/issues/39
+</a></p>
+</blockquote>
+<p>&ndash;</p>
+<ul>
+<li><a 
+    href="https://github.com/nodejh/electron-quick-start"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    https://github.com/nodejh/electron-quick-start
+</a></li>
+<li><a 
+    href="https://github.com/electron/electron"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    electron/electron
+</a></li>
+<li><a 
+    href="https://weishuai.gitbooks.io/electron-/content/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    electron中文教程
+</a></li>
+<li><a 
+    href="https://wizardforcel.gitbooks.io/electron-doc/content/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Electron 中文文档
+</a></li>
+<li><a 
+    href="https://github.com/pfan123/electron-docs"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Electron开发桌面应用
+</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/electron">electron</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

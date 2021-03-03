@@ -6,7 +6,16 @@
     <description>Recent content on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 30 Jan 2021 00:53:06 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Mar 2021 22:44:10 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Serverless 掀起新的前端技术变革</title>
+      <link>https://nodejh.com/posts/%E4%BB%8E%E9%9B%B6%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA-flink-%E5%BA%94%E7%94%A8/</link>
+      <pubDate>Wed, 03 Mar 2021 22:44:10 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E4%BB%8E%E9%9B%B6%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA-flink-%E5%BA%94%E7%94%A8/</guid>
+      <description>Apache Flink 是一个流计算引擎。本文主要介绍如何从零编写一个统计单词出现次数的 Flink 应用（后面简称为 WordCount）。由于 Flink 概念很多，对初学者会造成极</description>
+    </item>
+    
     <item>
       <title>Serverless 将使前后端从分离再度走向融合</title>
       <link>https://nodejh.com/posts/serverless-%E5%B0%86%E4%BD%BF%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BB%8E%E5%88%86%E7%A6%BB%E5%86%8D%E5%BA%A6%E8%B5%B0%E5%90%91%E8%9E%8D%E5%90%88/</link>

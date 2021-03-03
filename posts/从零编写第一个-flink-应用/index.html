@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Serverless 掀起新的前端技术变革 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.80.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Serverless 掀起新的前端技术变革</h1>
+
+    <div class="tip">
+        <span>
+          Mar 3, 2021 22:44
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            3103 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          7 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>Apache Flink 是一个流计算引擎。本文主要介绍如何从零编写一个统计单词出现次数的 Flink 应用（后面简称为 WordCount）。由于 Flink 概念很多，对初学者会造成极大困扰，所以本文不会涉及太多概念，即使没有 Flink 基础也可以完成本文的示例应用。</p>
+<h2 id="开发环境准备">开发环境准备 <a href="#%e5%bc%80%e5%8f%91%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" class="anchor">🔗</a></h2><p>要编写 Flink 应用，需要安装 Java （Java 8 或 Java 11） 和 Maven。</p>
+<p>你可以使用下面的命令查看当前已安装的 Java 版本信息：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ java -version
+java version <span style="color:#b44">&#34;1.8.0_181&#34;</span>
+Java<span style="color:#666">(</span>TM<span style="color:#666">)</span> SE Runtime Environment <span style="color:#666">(</span>build 1.8.0_181-b13<span style="color:#666">)</span>
+Java HotSpot<span style="color:#666">(</span>TM<span style="color:#666">)</span> 64-Bit Server VM <span style="color:#666">(</span>build 25.181-b13, mixed mode<span style="color:#666">)</span>
+</code></pre></div><p>使用下面的命令查看当前已安装的 Maven 版本信息：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ aliyun mvn -version
+Apache Maven 3.6.3 <span style="color:#666">(</span>cecedd343002696d0abb50b32b541b8a6ba2883f<span style="color:#666">)</span>
+Maven home: /usr/local/Cellar/maven/3.6.3_1/libexec
+Java version: 1.8.0_181, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/jre
+Default locale: en_CN, platform encoding: UTF-8
+OS name: <span style="color:#b44">&#34;mac os x&#34;</span>, version: <span style="color:#b44">&#34;10.16&#34;</span>, arch: <span style="color:#b44">&#34;x86_64&#34;</span>, family: <span style="color:#b44">&#34;mac&#34;</span>
+</code></pre></div><p>此外，我也建议你使用 IntelliJ IDEA 来编写 Java 应用，我当前的版本是 2020.3.2。</p>
+<h2 id="项目初始化">项目初始化 <a href="#%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96" class="anchor">🔗</a></h2><p>我们可以使用 Flink  Maven Archetype 快速创建一个项目。该模板中包含了 Flink 应用需要的 flink-streaming-java、flink-clients 等依赖。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mvn archetype:generate  <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DarchetypeGroupId<span style="color:#666">=</span>org.apache.flink <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DarchetypeArtifactId<span style="color:#666">=</span>flink-quickstart-java <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DarchetypeVersion<span style="color:#666">=</span>1.12.0 <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DgroupId<span style="color:#666">=</span>com.flink.demo <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DartifactId<span style="color:#666">=</span>first-flink-project <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -Dversion<span style="color:#666">=</span>0.0.1-SNAPSHOT <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -Dpackage<span style="color:#666">=</span>com.flink.demo <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    -DinteractiveMode<span style="color:#666">=</span><span style="color:#a2f">false</span>
+</code></pre></div><p>你可以将上面的 groupId、artifactId、package 等参数改为你喜欢的值。</p>
+<p>使用上面参数生成的项目结构如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tree first-flink-project
+first-flink-project
+├── first-flink-project.iml
+├── pom.xml
+└── src
+    └── main
+        ├── java
+        │   └── com
+        │       └── flink
+        │           └── demo
+        │               ├── BatchJob.java
+        │               └── StreamingJob.java
+        └── resources
+            └── log4j2.properties
+</code></pre></div><p>其中 <code>StreamingJob.java</code> 和  <code>BatchJob.java</code> 是 Flink 模板中默认的流处理任务和批处理任务代码示例，我们先不管它。</p>
+<p>接下来我们使用 IntelliJ IDEA 导入项目，你也也可以使用 idea 命令直接打开项目。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ idea first-flink-project
+</code></pre></div><p>然后我们简单修改一下 <code>pom.xml</code>，删除其中的 <code>lifecycle-mapping</code> 插件，这是为了解决 Eclipse 报错而添加的，在  IntelliJ IDEA 中不需要。</p>
+<h2 id="编写-flink-代码">编写 Flink 代码 <a href="#%e7%bc%96%e5%86%99-flink-%e4%bb%a3%e7%a0%81" class="anchor">🔗</a></h2><p>在 <code>src/main/java/com/flink/demo</code> 中添加一个 <code>WindowWordCount.java</code> 类，输入下面的这段代码。这就是 WordCount 应用的所有代码了，现在看不懂没有关系，后面我会一一讲解。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">package</span> <span style="color:#00f;font-weight:bold">com.flink.demo</span><span style="color:#666">;</span>
+
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.api.common.functions.FlatMapFunction</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.api.java.tuple.Tuple2</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.streaming.api.datastream.DataStream</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.streaming.api.datastream.DataStreamSource</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.streaming.api.environment.StreamExecutionEnvironment</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.streaming.api.windowing.time.Time</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">org.apache.flink.util.Collector</span><span style="color:#666">;</span>
+
+<span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">WindowWordCount</span> <span style="color:#666">{</span>
+
+    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">static</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">main</span><span style="color:#666">(</span>String<span style="color:#666">[]</span> args<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+
+        StreamExecutionEnvironment env <span style="color:#666">=</span> StreamExecutionEnvironment<span style="color:#666">.</span><span style="color:#b44">getExecutionEnvironment</span><span style="color:#666">();</span>
+
+        DataStreamSource<span style="color:#666">&lt;</span>String<span style="color:#666">&gt;</span> source <span style="color:#666">=</span> env<span style="color:#666">.</span><span style="color:#b44">socketTextStream</span><span style="color:#666">(</span><span style="color:#b44">&#34;localhost&#34;</span><span style="color:#666">,</span> 9999<span style="color:#666">);</span>
+
+        DataStream<span style="color:#666">&lt;</span>Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;&gt;</span> dataStream <span style="color:#666">=</span> source
+                <span style="color:#666">.</span><span style="color:#b44">flatMap</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">new</span> Splitter<span style="color:#666">())</span>
+                <span style="color:#666">.</span><span style="color:#b44">keyBy</span><span style="color:#666">(</span>value <span style="color:#666">-&gt;</span> value<span style="color:#666">.</span><span style="color:#b44">f0</span><span style="color:#666">)</span>
+                <span style="color:#666">.</span><span style="color:#b44">window</span><span style="color:#666">(</span>TumblingProcessingTimeWindows<span style="color:#666">.</span><span style="color:#b44">of</span><span style="color:#666">(</span>Time<span style="color:#666">.</span><span style="color:#b44">seconds</span><span style="color:#666">(</span>5<span style="color:#666">)))</span>
+                <span style="color:#666">.</span><span style="color:#b44">sum</span><span style="color:#666">(</span>1<span style="color:#666">);</span>
+
+        dataStream<span style="color:#666">.</span><span style="color:#b44">print</span><span style="color:#666">();</span>
+
+        env<span style="color:#666">.</span><span style="color:#b44">execute</span><span style="color:#666">(</span><span style="color:#b44">&#34;Window WordCount&#34;</span><span style="color:#666">);</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">static</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">Splitter</span> <span style="color:#a2f;font-weight:bold">implements</span> FlatMapFunction<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;&gt;</span> <span style="color:#666">{</span>
+        <span style="color:#a2f">@Override</span>
+        <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">flatMap</span><span style="color:#666">(</span>String sentence<span style="color:#666">,</span> Collector<span style="color:#666">&lt;</span>Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;&gt;</span> out<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+            <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(</span>String word <span style="color:#666">:</span> sentence<span style="color:#666">.</span><span style="color:#b44">split</span><span style="color:#666">(</span><span style="color:#b44">&#34; &#34;</span><span style="color:#666">))</span> <span style="color:#666">{</span>
+                out<span style="color:#666">.</span><span style="color:#b44">collect</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">new</span> Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;(</span>word<span style="color:#666">,</span> 1<span style="color:#666">));</span>
+            <span style="color:#666">}</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+    
+<span style="color:#666">}</span>
+</code></pre></div><p>这段代码的主要功能就是从 Socket 中读取数据（即单词），然后每 5s 统计一次所有单词出现的次数，然后输出。</p>
+<p>WordCount 应用的完整代码可以在这里看到 <a 
+    href="https://github.com/nodejh/examples/tree/master/flink/first-flink-project"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    first-flink-project
+</a> 。</p>
+<p>在讲解代码前，我们可以先运行看看效果。</p>
+<h2 id="运行-flink-应用">运行 Flink 应用 <a href="#%e8%bf%90%e8%a1%8c-flink-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h2><p>首先我们使用 netcat 启动一个 Socket 输入流：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ nc -lk <span style="color:#666">9999</span>
+</code></pre></div><p>然后通过 IntelliJ IDEA  来运行 WindowWordCount 类：</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-run-main.png" alt="Run WindowWordCount"  />
+</p></p>
+<p>第一次运行可能有报错 NoClassDefFoundError ：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Error: A JNI error has occurred, please check your installation and try again
+Exception in thread <span style="color:#b44">&#34;main&#34;</span> java.lang.NoClassDefFoundError: org/apache/flink/api/common/functions/FlatMapFunction
+	at java.lang.Class.getDeclaredMethods0<span style="color:#666">(</span>Native Method<span style="color:#666">)</span>
+	at java.lang.Class.privateGetDeclaredMethods<span style="color:#666">(</span>Class.java:2701<span style="color:#666">)</span>
+	at java.lang.Class.privateGetMethodRecursive<span style="color:#666">(</span>Class.java:3048<span style="color:#666">)</span>
+	at java.lang.Class.getMethod0<span style="color:#666">(</span>Class.java:3018<span style="color:#666">)</span>
+	at java.lang.Class.getMethod<span style="color:#666">(</span>Class.java:1784<span style="color:#666">)</span>
+	at sun.launcher.LauncherHelper.validateMainClass<span style="color:#666">(</span>LauncherHelper.java:544<span style="color:#666">)</span>
+	at sun.launcher.LauncherHelper.checkAndLoadMain<span style="color:#666">(</span>LauncherHelper.java:526<span style="color:#666">)</span>
+</code></pre></div><p>原因在 pom.xml 中， <code>flink-streaming-java</code> 和 <code>flink-clients</code> 这两个依赖的 scope 是 <code>provided</code>，所以它们不会被打包到 jar 中。这些依赖是 flink 的核心依赖，当把 jar 包部署到 flink 上运行时，运行环境中已经内置这些依赖了，所以我们也不需要把它们打包到 jar 中。</p>
+<p>解决这个报错的办法就是在  IntelliJ IDEA  运行配置中勾选 <code>Include dependencies with &quot;Provided&quot; scope</code>。</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-run-config.png" alt="Include dependencies with &amp;ldquo;Provided&amp;rdquo; scope"  />
+</p></p>
+<p>成功运行后，就可以输入数据进入测试了。</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-nc-test.gif" alt="flink-test.gif"  />
+</p></p>
+<p>如图所示，你可以看到输出了 <code>hello</code> <code>world</code> 等单词出现的次数。</p>
+<h2 id="代码分析">代码分析 <a href="#%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><h4 id="创建执行环境">创建执行环境 <a href="#%e5%88%9b%e5%bb%ba%e6%89%a7%e8%a1%8c%e7%8e%af%e5%a2%83" class="anchor">🔗</a></h4><p><code>main</code> 方法中的第一行代码用于创建执行环境。执行环境可以用来定义任务属性（如并发度）、创建数据源以及启动任务。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">StreamExecutionEnvironment env <span style="color:#666">=</span> StreamExecutionEnvironment<span style="color:#666">.</span><span style="color:#b44">getExecutionEnvironment</span><span style="color:#666">();</span>
+</code></pre></div><h4 id="创建数据源">创建数据源 <a href="#%e5%88%9b%e5%bb%ba%e6%95%b0%e6%8d%ae%e6%ba%90" class="anchor">🔗</a></h4><p>接下来就是创建数据源，数据源的作用是从外部系统如 Kafka、Rabbit MQ 或日志服务等系统中接收数据，然后将数据传输到 Flink 任务中。在 WordCount 应用中，我们从本地端口号为 9999 的 socket 中读取数据。<code>env.socketTextStream</code> 数据源默认是按行读取输入的数据，也就是说在 netcat 启动的输入流中输入一行数据，按下回撤（即 <code>\n</code> 字符），<code>env.socketTextStream</code> 就会读取这一行数据。当然，你也可以自定义数据的分隔符。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DataStreamSource<span style="color:#666">&lt;</span>String<span style="color:#666">&gt;</span> source <span style="color:#666">=</span> env<span style="color:#666">.</span><span style="color:#b44">socketTextStream</span><span style="color:#666">(</span><span style="color:#b44">&#34;localhost&#34;</span><span style="color:#666">,</span> 9999<span style="color:#666">);</span>
+</code></pre></div><p>有了数据后，我们就可以对数据进行处理。Flink 提供了大量的 <a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/stream/operators/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    算子（operators）
+</a> 用来处理数据，比如 Map、FlatMap、KeyBy、Reduce、Window 等等。</p>
+<h4 id="处理数据---转换">处理数据 - 转换 <a href="#%e5%a4%84%e7%90%86%e6%95%b0%e6%8d%ae---%e8%bd%ac%e6%8d%a2" class="anchor">🔗</a></h4><p>数据处理第一步就是使用 Flink 的 <code>flatMap</code> 算子处理输入的数据。我们使用了自定义的 <code>Splitter</code> 类将输入的一行数据按空格拆分为多个数据。因为我们可能在一行中输入多个单词。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">static</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">Splitter</span> <span style="color:#a2f;font-weight:bold">implements</span> FlatMapFunction<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;&gt;</span> <span style="color:#666">{</span>
+        <span style="color:#a2f">@Override</span>
+        <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">flatMap</span><span style="color:#666">(</span>String sentence<span style="color:#666">,</span> Collector<span style="color:#666">&lt;</span>Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;&gt;</span> out<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+            <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(</span>String word <span style="color:#666">:</span> sentence<span style="color:#666">.</span><span style="color:#b44">split</span><span style="color:#666">(</span><span style="color:#b44">&#34; &#34;</span><span style="color:#666">))</span> <span style="color:#666">{</span>
+                out<span style="color:#666">.</span><span style="color:#b44">collect</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">new</span> Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;(</span>word<span style="color:#666">,</span> 1<span style="color:#666">));</span>
+            <span style="color:#666">}</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+</code></pre></div><p>Splitter 类继承了 FlatMapFunction 类，然后重载了  flatMap 方法。flatMap 有两个参数，第一个参数 sentence 就是输入的一行数据，out 是用来保存处理结果的变量 。out 中的数据类型是 <code>Tuple2&lt;String, Integer&gt;</code> ，最终我们输入的所有数据都会保存在 out 中。</p>
+<p>举个例子，假设输入的第一行数据（也就是 sentence）为 <code>hello hello world</code>，则当前 out 为：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>world<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+</code></pre></div><p>接下来再输入一行新的数据 <code>java flink</code>，则最新的 out 为：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>world<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>java<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+<span style="color:#666">(</span>flink<span style="color:#666">,</span> 1<span style="color:#666">)</span>
+</code></pre></div><h4 id="处理数据---分组">处理数据 - 分组 <a href="#%e5%a4%84%e7%90%86%e6%95%b0%e6%8d%ae---%e5%88%86%e7%bb%84" class="anchor">🔗</a></h4><p>使用 flatMap 处理了输入的数据后，得到是输入的所有单词。要统计单词出现的次数，接下来我们还需要对单词进行分组，这时就可以使用 flink 的 keyBy 算子。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#666">.</span><span style="color:#b44">keyBy</span><span style="color:#666">(</span>value <span style="color:#666">-&gt;</span> value<span style="color:#666">.</span><span style="color:#b44">f0</span><span style="color:#666">)</span>
+</code></pre></div><p>上面是 Lambda 的写法， 可能不方便理解。上面这行代码就等同于下面的代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#666">.</span><span style="color:#b44">keyBy</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">new</span> KeySelector<span style="color:#666">&lt;</span>Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;,</span> Object<span style="color:#666">&gt;()</span> <span style="color:#666">{</span>
+                    <span style="color:#a2f">@Override</span>
+                    <span style="color:#a2f;font-weight:bold">public</span> String <span style="color:#00a000">getKey</span><span style="color:#666">(</span>Tuple2<span style="color:#666">&lt;</span>String<span style="color:#666">,</span> Integer<span style="color:#666">&gt;</span> value<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+                        <span style="color:#a2f;font-weight:bold">return</span> value<span style="color:#666">.</span><span style="color:#b44">f0</span><span style="color:#666">;</span>
+                    <span style="color:#666">}</span>
+<span style="color:#666">})</span>
+</code></pre></div><p>这下看起来应该就清晰很多了，在 keyBy 中，我们主要是实现了 KeySelector 类并重载了 getKey，最终返回分组的 key，也就是输入的单词，这样 keyBy 算子就会根据单词去分组。</p>
+<h4 id="处理数据---窗口">处理数据 - 窗口 <a href="#%e5%a4%84%e7%90%86%e6%95%b0%e6%8d%ae---%e7%aa%97%e5%8f%a3" class="anchor">🔗</a></h4><p>在 WordCount 应用中，我们的需求是 5s 统计一次单词次数，所以需要用到 Flink 的窗口。这里我们使用的 TumblingProcessingTimeWindows ，代码如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#666">.</span><span style="color:#b44">window</span><span style="color:#666">(</span>TumblingProcessingTimeWindows<span style="color:#666">.</span><span style="color:#b44">of</span><span style="color:#666">(</span>Time<span style="color:#666">.</span><span style="color:#b44">seconds</span><span style="color:#666">(</span>5<span style="color:#666">)))</span>
+</code></pre></div><p>其作用是每 5s 对数据流做一次切分。</p>
+<p>可能理解起来比较抽象，举个例子，假设输入的单词及时间如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">2021-01-24 00:00:00   hello
+2021-01-24 00:00:00   hello
+2021-01-24 00:00:01   word
+2021-01-24 00:00:06   java
+2021-01-24 00:00:07   flink
+2021-01-24 00:00:07   hello
+2021-01-24 00:00:13  hello
+</code></pre></div><p>则会生成 3 个窗口（window），分别如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a0a000">window1:</span>   <span style="color:#666">[</span> <span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">),</span> <span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">),</span> <span style="color:#666">(</span>wold<span style="color:#666">,</span> 1<span style="color:#666">)</span> <span style="color:#666">]</span>
+<span style="color:#a0a000">window2:</span>   <span style="color:#666">[</span> <span style="color:#666">(</span>java<span style="color:#666">,</span> 1<span style="color:#666">),</span> <span style="color:#666">(</span>flink<span style="color:#666">,</span> 1<span style="color:#666">),</span> <span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span> <span style="color:#666">]</span>
+<span style="color:#a0a000">window3:</span>   <span style="color:#666">[</span> <span style="color:#666">(</span>hello<span style="color:#666">,</span> 1<span style="color:#666">)</span> <span style="color:#666">]</span>
+</code></pre></div><h4 id="处理数据---聚合">处理数据 - 聚合 <a href="#%e5%a4%84%e7%90%86%e6%95%b0%e6%8d%ae---%e8%81%9a%e5%90%88" class="anchor">🔗</a></h4><p>对数据按照时间窗口进行分组后，接下来就可以对每个窗口中每个分组的单词进行聚合了。在 WordCount 应用中，聚合就是对单词出现次数求和，求和也很简单，使用 <code>sum</code> 就可以：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#666">.</span><span style="color:#b44">sum</span><span style="color:#666">(</span>1<span style="color:#666">)</span>
+</code></pre></div><p><code>sum</code> 会作用域于每个 window，这样就可以分别求出每个 window 中的单词出现次数，我们就可以计算出 5s 内每个单词出现的次数了。</p>
+<h4 id="输出结果">输出结果 <a href="#%e8%be%93%e5%87%ba%e7%bb%93%e6%9e%9c" class="anchor">🔗</a></h4><p>数据处理完毕后，我们就可以将数据输出。通常我们会将数据输出到另一个外部系统，比如 Kafka、Rabbit MQ 或日志服务等。</p>
+<p>这里我们直接使用 <code>print</code> 将数据打印出来。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">dataStream<span style="color:#666">.</span><span style="color:#b44">print</span><span style="color:#666">();</span>
+</code></pre></div><h4 id="运行-flink-任务">运行 Flink 任务 <a href="#%e8%bf%90%e8%a1%8c-flink-%e4%bb%bb%e5%8a%a1" class="anchor">🔗</a></h4><p>最后，我们通过 <code>env.execute()</code> 方法来运行任务。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">env<span style="color:#666">.</span><span style="color:#b44">execute</span><span style="color:#666">(</span><span style="color:#b44">&#34;Window WordCount&#34;</span><span style="color:#666">);</span>
+</code></pre></div><p>其参数是任务名称。</p>
+<p>Flink 任务只有在 <code>execute()</code> 被调用后，才会提交到集群或本地计算机上执行。<code>execute()</code> 调用前，Flink 只是生成了数据处理流图。</p>
+<h2 id="在本地-flink-集群运行任务">在本地 Flink 集群运行任务 <a href="#%e5%9c%a8%e6%9c%ac%e5%9c%b0-flink-%e9%9b%86%e7%be%a4%e8%bf%90%e8%a1%8c%e4%bb%bb%e5%8a%a1" class="anchor">🔗</a></h2><p>现在我们已经可以通过 IntelliJ IDEA 来运行应用，你肯定也很想知道如何在本地 Flink 集群中运行 WordCount 应用。</p>
+<p>其实也很简单。</p>
+<h4 id="编译代码">编译代码 <a href="#%e7%bc%96%e8%af%91%e4%bb%a3%e7%a0%81" class="anchor">🔗</a></h4><p>编译代码前，需要先修改  pom.xml 中的 mainClass。生成项目时默认是 <code>com.flink.demo.StreamingJob</code>，我们需要将其修改为 <code>com.flink.demo.WindowWordCount</code> ，这样通过 <code>java -jar &lt;name&gt;.jar</code> 命令执行 jar 包时，就会运行 WindowWordCount 类了。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#008000;font-weight:bold">&lt;transformers&gt;</span>
+  	<span style="color:#008000;font-weight:bold">&lt;transformer</span> <span style="color:#b44">implementation=</span><span style="color:#b44">&#34;org.apache.maven.plugins.shade.resource.ManifestResourceTransformer&#34;</span><span style="color:#008000;font-weight:bold">&gt;</span>
+	  <span style="color:#008000;font-weight:bold">&lt;mainClass&gt;</span>com.flink.demo.WindowWordCount<span style="color:#008000;font-weight:bold">&lt;/mainClass&gt;</span>
+  	<span style="color:#008000;font-weight:bold">&lt;/transformer&gt;</span>
+<span style="color:#008000;font-weight:bold">&lt;/transformers&gt;</span>
+</code></pre></div><p>修改后，使用 maven 编译项目：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mvn  clean package
+</code></pre></div><p>编译成功后，会在 target 目录下生成 <code>first-flink-project-0.0.1-SNAPSHOT.jar</code> 文件。</p>
+<h4 id="启动-flink-集群">启动 Flink 集群 <a href="#%e5%90%af%e5%8a%a8-flink-%e9%9b%86%e7%be%a4" class="anchor">🔗</a></h4><p>接下来我们在本地启动 Flink 集群。如果你之前已经启动了，则不用执行该步骤了。</p>
+<p>启动集群步骤可以参考 <a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/try-flink/local_installation.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    本地模式安装
+</a> ，下面我简单讲解一下。</p>
+<p>首先需要先下载 Flink 集群的代码，你可以在这个页面 <a 
+    href="https://flink.apache.org/downloads.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Flink Downloads
+</a> 找到所有版本的 Flink。</p>
+<p>下载后解压：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tar -xzf flink-1.12.1-bin-scala_2.11.tgz
+$ <span style="color:#a2f">cd</span> flink-1.12.1
+</code></pre></div><p>然后启动集群。flink 代码中附带了一个 bash 脚本，可以用来启动集群。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ./bin/start-cluster.sh
+Starting cluster.
+Starting standalonesession daemon on host.
+Starting taskexecutor daemon on host.
+</code></pre></div><h4 id="提交任务">提交任务 <a href="#%e6%8f%90%e4%ba%a4%e4%bb%bb%e5%8a%a1" class="anchor">🔗</a></h4><p>在本地启动 Flink 集群后，然后我们就可以通过 <code>flink run</code> 命令将 WordCount 任务提交到本地集群了：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ./bin/flink run jobs/first-flink-project-0.0.1-SNAPSHOT.jar
+</code></pre></div><p><code>jobs/first-flink-project-0.0.1-SNAPSHOT.jar</code> 是前面编译后的 jar 包，我将其移到了 jobs 目录下。</p>
+<p>任务启动后，可以在 <code>log/</code> 目录下查看对应日志。</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-cluster.gif" alt="flink-cluster.gif"  />
+</p></p>
+<p>此外，你也可以通过 Web UI 来管理集群，在浏览器打开 <code>localhost:8081</code> 就可以看到管理界面。</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-webui.png" alt="Web UI"  />
+</p></p>
+<h4 id="停止集群">停止集群 <a href="#%e5%81%9c%e6%ad%a2%e9%9b%86%e7%be%a4" class="anchor">🔗</a></h4><p>任务运行结束后，你可以通过 stop-cluster.sh 这个脚本来停止 flink 集群。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ./bin/stop-cluster.sh
+</code></pre></div><h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>至此，我们的 WordCount 应用就开发并部署完成了。Flink 本身的概念非常多，本文基本没有涉及概念介绍，只是讲解了程序运行过程，希望通过本文的介绍， 能让你对 Flink 有个初步的印象。这样接下来再去接触 Flink 的概念，应该就会容易一些了。</p>
+<h2 id="参考">参考 <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h2><ul>
+<li><a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/try-flink/datastream_api.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    基于 DataStream API 实现欺诈检测
+</a></li>
+<li><a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/datastream_api.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Flink DataStream API编程指南
+</a></li>
+<li><a 
+    href="https://ci.apache.org/projects/flink/flink-docs-stable/dev/project-configuration.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Flink 项目配置
+</a></li>
+<li><a 
+    href="http://wuchong.me/blog/2018/11/07/5-minutes-build-first-flink-application/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    5分钟从零构建第一个 Flink 应用
+</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+                <a href="https://nodejh.com/tags/flink">Flink</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

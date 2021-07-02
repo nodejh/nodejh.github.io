@@ -6,16 +6,7 @@
     <description>Recent content in Posts on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 22 Jun 2021 22:00:00 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Flink 应用开发入门</title>
-      <link>https://nodejh.com/posts/flink-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/</link>
-      <pubDate>Tue, 22 Jun 2021 22:00:00 +0800</pubDate>
-      
-      <guid>https://nodejh.com/posts/flink-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/</guid>
-      <description>Apache Flink 是一分布式的流计算引擎，可以对有界流和无界流进行有状态计算。基于 Flink 编写的程序被成为 Flink 作业、Flink 任务、Job。Flink 程序可以在本</description>
-    </item>
-    
+    <lastBuildDate>Wed, 03 Mar 2021 22:44:10 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>从零编写第一个 Flink 应用</title>
       <link>https://nodejh.com/posts/%E4%BB%8E%E9%9B%B6%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA-flink-%E5%BA%94%E7%94%A8/</link>

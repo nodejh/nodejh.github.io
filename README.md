@@ -1,6 +1,6 @@
 ## Blog
 
-- [从零编写第一个 Flink 应用](https://github.com/nodejh/nodejh.github.io/issues/55)
+- [Flink 应用开发入门](https://github.com/nodejh/nodejh.github.io/issues/55)
 - [一个简单的 MySQL 批量事务消息队列](https://github.com/nodejh/nodejh.github.io/issues/54)
 - [Sequelize-Automate: 自动生成 Sequelize models](https://github.com/nodejh/nodejh.github.io/issues/53)
 - [零代码一分钟创建 HTTP 服务](https://github.com/nodejh/nodejh.github.io/issues/52)

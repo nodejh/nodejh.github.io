@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
   <head>
-    <title>JAVA | Hang Jiang</title>
+    <title>Flink 应用开发入门 | Hang Jiang</title>
 
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
@@ -42,147 +42,74 @@
 
     <main class="main">
       
-<header class="profile">
-    
-        <img class="avatar" alt="avatar" src="/images/avatar.png" />
-    
 
-    <h1>Hang Jiang</h1>
-    
-    
-      <h2>Software Engineer</h2>
-    
-</header>
+<section id="single">
+    <h1 class="title">Flink 应用开发入门</h1>
 
-<section id="archive">
-   
-    
-        <div class="group">
-            <h3 class="key">
-                2021
-            </h3>
+    <div class="tip">
+        <span>
+          Jun 22, 2021 22:00
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            140 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          1 minute read
+        </span>
+    </div>
 
+    <div class="content">
+      <p>Apache Flink 是一分布式的流计算引擎，可以对有界流和无界流进行有状态计算。基于 Flink 编写的程序被成为 Flink 作业、Flink 任务、Job。<del>Flink 程序可以在本地执行，也可以在有多台机器的集群上执行，比如 Kubernetes、Yarn、Mesos 等。</del></p>
+<p>那么如何进行 Flink 应用开发呢？</p>
+<p>有界流 无界流</p>
+<p>流处理
+批处理</p>
+
+    </div>
+
+    
+        <div class="tags">
             
-                <div class="value">
-                  <div class="date">
-                      Jun 22
-                  </div>
-                  <div class="title">
-                      <a href="https://nodejh.com/posts/flink-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/">
-                          Flink 应用开发入门
-                      </a>
-
-                      
-                          <div class="tags">
-                              
-                                  <a href="https://nodejh.com/tags/java">Java</a>
-                              
-                                  <a href="https://nodejh.com/tags/flink">Flink</a>
-                              
-                          </div>
-                      
-                  </div>
-                </div>
+                <a href="https://nodejh.com/tags/java">Java</a>
             
-                <div class="value">
-                  <div class="date">
-                      Mar 3
-                  </div>
-                  <div class="title">
-                      <a href="https://nodejh.com/posts/%E4%BB%8E%E9%9B%B6%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA-flink-%E5%BA%94%E7%94%A8/">
-                          从零编写第一个 Flink 应用
-                      </a>
-
-                      
-                          <div class="tags">
-                              
-                                  <a href="https://nodejh.com/tags/java">Java</a>
-                              
-                                  <a href="https://nodejh.com/tags/flink">Flink</a>
-                              
-                          </div>
-                      
-                  </div>
-                </div>
-                      
+                <a href="https://nodejh.com/tags/flink">Flink</a>
+            
         </div>
-
     
-        <div class="group">
-            <h3 class="key">
-                2016
-            </h3>
-
-            
-                <div class="value">
-                  <div class="date">
-                      Mar 17
-                  </div>
-                  <div class="title">
-                      <a href="https://nodejh.com/posts/install-eclipse-jsp-servlet-develop-environment/">
-                          Eclipse JSP/Servlet 环境搭建
-                      </a>
-
-                      
-                          <div class="tags">
-                              
-                                  <a href="https://nodejh.com/tags/java">JAVA</a>
-                              
-                          </div>
-                      
-                  </div>
-                </div>
-            
-                <div class="value">
-                  <div class="date">
-                      Mar 12
-                  </div>
-                  <div class="title">
-                      <a href="https://nodejh.com/posts/how-to-install-java-on-ubuntu/">
-                          Ubuntu下JAVA开发环境的配置
-                      </a>
-
-                      
-                          <div class="tags">
-                              
-                                  <a href="https://nodejh.com/tags/java">JAVA</a>
-                              
-                                  <a href="https://nodejh.com/tags/ubuntu">Ubuntu</a>
-                              
-                          </div>
-                      
-                  </div>
-                </div>
-            
-                <div class="value">
-                  <div class="date">
-                      Mar 12
-                  </div>
-                  <div class="title">
-                      <a href="https://nodejh.com/posts/how-to-install-tomcat-on-ubuntu/">
-                          Ubuntu 下 Tomcat 的配置
-                      </a>
-
-                      
-                          <div class="tags">
-                              
-                                  <a href="https://nodejh.com/tags/ubuntu">Ubuntu</a>
-                              
-                                  <a href="https://nodejh.com/tags/java">Java</a>
-                              
-                          </div>
-                      
-                  </div>
-                </div>
-                      
-        </div>
-
     
-
-
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
 
 </section>
-
 
 
     </main>

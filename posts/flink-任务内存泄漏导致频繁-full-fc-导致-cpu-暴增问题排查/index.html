@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Check Parameters in Express Router">
+<meta name="generator" content="Hugo 0.82.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查</h1>
+
+    <div class="tip">
+        <span>
+          Jul 30, 2021 17:00
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            4708 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          10 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>最近发现部署在 k8s 上的 Flink 每运行十几个小时就会卡住，导致消费延迟、上游数据积压。消费延迟较长时间后（时间不固定，可能十几分钟，也可能是一小时），又逐渐恢复正常。</p>
+<p>在此分享一下排查过程。
+​</p>
+<h2 id="现象">现象 <a href="#%e7%8e%b0%e8%b1%a1" class="anchor">🔗</a></h2><p>​</p>
+<p>出问题的直接现象就是消费延迟，数据积压。</p>
+<p>同时观察到，发生消费延迟时，Pod 的 CPU 利用率几乎是 100%，内存使用率相对稳定、网络 IO 也无明显变化。</p>
+<p>并且几乎每次都是单个 Pod CPU 利用率 100%，其他 Pod 比较正常。</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-monitor.png" alt="CPU使用率100%"  />
+</p>
+​</p>
+<p>于是首先就面临三个问题：</p>
+<ul>
+<li>为什么单个 Pod CPU 100% 会导致整个 Flink 任务消费延迟？</li>
+<li>为什么通常延迟一段时间会恢复？</li>
+<li>是否会造成数据丢失？</li>
+</ul>
+<p>​</p>
+<p>接下来就对上述三个问题进行初步分析。
+​</p>
+<h2 id="初步分析">初步分析 <a href="#%e5%88%9d%e6%ad%a5%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><p>​</p>
+<h3 id="为什么单个-pod-cpu-100-会导致整个-flink-任务消费延迟">为什么单个 Pod CPU 100% 会导致整个 Flink 任务消费延迟？ <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%8d%95%e4%b8%aa-pod-cpu-100-%e4%bc%9a%e5%af%bc%e8%87%b4%e6%95%b4%e4%b8%aa-flink-%e4%bb%bb%e5%8a%a1%e6%b6%88%e8%b4%b9%e5%bb%b6%e8%bf%9f" class="anchor">🔗</a></h3><p>​</p>
+<p>通常 Flink 任务出现消费延迟，直接原因就是反压，反压导致 Source 不再消费数据。 所以查看了 Flink 任务，发现确实有反压。并且造成反压的 SubTask 对应的 Pod 就是 CPU 使用率很高的 Pod。</p>
+<p>如图所示，造成上游反压的主要是 windowGroupStream 的 SubTask 1。
+<p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-backpressure.png" alt="反压"  />
+</p></p>
+<p>​</p>
+<p>虽然是部署在 k8s 上，有多个 Pod 在同时处理数据，但在 Flink 架构中，Pod 只是其的计算资源，Flink 会统一调度计算资源。当某个 Pod CPU 利用率 100% 时，该 Pod 上运行的 Task 就会变慢，甚至没有 CPU 可用。
+​</p>
+<p>当任务存使用了 keyBy 算子时，相同 key 的数据会被分配到同一个 Task 处理。所以当 key 没有均匀分布时，就可能导致大量数据集中在某个 Task，而其他 Task 比较空闲。最终由于该 Task 的 CPU 资源不足且数据无法被其他 Task 处理，导致上游反压，最终导致整个任务消费延迟。
+​</p>
+<p>恰好我们的 Flink 任务就使用了 keyBy 算子。所以这是造成单个 Pod CPU 使用率很高的原因之一。</p>
+<p>此外也可能是分配到该 Pod 上的数据处理过程中，触发了某个 BUG，导致该 Pod CPU 使用率非常高。</p>
+<h3 id="为什么消费延迟一段时间后会恢复">为什么消费延迟一段时间后会恢复？ <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%b6%88%e8%b4%b9%e5%bb%b6%e8%bf%9f%e4%b8%80%e6%ae%b5%e6%97%b6%e9%97%b4%e5%90%8e%e4%bc%9a%e6%81%a2%e5%a4%8d" class="anchor">🔗</a></h3><p>​</p>
+<p>反压通常还会带来另一个问题，就是 checkpoint 变慢。
+​</p>
+<p>如图所示，正常情况下，checkpoint 的时间不超过 1s，但出现反压时，checkpoint 耗时达到数分钟，甚至超时。
+​</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-checkpoint.png" alt="checkpoint"  />
+</p></p>
+<p>Flink 在进行 checkpoint 时，Checkpoint Coordinator 会向 source 和所有算子以及 sink 发送 barrier，每个算子接收到了 barrier 后，会暂停数据处理，生成自身状态快照并保存到持久化存储中，然后将数据地址（state handle）发送给 Checkpoint Coordinator。当 Checkpoint Coordinator 收集到所有算子的 state handle 后，就认为此次 checkpoint 完成了，然后再持久化存储保存一份 checkpoint meta 文件。</p>
+<p>所以只要某个算子的 checkpoint 变慢，就会导致整个 checkpoint 变慢，甚至造成 checkpoint 超时。
+​</p>
+<p>Flink 的 checkpoint 有很多<a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/config/#checkpointing"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    配置
+</a>，这里主要针对其中两个进行说明：</p>
+<ul>
+<li><code>execution.checkpointing.timeout</code>  checkpoint 超时时间</li>
+<li><code>execution.checkpointing.tolerable-failed-checkpoints</code> 可容忍的 checkpoint 失败次数，默认为 0</li>
+</ul>
+<p>除了在 flink-conf.yaml 中配置，还可以在代码中指定：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#080;font-style:italic">// 设置 checkpoint 超时时间为 5 分钟
+</span><span style="color:#080;font-style:italic"></span>env<span style="color:#666">.</span><span style="color:#b44">getCheckpointConfig</span><span style="color:#666">().</span><span style="color:#b44">setCheckpointTimeout</span><span style="color:#666">(</span>1000 <span style="color:#666">*</span> 60 <span style="color:#666">*</span> 5<span style="color:#666">);</span>
+<span style="color:#080;font-style:italic">// 设置可容忍的 checkpoint 失败次数为 0
+</span><span style="color:#080;font-style:italic"></span>env<span style="color:#666">.</span><span style="color:#b44">getCheckpointConfig</span><span style="color:#666">().</span><span style="color:#b44">setTolerableCheckpointFailureNumber</span><span style="color:#666">(</span>0<span style="color:#666">);</span>
+</code></pre></div><p>​</p>
+<p>按照上面的配置，如果 checkpoint 5 分钟还未完成，则 checkpoint 会失败。同时由于可容忍的失败次数为 0，所以一旦 checkpoint 失败，整个任务就会失败且停止。
+​</p>
+<p>由于我们的 Flink 任务是部署在 k8s 上，且配置了高可用，所以任务失败后，又会自动重启，因此消费延迟一段时间后会自动恢复。
+​</p>
+<p>除此之外，由于 Pod CPU 长期处于 100% 甚至超过 100%，由于 Pod 也设置了 cpu limit，如下：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">resources</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">	</span><span style="color:#008000;font-weight:bold">limits</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  	</span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">2</span><span style="color:#bbb">
+</span><span style="color:#bbb">    	</span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>10Gi<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">requests</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  	</span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">2</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>10Gi<span style="color:#bbb">
+</span></code></pre></div><p>所以当 Pod CPU 非常高时，Pod 也可能被 k8s 重启。观察 Pod 的重启次数不为 0，也印证了此猜测。对于部署 k8s 的 Flink 任务，当 Pod 重启后，整个 flink 任务也会重启。
+​</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-pod.png" alt="Pod"  />
+</p>
+​</p>
+<p>所以消费延迟一段时间后会自动恢复，可能有两个原因：</p>
+<ul>
+<li>checkpoint 超时导致任务重启</li>
+<li>Pod CPU 超过 limit 限制，导致 Pod 重启，进而导致任务重启</li>
+</ul>
+<p>​</p>
+<p>虽然任务会自动恢复，但消费延迟可能是小时级别的，明显不可容忍。还是得找到根本原因。
+​</p>
+<p>在进一步定位前，另一个非常关心的问题就是，是否会造成数据丢失？
+​</p>
+<h3 id="是否会造成数据丢失">是否会造成数据丢失？ <a href="#%e6%98%af%e5%90%a6%e4%bc%9a%e9%80%a0%e6%88%90%e6%95%b0%e6%8d%ae%e4%b8%a2%e5%a4%b1" class="anchor">🔗</a></h3><p>在将任务部署到 k8s 上时，我们开启了 flink 的 checkpoint 机制，并且将 checkpoint 持久化保存到了 NAS 中，所以任务异常不会导致 checkpoint 状态丢失。当任务重启时，Flink 会从 NAS 中读取上次 checkpoint 进行恢复。
+​</p>
+<p>所以任务重启不会导致数据丢失，但会造成数据重复。
+​</p>
+<p>所以当还找到根本原因是，解决办法就是，出现消费延迟报警时，就及时重启任务。
+​</p>
+<p>这里在补充一些关于 Flink on k8s 的信息。我们的 Flink 任务部署到 k8s 上时，使用了 Flink 的 <a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/elastic_scaling/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Elastic Scaling
+</a> 模式，并基于 k8s 的 hpa  实现了弹性伸缩。当任务的 CPU 使用率较高时，就会自动扩容。
+​</p>
+<p>那为什么 Pod 的 CPU 到 100% 了，都没有自动扩容呢？这是因为每次消费延迟，只有个别 Pod CPU 使用率非常高，其他 Pod CPU 使用率都非常低，所以整体的 CPU 使用率没有达到扩容阈值，所以没有自动扩容。</p>
+<h2 id="原因定位">原因定位 <a href="#%e5%8e%9f%e5%9b%a0%e5%ae%9a%e4%bd%8d" class="anchor">🔗</a></h2><p>虽然经过初步分析，大概了解了整体情况，但并没有找到根本原因。</p>
+<p>要找到根本原因，就需要在出现问题的那一刻观察 Flink 任务的各种指标，比如线程的 CPU 使用率、内存消耗、GC 情况等等。
+​</p>
+<p>​</p>
+<p>所以为了得到更多信息，就需要打印更多日志。在 Flink 的 flink-conf.yaml 配置文件中，可以通过 <code>env.java.opts</code> 配置 JVM 参数，详见 <a 
+    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/ops/debugging/application_profiling/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Application Profiling &amp; Debugging 
+</a>。
+​</p>
+<p>于是在 flink-conf.yaml  中增加了如下配置，打印 GC 日志：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">env.java.opts</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#34;-Xloggc:/opt/flink/log/gc.log -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=10M -XX:+PrintPromotionFailure -XX:+PrintGCCause -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/flink/log/heap.hprof&#34;</span><span style="color:#bbb">
+</span></code></pre></div><ul>
+<li><code>-Xloggc:/opt/flink/log/gc.log</code>  GC 日志的存储位置</li>
+<li><code>-XX:PrintGCApplicationStoppedTime</code> 输出 GC 时应用暂停时间</li>
+<li><code>-XX:+PrintGCDetails</code> 输出 GC 的详细日志</li>
+<li><code>+PrintGCDateStamps</code> 输出 GC 的日期时间，格式为 2021-07-28T18:38:44.743+0800</li>
+<li><code>-XX:+UseGCLogFileRotation</code> 开启日志文件分割</li>
+<li><code>-XX:NumberOfGCLogFiles:NumberOfGCLogFiles</code> 最多分割几个 GC 日志文件</li>
+<li><code>-XX:GCLogFileSize=10M</code> 每个日志文件上限大小，超过就会触发分割</li>
+<li><code>-XX:+PrintPromotionFailure</code> 输出导致 GC 的原因</li>
+<li><code>-XX:+HeapDumpOnOutOfMemoryError</code> 发生内存泄漏时，自动打印 heapdump 文件</li>
+<li><code>-XX:HeapDumpPath=/opt/flink/log/heap.hprof</code> heapdump 文件路径</li>
+</ul>
+<p>​</p>
+<p>然后重启应用，持续观察，一直到某个 Pod 再次出现异常。
+​</p>
+<p>功夫不负有心人，终于等到了十几个小时后，某个 Pod CPU 再次接近 100%，赶紧登录上去查看各种运行时信息。
+​</p>
+<h3 id="分析-java-进程及线程的-cpu-使用率">分析 Java 进程及线程的 CPU 使用率 <a href="#%e5%88%86%e6%9e%90-java-%e8%bf%9b%e7%a8%8b%e5%8f%8a%e7%ba%bf%e7%a8%8b%e7%9a%84-cpu-%e4%bd%bf%e7%94%a8%e7%8e%87" class="anchor">🔗</a></h3><p>​</p>
+<p>由于观察到的现象是 CPU 使用率 100%，所以第一反应是查看进程及线程的 CPU 情况。
+​</p>
+<h4 id="确定进程-id">确定进程 ID <a href="#%e7%a1%ae%e5%ae%9a%e8%bf%9b%e7%a8%8b-id" class="anchor">🔗</a></h4><p>首先通过 <code>ps</code> 命令确定进程 ID：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ ps -auxwww
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+flink          <span style="color:#666">1</span> 98.8 14.4 <span style="color:#666">24410376</span> <span style="color:#666">9317060</span> ?    Ssl  Jul28 1639:33 /usr/local/openjdk-8/bin/java -Xmx4563402682 -Xms4563402682 -XX:MaxDirectMemorySize<span style="color:#666">=</span><span style="color:#666">1073741838</span> -XX:MaxMetaspaceSize<span style="color:#666">=</span><span style="color:#666">268435456</span> -Xloggc:/opt/flink/log/gc.log 
+flink    <span style="color:#666">1072789</span>  0.0  0.0   <span style="color:#666">5752</span>  <span style="color:#666">3656</span> pts/0    Ss   14:36   0:00 bash
+flink    <span style="color:#666">1072902</span>  0.0  0.0   <span style="color:#666">9392</span>  <span style="color:#666">3008</span> pts/0    R+   14:36   0:00 ps -auxwww
+</code></pre></div><p>​</p>
+<p>可以看到 PID 为 1 的进程就是 flink 任务的进程。</p>
+<h4 id="查看线程-cpu-使用率">查看线程 CPU 使用率 <a href="#%e6%9f%a5%e7%9c%8b%e7%ba%bf%e7%a8%8b-cpu-%e4%bd%bf%e7%94%a8%e7%8e%87" class="anchor">🔗</a></h4><p>然后查看进程中各个线程的 CPU 使用率。
+​</p>
+<p>使用 top 或 ps 命令均可：
+​</p>
+<ul>
+<li><code>top -H -p 1</code></li>
+<li>​<code>ps H -eo user,pid,ppid,tid,time,%cpu,cmd,psr,fname --sort=%cpu | grep 1</code></li>
+</ul>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ ps H -eo user,pid,ppid,tid,time,%cpu,cmd,psr,fname --sort<span style="color:#666">=</span>%cpu | grep <span style="color:#666">1</span>
+......
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10928</span> 00:00:02  0.3 /usr/local/openjdk-8/bin/ja   <span style="color:#666">1</span> Consumer
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10936</span> 00:00:04  0.4 /usr/local/openjdk-8/bin/ja   <span style="color:#666">6</span> async wa
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10894</span> 00:00:04  0.5 /usr/local/openjdk-8/bin/ja   <span style="color:#666">4</span> Legacy S
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10932</span> 00:00:23  2.5 /usr/local/openjdk-8/bin/ja   <span style="color:#666">1</span> windowGr
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10942</span> 00:00:45  2.8 /usr/local/openjdk-8/bin/ja   <span style="color:#666">0</span> async wa
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>     <span style="color:#666">263</span> 00:32:41  9.3 /usr/local/openjdk-8/bin/ja   <span style="color:#666">4</span> java
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>     <span style="color:#666">264</span> 00:32:42  9.3 /usr/local/openjdk-8/bin/ja   <span style="color:#666">0</span> java
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>     <span style="color:#666">265</span> 00:32:32  9.4 /usr/local/openjdk-8/bin/ja   <span style="color:#666">1</span> java
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>     <span style="color:#666">266</span> 00:32:33  9.4 /usr/local/openjdk-8/bin/ja   <span style="color:#666">3</span> java
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10935</span> 00:03:18 15.0 /usr/local/openjdk-8/bin/ja   <span style="color:#666">1</span> windowGr
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10883</span> 00:03:20 21.3 /usr/local/openjdk-8/bin/ja   <span style="color:#666">5</span> FastLogT
+flink          <span style="color:#666">1</span>       <span style="color:#666">0</span>   <span style="color:#666">10885</span> 00:03:27 22.0 /usr/local/openjdk-8/bin/ja   <span style="color:#666">3</span> FastLogT
+</code></pre></div><p>可以看到，线程 10885 、10883、10935 以及 263、264、265、266 的 CPU 使用率非常高。根据线程名称可以确定，前面几个线程都是业务代码，其中有大量计算逻辑，CPU 使用率高应该是正常的。而 265 和 266 尚不确定，所以继续查看线程栈。
+​</p>
+<h4 id="查看线程栈">查看线程栈 <a href="#%e6%9f%a5%e7%9c%8b%e7%ba%bf%e7%a8%8b%e6%a0%88" class="anchor">🔗</a></h4><p>我们可以使用 jstack 命令打印线程栈。由于线程栈内容非常多，所以最好通过 grep 过滤出具体线程的线程栈。</p>
+<p>首先将线程 ID 转换为 16 进制：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#a2f">printf</span> <span style="color:#b44">&#34;%x\n&#34;</span> <span style="color:#666">265</span>
+<span style="color:#666">109</span>
+$ <span style="color:#a2f">printf</span> <span style="color:#b44">&#34;%x\n&#34;</span> <span style="color:#666">266</span>
+10a
+</code></pre></div><p>​</p>
+<p>以 266 线程为例，通过 jstack 查看线程栈：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ jstack <span style="color:#666">1</span> | grep 0x10a -C <span style="color:#666">10</span>
+	at org.apache.flink.runtime.taskexecutor.TaskManagerRunner.main<span style="color:#666">(</span>TaskManagerRunner.java:354<span style="color:#666">)</span>
+
+<span style="color:#b44">&#34;VM Thread&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a645c800 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x10b runnable
+
+<span style="color:#b44">&#34;GC task thread#0 (ParallelGC)&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a6458000 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x107 runnable
+
+<span style="color:#b44">&#34;GC task thread#1 (ParallelGC)&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a6459000 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x108 runnable
+
+<span style="color:#b44">&#34;GC task thread#2 (ParallelGC)&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a6459800 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x109 runnable
+
+<span style="color:#b44">&#34;GC task thread#3 (ParallelGC)&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a645a800 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x10a runnable
+
+<span style="color:#b44">&#34;VM Periodic Task Thread&#34;</span> <span style="color:#b8860b">os_prio</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">tid</span><span style="color:#666">=</span>0x00007f01a645d800 <span style="color:#b8860b">nid</span><span style="color:#666">=</span>0x113 waiting on condition
+
+JNI global references: <span style="color:#666">1841</span>
+</code></pre></div><p>​</p>
+<p>可以看到，263、264、265、266 都是 JVM 的垃圾回收线程。</p>
+<p>由此可以判断，频繁的 GC 可能是导致 CPU 使用率上涨的重要因素。</p>
+<p>于是接下来分析 GC 日志。
+​</p>
+<h3 id="分析-gc-日志">分析 GC 日志 <a href="#%e5%88%86%e6%9e%90-gc-%e6%97%a5%e5%bf%97" class="anchor">🔗</a></h3><p>​</p>
+<p>由于我们提前将 GC 日志输出到了 <code>/opt/flink/log/gc.log</code>文件中，所以可以直接登录到机器上查看。
+​</p>
+<p>整个 GC 日志比较多，下面是从中截取的部分日志：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">2021-07-28T18:38:29.456+0800: 9137.203: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0005972 seconds, Stopping threads took: 0.0001040 seconds
+2021-07-28T18:38:29.678+0800: 9137.425: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;678408K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342580K-&gt;2342579K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280564K-&gt;3020988K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77771K-&gt;77771K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.7266583 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.31 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.72 secs<span style="color:#666">]</span> 
+2021-07-28T18:38:32.405+0800: 9140.152: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 2.7275004 seconds, Stopping threads took: 0.0001259 seconds
+2021-07-28T18:38:32.406+0800: 9140.153: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0006030 seconds, Stopping threads took: 0.0000960 seconds
+2021-07-28T18:38:32.663+0800: 9140.410: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;686663K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342579K-&gt;2342579K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280563K-&gt;3029243K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77771K-&gt;77771K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.7246706 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.32 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.73 secs<span style="color:#666">]</span> 
+2021-07-28T18:38:35.388+0800: 9143.135: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 2.7255402 seconds, Stopping threads took: 0.0001063 seconds
+2021-07-28T18:38:35.389+0800: 9143.136: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0005835 seconds, Stopping threads took: 0.0000623 seconds
+2021-07-28T18:38:35.635+0800: 9143.382: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;669696K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342579K-&gt;2342570K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280563K-&gt;3012266K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77771K-&gt;77767K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.7029393 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.31 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.71 secs<span style="color:#666">]</span> 
+2021-07-28T18:38:38.338+0800: 9146.085: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 2.7037416 seconds, Stopping threads took: 0.0000852 seconds
+2021-07-28T18:38:38.338+0800: 9146.086: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0006325 seconds, Stopping threads took: 0.0001080 seconds
+2021-07-28T18:38:38.669+0800: 9146.416: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;684469K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342570K-&gt;2342570K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280554K-&gt;3027039K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77767K-&gt;77767K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.8165705 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.45 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.81 secs<span style="color:#666">]</span> 
+2021-07-28T18:38:41.486+0800: 9149.233: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 2.8175380 seconds, Stopping threads took: 0.0001278 seconds
+2021-07-28T18:38:41.487+0800: 9149.234: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0006169 seconds, Stopping threads took: 0.0000893 seconds
+2021-07-28T18:38:41.489+0800: 9149.236: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0006118 seconds, Stopping threads took: 0.0001004 seconds
+2021-07-28T18:38:41.762+0800: 9149.509: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;671406K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342570K-&gt;2342570K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280554K-&gt;3013976K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77767K-&gt;77767K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.7176013 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.34 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.72 secs<span style="color:#666">]</span> 
+2021-07-28T18:38:44.480+0800: 9152.227: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 2.7184786 seconds, Stopping threads took: 0.0001121 seconds
+2021-07-28T18:38:44.482+0800: 9152.229: Total <span style="color:#a2f">time</span> <span style="color:#a2f;font-weight:bold">for</span> which application threads were stopped: 0.0022003 seconds, Stopping threads took: 0.0000932 seconds
+2021-07-28T18:38:44.743+0800: 9152.490: <span style="color:#666">[</span>Full GC <span style="color:#666">(</span>Ergonomics<span style="color:#666">)</span> <span style="color:#666">[</span>PSYoungGen: 937984K-&gt;677922K<span style="color:#666">(</span>1053696K<span style="color:#666">)]</span> <span style="color:#666">[</span>ParOldGen: 2342570K-&gt;2342569K<span style="color:#666">(</span>2342912K<span style="color:#666">)]</span> 3280554K-&gt;3020492K<span style="color:#666">(</span>3396608K<span style="color:#666">)</span>, <span style="color:#666">[</span>Metaspace: 77767K-&gt;77767K<span style="color:#666">(</span>1122304K<span style="color:#666">)]</span>, 2.7718527 secs<span style="color:#666">]</span> <span style="color:#666">[</span>Times: <span style="color:#b8860b">user</span><span style="color:#666">=</span>5.44 <span style="color:#b8860b">sys</span><span style="color:#666">=</span>0.00, <span style="color:#b8860b">real</span><span style="color:#666">=</span>2.77 secs<span style="color:#666">]</span> 
+</code></pre></div><p>怎么理解 GC 日志呢？以最后一行 GC 日志为例，此次 Full FC 后：</p>
+<ul>
+<li>Young 区的内存由 937984K 下降到了 677922K，整个 Young 区的内存为 1053696K，GC 后 Young 区释放了 27% 的内存；</li>
+<li>Old 区的内存由 2342570K 下降到了 2342569K，整个 Old 区的内存为 2342912K，GC 后 Old 区仅释放了  1K 内存；</li>
+<li>GC 前总共堆内存为 3280554K，GC 后堆内存为 3020492K，总堆内存为 3396608K；</li>
+<li>整个 GC 过程持续了 2.77 秒。</li>
+</ul>
+<blockquote>
+<p>除了直接查看 GC 日志，我们也可以借助于一些可视化工具分析 GC 日志，比如 <a 
+    href="https://github.com/chewiebug/GCViewer"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    GCViewer
+</a>、<a 
+    href="https://gceasy.io/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    GCEasy
+</a> 等。</p>
+</blockquote>
+<p>​</p>
+<p>从日志中可以看到，此时 JVM 正在进行非常频繁的 Full GC。并且每次 Full GC，释放的内存也非常有限，Old 区内存几乎没有被释放。</p>
+<p>此外从日志中也可以看到，每次 GC 时应用都要暂停 2.7 秒甚至更久，这段时间内应用就完全无法处理数据，必然会造成消费延迟。
+​</p>
+<p>所以接下来的问题就是，找到为什么 Full GC 无法释放 Old 区的内存，通常原因可能是内存泄漏。
+​</p>
+<h3 id="分析内存泄漏">分析内存泄漏 <a href="#%e5%88%86%e6%9e%90%e5%86%85%e5%ad%98%e6%b3%84%e6%bc%8f" class="anchor">🔗</a></h3><p>内存如果无法被 Full GC 释放，则说明对象可能还存在引用。所以立即通过 jmap 打印了此刻的内存 heapdump 文件。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ jmap -dump:live,format<span style="color:#666">=</span>b,file<span style="color:#666">=</span>heap.hprof <span style="color:#666">1</span>
+</code></pre></div><blockquote>
+<p>这里可能还有一个大家经常遇到的问题是：Pod 上的 heapdump 文件如何下载到本地分析？</p>
+<p>我的做法是，在 Pod 上下载一个 <a 
+    href="https://help.aliyun.com/document_detail/50452.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    ossutil
+</a> 工具，把 heapdump 文件上传到 OSS，再下载到本地分析。</p>
+</blockquote>
+<p>​</p>
+<p>有了 heapdump 文件，就可以将其下载到本地进行分析了。
+​</p>
+<p>当然，在分析 heapdump 文件前，还可以通过 jmap 命令查看当前内存中的对象：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ jmap -histo <span style="color:#666">1</span> | head -n <span style="color:#666">30</span>
+
+ num     <span style="color:#080;font-style:italic">#instances         #bytes  class name</span>
+----------------------------------------------
+   1:      <span style="color:#666">48908481</span>     <span style="color:#666">2111717496</span>  <span style="color:#666">[</span>B
+   2:       <span style="color:#666">3836887</span>      <span style="color:#666">306064392</span>  <span style="color:#666">[[</span>B
+   3:       <span style="color:#666">6156306</span>      <span style="color:#666">246252240</span>  com.aliyun.openservices.log.common.FastLogContent
+   4:       <span style="color:#666">3836624</span>      <span style="color:#666">122771968</span>  com.mysql.cj.protocol.a.result.ByteArrayRow
+   5:        <span style="color:#666">337885</span>       <span style="color:#666">87566992</span>  <span style="color:#666">[</span>Ljava.lang.Object;
+   6:       <span style="color:#666">3836624</span>       <span style="color:#666">61385984</span>  com.mysql.cj.protocol.a.MysqlTextValueDecoder
+   7:        <span style="color:#666">578737</span>       <span style="color:#666">58924272</span>  <span style="color:#666">[</span>C
+   8:          <span style="color:#666">7431</span>       <span style="color:#666">17495224</span>  <span style="color:#666">[</span>I
+   9:        <span style="color:#666">576531</span>       <span style="color:#666">13836744</span>  java.lang.String
+  10:         <span style="color:#666">88455</span>        <span style="color:#666">9906960</span>  com.aliyun.actiontrail.delivery.stream.state.TrailConfig
+  11:        <span style="color:#666">327362</span>        <span style="color:#666">7856688</span>  java.util.ArrayList
+  12:        <span style="color:#666">236781</span>        <span style="color:#666">7576992</span>  com.aliyun.openservices.log.common.FastLog
+  13:        <span style="color:#666">114273</span>        <span style="color:#666">3656736</span>  java.util.concurrent.ConcurrentHashMap<span style="color:#b8860b">$Node</span>
+  14:        <span style="color:#666">100358</span>        <span style="color:#666">2408592</span>  java.sql.Date
+  15:         <span style="color:#666">94308</span>        <span style="color:#666">2263392</span>  java.lang.Long
+  16:         <span style="color:#666">13444</span>        <span style="color:#666">1485096</span>  java.lang.Class
+  17:         <span style="color:#666">22817</span>        <span style="color:#666">1460288</span>  java.nio.DirectByteBuffer
+  18:         <span style="color:#666">22783</span>        <span style="color:#666">1275848</span>  org.apache.flink.core.memory.MemorySegment
+  19:           <span style="color:#666">301</span>        <span style="color:#666">1059680</span>  <span style="color:#666">[</span>Ljava.util.concurrent.ConcurrentHashMap<span style="color:#b8860b">$Node</span>;
+  20:         <span style="color:#666">22834</span>         <span style="color:#666">913360</span>  sun.misc.Cleaner
+  21:         <span style="color:#666">24121</span>         <span style="color:#666">771872</span>  java.util.HashMap<span style="color:#b8860b">$Node</span>
+  22:         <span style="color:#666">22809</span>         <span style="color:#666">729888</span>  java.nio.DirectByteBuffer<span style="color:#b8860b">$Deallocator</span>
+  23:         <span style="color:#666">22750</span>         <span style="color:#666">728000</span>  com.mysql.cj.util.LazyString
+  24:            <span style="color:#666">20</span>         <span style="color:#666">655680</span>  <span style="color:#666">[</span>Lakka.dispatch.forkjoin.ForkJoinTask;
+  25:         <span style="color:#666">15912</span>         <span style="color:#666">636480</span>  java.util.TreeMap<span style="color:#b8860b">$Entry</span>
+  26:          <span style="color:#666">5305</span>         <span style="color:#666">532040</span>  <span style="color:#666">[</span>Ljava.util.HashMap<span style="color:#b8860b">$Node</span>;
+  27:         <span style="color:#666">23222</span>         <span style="color:#666">371552</span>  java.util.concurrent.atomic.AtomicBoolean
+</code></pre></div><p>通过 jmap 发现了几个有数百万实例的对象：<code>FastLogContent</code>、<code>ByteArrayRow</code> 、<code>MysqlTextValueDecoder</code> 以及数十万的 <code>TrailConfig</code> 等。</p>
+<p>其中 <code>FastLogContent</code> 是从上游 SLS 消费到的原始数据对象，因为需要处理的数据量特别大，所以实例数特别多，是正常的。而 <code>TrailConfig</code> 是应用中的配置，最终会通过 Flink 的 boradcast 广播到各个算子，所以实例数比较多，也是正常的。
+​</p>
+<p>但 <code>ByteArrayRow</code> 和 <code>MysqlTextValueDecoder</code> 就比较可疑了，从类名看是 MySQL 的查询结果。我们的 Flink 任务确实使用了 MySQL，主要是从定时从 MySQL 中查询数据。但正常情况下，数据查询后就会被处理，这两个对象实例应该非常少。
+​</p>
+<p>所以接下来就继续分析了一下 heapdump 文件。
+​</p>
+<p>在本地可以通过  <a 
+    href="https://www.eclipse.org/mat/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Memory Analyzer (MAT)
+</a> 或 <a 
+    href="https://github.com/oracle/visualvm"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    VisualVM
+</a> 等工具分析 heapdump 文件。
+​</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-heapdump.png" alt="mat"  />
+</p>
+​</p>
+<p>通过分析发现，<code>MysqlTextValueDecoder</code> 是 <code>ByteArrayRow</code> 的引用，而 <code>ByteArrayRow</code> 中的数据就是 MySQL 数据库的查询结果。
+​</p>
+<p>所以可以推测，是从 MySQL 中查询到数据后，某些对象没有及时释放导致的内存泄漏。
+​</p>
+<p>接下来就是定位代码了。
+​</p>
+<h3 id="定位代码">定位代码 <a href="#%e5%ae%9a%e4%bd%8d%e4%bb%a3%e7%a0%81" class="anchor">🔗</a></h3><p>由于 <code>ByteArrayRow</code> 是存放查询结果的，所以重点查看具有 SQL 执行结果的相关代码。
+​</p>
+<p>刚好看到有下面的代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> List<span style="color:#666">&lt;</span>AccountConfig<span style="color:#666">&gt;</span> <span style="color:#00a000">getConfigs</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    PreparedStatement statement <span style="color:#666">=</span> connection
+        <span style="color:#666">.</span><span style="color:#b44">prepareStatement</span><span style="color:#666">(</span><span style="color:#b44">&#34;SELECT * FROM account_config WHERE status = ?&#34;</span><span style="color:#666">);</span>
+    statement<span style="color:#666">.</span><span style="color:#b44">setString</span><span style="color:#666">(</span>1<span style="color:#666">,</span> AccountConfigStatus<span style="color:#666">.</span><span style="color:#b44">Enable</span><span style="color:#666">.</span><span style="color:#b44">getStatus</span><span style="color:#666">());</span>
+
+    ResultSet resultSet <span style="color:#666">=</span> statement<span style="color:#666">.</span><span style="color:#b44">executeQuery</span><span style="color:#666">();</span>
+    List<span style="color:#666">&lt;</span>AccountConfig<span style="color:#666">&gt;</span> configs <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> ArrayList<span style="color:#666">&lt;&gt;();</span>
+    
+    <span style="color:#a2f;font-weight:bold">while</span> <span style="color:#666">(</span>resultSet<span style="color:#666">.</span><span style="color:#b44">next</span><span style="color:#666">())</span> <span style="color:#666">{</span>
+        AccountConfig accountConfig <span style="color:#666">=</span> buildAccountConfig<span style="color:#666">(</span>resultSet<span style="color:#666">);</span>
+        configs<span style="color:#666">.</span><span style="color:#b44">add</span><span style="color:#666">(</span>accountConfig<span style="color:#666">);</span>
+    <span style="color:#666">}</span>
+    
+    <span style="color:#a2f;font-weight:bold">return</span> configs<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>这段代码的功能就是执行一条 SQL 语句，并获取查询结果。但执行完毕后，没有关闭 ResultSet 和 PreparedStatement，就可能导致内存泄漏。
+​</p>
+<p>所以对代码进行修改，在执行完 SQL 语句后，及时关闭 ResultSet，尽快释放多余内存。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> List<span style="color:#666">&lt;</span>AccountConfig<span style="color:#666">&gt;</span> <span style="color:#00a000">getConfigs</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    PreparedStatement statement <span style="color:#666">=</span> connection
+        <span style="color:#666">.</span><span style="color:#b44">prepareStatement</span><span style="color:#666">(</span><span style="color:#b44">&#34;SELECT * FROM account_config WHERE status = ?&#34;</span><span style="color:#666">);</span>
+    statement<span style="color:#666">.</span><span style="color:#b44">setString</span><span style="color:#666">(</span>1<span style="color:#666">,</span> AccountConfigStatus<span style="color:#666">.</span><span style="color:#b44">Enable</span><span style="color:#666">.</span><span style="color:#b44">getStatus</span><span style="color:#666">());</span>
+
+    ResultSet resultSet <span style="color:#666">=</span> statement<span style="color:#666">.</span><span style="color:#b44">executeQuery</span><span style="color:#666">();</span>
+    List<span style="color:#666">&lt;</span>AccountConfig<span style="color:#666">&gt;</span> configs <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> ArrayList<span style="color:#666">&lt;&gt;();</span>
+    
+    <span style="color:#a2f;font-weight:bold">while</span> <span style="color:#666">(</span>resultSet<span style="color:#666">.</span><span style="color:#b44">next</span><span style="color:#666">())</span> <span style="color:#666">{</span>
+        AccountConfig accountConfig <span style="color:#666">=</span> buildAccountConfig<span style="color:#666">(</span>resultSet<span style="color:#666">);</span>
+        configs<span style="color:#666">.</span><span style="color:#b44">add</span><span style="color:#666">(</span>accountConfig<span style="color:#666">);</span>
+    <span style="color:#666">}</span>
+    
+    resultSet<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+    statement<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+    <span style="color:#a2f;font-weight:bold">return</span> configs<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>修改完毕后再部署代码，就再也没有出现过 CPU 持续 100% 的情况了。
+​</p>
+<p><p class="markdown-image">
+  <img src="./images/flink-memory-leak-full-gc-cpu-normal.png" alt="正常"  />
+</p></p>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>总结一下整个排查过程：</p>
+<ul>
+<li>首先分析 CPU 异常的影响， 比如延迟、数据重复、数据丢失。基于 Flink 的 checkpoint 机制，判断其影响是数据消费延迟，会有数据重复、不会有数据丢失；</li>
+<li>然后分析进程、线程的 CPU 使用情况 GC 日志，确定是 Full GC 导致的 CPU 使用率暴增至 100%；</li>
+<li>最后分析内存 heapdump 文件，确定内存泄漏导致 Full GC 并最终定位代码。</li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+                <a href="https://nodejh.com/tags/flink">Flink</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

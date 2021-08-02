@@ -6,7 +6,16 @@
     <description>Recent content on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Jul 2021 17:00:00 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 Aug 2021 19:30:00 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Flink on k8s: Checkpoint 的持久化存储</title>
+      <link>https://nodejh.com/posts/flink-on-k8s-checkpoint-%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/</link>
+      <pubDate>Mon, 02 Aug 2021 19:30:00 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/flink-on-k8s-checkpoint-%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/</guid>
+      <description>将 Flink 应用部署到 k8s 上时，为了实现任务高可用，我们就需要将 checkpoint、savepoint 以及 Job Manager meta data 等数据持久化存储下来，而不是简单地</description>
+    </item>
+    
     <item>
       <title>Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查</title>
       <link>https://nodejh.com/posts/flink-%E4%BB%BB%E5%8A%A1%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%AF%BC%E8%87%B4%E9%A2%91%E7%B9%81-full-fc-%E5%AF%BC%E8%87%B4-cpu-%E6%9A%B4%E5%A2%9E%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</link>

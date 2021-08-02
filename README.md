@@ -1,5 +1,6 @@
 ## Blog
 
+- ["Flink on k8s](https://github.com/nodejh/nodejh.github.io/issues/57)
 - [Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查](https://github.com/nodejh/nodejh.github.io/issues/56)
 - [从零编写第一个 Flink 应用](https://github.com/nodejh/nodejh.github.io/issues/55)
 - [一个简单的 MySQL 批量事务消息队列](https://github.com/nodejh/nodejh.github.io/issues/54)

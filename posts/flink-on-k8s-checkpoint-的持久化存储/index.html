@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Flink on k8s: Checkpoint 的持久化存储 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="generator" content="Hugo 0.82.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Flink on k8s: Checkpoint 的持久化存储</h1>
+
+    <div class="tip">
+        <span>
+          Aug 2, 2021 19:30
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          
+            3463 words
+          
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          7 minute read
+        </span>
+    </div>
+
+    <div class="content">
+      <p>将 Flink 应用部署到 k8s 上时，为了实现任务高可用，我们就需要将 checkpoint、savepoint 以及 Job Manager meta data 等数据持久化存储下来，而不是简单地存储在单个 Node 上，这时就需要配置 Pod 的持久化存储。
+​</p>
+<p>在传统的 Yarn 部署模式中，我们通常会将 checkpoint 等数据存储在 HDFS 中，HDFS 是 Hadoop 分布式的文件系统。这样只要 HDFS 不出问题，就能保证 Flink 任务出现异常后，checkpoint 数据还在，Flink 任务依旧可以通过 HDFS 中的 checkpoint 进行恢复。
+​</p>
+<p>在 k8s 中，我们也可以参考使用 HDFS 来持久化存储数据，但相比在 k8s 上部署一个 HDFS，我们还有更好、更简单的方案：直接使用云上的弹性、分布式文件系统，比如阿里云的 NAS、AWS 的 EFS。这些文件系统可以直接通过 NFS 协议协议挂载到 Pod 中，使用起来像读写本地文件一样方便。
+​</p>
+<p><p class="markdown-image">
+  <img src="https://intranetproxy.alipay.com/skylark/lark/0/2021/png/46987/1627894128089-d6495abd-f104-4049-a03c-10f41c1fe7f7.png#clientId=u54a87560-b1a0-4&amp;from=paste&amp;height=532&amp;id=ud51f0ed2&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1064&amp;originWidth=1434&amp;originalType=binary&amp;ratio=1&amp;size=126972&amp;status=done&amp;style=none&amp;taskId=u661d5c4a-82f9-48e2-9ca2-5e3aad475ab&amp;width=717" alt="image.png"  />
+</p>
+​</p>
+<h2 id="flink-confyaml-配置">flink-conf.yaml 配置 <a href="#flink-confyaml-%e9%85%8d%e7%bd%ae" class="anchor">🔗</a></h2><p>首先让我们来看一下，要实现 flink 任务的高可用，需要在 flink-conf.yaml 中指定的一些配置：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">state.backend</span>:<span style="color:#bbb"> </span>rocksdb<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">state.checkpoint-storage</span>:<span style="color:#bbb"> </span>filesystem<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">state.checkpoints.dir</span>:<span style="color:#bbb"> </span>file:///nas/flink/checkpoints<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">state.savepoints.dir</span>:<span style="color:#bbb"> </span>file:///nas/flink/savepoints<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">state.backend.incremental</span>:<span style="color:#bbb"> </span><span style="color:#a2f;font-weight:bold">true</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kubernetes.cluster-id</span>:<span style="color:#bbb"> </span>flink-cluster-001<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">high-availability</span>:<span style="color:#bbb"> </span>org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">high-availability.storageDir</span>:<span style="color:#bbb"> </span>file:///nas/flink/recovery<span style="color:#bbb">
+</span></code></pre></div><p>​</p>
+<p>首先状态后端使用 rocksdb （RocksDBStateBackend）。RocksDBStateBackend 会将正在运行的数据保存在 RocksDB 数据库中。在进行 Checkpoint 时，整个 RocksDB 数据库就会被保存到 <code>state.checkpoints.dir</code> 目录中。同时 Job Manager 也会将高可用数据存储到 <code>state.checkpoints.dir</code> 中。
+​</p>
+<p><code>state.checkpoints.dir</code> 目录中存储的是 checkpoint 的元数据，目录结构如下：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/user-defined-checkpoint-dir
+    /<span style="color:#666">{</span>job-id<span style="color:#666">}</span>
+        |
+        + --shared/
+        + --taskowned/
+        + --chk-1/
+        + --chk-2/
+        + --chk-3/
+        ...       
+</code></pre></div><p><code>kubernetes.cluster-id</code> 、<code>high-availability</code> 和 <code>high-availability.storageDir</code> 则是 k8s 的高可用配置。
+​</p>
+<ul>
+<li><code>kubernetes.cluster-id</code> 是自定义的 Flink 任务集群名称，用来标记当前的 flink 任务；</li>
+<li><code>high-availability</code>是高可用的类型，由于是部署在 k8s 上，所以需要配置为 <code>KubernetesHaServicesFactory</code> ；</li>
+<li><code>high-availability.storageDir</code> Job Manager 元数据的存储位置，用于存储恢复 Job Manager 所需的全部元数据。</li>
+</ul>
+<p>在 k8s 中，要实现任务出现异常后能自动恢复，<code>state.checkpoints.dir</code> 、 <code>state.savepoints.dir</code> 和 <code>high-availability.storageDir</code> 这几个目录就非常重要了，就必须持久化存储。</p>
+<p>所以我们需要在 Pod 中将这些目录挂载到 NAS 上。</p>
+<p>前面我们也提到了，NAS 可以通过 NFS 协议进行挂载，所以在 <code>flink-conf.yaml</code> 可以直接通过 <code>file://</code> 前缀来指定 NAS 目录位置，跟使用本地文件一样。如果你使用过 HDFS 来存储 checkpoint 数据，则你应该还有印象，HDFS 的目录前缀是 <code>hdfs://</code>。</p>
+<h2 id="创建-pv--pvc">创建 PV / PVC <a href="#%e5%88%9b%e5%bb%ba-pv--pvc" class="anchor">🔗</a></h2><p>在 Pod 中挂载 NAS 的前提就是先创建 PV、PVC。
+​</p>
+<p>以下面的 yaml 为例，创建一个名为 <code>pv-flink</code> 的通用型 NAS 持久化存储卷，和名为 <code>pvc-flink</code> 的存储声明。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>PersistentVolume<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>pv-flink<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">labels</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">alicloud-pvname</span>:<span style="color:#bbb"> </span>pv-flink<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">capacity</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">storage</span>:<span style="color:#bbb"> </span>5Gi<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">accessModes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- ReadWriteMany<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">csi</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>nasplugin.csi.alibabacloud.com<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">volumeHandle</span>:<span style="color:#bbb"> </span>pv-dflink<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">volumeAttributes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">server</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#34;xxx.cn-hangzhou.nas.aliyuncs.com&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">path</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#34;/nas/flink&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">mountOptions</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- nolock,tcp,noresvport<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- vers=3<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#00f;font-weight:bold">---</span><span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>PersistentVolumeClaim<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>pvc-flink<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">accessModes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- ReadWriteMany<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">resources</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">requests</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">storage</span>:<span style="color:#bbb"> </span>5Gi<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">selector</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">matchLabels</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">alicloud-pvname</span>:<span style="color:#bbb"> </span>pv-flink<span style="color:#bbb">
+</span></code></pre></div><p>​</p>
+<p>在 <code>pvc-flink</code> 中，对应的 NAS 挂载点是 <code>xxx.cn-hangzhou.nas.aliyuncs.com</code>，挂载的子目录是 <code>/nas/flink</code>。
+​</p>
+<p>这里需要注意的是，NAS 有通用型和极速型两个型号，极速型的 NAS <code>volumeAttributes.path</code>需要以 <code>/share</code> 为父目录。
+​</p>
+<p>其他字段详细的含义可以参考 NAS 文档：<a 
+    href="https://help.aliyun.com/document_detail/134884.html"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    使用NAS静态存储卷
+</a> ，这里就不细讲了。
+​</p>
+<h2 id="在-pod-中挂载-nas">在 Pod 中挂载 NAS <a href="#%e5%9c%a8-pod-%e4%b8%ad%e6%8c%82%e8%bd%bd-nas" class="anchor">🔗</a></h2><p>下面是一个挂载 NAS 的 Job Manager 的 YAML 示例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>batch/v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Job<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>flink-jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">parallelism</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">template</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">labels</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#008000;font-weight:bold">component</span>:<span style="color:#bbb"> </span>jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">restartPolicy</span>:<span style="color:#bbb"> </span>OnFailure<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">containers</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">imagePullPolicy</span>:<span style="color:#bbb"> </span>Always<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>my-flink-job:latest<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">resources</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">limits</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>4Gi<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">requests</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>4Gi<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">env</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>POD_IP<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">valueFrom</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="color:#008000;font-weight:bold">fieldRef</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">                  </span><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span><span style="color:#bbb">                  </span><span style="color:#008000;font-weight:bold">fieldPath</span>:<span style="color:#bbb"> </span>status.podIP<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">args</span>:<span style="color:#bbb"> </span>[<span style="color:#bbb"> </span><span style="color:#b44">&#34;standalone-job&#34;</span>]<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">6123</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>rpc<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">6124</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>blob-server<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">8081</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>webui<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">livenessProbe</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">tcpSocket</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">port</span>:<span style="color:#bbb"> </span><span style="color:#666">6123</span><span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">initialDelaySeconds</span>:<span style="color:#bbb"> </span><span style="color:#666">30</span><span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">periodSeconds</span>:<span style="color:#bbb"> </span><span style="color:#666">60</span><span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">volumeMounts</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>volume-pvc-nas-flink<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">mountPath</span>:<span style="color:#bbb"> </span>/nas/flink<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">securityContext</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">runAsUser</span>:<span style="color:#bbb"> </span><span style="color:#666">9999</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">serviceAccountName</span>:<span style="color:#bbb"> </span>flink<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>volume-pvc-nas-flink<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">persistentVolumeClaim</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">claimName</span>:<span style="color:#bbb"> </span>pvc-flink<span style="color:#bbb">
+</span></code></pre></div><p>我们使用 <code>volumeMounts</code> 将 <code>/nas/flink</code> 目录挂载到 <code>volume-pvc-nas-flink</code> 卷，该卷对应的是 NAS 持久化存储卷。
+​</p>
+<p>在该 Pod 中，镜像是基于<a 
+    href="https://github.com/apache/flink-docker"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+     Flink 官方 Docker 镜像
+</a> 的 <code>my-flink-job:latest</code> 。
+​</p>
+<p>Flink 官方的 Docker 镜像中创建了 <code>flink</code> 用户组以及组内的 <code>flink</code>  用户，用户组和用户的 ID 均为 <code>9999</code>。 并且在官方镜像中，最终也是使用 <code>flink</code> 用户来启动 Job Manager 和 Task Manager。
+​</p>
+<p>下面是 Flink 官方镜像 <a 
+    href="https://github.com/apache/flink-docker/blob/master/1.13/scala_2.12-java11-debian/Dockerfile"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    Dockerfile
+</a> 的相关脚本：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">......
+
+ENV <span style="color:#b8860b">FLINK_HOME</span><span style="color:#666">=</span>/opt/flink
+ENV <span style="color:#b8860b">PATH</span><span style="color:#666">=</span><span style="color:#b8860b">$FLINK_HOME</span>/bin:<span style="color:#b8860b">$PATH</span>
+RUN groupadd --system --gid<span style="color:#666">=</span><span style="color:#666">9999</span> flink <span style="color:#666">&amp;&amp;</span> <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>    useradd --system --home-dir <span style="color:#b8860b">$FLINK_HOME</span> --uid<span style="color:#666">=</span><span style="color:#666">9999</span> --gid<span style="color:#666">=</span>flink flink
+WORKDIR <span style="color:#b8860b">$FLINK_HOME</span>
+
+......
+</code></pre></div><p>所以在 <code>securityContext</code> 中，我们也指定 runAsUser 为 9999 ，使 Pod 中的所有进程都是用 9999 （也就是 flink 用户）来运行。</p>
+<p>挂载了 NAS 之后，还有一件非常重要的事情，就是初始化 NAS 目录的权限。
+​</p>
+<p>因为 NAS 目录默认是使用 <code>root</code> 用户挂载的，但 flink 任务是以 ID 为 9999 的用户执行的，所以这时 flink 任务没有权限写 NAS 目录。
+​</p>
+<p>解决这个问题的方案有两种，一是使用 root 权限运行 flink 任务；二是修改所挂载的 NAS 目录的权限。通常为了安全起见，我们不会使用 root 权限运行 Pod，所以选择方案二。</p>
+<h2 id="初始化-nas-目录权限">初始化 NAS 目录权限 <a href="#%e5%88%9d%e5%a7%8b%e5%8c%96-nas-%e7%9b%ae%e5%bd%95%e6%9d%83%e9%99%90" class="anchor">🔗</a></h2><p>​</p>
+<p>要初始化 NAS 目录的权限， 我们可以使用 k8s 的<a 
+    href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+     Init 容器
+</a>。Init 容器是一个特殊的容器，可以在 Pod 内的应用容器启动前运行。所以我们可以基于 Init 容器做一些初始化工作，比如执行初始化脚本、设置目录权限等。
+​</p>
+<p>要初始化 NAS 目录权限，就需要在 Init 容器中也挂载对应的 NAS 目录，以便 Init 容器能够访问该目录。然后通过 command 来执行 shell 命令，修改目录权限。
+​</p>
+<p>将 <code>/nas/flink</code> 目录的所有者设置为 <code>flink</code> 用户的命令为：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ chown -R 9999:9999 /nas/flink
+</code></pre></div><p>在 Init 容器中， 我们使用了 <a 
+    href="https://hub.docker.com/_/alpine"
+    
+    
+     
+      target="_blank" 
+      rel="noopener"
+    
+>
+    alpine 镜像
+</a>， 这是一个基于 Alpine Linux 的只有 5MB 的 Docker 镜像。</p>
+<p>完成的 YAML 文件如下所示：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>batch/v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Job<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>flink-jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">parallelism</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">template</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">metadata</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">labels</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#008000;font-weight:bold">component</span>:<span style="color:#bbb"> </span>jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">restartPolicy</span>:<span style="color:#bbb"> </span>OnFailure<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">initContainers</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>init-jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>alpine:3<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">command</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- chown<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- -R<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#666">9999</span>:<span style="color:#666">9999</span><span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- /nas/flink<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">volumeMounts</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>volume-pvc-nas-flink<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">mountPath</span>:<span style="color:#bbb"> </span>/nas/flink<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">containers</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>jobmanager<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">imagePullPolicy</span>:<span style="color:#bbb"> </span>Always<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">image</span>:<span style="color:#bbb"> </span>my-flink-job:latest<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">resources</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">limits</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>4Gi<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">requests</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">cpu</span>:<span style="color:#bbb"> </span><span style="color:#666">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">memory</span>:<span style="color:#bbb"> </span>4Gi<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">env</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>POD_IP<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">valueFrom</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="color:#008000;font-weight:bold">fieldRef</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">                  </span><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span><span style="color:#bbb">                  </span><span style="color:#008000;font-weight:bold">fieldPath</span>:<span style="color:#bbb"> </span>status.podIP<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">args</span>:<span style="color:#bbb"> </span>[<span style="color:#bbb"> </span><span style="color:#b44">&#34;standalone-job&#34;</span>]<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">6123</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>rpc<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">6124</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>blob-server<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">containerPort</span>:<span style="color:#bbb"> </span><span style="color:#666">8081</span><span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>webui<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">livenessProbe</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">tcpSocket</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">port</span>:<span style="color:#bbb"> </span><span style="color:#666">6123</span><span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">initialDelaySeconds</span>:<span style="color:#bbb"> </span><span style="color:#666">30</span><span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">periodSeconds</span>:<span style="color:#bbb"> </span><span style="color:#666">60</span><span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">volumeMounts</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>volume-pvc-nas-flink<span style="color:#bbb">
+</span><span style="color:#bbb">              </span><span style="color:#008000;font-weight:bold">mountPath</span>:<span style="color:#bbb"> </span>/nas/flink<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">securityContext</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">runAsUser</span>:<span style="color:#bbb"> </span><span style="color:#666">9999</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">serviceAccountName</span>:<span style="color:#bbb"> </span>flink<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>- <span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>volume-pvc-nas-flink<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">persistentVolumeClaim</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">claimName</span>:<span style="color:#bbb"> </span>pvc-flink<span style="color:#bbb">
+</span></code></pre></div><p>​</p>
+<p>这样 k8s 在运行 jobmanager 前，会先运行 init-jobmanager，init-jobmanager 会将 <code>/nas/flink</code> 目录的所有者修改为 ID 为 9999 的用户，即 flink。init-jobmanager 运行完毕后，再运行 jobmanager ，这时 jobmanager 中的 flink 任务就有权限读写 <code>/nas/flink</code> 目录了。
+​</p>
+<h2 id="常见问题">常见问题 <a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" class="anchor">🔗</a></h2><p>在进行持久化存储配置的时候，最常见的问题就是没有初始化 NAS 目录的权限，导致应用无法启动。
+​</p>
+<p>通常 Job Manager 的报错可能如下所示：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">2021-08-02 17:51:23.718 ERROR org.apache.flink.runtime.entrypoint.ClusterEntrypoint        <span style="color:#666">[]</span> - Fatal error occurred in the cluster entrypoint.
+org.apache.flink.util.FlinkException: Application failed unexpectedly.
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.lambda<span style="color:#b8860b">$runApplicationAndShutdownClusterAsync$0</span><span style="color:#666">(</span>ApplicationDispatcherBootstrap.java:170<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniHandle<span style="color:#666">(</span>CompletableFuture.java:836<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniHandle</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:811<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.postComplete<span style="color:#666">(</span>CompletableFuture.java:488<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.completeExceptionally<span style="color:#666">(</span>CompletableFuture.java:1990<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.runApplicationEntryPoint<span style="color:#666">(</span>ApplicationDispatcherBootstrap.java:257<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.lambda<span style="color:#b8860b">$runApplicationAsync$1</span><span style="color:#666">(</span>ApplicationDispatcherBootstrap.java:212<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.Executors<span style="color:#b8860b">$RunnableAdapter</span>.call<span style="color:#666">(</span>Executors.java:511<span style="color:#666">)</span> <span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.FutureTask.run<span style="color:#666">(</span>FutureTask.java:266<span style="color:#666">)</span> <span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.runtime.concurrent.akka.ActorSystemScheduledExecutorAdapter<span style="color:#b8860b">$ScheduledFutureTask</span>.run<span style="color:#666">(</span>ActorSystemScheduledExecutorAdapter.java:159<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.TaskInvocation.run<span style="color:#666">(</span>AbstractDispatcher.scala:40<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.ForkJoinExecutorConfigurator<span style="color:#b8860b">$AkkaForkJoinTask</span>.exec<span style="color:#666">(</span>ForkJoinExecutorConfigurator.scala:44<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.forkjoin.ForkJoinTask.doExec<span style="color:#666">(</span>ForkJoinTask.java:260<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.forkjoin.ForkJoinPool<span style="color:#b8860b">$WorkQueue</span>.runTask<span style="color:#666">(</span>ForkJoinPool.java:1339<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.forkjoin.ForkJoinPool.runWorker<span style="color:#666">(</span>ForkJoinPool.java:1979<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.forkjoin.ForkJoinWorkerThread.run<span style="color:#666">(</span>ForkJoinWorkerThread.java:107<span style="color:#666">)</span> <span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+Caused by: java.util.concurrent.CompletionException: org.apache.flink.client.deployment.application.ApplicationExecutionException: Could not execute application.
+	at java.util.concurrent.CompletableFuture.encodeThrowable<span style="color:#666">(</span>CompletableFuture.java:292<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.completeThrowable<span style="color:#666">(</span>CompletableFuture.java:308<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniCompose<span style="color:#666">(</span>CompletableFuture.java:957<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniCompose</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:940<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	... <span style="color:#666">13</span> more
+Caused by: org.apache.flink.client.deployment.application.ApplicationExecutionException: Could not execute application.
+	... <span style="color:#666">11</span> more
+Caused by: org.apache.flink.client.program.ProgramInvocationException: The main method caused an error: Failed to execute job <span style="color:#b44">&#39;DeliveryOssStream&#39;</span>.
+	at org.apache.flink.client.program.PackagedProgram.callMainMethod<span style="color:#666">(</span>PackagedProgram.java:372<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.program.PackagedProgram.invokeInteractiveModeForExecution<span style="color:#666">(</span>PackagedProgram.java:222<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.ClientUtils.executeProgram<span style="color:#666">(</span>ClientUtils.java:114<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.runApplicationEntryPoint<span style="color:#666">(</span>ApplicationDispatcherBootstrap.java:242<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	... <span style="color:#666">10</span> more
+Caused by: org.apache.flink.util.FlinkException: Failed to execute job <span style="color:#b44">&#39;DeliveryOssStream&#39;</span>.
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.executeAsync<span style="color:#666">(</span>StreamExecutionEnvironment.java:1970<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.program.StreamContextEnvironment.executeAsync<span style="color:#666">(</span>StreamContextEnvironment.java:135<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.program.StreamContextEnvironment.execute<span style="color:#666">(</span>StreamContextEnvironment.java:76<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute<span style="color:#666">(</span>StreamExecutionEnvironment.java:1834<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at com.aliyun.actiontrail.delivery.stream.OssStream.start<span style="color:#666">(</span>OssStream.java:59<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:?<span style="color:#666">]</span>
+	at com.aliyun.actiontrail.delivery.Main.main<span style="color:#666">(</span>Main.java:143<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:?<span style="color:#666">]</span>
+	at sun.reflect.NativeMethodAccessorImpl.invoke0<span style="color:#666">(</span>Native Method<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at sun.reflect.NativeMethodAccessorImpl.invoke<span style="color:#666">(</span>NativeMethodAccessorImpl.java:62<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke<span style="color:#666">(</span>DelegatingMethodAccessorImpl.java:43<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.lang.reflect.Method.invoke<span style="color:#666">(</span>Method.java:498<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.client.program.PackagedProgram.callMainMethod<span style="color:#666">(</span>PackagedProgram.java:355<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.program.PackagedProgram.invokeInteractiveModeForExecution<span style="color:#666">(</span>PackagedProgram.java:222<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.ClientUtils.executeProgram<span style="color:#666">(</span>ClientUtils.java:114<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.runApplicationEntryPoint<span style="color:#666">(</span>ApplicationDispatcherBootstrap.java:242<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	... <span style="color:#666">10</span> more
+Caused by: org.apache.flink.runtime.client.JobSubmissionException: Failed to submit job.
+	at org.apache.flink.runtime.dispatcher.Dispatcher.lambda<span style="color:#b8860b">$internalSubmitJob$2</span><span style="color:#666">(</span>Dispatcher.java:380<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniHandle<span style="color:#666">(</span>CompletableFuture.java:836<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniHandle</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:811<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$Completion</span>.run<span style="color:#666">(</span>CompletableFuture.java:456<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.ThreadPoolExecutor.runWorker<span style="color:#666">(</span>ThreadPoolExecutor.java:1149<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.ThreadPoolExecutor<span style="color:#b8860b">$Worker</span>.run<span style="color:#666">(</span>ThreadPoolExecutor.java:624<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.lang.Thread.run<span style="color:#666">(</span>Thread.java:748<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+Caused by: java.lang.RuntimeException: java.lang.Exception: Could not open output stream <span style="color:#a2f;font-weight:bold">for</span> state backend
+	at org.apache.flink.util.ExceptionUtils.rethrow<span style="color:#666">(</span>ExceptionUtils.java:316<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.util.function.FunctionUtils.lambda<span style="color:#b8860b">$uncheckedConsumer$3</span><span style="color:#666">(</span>FunctionUtils.java:95<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniAccept<span style="color:#666">(</span>CompletableFuture.java:670<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniAccept</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:646<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$Completion</span>.run<span style="color:#666">(</span>CompletableFuture.java:456<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRunAsync<span style="color:#666">(</span>AkkaRpcActor.java:440<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>AkkaRpcActor.java:208<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.FencedAkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>FencedAkkaRpcActor.java:77<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleMessage<span style="color:#666">(</span>AkkaRpcActor.java:158<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:26<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:123<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#a2f;font-weight:bold">$(</span>PartialFunction.scala:122<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.applyOrElse<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:171<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#666">(</span>Actor.scala:517<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#a2f;font-weight:bold">$(</span>Actor.scala:515<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.AbstractActor.aroundReceive<span style="color:#666">(</span>AbstractActor.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.receiveMessage<span style="color:#666">(</span>ActorCell.scala:592<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.invoke<span style="color:#666">(</span>ActorCell.scala:561<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.processMailbox<span style="color:#666">(</span>Mailbox.scala:258<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.run<span style="color:#666">(</span>Mailbox.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.exec<span style="color:#666">(</span>Mailbox.scala:235<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	... <span style="color:#666">4</span> more
+Caused by: java.lang.Exception: Could not open output stream <span style="color:#a2f;font-weight:bold">for</span> state backend
+	at org.apache.flink.runtime.persistence.filesystem.FileSystemStateStorageHelper.store<span style="color:#666">(</span>FileSystemStateStorageHelper.java:72<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.kubernetes.highavailability.KubernetesStateHandleStore.addAndLock<span style="color:#666">(</span>KubernetesStateHandleStore.java:131<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.jobmanager.DefaultJobGraphStore.putJobGraph<span style="color:#666">(</span>DefaultJobGraphStore.java:212<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.dispatcher.Dispatcher.persistAndRunJob<span style="color:#666">(</span>Dispatcher.java:391<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.dispatcher.Dispatcher.lambda<span style="color:#b8860b">$waitForTerminatingJob$27</span><span style="color:#666">(</span>Dispatcher.java:954<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.util.function.FunctionUtils.lambda<span style="color:#b8860b">$uncheckedConsumer$3</span><span style="color:#666">(</span>FunctionUtils.java:93<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniAccept<span style="color:#666">(</span>CompletableFuture.java:670<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniAccept</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:646<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$Completion</span>.run<span style="color:#666">(</span>CompletableFuture.java:456<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRunAsync<span style="color:#666">(</span>AkkaRpcActor.java:440<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>AkkaRpcActor.java:208<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.FencedAkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>FencedAkkaRpcActor.java:77<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleMessage<span style="color:#666">(</span>AkkaRpcActor.java:158<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:26<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:123<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#a2f;font-weight:bold">$(</span>PartialFunction.scala:122<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.applyOrElse<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:171<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#666">(</span>Actor.scala:517<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#a2f;font-weight:bold">$(</span>Actor.scala:515<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.AbstractActor.aroundReceive<span style="color:#666">(</span>AbstractActor.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.receiveMessage<span style="color:#666">(</span>ActorCell.scala:592<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.invoke<span style="color:#666">(</span>ActorCell.scala:561<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.processMailbox<span style="color:#666">(</span>Mailbox.scala:258<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.run<span style="color:#666">(</span>Mailbox.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.exec<span style="color:#666">(</span>Mailbox.scala:235<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	... <span style="color:#666">4</span> more
+Caused by: java.io.IOException: Mkdirs failed to create file:/nas/flink/recovery/default
+	at org.apache.flink.core.fs.local.LocalFileSystem.create<span style="color:#666">(</span>LocalFileSystem.java:262<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.persistence.filesystem.FileSystemStateStorageHelper.store<span style="color:#666">(</span>FileSystemStateStorageHelper.java:64<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.kubernetes.highavailability.KubernetesStateHandleStore.addAndLock<span style="color:#666">(</span>KubernetesStateHandleStore.java:131<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.jobmanager.DefaultJobGraphStore.putJobGraph<span style="color:#666">(</span>DefaultJobGraphStore.java:212<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.dispatcher.Dispatcher.persistAndRunJob<span style="color:#666">(</span>Dispatcher.java:391<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.dispatcher.Dispatcher.lambda<span style="color:#b8860b">$waitForTerminatingJob$27</span><span style="color:#666">(</span>Dispatcher.java:954<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.util.function.FunctionUtils.lambda<span style="color:#b8860b">$uncheckedConsumer$3</span><span style="color:#666">(</span>FunctionUtils.java:93<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture.uniAccept<span style="color:#666">(</span>CompletableFuture.java:670<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$UniAccept</span>.tryFire<span style="color:#666">(</span>CompletableFuture.java:646<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at java.util.concurrent.CompletableFuture<span style="color:#b8860b">$Completion</span>.run<span style="color:#666">(</span>CompletableFuture.java:456<span style="color:#666">)</span> ~<span style="color:#666">[</span>?:1.8.0_292<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRunAsync<span style="color:#666">(</span>AkkaRpcActor.java:440<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>AkkaRpcActor.java:208<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.FencedAkkaRpcActor.handleRpcMessage<span style="color:#666">(</span>FencedAkkaRpcActor.java:77<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleMessage<span style="color:#666">(</span>AkkaRpcActor.java:158<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:26<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.apply<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:123<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction.applyOrElse<span style="color:#a2f;font-weight:bold">$(</span>PartialFunction.scala:122<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.japi.pf.UnitCaseStatement.applyOrElse<span style="color:#666">(</span>CaseStatements.scala:21<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:171<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at scala.PartialFunction<span style="color:#b8860b">$OrElse</span>.applyOrElse<span style="color:#666">(</span>PartialFunction.scala:172<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#666">(</span>Actor.scala:517<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.Actor.aroundReceive<span style="color:#a2f;font-weight:bold">$(</span>Actor.scala:515<span style="color:#a2f;font-weight:bold">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.AbstractActor.aroundReceive<span style="color:#666">(</span>AbstractActor.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.receiveMessage<span style="color:#666">(</span>ActorCell.scala:592<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.actor.ActorCell.invoke<span style="color:#666">(</span>ActorCell.scala:561<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.processMailbox<span style="color:#666">(</span>Mailbox.scala:258<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.run<span style="color:#666">(</span>Mailbox.scala:225<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	at akka.dispatch.Mailbox.exec<span style="color:#666">(</span>Mailbox.scala:235<span style="color:#666">)</span> ~<span style="color:#666">[</span>flink-dist_2.12-1.13.1.jar:1.13.1<span style="color:#666">]</span>
+	... <span style="color:#666">4</span> more
+2021-08-02 17:51:23.721 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        <span style="color:#666">[]</span> - Shutting StandaloneApplicationClusterEntryPoint down with application status UNKNOWN. Diagnostics Cluster entrypoint has been closed externally..
+</code></pre></div><p>​</p>
+<p>报错信息很多，但一开始可能很难知道原因。其中造成 Job Manager 无法启动的主要报错是：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">Caused by: java.io.IOException: Mkdirs failed to create file:/nas/flink/recovery/default
+</code></pre></div><p>其根本原因是 flink 任务进程没有权限写 <code>file:/nas/flink/recovery/default</code> 目录。</p>
+<p>然后 Job Manager 会不断重启，Task Manager 虽然不会重启，但也无法正常工作。</p>
+<p>这时登录到 Job Manager 或 Task Manager  的任意一个 Pod 上，查看任务启动进程，就可以发现 flink 任务进程是通过 flink 用户启动的，但 <code>/nas/flink</code> 目录的所有者是 <code>root</code> ，所以 flink 任务进程没有权限写 <code>/nas/flink</code> 目录。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#080;font-style:italic"># 查看当前 flink 任务的启动用户</span>
+$ ps -aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+flink          <span style="color:#666">1</span>  7.7  2.5 <span style="color:#666">7449300</span> <span style="color:#666">1655960</span> ?     Ssl  17:54   0:05 /usr/local/openjdk-8/bin/java -Xmx4563402682 -Xms4563402682 -XX:MaxDirectMem
+root         <span style="color:#666">280</span>  0.0  0.0   <span style="color:#666">5752</span>  <span style="color:#666">3608</span> pts/0    Ss   17:55   0:00 bash
+root         <span style="color:#666">331</span>  0.0  0.0   <span style="color:#666">9392</span>  <span style="color:#666">2972</span> pts/0    R+   17:56   0:00 ps -aux
+
+<span style="color:#080;font-style:italic"># 查看 /nas/flink 目录的权限</span>
+$ ls -l /nas
+total <span style="color:#666">77</span>
+...
+drwxr-xr-x   <span style="color:#666">2</span> root root <span style="color:#666">4096</span> Aug  <span style="color:#666">2</span> 17:48 flink
+</code></pre></div><p>此外我们还可以通过 <code>cat /etc/passwd</code> 查看 flink 用户对应的 ID，即 9999，这也跟前面提到的 Docker 镜像中 flink 用户的 PID 为 9999 相对应。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+
+......
+
+flink:x:9999:9999::/opt/flink:/bin/sh
+</code></pre></div><p>​</p>
+<p>当然，解决该问题的方法，前面也讲了，就是通过 Init 容器初始化 NAS 目录的权限。
+​</p>
+<p>​</p>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>在 Flink on k8s 中，我们通常会使用 NAS 等持久化存储来保存 checkpoint、savepoint 以及高可用数据。</p>
+<p>但在使用持久化存储时，最常见的一个问题就是 flink 任务没有权限读写持久化存储，所以我们需要通过 Init 容器来初始化持久化存储的目录权限。
+​</p>
+<p>​</p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+                <a href="https://nodejh.com/tags/flink">Flink</a>
+            
+        </div>
+    
+    
+    <div id="comment">
+  
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <p class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </p>
+    <p class="powerby">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+  </body>
+</html>

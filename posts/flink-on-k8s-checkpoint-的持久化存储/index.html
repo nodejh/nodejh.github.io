@@ -6,7 +6,7 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
@@ -74,7 +74,7 @@
 <p>在 k8s 中，我们也可以参考使用 HDFS 来持久化存储数据，但相比在 k8s 上部署一个 HDFS，我们还有更好、更简单的方案：直接使用云上的弹性、分布式文件系统，比如阿里云的 NAS、AWS 的 EFS。这些文件系统可以直接通过 NFS 协议协议挂载到 Pod 中，使用起来像读写本地文件一样方便。
 ​</p>
 <p><p class="markdown-image">
-  <img src="https://intranetproxy.alipay.com/skylark/lark/0/2021/png/46987/1627894128089-d6495abd-f104-4049-a03c-10f41c1fe7f7.png#clientId=u54a87560-b1a0-4&amp;from=paste&amp;height=532&amp;id=ud51f0ed2&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1064&amp;originWidth=1434&amp;originalType=binary&amp;ratio=1&amp;size=126972&amp;status=done&amp;style=none&amp;taskId=u661d5c4a-82f9-48e2-9ca2-5e3aad475ab&amp;width=717" alt="image.png"  />
+  <img src="./images/flink-on-k8s-pod-nas-storage.png" alt="image.png"  />
 </p>
 ​</p>
 <h2 id="flink-confyaml-配置">flink-conf.yaml 配置 <a href="#flink-confyaml-%e9%85%8d%e7%bd%ae" class="anchor">🔗</a></h2><p>首先让我们来看一下，要实现 flink 任务的高可用，需要在 flink-conf.yaml 中指定的一些配置：

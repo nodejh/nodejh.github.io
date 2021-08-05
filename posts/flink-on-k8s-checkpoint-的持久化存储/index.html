@@ -6,7 +6,7 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="Cannot Connet to MySql With Error Code 61">
+<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
@@ -55,14 +55,14 @@
         </span>
         <span>
           
-            3463 words
+            3897 words
           
         </span>
         <span class="split">
           ·
         </span>
         <span>
-          7 minute read
+          8 minute read
         </span>
     </div>
 
@@ -71,7 +71,7 @@
 ​</p>
 <p>在传统的 Yarn 部署模式中，我们通常会将 checkpoint 等数据存储在 HDFS 中，HDFS 是 Hadoop 分布式的文件系统。这样只要 HDFS 不出问题，就能保证 Flink 任务出现异常后，checkpoint 数据还在，Flink 任务依旧可以通过 HDFS 中的 checkpoint 进行恢复。
 ​</p>
-<p>在 k8s 中，我们也可以参考使用 HDFS 来持久化存储数据，但相比在 k8s 上部署一个 HDFS，我们还有更好、更简单的方案：直接使用云上的弹性、分布式文件系统，比如阿里云的 NAS、AWS 的 EFS。这些文件系统可以直接通过 NFS 协议协议挂载到 Pod 中，使用起来像读写本地文件一样方便。
+<p>在 k8s 中，我们也可以参考使用 HDFS 来持久化存储数据，但相比在 k8s 上部署一个 HDFS，我们还有更好、更简单的方案：直接使用云上的弹性分布式文件系统，比如阿里云的 NAS、AWS 的 EFS。这些文件系统可以直接通过 NFS 协议协议挂载到 Pod 中，使用起来像读写本地文件一样方便。
 ​</p>
 <p><p class="markdown-image">
   <img src="./images/flink-on-k8s-pod-nas-storage.png" alt="image.png"  />
@@ -88,25 +88,13 @@
 </span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">high-availability</span>:<span style="color:#bbb"> </span>org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">high-availability.storageDir</span>:<span style="color:#bbb"> </span>file:///nas/flink/recovery<span style="color:#bbb">
 </span></code></pre></div><p>​</p>
-<p>首先状态后端使用 rocksdb （RocksDBStateBackend）。RocksDBStateBackend 会将正在运行的数据保存在 RocksDB 数据库中。在进行 Checkpoint 时，整个 RocksDB 数据库就会被保存到 <code>state.checkpoints.dir</code> 目录中。同时 Job Manager 也会将高可用数据存储到 <code>state.checkpoints.dir</code> 中。
-​</p>
-<p><code>state.checkpoints.dir</code> 目录中存储的是 checkpoint 的元数据，目录结构如下：
-​</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/user-defined-checkpoint-dir
-    /<span style="color:#666">{</span>job-id<span style="color:#666">}</span>
-        |
-        + --shared/
-        + --taskowned/
-        + --chk-1/
-        + --chk-2/
-        + --chk-3/
-        ...       
-</code></pre></div><p><code>kubernetes.cluster-id</code> 、<code>high-availability</code> 和 <code>high-availability.storageDir</code> 则是 k8s 的高可用配置。
+<p>状态后端使用 rocksdb （RocksDBStateBackend）。RocksDBStateBackend 会将正在运行的数据保存在 RocksDB 数据库中。在进行 checkpoint 时，整个 RocksDB 数据库就会被保存到 <code>state.checkpoints.dir</code> 目录中。同时 Job Manager 也会将高可用数据存储到 <code>state.checkpoints.dir</code> 中。</p>
+<p><code>kubernetes.cluster-id</code> 、<code>high-availability</code> 和 <code>high-availability.storageDir</code> 则是 k8s 的高可用配置。
 ​</p>
 <ul>
 <li><code>kubernetes.cluster-id</code> 是自定义的 Flink 任务集群名称，用来标记当前的 flink 任务；</li>
 <li><code>high-availability</code>是高可用的类型，由于是部署在 k8s 上，所以需要配置为 <code>KubernetesHaServicesFactory</code> ；</li>
-<li><code>high-availability.storageDir</code> Job Manager 元数据的存储位置，用于存储恢复 Job Manager 所需的全部元数据。</li>
+<li><code>high-availability.storageDir</code> JobManager 元数据的存储位置，用于存储恢复 JobManager 所需的全部元数据。</li>
 </ul>
 <p>在 k8s 中，要实现任务出现异常后能自动恢复，<code>state.checkpoints.dir</code> 、 <code>state.savepoints.dir</code> 和 <code>high-availability.storageDir</code> 这几个目录就非常重要了，就必须持久化存储。</p>
 <p>所以我们需要在 Pod 中将这些目录挂载到 NAS 上。</p>
@@ -127,7 +115,7 @@
 </span><span style="color:#bbb">    </span>- ReadWriteMany<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">csi</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>nasplugin.csi.alibabacloud.com<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">volumeHandle</span>:<span style="color:#bbb"> </span>pv-flink<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">volumeHandle</span>:<span style="color:#bbb"> </span>pv-dflink<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">volumeAttributes</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">server</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#34;xxx.cn-hangzhou.nas.aliyuncs.com&#34;</span><span style="color:#bbb">
 </span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">path</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#34;/nas/flink&#34;</span><span style="color:#bbb">
@@ -356,9 +344,28 @@ WORKDIR <span style="color:#b8860b">$FLINK_HOME</span>
 </span><span style="color:#bbb">          </span><span style="color:#008000;font-weight:bold">persistentVolumeClaim</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">claimName</span>:<span style="color:#bbb"> </span>pvc-flink<span style="color:#bbb">
 </span></code></pre></div><p>​</p>
-<p>这样 k8s 在运行 jobmanager 前，会先运行 init-jobmanager，init-jobmanager 会将 <code>/nas/flink</code> 目录的所有者修改为 ID 为 9999 的用户，即 flink。init-jobmanager 运行完毕后，再运行 jobmanager ，这时 jobmanager 中的 flink 任务就有权限读写 <code>/nas/flink</code> 目录了。
+<p>这样 k8s 在运行 jobmanager 容器前，会先运行 init-jobmanager 容器，init-jobmanager 会将 <code>/nas/flink</code> 目录的所有者修改为 ID 为 9999 的用户，即 flink。init-jobmanager 运行完毕后，再运行 jobmanager ，这时 jobmanager 中的 flink 任务就有权限读写 <code>/nas/flink</code> 目录了。
 ​</p>
-<h2 id="常见问题">常见问题 <a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" class="anchor">🔗</a></h2><p>在进行持久化存储配置的时候，最常见的问题就是没有初始化 NAS 目录的权限，导致应用无法启动。
+<p>这里需要注意的是，Job Manager 和 Task Manager 的 NAS 挂载路径 mountPath 必须保持一致。
+​</p>
+<h2 id="checkpoint-文件的清理">Checkpoint 文件的清理 <a href="#checkpoint-%e6%96%87%e4%bb%b6%e7%9a%84%e6%b8%85%e7%90%86" class="anchor">🔗</a></h2><p>​</p>
+<p>配置了持久化存储后，Flink 会将 state 数据持久存储在 <code>state.checkpoints.dir</code>目录。
+​</p>
+<p><code>state.checkpoints.dir</code> 目录结构如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/user-defined-checkpoint-dir
+    /<span style="color:#666">{</span>job-id<span style="color:#666">}</span>
+        |
+        + --shared/
+        + --taskowned/
+        + --chk-1/
+        + --chk-2/
+        + --chk-3/
+        ...       
+</code></pre></div><p>其中 <code>shared</code>目录中保持的是可能被多个 checkpoint 引用的文件，<code>taskowned</code> 目录保存的是不会被 Job Manager 删除的文件，<code>chk-{n}</code> 则是每个 checkpoint 的文件，<code>n</code> 为 checkpoint 的 ID。</p>
+<p>checkpoint 文件的数量可以在 <code>flink-config.yaml</code> 中通过 <code>state.checkpoints.num-retained</code> 参数指定。默认为 1，即只保留一个 checkpoint 文件，Flink 会清理多余的 checkpoint 文件。</p>
+<p>前面提到在 k8s 中 Job Manager 和 Task Manager 的持久化存储路径 mountPath 必须保持一致。如果不一致，则 Job Manager 和 Task Manager 的 checkpoint 文件就会存储到不同的目录中。这时即使设置了 <code>state.checkpoints.num-retained</code>， Flink 也无法自动清理多余的 checkpoint 文件，最终会导致 checkpoint 文件堆积、占满磁盘空间。
+​</p>
+<h2 id="常见问题">常见问题 <a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" class="anchor">🔗</a></h2><h3 id="目录权限错误">目录权限错误 <a href="#%e7%9b%ae%e5%bd%95%e6%9d%83%e9%99%90%e9%94%99%e8%af%af" class="anchor">🔗</a></h3><p>在进行持久化存储配置的时候，最常见的问题就是没有初始化 NAS 目录的权限，导致应用无法启动。
 ​</p>
 <p>通常 Job Manager 的报错可能如下所示：
 ​</p>
@@ -543,7 +550,10 @@ flink:x:9999:9999::/opt/flink:/bin/sh
 </code></pre></div><p>​</p>
 <p>当然，解决该问题的方法，前面也讲了，就是通过 Init 容器初始化 NAS 目录的权限。
 ​</p>
-<p>​</p>
+<h3 id="checkpoint-文件堆积占满磁盘空间">checkpoint 文件堆积占满磁盘空间 <a href="#checkpoint-%e6%96%87%e4%bb%b6%e5%a0%86%e7%a7%af%e5%8d%a0%e6%bb%a1%e7%a3%81%e7%9b%98%e7%a9%ba%e9%97%b4" class="anchor">🔗</a></h3><p>另一个常见问题是，checkpoint 文件堆积，导致磁盘空间占满。
+​</p>
+<p>这时有两种情况，一是 <code>state.checkpoints.num-retained</code> 过大，不过通常可能不是这个原因。更可能的原因是 Job Manager 和 Task Manager 的持久化存储卷挂载路径 mountPath 不一致，这时就需要检查对应的 YAML 配置。
+​</p>
 <h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>在 Flink on k8s 中，我们通常会使用 NAS 等持久化存储来保存 checkpoint、savepoint 以及高可用数据。</p>
 <p>但在使用持久化存储时，最常见的一个问题就是 flink 任务没有权限读写持久化存储，所以我们需要通过 Init 容器来初始化持久化存储的目录权限。
 ​</p>

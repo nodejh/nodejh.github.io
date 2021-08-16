@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            864 words
+            903 words
           
         </span>
         <span class="split">
@@ -66,18 +83,12 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
-      <p>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：<a 
-    href="https://github.com/dmlc/mxnet/issues/797"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    《MXNet设计和实现简介》
-</a>。</p>
+      <p>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：<a href="https://github.com/dmlc/mxnet/issues/797" target="_blank" rel="noopener">《MXNet设计和实现简介》</a>。</p>
 <p>在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但由于每个人电脑环境不同，所以可能会出现一些依赖库／包的缺失，导致安装失败。</p>
 <h4 id="安装依赖软件">安装依赖软件 <a href="#%e5%ae%89%e8%a3%85%e4%be%9d%e8%b5%96%e8%bd%af%e4%bb%b6" class="anchor">🔗</a></h4><p>在 macOS 上，首先需要具有以下软件：</p>
 <ul>
@@ -110,17 +121,7 @@ build variables:
 
 <span style="color:#666">==</span>&gt; Summary
 🍺  /usr/local/Cellar/openblas/0.2.18_2: <span style="color:#666">20</span> files, 41.8M, built in <span style="color:#666">12</span> minutes <span style="color:#666">33</span> seconds
-</code></pre></div><p>如果没有安装 <code>openblas</code>，则会有类似 <code>fatal error: 'cblas.h' file not found</code> 的错误，详见 <a 
-    href="https://github.com/dmlc/mxnet/issues/572"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/dmlc/mxnet/issues/572
-</a>。</p>
+</code></pre></div><p>如果没有安装 <code>openblas</code>，则会有类似 <code>fatal error: 'cblas.h' file not found</code> 的错误，详见 <a href="https://github.com/dmlc/mxnet/issues/572" target="_blank" rel="noopener">https://github.com/dmlc/mxnet/issues/572</a>。</p>
 <p>接下来修改配置文件：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#a2f">cd</span> mxnet
 $ cp make/osx.mk ./config.mk
@@ -158,41 +159,11 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
 </code></pre></div><p>运行上面的命令后，脚本会在 <code>~/.local</code> 目录下创建一个 <code>lib</code> 目录，里面有一个 <code>python-2.7/site-packages</code> 文件夹。</p>
 <p>如果是 <code>sudo python setup.py install</code>，则上面的目录会在 <code>/usr/lib</code> 下。</p>
 <ul>
-<li><a 
-    href="http://mxnet.io/get_started/setup.html#build-mxnet-on-os-x-mac"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Build MXNet on OS X (Mac)
-</a></li>
-<li><a 
-    href="http://www.cnblogs.com/dengdan890730/p/5587542.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    mxnet的python包导入的前前后后
-</a></li>
+<li><a href="http://mxnet.io/get_started/setup.html#build-mxnet-on-os-x-mac" target="_blank" rel="noopener">Build MXNet on OS X (Mac)</a></li>
+<li><a href="http://www.cnblogs.com/dengdan890730/p/5587542.html" target="_blank" rel="noopener">mxnet的python包导入的前前后后</a></li>
 </ul>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/10"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/10
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/10" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/10</a></p>
 
     </div>
 
@@ -204,9 +175,10 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -226,7 +198,8 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -238,7 +211,7 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -256,7 +229,7 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -274,7 +247,7 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -304,7 +277,7 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -315,11 +288,16 @@ sys<span style="color:#666">.</span>path<span style="color:#666">.</span>append(
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

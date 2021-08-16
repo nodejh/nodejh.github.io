@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="1. 例子 🔗先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。 1.1. 基本类型参数传递 🔗function addTen(num) { num &#43;= 10; return num; }">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -65,6 +82,10 @@
           4 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <h2 id="1-例子">1. 例子 <a href="#1-%e4%be%8b%e5%ad%90" class="anchor">🔗</a></h2><p>先来看两个个来自于 《JavaScript 高级程序设计》P70-P71 的两个例子。</p>
@@ -124,17 +145,7 @@ unchanged
 <p>问题就在于 <code>num</code> 和 <code>obj2</code> 没变。</p>
 <p>从上面的代码可以看出，JavaScript 中函数参数的传递方式既不是传值，也不是传引用。主要问题出在 JS 的引用类型上面。</p>
 <p>JS 引用类型变量的值是一个指针，指向堆内存中的实际对象。</p>
-<h4 id="23-传共享调用call-by-sharing">2.3. 传共享调用（Call by sharing） <a href="#23-%e4%bc%a0%e5%85%b1%e4%ba%ab%e8%b0%83%e7%94%a8call-by-sharing" class="anchor">🔗</a></h4><p>还有一种求值策略叫做<a 
-    href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy/#call-by-sharing"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    传共享调用（Call-by-sharing/Call by object/Call by object-sharing）
-</a>。</p>
+<h4 id="23-传共享调用call-by-sharing">2.3. 传共享调用（Call by sharing） <a href="#23-%e4%bc%a0%e5%85%b1%e4%ba%ab%e8%b0%83%e7%94%a8call-by-sharing" class="anchor">🔗</a></h4><p>还有一种求值策略叫做<a href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy/#call-by-sharing" target="_blank" rel="noopener">传共享调用（Call-by-sharing/Call by object/Call by object-sharing）</a>。</p>
 <p>传共享调用和传引用调用的不同之处是，该求值策略传递给函数的参数是对象的引用的拷贝，即对象变量指针的拷贝。</p>
 <p>也就是说， <code>a</code> <code>b</code> <code>c</code> 三个变量的值是 <code>num</code> <code>obj1</code> <code>obj2</code> 的指针的拷贝。 <code>a</code> <code>b</code> <code>c</code> 的值分别与 <code>num</code> <code>obj1</code> <code>obj2</code> 的值指向同一个对象。函数内部可以对  <code>a</code> <code>b</code> <code>c</code> 进行修改可重新赋值。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">function</span> changeStuff(a, b, c) {
@@ -176,72 +187,12 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
 <hr>
 <p>参考</p>
 <ul>
-<li><a 
-    href="https://en.wikipedia.org/wiki/Evaluation_strategy"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Evaluation strategy
-</a></li>
-<li><a 
-    href="https://zh.wikipedia.org/wiki/%E6%B1%82%E5%80%BC%E7%AD%96%E7%95%A5"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    求值策略
-</a></li>
-<li><a 
-    href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    ECMA-262-3 in detail. Chapter 8. Evaluation strategy.
-</a></li>
-<li><a 
-    href="http://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Is JavaScript a pass-by-reference or pass-by-value language?
-</a></li>
-<li><a 
-    href="https://github.com/simongong/js-stackoverflow-highest-votes/blob/master/questions21-30/parameter-passed-by-value-or-reference.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    parameter passed by value or reference
-</a></li>
-<li><a 
-    href="http://bosn.me/js/js-call-by-sharing/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    JS是按值传递还是按引用传递?
-</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Evaluation_strategy" target="_blank" rel="noopener">Evaluation strategy</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%B1%82%E5%80%BC%E7%AD%96%E7%95%A5" target="_blank" rel="noopener">求值策略</a></li>
+<li><a href="http://dmitrysoshnikov.com/ecmascript/chapter-8-evaluation-strategy" target="_blank" rel="noopener">ECMA-262-3 in detail. Chapter 8. Evaluation strategy.</a></li>
+<li><a href="http://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language" target="_blank" rel="noopener">Is JavaScript a pass-by-reference or pass-by-value language?</a></li>
+<li><a href="https://github.com/simongong/js-stackoverflow-highest-votes/blob/master/questions21-30/parameter-passed-by-value-or-reference.md" target="_blank" rel="noopener">parameter passed by value or reference</a></li>
+<li><a href="http://bosn.me/js/js-call-by-sharing/" target="_blank" rel="noopener">JS是按值传递还是按引用传递?</a></li>
 </ul>
 
     </div>
@@ -254,9 +205,10 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -276,7 +228,8 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -288,7 +241,7 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -306,7 +259,7 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -324,7 +277,7 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -354,7 +307,7 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -365,11 +318,16 @@ c <span style="color:#666">=</span> {item<span style="color:#666">:</span> <span
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="Abstract 🔗本文主要讲的是如何实现 Promise 的链式调用。也就是 promise().then().then().catch() 的形式，然后讨论如何在某一个 then() 里面中止 Promise。 在程序中，只要返回了一个 promise 对象，如果 promise">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,22 +83,16 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <h2 id="abstract">Abstract <a href="#abstract" class="anchor">🔗</a></h2><p>本文主要讲的是如何实现 Promise 的链式调用。也就是 <code>promise().then().then().catch()</code> 的形式，然后讨论如何在某一个 <code>then()</code> 里面中止 Promise。</p>
 <p>在程序中，只要返回了一个 promise 对象，如果 promise 对象不是 Rejected 或 Fulfilled 状态，then 方法就会继续调用。利用这个特性，可以处理多个异步逻辑。但有时候某个 then 方法的执行结果可能会决定是否需要执行下一个 then，这个时候就需中止 promise，主要思想就是使用 reject 来中止 promise 的 then 继续执行。</p>
 <p>“中止”这个词不知道用得是否准确。这里可能还是 <code>break</code> 的含义更精确，跳出本次 promise，不继续执行后面的 then 方法。但 promise 依旧会继续执行。</p>
 <h2 id="can-i-use-promises">Can I use promises <a href="#can-i-use-promises" class="anchor">🔗</a></h2><p>当前浏览器对 Promise 的支持情况见下图：</p>
-<p><a 
-    href="http://caniuse.com/#search=promise"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://caniuse.com/#search=promise
-</a></p>
+<p><a href="http://caniuse.com/#search=promise" target="_blank" rel="noopener">http://caniuse.com/#search=promise</a></p>
 <p><p class="markdown-image">
   <img src="./images/Use-and-Stop-Promise-Break-Chain-01.jpg" alt="caniusepromise"  />
 </p></p>
@@ -420,17 +431,7 @@ findUserByName(name)
 <h2 id="conclusion">Conclusion <a href="#conclusion" class="anchor">🔗</a></h2><p>到目前为止，我们就基本了解了 Promise 的用法及特点，并实现用 Promise 重构用回调函数写的异步操作。现在对 Promise 的使用，应该驾轻就熟了。</p>
 <p>完。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/23"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/23
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/23" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/23</a></p>
 
     </div>
 
@@ -442,9 +443,10 @@ findUserByName(name)
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -464,7 +466,8 @@ findUserByName(name)
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -476,7 +479,7 @@ findUserByName(name)
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -494,7 +497,7 @@ findUserByName(name)
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -512,7 +515,7 @@ findUserByName(name)
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -542,7 +545,7 @@ findUserByName(name)
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -553,11 +556,16 @@ findUserByName(name)
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

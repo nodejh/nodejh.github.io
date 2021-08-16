@@ -10,11 +10,28 @@
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -65,6 +82,10 @@
           6 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <p>本文详细讲述如何使用原生 JS、jQuery 和 Fetch 来实现 AJAX。</p>
@@ -125,17 +146,7 @@ var xhr = new XMLHttpRequest();
 }
 </code></pre></div><p><code>open()</code> 方法有三个参数：</p>
 <ul>
-<li><code>open()</code> 的第一个参数是 HTTP 请求方式 – GET，POST，HEAD 或任何服务器所支持的您想调用的方式。按照HTTP规范，该参数要大写；否则，某些浏览器(如Firefox)可能无法处理请求。有关HTTP请求方法的详细信息可参考 <a 
-    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
-</a></li>
+<li><code>open()</code> 的第一个参数是 HTTP 请求方式 – GET，POST，HEAD 或任何服务器所支持的您想调用的方式。按照HTTP规范，该参数要大写；否则，某些浏览器(如Firefox)可能无法处理请求。有关HTTP请求方法的详细信息可参考 <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html" target="_blank" rel="noopener">https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html</a></li>
 <li>第二个参数是请求页面的 URL。由于同源策略（Same origin policy）该页面不能为第三方域名的页面。同时一定要保证在所有的页面中都使用准确的域名，否则调用 <code>open()</code> 会得到 <code>permission denied</code> 的错误提示。</li>
 <li>第三个参数设置请求是否为异步模式。如果是 <code>TRUE</code>，JavaScript 函数将继续执行，而不等待服务器响应。这就是 AJAX 中的 A。</li>
 </ul>
@@ -264,61 +275,11 @@ $.post(<span style="color:#b44">&#39;/api&#39;</span>, data, <span style="color:
 </p></p>
 <p>原生支持率并不高，幸运的是，引入下面这些 polyfill 后可以完美支持 IE8+：</p>
 <ul>
-<li>由于 IE8 是 ES3，需要引入 ES5 的 polyfill: <a 
-    href="https://github.com/es-shims/es5-shim"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    es5-shim, es5-sham
-</a></li>
-<li>引入 Promise 的 polyfill: <a 
-    href="https://github.com/stefanpenner/es6-promise"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    es6-promise
-</a></li>
-<li>引入 fetch 探测库：<a 
-    href="https://github.com/camsong/fetch-detector"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    fetch-detector
-</a></li>
-<li>引入 fetch 的 polyfill: <a 
-    href="https://github.com/camsong/fetch-ie8"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    fetch-ie8
-</a></li>
-<li>可选：如果你还使用了 jsonp，引入 <a 
-    href="https://github.com/camsong/fetch-jsonp"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    fetch-jsonp
-</a></li>
+<li>由于 IE8 是 ES3，需要引入 ES5 的 polyfill: <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="noopener">es5-shim, es5-sham</a></li>
+<li>引入 Promise 的 polyfill: <a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="noopener">es6-promise</a></li>
+<li>引入 fetch 探测库：<a href="https://github.com/camsong/fetch-detector" target="_blank" rel="noopener">fetch-detector</a></li>
+<li>引入 fetch 的 polyfill: <a href="https://github.com/camsong/fetch-ie8" target="_blank" rel="noopener">fetch-ie8</a></li>
+<li>可选：如果你还使用了 jsonp，引入 <a href="https://github.com/camsong/fetch-jsonp" target="_blank" rel="noopener">fetch-jsonp</a></li>
 <li>可选：开启 Babel 的 runtime 模式，现在就使用 async/await</li>
 </ul>
 <h4 id="1-一个使用-fetch-的例子">1. 一个使用 Fetch 的例子 <a href="#1-%e4%b8%80%e4%b8%aa%e4%bd%bf%e7%94%a8-fetch-%e7%9a%84%e4%be%8b%e5%ad%90" class="anchor">🔗</a></h4><p>先看一个简单的 Fetch API 的例子 🌰 ：</p>
@@ -364,17 +325,7 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
   .then(data =&gt; console.log(data))
   .<span style="color:#a2f;font-weight:bold">catch</span>(error =&gt; console.log(<span style="color:#b44">&#39;Oops, error: &#39;</span>, error))
 </code></pre></div><hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/15"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/15
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/15" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/15</a></p>
 
     </div>
 
@@ -386,9 +337,10 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -408,7 +360,8 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -420,7 +373,7 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -438,7 +391,7 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -456,7 +409,7 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -486,7 +439,7 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -497,11 +450,16 @@ fetch(<span style="color:#b44">&#39;/api&#39;</span>, options).then(response =&g
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

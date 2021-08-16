@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="Architecture And Code Analysis Of Teaching Evaluation">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            5109 words
+            5144 words
           
         </span>
         <span class="split">
@@ -66,33 +83,17 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <p>大到一个企业级应用，小到类似于该一键评教软件，都有自己的软件架构设计。通常来说，对于同一个需求，实现方式是多种多样的。</p>
 <p>如何设计应用逻辑，如何组织代码模块，如何确定目录结构等等， 都需要在编码之前进行考虑。每个人的编码风格不尽相同，写出来的代码也各有千秋。要想得出一个最佳实践，就要不断总结自己的过往经验，学习别人的优秀设计，并再次将其运用于实践才能真正理解其中的奥义。</p>
 <p>本文主要就是介绍一键评教程序的软件结构设计，并对代码进行简要分析，同时也会讲述一些自己遇到的问题。</p>
 <h2 id="1-什么是一键评教">1. 什么是一键评教 <a href="#1-%e4%bb%80%e4%b9%88%e6%98%af%e4%b8%80%e9%94%ae%e8%af%84%e6%95%99" class="anchor">🔗</a></h2><p><strong>首先声明，该程序的本质目的是用于学习交流。</strong></p>
 <p>每学期进行教学评估的时候，都要评很多教师，每个教师都有很多选项，再加上教务系统网站比较老旧，操作不方面，评教总是要花很长时间。</p>
-<p>“一键评教，用过都说好”。线上地址 <a 
-    href="http://pj.fyscu.com"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://pj.fyscu.com
-</a>，源码 <a 
-    href="https://github.com/nodejh/teach_evaluation"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/teach_evaluation
-</a> 。</p>
+<p>“一键评教，用过都说好”。线上地址 <a href="http://pj.fyscu.com" target="_blank" rel="noopener">http://pj.fyscu.com</a>，源码 <a href="https://github.com/nodejh/teach_evaluation" target="_blank" rel="noopener">https://github.com/nodejh/teach_evaluation</a> 。</p>
 <p>爱美之心人皆有之，我也很喜欢好用又好看的事物，所以我在写代码的时候也尽量做到好看又好用。软件截图如下，是不是很好看：</p>
 <p><p class="markdown-image">
   <img src="./images/Architecture-And-Code-Analysis-Of-Teaching-Evaluation-login.jpg" alt="输入账号的页面"  />
@@ -128,65 +129,15 @@
 <li><code>cheerio</code> 主要用来分析抓取到的 HTML 文档。其实最开始也想不用 <code>cheerio</code>，直接使用正则表达式来分析页面的，但正则表达式编写麻烦，我的能力也有限，所以最终选择了使用 <code>cheerio</code>。</li>
 <li><code>icon-lite</code> 则是用来对 <code>GBK</code> 文本进行解码。因为教务系统网站使用的是 GBK 的编码，所以直接抓取的结果是乱码的。除了 <code>icon-lite</code> 这个包，我找不到其他的可以解决乱码问题的方案了。</li>
 </ul>
-<h4 id="313-编码规范">3.1.3 编码规范 <a href="#313-%e7%bc%96%e7%a0%81%e8%a7%84%e8%8c%83" class="anchor">🔗</a></h4><p>然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 <code>.eslintrc</code> 作了配置。具体配置在源码 <a 
-    href="https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    .eslintrc
-</a> 中可以看到。</p>
+<h4 id="313-编码规范">3.1.3 编码规范 <a href="#313-%e7%bc%96%e7%a0%81%e8%a7%84%e8%8c%83" class="anchor">🔗</a></h4><p>然后使用了 ESLint 来规范代码。主要是用的是 airbnb 的 Eslint 规则，并且根据自己的喜好对 <code>.eslintrc</code> 作了配置。具体配置在源码 <a href="https://github.com/nodejh/teaching_evaluation/blob/master/.eslintrc" target="_blank" rel="noopener">.eslintrc</a> 中可以看到。</p>
 <h4 id="314-前端技术">3.1.4 前端技术 <a href="#314-%e5%89%8d%e7%ab%af%e6%8a%80%e6%9c%af" class="anchor">🔗</a></h4><p>为了减小代码体积，提高加载速度，节省带宽，前端没有使用任何第三方 JS 库。并且这只是一个小应用，有没有必须使用庞大（相比该程序而言显得庞大）的第三方库。</p>
 <p>前端使用的是 ES5 的语法。最开始想用 ES6 来写的，但 ES6 写好的代码还需要编译成 ES5 才能在浏览器运行，并且还需要引入各种 polyfill，最终还是决定使用 ES5。</p>
-<p>前端唯一使用了第三方资源的，只有两个字体图标了。一个是 <code>heart</code> 的图标 ❤️，毕竟是用心写的代码，<code>Made with ❤️ by nodejh</code>；还有一个就是“关闭”小图标。图标使用的是 <a 
-    href="https://icomoon.io/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    IcoMoon
-</a> 的字体图标库，可以自己在里面找到需要的图标然后下载使用。</p>
+<p>前端唯一使用了第三方资源的，只有两个字体图标了。一个是 <code>heart</code> 的图标 ❤️，毕竟是用心写的代码，<code>Made with ❤️ by nodejh</code>；还有一个就是“关闭”小图标。图标使用的是 <a href="https://icomoon.io/" target="_blank" rel="noopener">IcoMoon</a> 的字体图标库，可以自己在里面找到需要的图标然后下载使用。</p>
 <p>该程序只有 <code>index.html</code> 这一个 HTML 文件，所以本质上也是一个单页应用。所有的操作和交互都在这一个页面完成。</p>
 <h4 id="315-前端代码压缩">3.1.5 前端代码压缩 <a href="#315-%e5%89%8d%e7%ab%af%e4%bb%a3%e7%a0%81%e5%8e%8b%e7%bc%a9" class="anchor">🔗</a></h4><p>为了进一步压缩前端资源文件的体积，所以对静态资源进行了压缩。</p>
-<p>压缩 CSS 使用的是在线压缩工具 <a 
-    href="http://csscompressor.com/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    CSS Compressor
-</a>。</p>
-<p>压缩 JS 使用的是 <a 
-    href="https://github.com/mishoo/UglifyJS2"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    UglifyJS2
-</a>。</p>
-<h4 id="316-部署">3.1.6 部署 <a href="#316-%e9%83%a8%e7%bd%b2" class="anchor">🔗</a></h4><p>完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 <a 
-    href="https://github.com/Unitech/pm2"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    pm2
-</a> 进行进程的管理。</p>
+<p>压缩 CSS 使用的是在线压缩工具 <a href="http://csscompressor.com/" target="_blank" rel="noopener">CSS Compressor</a>。</p>
+<p>压缩 JS 使用的是 <a href="https://github.com/mishoo/UglifyJS2" target="_blank" rel="noopener">UglifyJS2</a>。</p>
+<h4 id="316-部署">3.1.6 部署 <a href="#316-%e9%83%a8%e7%bd%b2" class="anchor">🔗</a></h4><p>完成编码后，代码是部署在 Ubuntu 16.04 上的，然后使用了 <a href="https://github.com/Unitech/pm2" target="_blank" rel="noopener">pm2</a> 进行进程的管理。</p>
 <h3 id="32-软件架构">3.2 软件架构 <a href="#32-%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" class="anchor">🔗</a></h3><p>程序的整体架构主要分为三层，可以就将其理解为 MVC 的三个层次。</p>
 <p>MVC 是一种设计模式，设计模式不是一层不变的，我们需要根据自己的实际业务灵活运用。MVC 是一个很经典的设计模式，生活中的很多事物，我们也可以根据 MVC 对其进行定义。就拿人来进行类比，大脑就是 C（Controller），控制着人的一切活动。躯体外表就是 V（View） 层，一方面是表现着一个人的外观，另一方面是人的各种活动的外在表现。体内各种器官比如心脏、肺等就相当于 M（Model），从表面可能并不能直观看到 M 层的作用，但它受大脑控制，进行着血液循环呼吸系统等重要功能，而这些器官可能又跟躯体相互作用，比如影响人的精神面貌或高矮胖瘦。</p>
 <p>说正经的。</p>
@@ -359,30 +310,10 @@
             <span style="color:#080;font-style:italic">// 捕获异常
 </span><span style="color:#080;font-style:italic"></span>        });
 </code></pre></div><h3 id="45-publicjsstylejs">4.5 public/js/style.js <a href="#45-publicjsstylejs" class="anchor">🔗</a></h3><p>前端的 JS 代码都在 <code>style.js</code> 这个文件里面了，主要就是监听了按钮的点击事件，然后发送 HTTP 请求，并根据请求结果增删页面的 DOM。</p>
-<p>前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 <a 
-    href="http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    《AJAX: XHR, jQuery and Fetch API》
-</a>。</p>
+<p>前端由于没有使用 jQuery 等第三方库，所以操作 DOM 和事件监听都是原生 JS 实现的。发送 AJAX 请求也是自己封装的 XHR 对象。有关于 XHR 的更多内容，可以参考我之前写的 <a href="http://nodejh.com/post/ajax-xhr-jquery-and-fetch-api/" target="_blank" rel="noopener">《AJAX: XHR, jQuery and Fetch API》</a>。</p>
 <h2 id="5-总结">5. 总结 <a href="#5-%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>到这里，这篇文章就基本完成了。本文讲述的实践，可能也不是最佳的实践，也有很多值得继续商讨和改进之处。只有不断实践，不断总结，才能写出更美的代码。人生不也一样？总结过去的教训，才能更好地前行。</p>
 <hr>
-<p>Github Issues <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/36"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/36
-</a></p>
+<p>Github Issues <a href="https://github.com/nodejh/nodejh.github.io/issues/36" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/36</a></p>
 
     </div>
 
@@ -394,9 +325,10 @@
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -416,7 +348,8 @@
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -428,7 +361,7 @@
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -446,7 +379,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -464,7 +397,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -494,7 +427,7 @@
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -505,11 +438,16 @@
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

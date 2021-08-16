@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="简介 🔗Electron 是一个可以使用 Web 技术如 JavaScript、HTML 和 CSS 来创建跨平台原生桌面应用的框架。借助 Electron，我们可以">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            2733 words
+            2739 words
           
         </span>
         <span class="split">
@@ -66,65 +83,19 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <h2 id="简介">简介 <a href="#%e7%ae%80%e4%bb%8b" class="anchor">🔗</a></h2><p>Electron 是一个可以使用 Web 技术如 JavaScript、HTML 和 CSS 来创建跨平台原生桌面应用的框架。借助 Electron，我们可以使用纯 JavaScript 来调用丰富的原生 APIs。</p>
 <p>Electron用 web 页面作为它的 GUI，而不是绑定了 GUI 库的 JavaScript。它结合了 Chromium、Node.js 和用于调用操作系统本地功能的 APIs（如打开文件窗口、通知、图标等）。</p>
 <p><p class="markdown-image">
   <img src="./images/Electron-Quick-Start-00.jpeg" alt="Electron-Quick-Start-00"  />
 </p></p>
-<p>现在已经有很多由 Electron 开发应用，比如 <a 
-    href="https://atom.io/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Atom
-</a>、<a 
-    href="https://insomnia.rest/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Insomnia
-</a>、<a 
-    href="https://code.visualstudio.com/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Visual Studio Code
-</a> 等。查看更多使用 Electron 构建的项目可以访问 <a 
-    href="https://electron.atom.io/apps/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Apps Built on Electron
-
+<p>现在已经有很多由 Electron 开发应用，比如 <a href="https://atom.io/" target="_blank" rel="noopener">Atom</a>、<a href="https://insomnia.rest/" target="_blank" rel="noopener">Insomnia</a>、<a href="https://code.visualstudio.com/" target="_blank" rel="noopener">Visual Studio Code</a> 等。查看更多使用 Electron 构建的项目可以访问 <a href="https://electron.atom.io/apps/" target="_blank" rel="noopener">Apps Built on Electron
 </a></p>
-<h2 id="安装">安装 <a href="#%e5%ae%89%e8%a3%85" class="anchor">🔗</a></h2><p>安装 electron 之前，需要安装 Node.js。如果没有安装，推荐使用 <a 
-    href="https://github.com/creationix/nvm/blob/master/README.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    nvm
-</a> 等 Node.js 版本管理工具进行安装。</p>
+<h2 id="安装">安装 <a href="#%e5%ae%89%e8%a3%85" class="anchor">🔗</a></h2><p>安装 electron 之前，需要安装 Node.js。如果没有安装，推荐使用 <a href="https://github.com/creationix/nvm/blob/master/README.md" target="_blank" rel="noopener">nvm</a> 等 Node.js 版本管理工具进行安装。</p>
 <p>然后建议修改 electron 的源为国内源：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#a2f">export</span> <span style="color:#b8860b">ELECTRON_MIRROR</span><span style="color:#666">=</span><span style="color:#b44">&#34;https://npm.taobao.org/mirrors/electron/&#34;</span>
 </code></pre></div><p>不然会出现如下错误：</p>
@@ -147,17 +118,7 @@
 </ul>
 <p>进程通信将稍后详细介绍。</p>
 <h2 id="打造第一个-electron-应用">打造第一个 Electron 应用 <a href="#%e6%89%93%e9%80%a0%e7%ac%ac%e4%b8%80%e4%b8%aa-electron-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h2><blockquote>
-<p>以下所有代码可以在 <a 
-    href="https://github.com/nodejh/electron-quick-start"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/electron-quick-start
-</a> 找到。</p>
+<p>以下所有代码可以在 <a href="https://github.com/nodejh/electron-quick-start" target="_blank" rel="noopener">https://github.com/nodejh/electron-quick-start</a> 找到。</p>
 </blockquote>
 <p>一个最简单的 electron 应用目录结构如下：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">electron-demo/
@@ -221,28 +182,8 @@ app.on(<span style="color:#b44">&#39;activate&#39;</span>, () =&gt; {
 });
 </code></pre></div><p>关于 <code>app</code> 和 <code>BrowserWindow</code> 对象和实例的更多用法可参考 electron 的文档：</p>
 <ul>
-<li><a 
-    href="https://github.com/electron/electron/blob/master/docs/api/app.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    app
-</a></li>
-<li><a 
-    href="https://github.com/electron/electron/blob/master/docs/api/browser-window.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    BrowserWindow
-</a></li>
+<li><a href="https://github.com/electron/electron/blob/master/docs/api/app.md" target="_blank" rel="noopener">app</a></li>
+<li><a href="https://github.com/electron/electron/blob/master/docs/api/browser-window.md" target="_blank" rel="noopener">BrowserWindow</a></li>
 </ul>
 <h3 id="indexhtml">index.html <a href="#indexhtml" class="anchor">🔗</a></h3><p>然后编辑需要展示的 <code>index.html</code>：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080">&lt;!DOCTYPE html&gt;</span>
@@ -282,37 +223,7 @@ app.on(<span style="color:#b44">&#39;activate&#39;</span>, () =&gt; {
 <p>如果是局部安装的 electron，即 <code>npm install --save electron</code>，则可以运行下面的命令来启动应用：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ./node_modules/.bin/electron .
 </code></pre></div><h2 id="进行通信">进行通信 <a href="#%e8%bf%9b%e8%a1%8c%e9%80%9a%e4%bf%a1" class="anchor">🔗</a></h2><p>对于 electron 来说，主进程和渲染进程直接的通信是必不可少的。</p>
-<p>前面提到过 electron 进程间的通信的方式主要有两种，一种是用于发送消息的 <a 
-    href="https://github.com/electron/electron/blob/master/docs/api/ipc-main.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    ipcMain
-</a> 和 <a 
-    href="https://github.com/electron/electron/blob/master/docs/api/ipc-renderer.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    ipcRenderer
-</a> 模块，一种用于 RPC 的 <a 
-    href="https://github.com/electron/electron/blob/master/docs/api/remote.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    remote
-</a> 模块。</p>
+<p>前面提到过 electron 进程间的通信的方式主要有两种，一种是用于发送消息的 <a href="https://github.com/electron/electron/blob/master/docs/api/ipc-main.md" target="_blank" rel="noopener">ipcMain</a> 和 <a href="https://github.com/electron/electron/blob/master/docs/api/ipc-renderer.md" target="_blank" rel="noopener">ipcRenderer</a> 模块，一种用于 RPC 的 <a href="https://github.com/electron/electron/blob/master/docs/api/remote.md" target="_blank" rel="noopener">remote</a> 模块。</p>
 <p>现在假设一个业务场景，用户在页面中输入文本消息，渲染进程将消息发送给主进程，主进程处理后将处理结果返回给页面。为了方便起见，主进程的处理就假设为翻转文本。当然，这个功能在前端完全可以实现，这里只是为了演示进程通信。</p>
 <h3 id="ipcmain-和-ipcrenderer">ipcMain 和 ipcRenderer <a href="#ipcmain-%e5%92%8c-ipcrenderer" class="anchor">🔗</a></h3><p>首先在渲染进程中添加一个输入框和一个按钮，并实现点击按钮获取输入框的内容。然后使用 ipcRenderer 发送消息。主进程接收到消息并处理之后，会返回处理结果。所以渲染进程中还需要接收主进程的消息。</p>
 <p>修改 <code>index.html</code>，添加下面的代码：</p>
@@ -354,17 +265,7 @@ app.on(<span style="color:#b44">&#39;activate&#39;</span>, () =&gt; {
 <p><p class="markdown-image">
   <img src="./images/Electron-Quick-Start-02.png" alt="Electron-Quick-Start-02.png"  />
 </p></p>
-<h3 id="remote">remote <a href="#remote" class="anchor">🔗</a></h3><p><a 
-    href="https://github.com/electron/electron/blob/master/docs/api/remote.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    remote
-</a> 模块提供了一种在渲染进程（网页）和主进程之间进行进程间通讯（IPC）的简便途径。</p>
+<h3 id="remote">remote <a href="#remote" class="anchor">🔗</a></h3><p><a href="https://github.com/electron/electron/blob/master/docs/api/remote.md" target="_blank" rel="noopener">remote</a> 模块提供了一种在渲染进程（网页）和主进程之间进行进程间通讯（IPC）的简便途径。</p>
 <p>使用 remote 模块，我们可以很方便地调用主进程对象的方法，而不需要发送消息。</p>
 <p>在 <code>index.html</code> 的 <code>&lt;script&gt;</code> 标签中添加如下代码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">// 引入 remote 模块
@@ -375,114 +276,24 @@ app.on(<span style="color:#b44">&#39;activate&#39;</span>, () =&gt; {
 </span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">var</span> win <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> BrowserWindow({ width<span style="color:#666">:</span> <span style="color:#666">200</span>, height<span style="color:#666">:</span> <span style="color:#666">150</span> });
 win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
 </code></pre></div><p>然后使用 <code>ctr + r</code> 组合键刷新应用，就会看到创建出的一个新窗口。</p>
-<h2 id="打包">打包 <a href="#%e6%89%93%e5%8c%85" class="anchor">🔗</a></h2><p>Electron 应用开发完成之后，还需要将其打包成对应平台的客户端。常用的打包工具有 <a 
-    href="https://github.com/electron-userland/electron-packager"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    electron-packager
-</a> 和 <a 
-    href="https://github.com/electron/asar"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    asar
-</a>。</p>
+<h2 id="打包">打包 <a href="#%e6%89%93%e5%8c%85" class="anchor">🔗</a></h2><p>Electron 应用开发完成之后，还需要将其打包成对应平台的客户端。常用的打包工具有 <a href="https://github.com/electron-userland/electron-packager" target="_blank" rel="noopener">electron-packager</a> 和 <a href="https://github.com/electron/asar" target="_blank" rel="noopener">asar</a>。</p>
 <p>这里以 electron-packager 为例。首先全局安装 electron-packager：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install electron-packager -g
 </code></pre></div><p>然后在项目中安装 electron：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install electron --save-dev
 </code></pre></div><p>然后打包：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ electron-packager . electron-demo
-</code></pre></div><h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>本文首先对 electron 做了简单的介绍，然后讲解了 electron 进程的概念，其进程包括主进程和渲染进程。然后创建了一个简单的 electron 应用，并通过实现一个简单的应用场景，对 electron 进程间的通信做了实践。总体来说，使用 electron 创建桌面客户端的开发体验跟写 Node.js 和网页差不多。但本文对内置模块比如 app、ipcMain、ipcRender、remote 等的介绍比较粗浅，涉及到一些内置模块的使用，还需要继续查询 electron 的<a 
-    href="https://github.com/electron/electron/blob/master/docs/README.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    官方文档
-</a>，只有实践越多，才能越熟悉。</p>
+</code></pre></div><h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>本文首先对 electron 做了简单的介绍，然后讲解了 electron 进程的概念，其进程包括主进程和渲染进程。然后创建了一个简单的 electron 应用，并通过实现一个简单的应用场景，对 electron 进程间的通信做了实践。总体来说，使用 electron 创建桌面客户端的开发体验跟写 Node.js 和网页差不多。但本文对内置模块比如 app、ipcMain、ipcRender、remote 等的介绍比较粗浅，涉及到一些内置模块的使用，还需要继续查询 electron 的<a href="https://github.com/electron/electron/blob/master/docs/README.md" target="_blank" rel="noopener">官方文档</a>，只有实践越多，才能越熟悉。</p>
 <blockquote>
-<p><a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/39"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/39
-</a></p>
+<p><a href="https://github.com/nodejh/nodejh.github.io/issues/39" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/39</a></p>
 </blockquote>
 <p>&ndash;</p>
 <ul>
-<li><a 
-    href="https://github.com/nodejh/electron-quick-start"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/electron-quick-start
-</a></li>
-<li><a 
-    href="https://github.com/electron/electron"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    electron/electron
-</a></li>
-<li><a 
-    href="https://weishuai.gitbooks.io/electron-/content/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    electron中文教程
-</a></li>
-<li><a 
-    href="https://wizardforcel.gitbooks.io/electron-doc/content/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Electron 中文文档
-</a></li>
-<li><a 
-    href="https://github.com/pfan123/electron-docs"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Electron开发桌面应用
-</a></li>
+<li><a href="https://github.com/nodejh/electron-quick-start" target="_blank" rel="noopener">https://github.com/nodejh/electron-quick-start</a></li>
+<li><a href="https://github.com/electron/electron" target="_blank" rel="noopener">electron/electron</a></li>
+<li><a href="https://weishuai.gitbooks.io/electron-/content/" target="_blank" rel="noopener">electron中文教程</a></li>
+<li><a href="https://wizardforcel.gitbooks.io/electron-doc/content/" target="_blank" rel="noopener">Electron 中文文档</a></li>
+<li><a href="https://github.com/pfan123/electron-docs" target="_blank" rel="noopener">Electron开发桌面应用</a></li>
 </ul>
 
     </div>
@@ -495,9 +306,10 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -517,7 +329,8 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -529,7 +342,7 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -547,7 +360,7 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -565,7 +378,7 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -595,7 +408,7 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -606,11 +419,16 @@ win.loadURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>);
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

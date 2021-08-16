@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。 微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            2544 words
+            2555 words
           
         </span>
         <span class="split">
@@ -66,37 +83,21 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <blockquote>
 <p>注：文中阐述的方案是一个可以解决问题但不是最优的方案。改进之处在文末。</p>
 </blockquote>
-<p>微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐号密码；二是方便开发者，通过微信获取用户，并进行用户身份认证。其中最简单的一种方式是使用 <a 
-    href="https://open.weixin.qq.com/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    微信开放平台
-</a>。但需要 300 元的认证费用。而且如果已有微信公众平台，微信公众平台大部分功能也需要认证才能使用，而且也需要 300 元。所以对于我这种已经认证过微信公众平台，不想再花钱认证开放平台，只能想一个不使用开放平台的办法了，主要还是因为穷。本文就主要详细介绍如何基于微信公众平台实现扫码登陆，并阐述基于 Node.js 的技术方案和代码示例。</p>
+<p>微信扫码登陆的主要目的有两个，一是方便用户，扫码即可登陆，不需再记忆帐号密码；二是方便开发者，通过微信获取用户，并进行用户身份认证。其中最简单的一种方式是使用 <a href="https://open.weixin.qq.com/" target="_blank" rel="noopener">微信开放平台</a>。但需要 300 元的认证费用。而且如果已有微信公众平台，微信公众平台大部分功能也需要认证才能使用，而且也需要 300 元。所以对于我这种已经认证过微信公众平台，不想再花钱认证开放平台，只能想一个不使用开放平台的办法了，主要还是因为穷。本文就主要详细介绍如何基于微信公众平台实现扫码登陆，并阐述基于 Node.js 的技术方案和代码示例。</p>
 <!-- raw HTML omitted -->
 <h2 id="1-场景">1. 场景 <a href="#1-%e5%9c%ba%e6%99%af" class="anchor">🔗</a></h2><p>扫码登陆的场景很简单，就是用户首先在电脑的浏览器中打开登陆页面，页面上是一个二维码；然后用户使用微信扫一下页面上的二维码；然后就微信中就提示用户登陆成功了，电脑上的网页就自动跳转到登陆后的页面。</p>
 <h2 id="2-设计方案">2. 设计方案 <a href="#2-%e8%ae%be%e8%ae%a1%e6%96%b9%e6%a1%88" class="anchor">🔗</a></h2><p>首先熟悉一个微信公众号的几个功能：</p>
 <ul>
 <li>对于每个微信用户，微信公众平台都有一个唯一的 openid 来标识该用户的身份，不同公众平台 openid 也不一样</li>
-<li>可以通过<a 
-    href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    微信网页授权
-</a>来获取用户的 openid 和个人信息</li>
+<li>可以通过<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842" target="_blank" rel="noopener">微信网页授权</a>来获取用户的 openid 和个人信息</li>
 </ul>
 <p>基于这些功能，我的方案如下：</p>
 <p><p class="markdown-image">
@@ -105,59 +106,19 @@
 <p>接下来详细介绍图中的几个要点。</p>
 <h4 id="21-二维码生成">2.1. 二维码生成 <a href="#21-%e4%ba%8c%e7%bb%b4%e7%a0%81%e7%94%9f%e6%88%90" class="anchor">🔗</a></h4><p>要扫码登陆，首先就要生成二维码。二维码本质上就是存储数据的图片介质，其中的数据可以是 URL 也可以是文本等。通过二维码扫码工具就能扫出其中的数据。比如扫描上面设计图中的二维码，你就可以得到一段文本。所以基于此原理，我们就可以把 URL 存储在二维码中，微信扫码之后，会自动跳转到该 URL。</p>
 <p>上面还提到，微信可以通过授权 URL 获取到用户的 openid，而第三步需要该 openi的，所以我们的 URL 需要是一个授权 URL。</p>
-<p>在 node.js 中生成授权 URL 可以借助于 <a 
-    href="https://github.com/node-webot/wechat-oauth"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    wechat-oauth
-</a> 这个包。详细步骤如下：</p>
+<p>在 node.js 中生成授权 URL 可以借助于 <a href="https://github.com/node-webot/wechat-oauth" target="_blank" rel="noopener">wechat-oauth</a> 这个包。详细步骤如下：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> OAuth <span style="color:#666">=</span> require(<span style="color:#b44">&#39;wechat-oauth&#39;</span>);
 <span style="color:#a2f;font-weight:bold">const</span> client <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> OAuth(<span style="color:#b44">&#39;wechat_appid&#39;</span>, <span style="color:#b44">&#39;wechat_appsecret&#39;</span>);
 <span style="color:#a2f;font-weight:bold">const</span> url <span style="color:#666">=</span> client.getAuthorizeURL(<span style="color:#b44">&#39;redirectUrl&#39;</span>, <span style="color:#b44">&#39;state&#39;</span>, <span style="color:#b44">&#39;scope&#39;</span>);
-</code></pre></div><p>其中 <code>redirectUrl</code> 是网页授权回调域名，<code>scope</code> 是网页授权的方式，有 <code>snsapi_base</code> 和 <code>snsapi_userinfo</code>。<code>state</code> 是我们自定义的一个参数，重定向后会带上该参数，所以一般可以用该参数来表示不同的业务。更详细的信息可以参考 <a 
-    href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    微信网页授权
-</a>。</p>
+</code></pre></div><p>其中 <code>redirectUrl</code> 是网页授权回调域名，<code>scope</code> 是网页授权的方式，有 <code>snsapi_base</code> 和 <code>snsapi_userinfo</code>。<code>state</code> 是我们自定义的一个参数，重定向后会带上该参数，所以一般可以用该参数来表示不同的业务。更详细的信息可以参考 <a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842" target="_blank" rel="noopener">微信网页授权</a>。</p>
 <p>这样用户访问该 URL 之后就会被重定向到上面设置的 <code>redirectUrl</code>，并带上 <code>code</code> 参数。在第三步的时候，就可以根据 <code>code</code> 来获取用户的 openid。</p>
 <p>然后由于还需要确定是哪个用户在进行登陆，即将微信和电脑浏览器对应起来，所以还需要一个唯一字符串来标识。即在 URL 中加上一个唯一 token，这样微信就能根据该 token 知道是哪一个客户端（浏览器，也就是用户）在进行登陆了。</p>
-<p>所以我们可以生成一个 uuid 作为 token。生成 uuid 可以使用 <a 
-    href="https://github.com/kelektiv/node-uuid"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    node-uuid
-</a> 这个包。然后我们可以将 uuid 作为 <code>state</code> 参数来生成授权 URL。</p>
+<p>所以我们可以生成一个 uuid 作为 token。生成 uuid 可以使用 <a href="https://github.com/kelektiv/node-uuid" target="_blank" rel="noopener">node-uuid</a> 这个包。然后我们可以将 uuid 作为 <code>state</code> 参数来生成授权 URL。</p>
 <p>URL 的行使可能就像下面这样：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> url <span style="color:#666">=</span> client.getAuthorizeURL(<span style="color:#b44">&#39;http://nodejh.com&#39;</span>, <span style="color:#b44">&#39;985123a0-7e4f-11e7-9022-fb7190c856e4&#39;</span>, <span style="color:#b44">&#39;snsapi_base&#39;</span>);
 console.log(url);
 <span style="color:#080;font-style:italic">// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb8c83c7bd4ac209f&amp;redirect_uri=http%3A%2F%2Fnodejh.com&amp;response_type=code&amp;scope=snsapi_userinfo&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4#wechat_redirect
-</span></code></pre></div><p>最后根据这个带有 token 的 URL 生成一个二维码。生成二维码最简单的方式是使用 <a 
-    href="https://github.com/alexeyten/qr-image"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    qr-image
-</a> 这个包。</p>
+</span></code></pre></div><p>最后根据这个带有 token 的 URL 生成一个二维码。生成二维码最简单的方式是使用 <a href="https://github.com/alexeyten/qr-image" target="_blank" rel="noopener">qr-image</a> 这个包。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">const</span> fs <span style="color:#666">=</span> require(<span style="color:#b44">&#39;fs&#39;</span>);
 <span style="color:#a2f;font-weight:bold">const</span> qr <span style="color:#666">=</span> require(<span style="color:#b44">&#39;qr-image&#39;</span>);
 
@@ -168,17 +129,7 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
 <h4 id="22-扫描二维码获取-token">2.2 扫描二维码，获取 token <a href="#22-%e6%89%ab%e6%8f%8f%e4%ba%8c%e7%bb%b4%e7%a0%81%e8%8e%b7%e5%8f%96-token" class="anchor">🔗</a></h4><p>当用户用微信扫描登陆页面的二维码时，就会自动跳转到二维码对应的 URL 上。比如上面的例子，就会跳转到 <code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb8c83c7bd4ac209f&amp;redirect_uri=http%3A%2F%2Fnodejh.com&amp;response_type=code&amp;scope=snsapi_userinfo&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4#wechat_redirect</code>。</p>
 <p>接下来微信浏览器还将继续跳转回调域名，并带上 <code>code</code> 参数，可能跳转之后的页面就是 <code>http://nodejh.com/?code=CODE&amp;state=985123a0-7e4f-11e7-9022-fb7190c856e4</code>。</p>
 <p>于是我们就可以自己的后端通过 <code>state</code> 参数中取得 token。</p>
-<h4 id="23-获取用户-openid">2.3 获取用户 openid <a href="#23-%e8%8e%b7%e5%8f%96%e7%94%a8%e6%88%b7-openid" class="anchor">🔗</a></h4><p>同时 URL 中还有 <code>code</code> 参数，我们就可以根据 code 来获取到用户的 openid。依旧可以使用 <a 
-    href="https://github.com/node-webot/wechat-oauth"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    wechat-oauth
-</a>。</p>
+<h4 id="23-获取用户-openid">2.3 获取用户 openid <a href="#23-%e8%8e%b7%e5%8f%96%e7%94%a8%e6%88%b7-openid" class="anchor">🔗</a></h4><p>同时 URL 中还有 <code>code</code> 参数，我们就可以根据 code 来获取到用户的 openid。依旧可以使用 <a href="https://github.com/node-webot/wechat-oauth" target="_blank" rel="noopener">wechat-oauth</a>。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">client.getAccessToken(<span style="color:#b44">&#39;code&#39;</span>, <span style="color:#a2f;font-weight:bold">function</span> (err, result) {
   <span style="color:#a2f;font-weight:bold">var</span> accessToken <span style="color:#666">=</span> result.data.access_token;
   <span style="color:#a2f;font-weight:bold">var</span> openid <span style="color:#666">=</span> result.data.openid;
@@ -213,9 +164,10 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -235,7 +187,8 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -247,7 +200,7 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -265,7 +218,7 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -283,7 +236,7 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -313,7 +266,7 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -324,11 +277,16 @@ qrSvg.pipe(fs.createWriteStream(<span style="color:#b44">&#39;qrcode.png&#39;</s
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

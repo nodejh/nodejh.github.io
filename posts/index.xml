@@ -76,7 +76,7 @@
       <pubDate>Fri, 28 Jul 2017 20:53:14 +0800</pubDate>
       
       <guid>https://nodejh.com/posts/how-to-vertically-middle-align-floated-elements-with-flexbox/</guid>
-      <description>垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。 考虑下面的场景： 你正在使用网格布局的框架，比如 Bootstrap 、Foundation 、Sk</description>
+      <description>垂直居中一直是一个很麻烦的问题，但基于 FlexBox 的垂直居中就非常简单了。 考虑下面的场景： 你正在使用网格布局的框架，比如 Bootstrap、Found</description>
     </item>
     
     <item>
@@ -175,7 +175,7 @@
       <pubDate>Fri, 10 Feb 2017 16:52:15 +0800</pubDate>
       
       <guid>https://nodejh.com/posts/install-shadowsocks-server-in-vps/</guid>
-      <description>首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明 。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误</description>
+      <description>首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误</description>
     </item>
     
     <item>
@@ -247,7 +247,7 @@
       <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
       
       <guid>https://nodejh.com/posts/install-mxnet-on-macos/</guid>
-      <description>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》 。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但</description>
+      <description>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但</description>
     </item>
     
     <item>
@@ -301,7 +301,7 @@
       <pubDate>Tue, 27 Sep 2016 20:48:24 +0800</pubDate>
       
       <guid>https://nodejh.com/posts/use-eslint-config-airbnb-in-atom/</guid>
-      <description>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。 关于 ESLint 的详细介绍可看官方文档 。 1. 在 Atom</description>
+      <description>ESlint 主要是用来帮助我们规范书写 JavaScript 代码。通过使用 Atom 的 ESLit 插件，并配合 Airbnb 的 ESLint 规则，我们可以一边编码一边检测语法。 关于 ESLint 的详细介绍可看官方文档。 1. 在 Atom</description>
     </item>
     
     <item>

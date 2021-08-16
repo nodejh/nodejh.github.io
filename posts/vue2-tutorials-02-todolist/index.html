@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            2016 words
+            2079 words
           
         </span>
         <span class="split">
@@ -66,19 +83,13 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <p>在了解了 Vue 的一些基本概念之后，就可以写一个最简单的小项目了 &mdash; TodoList。麻雀虽小，五张俱全。虽然是一个小 demo，但也涉及到了组件化、双向绑定、自定义事件的触发与监听、计算属性等概念。接下来从这个小项目中，对这些基本概念进行实践，从而加深理解。</p>
-<p>本文的所有代码在 <a 
-    href="https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList
-</a>。</p>
+<p>本文的所有代码在 <a href="https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList" target="_blank" rel="noopener">https://github.com/nodejh/vue2-tutorials/tree/master/02.TodoList</a>。</p>
 <p>最终实现效果如下：</p>
 <p><p class="markdown-image">
   <img src="./images/Vue2-Tutorials-02-TodoList-01.jpg" alt="TodoList-01"  />
@@ -266,50 +277,10 @@ Vue.use(Router)
   <span style="color:#a2f;font-weight:bold">min-width</span>: <span style="color:#666">200</span><span style="color:#0b0;font-weight:bold">px</span>;
 }
 &lt;/<span style="color:#008000;font-weight:bold">style</span>&gt;
-</code></pre></div><p>首先在组件的数据对象 <code>data</code> 里面有一个 <code>todo</code> 属性，用来存储用户输入的内容。然后在 <code>template</code> 的 <code>input</code> 输入框里，使用 <a 
-    href="https://cn.vuejs.org/v2/api/#v-model"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    <code>v-model</code>
-</a> 实现双向绑定。</p>
-<p>当用户按下回车（<code>@keyup.enter=&quot;addTodo&quot;</code>，详见 <a 
-    href="https://cn.vuejs.org/v2/guide/events.html#%e9%94%ae%e5%80%bc%e4%bf%ae%e9%a5%b0%e7%ac%a6"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    键值修饰符
-</a>）或者点击添加按钮（<code>@click=&quot;addTodo&quot;</code>）的时候，就调用 <code>methods</code> 里面的 <code>addTodo</code> 方法。</p>
-<p><code>addTodo</code> 方法通过 <a 
-    href="https://cn.vuejs.org/v2/api/#vm-emit"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    <code>vm.$emit</code>
-</a> 触发了一个 <code>add</code> 事件，并将用户输入的内容（即 <code>this.todo</code>）作为参数传递。事件触发之后，将输入框中的内容清空。</p>
-<p>接下来就需要监听 <code>add</code> 事件了。监听事件需要在使用组件的模板里面，通过 <code>v-on</code> 来实现。详见 <a 
-    href="https://cn.vuejs.org/v2/guide/components.html#%e4%bd%bf%e7%94%a8-v-on-%e7%bb%91%e5%ae%9a%e8%87%aa%e5%ae%9a%e4%b9%89%e4%ba%8b%e4%bb%b6"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    使用-v-on-绑定自定义事件
-</a>。</p>
+</code></pre></div><p>首先在组件的数据对象 <code>data</code> 里面有一个 <code>todo</code> 属性，用来存储用户输入的内容。然后在 <code>template</code> 的 <code>input</code> 输入框里，使用 <a href="https://cn.vuejs.org/v2/api/#v-model" target="_blank" rel="noopener"><code>v-model</code></a> 实现双向绑定。</p>
+<p>当用户按下回车（<code>@keyup.enter=&quot;addTodo&quot;</code>，详见 <a href="https://cn.vuejs.org/v2/guide/events.html#%e9%94%ae%e5%80%bc%e4%bf%ae%e9%a5%b0%e7%ac%a6" target="_blank" rel="noopener">键值修饰符</a>）或者点击添加按钮（<code>@click=&quot;addTodo&quot;</code>）的时候，就调用 <code>methods</code> 里面的 <code>addTodo</code> 方法。</p>
+<p><code>addTodo</code> 方法通过 <a href="https://cn.vuejs.org/v2/api/#vm-emit" target="_blank" rel="noopener"><code>vm.$emit</code></a> 触发了一个 <code>add</code> 事件，并将用户输入的内容（即 <code>this.todo</code>）作为参数传递。事件触发之后，将输入框中的内容清空。</p>
+<p>接下来就需要监听 <code>add</code> 事件了。监听事件需要在使用组件的模板里面，通过 <code>v-on</code> 来实现。详见 <a href="https://cn.vuejs.org/v2/guide/components.html#%e4%bd%bf%e7%94%a8-v-on-%e7%bb%91%e5%ae%9a%e8%87%aa%e5%ae%9a%e4%b9%89%e4%ba%8b%e4%bb%b6" target="_blank" rel="noopener">使用-v-on-绑定自定义事件</a>。</p>
 <h2 id="完成添加-todo-功能">完成添加 Todo 功能 <a href="#%e5%ae%8c%e6%88%90%e6%b7%bb%e5%8a%a0-todo-%e5%8a%9f%e8%83%bd" class="anchor">🔗</a></h2><p>在 <code>src/components/TodoList.vue</code> 中使用 <code>AddTodo</code> 这个子组件：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">h1</span>&gt;Todo List&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
 <span style="color:#080;font-style:italic">&lt;!-- 调用子组件，并使用 v-on 监听 add 方法 --&gt;</span>
@@ -343,17 +314,7 @@ Vue.use(Router)
 <h2 id="todo-统计">Todo 统计 <a href="#todo-%e7%bb%9f%e8%ae%a1" class="anchor">🔗</a></h2><p>接下来还可以做点别的事情，比如显示总共的 todo 数目，以及完成和未完成的数目。</p>
 <p>要实现此功能，方法有很多种。最简单的一种是直接在模板中加入 JS 表达式，来显示总共的数目，比如：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">p</span>&gt;总共有 &lt;<span style="color:#008000;font-weight:bold">strong</span>&gt;{{ this.todos.lengt }}&lt;/<span style="color:#008000;font-weight:bold">strong</span>&gt; 个待办事项。&lt;/<span style="color:#008000;font-weight:bold">p</span>&gt;
-</code></pre></div><p>对于简单的逻辑可以很方便用表达式写出来，但如果是比较复杂的逻辑，比如统计未完成数目（当然这个也可以用一个表达式搞定），可能一个表达式看起来就不太清晰。这个时候就可以用<a 
-    href="https://cn.vuejs.org/v2/api/#computed"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    计算属性
-</a>。</p>
+</code></pre></div><p>对于简单的逻辑可以很方便用表达式写出来，但如果是比较复杂的逻辑，比如统计未完成数目（当然这个也可以用一个表达式搞定），可能一个表达式看起来就不太清晰。这个时候就可以用<a href="https://cn.vuejs.org/v2/api/#computed" target="_blank" rel="noopener">计算属性</a>。</p>
 <p>修改 <code>src/components/TodoList.vue</code>：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080;font-style:italic">&lt;!-- // ... --&gt;</span>
 &lt;<span style="color:#008000;font-weight:bold">ul</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;todos&#34;</span>&gt;
@@ -397,9 +358,10 @@ Vue.use(Router)
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -419,7 +381,8 @@ Vue.use(Router)
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -431,7 +394,7 @@ Vue.use(Router)
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -449,7 +412,7 @@ Vue.use(Router)
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -467,7 +430,7 @@ Vue.use(Router)
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -497,7 +460,7 @@ Vue.use(Router)
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -508,11 +471,16 @@ Vue.use(Router)
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

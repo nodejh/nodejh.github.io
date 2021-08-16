@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="1. 安装 JAVA 🔗在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。 JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,23 +83,17 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <h3 id="1-安装-java">1. 安装 JAVA <a href="#1-%e5%ae%89%e8%a3%85-java" class="anchor">🔗</a></h3><p>在安装 Tomcat 之前，必须得先安装 JDK 或 JRE。</p>
 <p>JRE 是JAVA 程序运行的基础，它提供了 JVM 等 JAVA 运行环境。而 JDK 是给开发JAVA程序的人员提供了包括JRE在内的基本环境以及一些开发工具，例如 JAVAC。
 Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server）软件。当从网络上有请求到达 Tomcat 服务器时，它会根据请求的地址来调用你写的 JAVA 程序模块。</p>
 <p>简单来说，假设 <code>http://xxx.com</code> 是一个 Java 写的网站，那么当在浏览器输入网址并敲下回车后，Tomcat 会得到一个希望访问 <code>/</code>（根目录资源）的请求。然后它去配置文件里查根目录对应的模块是什么。假设查到的模块是 <code>root</code> 这个类，那么它会去调用 <code>root.doGet()</code> 方法。而你写一个 Servlet 的时候，必须实现 <code>doGet()</code>方法，此时你的方法被调用，那么你写的代码就运行了。</p>
 <p>当然，实际情况会比这个更复杂。</p>
-<p>如果还没有安装 JAVA 开发环境，可参考：<a 
-    href="http://nodejh.com/post/how-to-install-java-on-ubuntu/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Ubuntu下JAVA开发环境的配置
-</a></p>
+<p>如果还没有安装 JAVA 开发环境，可参考：<a href="http://nodejh.com/post/how-to-install-java-on-ubuntu/" target="_blank" rel="noopener">Ubuntu下JAVA开发环境的配置</a></p>
 <h3 id="2-创建-tomcat-用户">2. 创建 <code>tomcat</code> 用户 <a href="#2-%e5%88%9b%e5%bb%ba-tomcat-%e7%94%a8%e6%88%b7" class="anchor">🔗</a></h3><p>为了安全考虑，Tomcat 需要以普通用户的权限来运行。所以我们将创建一个用户和用户组，来运行 Tomcat 服务。</p>
 <p>首先，创建一个 <code>tomcat</code> 用户组：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo groupadd tomcat
@@ -94,17 +105,7 @@ Tomcat 是使用 JAVA 进行 Web 开发的应用服务器（Application Server�
 </ul>
 <p>所创建 <code>tomcat</code> 用户的命令如下：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
-</code></pre></div><h3 id="3-安装-tomcat">3. 安装 Tomcat <a href="#3-%e5%ae%89%e8%a3%85-tomcat" class="anchor">🔗</a></h3><h4 id="下载-tomcat-二进制文件">下载 Tomcat 二进制文件 <a href="#%e4%b8%8b%e8%bd%bd-tomcat-%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h4><p>首先下载 Tomcat。目前 Tomcat 的最新版本是 9.0.0.M3。可以在 <a 
-    href="http://tomcat.apache.org"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://tomcat.apache.org
-</a> 找到最新版本的 Tomcat，然后拷贝其二进制链接地址，在终端使用 <code>wget</code> 命令进行下载：</p>
+</code></pre></div><h3 id="3-安装-tomcat">3. 安装 Tomcat <a href="#3-%e5%ae%89%e8%a3%85-tomcat" class="anchor">🔗</a></h3><h4 id="下载-tomcat-二进制文件">下载 Tomcat 二进制文件 <a href="#%e4%b8%8b%e8%bd%bd-tomcat-%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h4><p>首先下载 Tomcat。目前 Tomcat 的最新版本是 9.0.0.M3。可以在 <a href="http://tomcat.apache.org" target="_blank" rel="noopener">http://tomcat.apache.org</a> 找到最新版本的 Tomcat，然后拷贝其二进制链接地址，在终端使用 <code>wget</code> 命令进行下载：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#a2f">cd</span> ~
 wget http://apache.fayea.com/tomcat/tomcat-9/v9.0.0.M3/bin/apache-tomcat-9.0.0.M3.tar.gz
 </code></pre></div><p><p class="markdown-image">
@@ -164,17 +165,7 @@ sudo /opt/tomcat/bin/catalina.sh start
 </p></p>
 <p>至此，Tomcat 就安装成功！</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/17"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/17
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/17" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/17</a></p>
 
     </div>
 
@@ -188,9 +179,10 @@ sudo /opt/tomcat/bin/catalina.sh start
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -210,7 +202,8 @@ sudo /opt/tomcat/bin/catalina.sh start
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -222,7 +215,7 @@ sudo /opt/tomcat/bin/catalina.sh start
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -240,7 +233,7 @@ sudo /opt/tomcat/bin/catalina.sh start
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -258,7 +251,7 @@ sudo /opt/tomcat/bin/catalina.sh start
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -288,7 +281,7 @@ sudo /opt/tomcat/bin/catalina.sh start
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -299,11 +292,16 @@ sudo /opt/tomcat/bin/catalina.sh start
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

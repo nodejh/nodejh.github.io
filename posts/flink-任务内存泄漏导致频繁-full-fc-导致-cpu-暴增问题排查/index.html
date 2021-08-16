@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="最近发现部署在 k8s 上的 Flink 每运行十几个小时就会卡住，导致消费延迟、上游数据积压。消费延迟较长时间后（时间不固定，可能十几分钟，也可能是一小时），">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            4708 words
+            4715 words
           
         </span>
         <span class="split">
@@ -65,6 +82,10 @@
           10 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <p>最近发现部署在 k8s 上的 Flink 每运行十几个小时就会卡住，导致消费延迟、上游数据积压。消费延迟较长时间后（时间不固定，可能十几分钟，也可能是一小时），又逐渐恢复正常。</p>
@@ -112,17 +133,7 @@
 <p>Flink 在进行 checkpoint 时，Checkpoint Coordinator 会向 source 和所有算子以及 sink 发送 barrier，每个算子接收到了 barrier 后，会暂停数据处理，生成自身状态快照并保存到持久化存储中，然后将数据地址（state handle）发送给 Checkpoint Coordinator。当 Checkpoint Coordinator 收集到所有算子的 state handle 后，就认为此次 checkpoint 完成了，然后再持久化存储保存一份 checkpoint meta 文件。</p>
 <p>所以只要某个算子的 checkpoint 变慢，就会导致整个 checkpoint 变慢，甚至造成 checkpoint 超时。
 ​</p>
-<p>Flink 的 checkpoint 有很多<a 
-    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/config/#checkpointing"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    配置
-</a>，这里主要针对其中两个进行说明：</p>
+<p>Flink 的 checkpoint 有很多<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/config/#checkpointing" target="_blank" rel="noopener">配置</a>，这里主要针对其中两个进行说明：</p>
 <ul>
 <li><code>execution.checkpointing.timeout</code>  checkpoint 超时时间</li>
 <li><code>execution.checkpointing.tolerable-failed-checkpoints</code> 可容忍的 checkpoint 失败次数，默认为 0</li>
@@ -168,34 +179,14 @@
 ​</p>
 <p>所以当还找到根本原因是，解决办法就是，出现消费延迟报警时，就及时重启任务。
 ​</p>
-<p>这里在补充一些关于 Flink on k8s 的信息。我们的 Flink 任务部署到 k8s 上时，使用了 Flink 的 <a 
-    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/elastic_scaling/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Elastic Scaling
-</a> 模式，并基于 k8s 的 hpa  实现了弹性伸缩。当任务的 CPU 使用率较高时，就会自动扩容。
+<p>这里在补充一些关于 Flink on k8s 的信息。我们的 Flink 任务部署到 k8s 上时，使用了 Flink 的 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/deployment/elastic_scaling/" target="_blank" rel="noopener">Elastic Scaling</a> 模式，并基于 k8s 的 hpa  实现了弹性伸缩。当任务的 CPU 使用率较高时，就会自动扩容。
 ​</p>
 <p>那为什么 Pod 的 CPU 到 100% 了，都没有自动扩容呢？这是因为每次消费延迟，只有个别 Pod CPU 使用率非常高，其他 Pod CPU 使用率都非常低，所以整体的 CPU 使用率没有达到扩容阈值，所以没有自动扩容。</p>
 <h2 id="原因定位">原因定位 <a href="#%e5%8e%9f%e5%9b%a0%e5%ae%9a%e4%bd%8d" class="anchor">🔗</a></h2><p>虽然经过初步分析，大概了解了整体情况，但并没有找到根本原因。</p>
 <p>要找到根本原因，就需要在出现问题的那一刻观察 Flink 任务的各种指标，比如线程的 CPU 使用率、内存消耗、GC 情况等等。
 ​</p>
 <p>​</p>
-<p>所以为了得到更多信息，就需要打印更多日志。在 Flink 的 flink-conf.yaml 配置文件中，可以通过 <code>env.java.opts</code> 配置 JVM 参数，详见 <a 
-    href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/ops/debugging/application_profiling/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Application Profiling &amp; Debugging 
-</a>。
+<p>所以为了得到更多信息，就需要打印更多日志。在 Flink 的 flink-conf.yaml 配置文件中，可以通过 <code>env.java.opts</code> 配置 JVM 参数，详见 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/ops/debugging/application_profiling/" target="_blank" rel="noopener">Application Profiling &amp; Debugging </a>。
 ​</p>
 <p>于是在 flink-conf.yaml  中增加了如下配置，打印 GC 日志：
 ​</p>
@@ -313,27 +304,7 @@ JNI global references: <span style="color:#666">1841</span>
 <li>整个 GC 过程持续了 2.77 秒。</li>
 </ul>
 <blockquote>
-<p>除了直接查看 GC 日志，我们也可以借助于一些可视化工具分析 GC 日志，比如 <a 
-    href="https://github.com/chewiebug/GCViewer"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    GCViewer
-</a>、<a 
-    href="https://gceasy.io/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    GCEasy
-</a> 等。</p>
+<p>除了直接查看 GC 日志，我们也可以借助于一些可视化工具分析 GC 日志，比如 <a href="https://github.com/chewiebug/GCViewer" target="_blank" rel="noopener">GCViewer</a>、<a href="https://gceasy.io/" target="_blank" rel="noopener">GCEasy</a> 等。</p>
 </blockquote>
 <p>​</p>
 <p>从日志中可以看到，此时 JVM 正在进行非常频繁的 Full GC。并且每次 Full GC，释放的内存也非常有限，Old 区内存几乎没有被释放。</p>
@@ -346,17 +317,7 @@ JNI global references: <span style="color:#666">1841</span>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ jmap -dump:live,format<span style="color:#666">=</span>b,file<span style="color:#666">=</span>heap.hprof <span style="color:#666">1</span>
 </code></pre></div><blockquote>
 <p>这里可能还有一个大家经常遇到的问题是：Pod 上的 heapdump 文件如何下载到本地分析？</p>
-<p>我的做法是，在 Pod 上下载一个 <a 
-    href="https://help.aliyun.com/document_detail/50452.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    ossutil
-</a> 工具，把 heapdump 文件上传到 OSS，再下载到本地分析。</p>
+<p>我的做法是，在 Pod 上下载一个 <a href="https://help.aliyun.com/document_detail/50452.html" target="_blank" rel="noopener">ossutil</a> 工具，把 heapdump 文件上传到 OSS，再下载到本地分析。</p>
 </blockquote>
 <p>​</p>
 <p>有了 heapdump 文件，就可以将其下载到本地进行分析了。
@@ -401,27 +362,7 @@ JNI global references: <span style="color:#666">1841</span>
 ​</p>
 <p>所以接下来就继续分析了一下 heapdump 文件。
 ​</p>
-<p>在本地可以通过  <a 
-    href="https://www.eclipse.org/mat/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Memory Analyzer (MAT)
-</a> 或 <a 
-    href="https://github.com/oracle/visualvm"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    VisualVM
-</a> 等工具分析 heapdump 文件。
+<p>在本地可以通过  <a href="https://www.eclipse.org/mat/" target="_blank" rel="noopener">Memory Analyzer (MAT)</a> 或 <a href="https://github.com/oracle/visualvm" target="_blank" rel="noopener">VisualVM</a> 等工具分析 heapdump 文件。
 ​</p>
 <p><p class="markdown-image">
   <img src="./images/flink-memory-leak-full-gc-cpu-heapdump.png" alt="mat"  />
@@ -496,9 +437,10 @@ JNI global references: <span style="color:#666">1841</span>
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -518,7 +460,8 @@ JNI global references: <span style="color:#666">1841</span>
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -530,7 +473,7 @@ JNI global references: <span style="color:#666">1841</span>
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -548,7 +491,7 @@ JNI global references: <span style="color:#666">1841</span>
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -566,7 +509,7 @@ JNI global references: <span style="color:#666">1841</span>
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -596,7 +539,7 @@ JNI global references: <span style="color:#666">1841</span>
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -607,11 +550,16 @@ JNI global references: <span style="color:#666">1841</span>
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="A simple neural network with Python and Keras">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            3092 words
+            3090 words
           
         </span>
         <span class="split">
@@ -66,19 +83,13 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <blockquote>
-<p>本文翻译自 <a 
-    href="http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    A simple neural network with Python and Keras
-</a></p>
+<p>本文翻译自 <a href="http://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/" target="_blank" rel="noopener">A simple neural network with Python and Keras</a></p>
 </blockquote>
 <p><p class="markdown-image">
   <img src="./images/a-simple-neural-network-with-python-and-keras-1.png" alt="a-simple-neural-network-with-python-and-keras-1"  />
@@ -143,17 +154,7 @@ imagePaths <span style="color:#666">=</span> <span style="color:#a2f">list</span
 data <span style="color:#666">=</span> []
 labels <span style="color:#666">=</span> []
 
-</code></pre></div><p>我们使用 <code>--dataset</code> 参数来定义输入  Kaggle Dogs vs. Cats 图像的目录。这些图像图可以从 <a 
-    href="https://www.kaggle.com/c/dogs-vs-cats/data"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://www.kaggle.com/c/dogs-vs-cats/data
-</a> 这里下载。</p>
+</code></pre></div><p>我们使用 <code>--dataset</code> 参数来定义输入  Kaggle Dogs vs. Cats 图像的目录。这些图像图可以从 <a href="https://www.kaggle.com/c/dogs-vs-cats/data" target="_blank" rel="noopener">https://www.kaggle.com/c/dogs-vs-cats/data</a> 这里下载。</p>
 <p><code>imagePaths = list(paths.list_images(args[&quot;dataset&quot;]))</code> 这一行用来收集输入的图像。第 31 行 和第 32 分别初始化 <code>data </code> 和 <code>labels </code> 列表。</p>
 <p>现在我们已经有了 <code>imagePaths </code>，接下来就可以循环处理它们中的每一项，把图像转换为特征矢量，然后将其添加到 <code>data</code>  和 <code>labels</code> 列表：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># loop over the input images</span>
@@ -224,27 +225,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 </code></pre></div><h4 id="4-使用构建的神经网络来分类图片">4. 使用构建的神经网络来分类图片 <a href="#4-%e4%bd%bf%e7%94%a8%e6%9e%84%e5%bb%ba%e7%9a%84%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e6%9d%a5%e5%88%86%e7%b1%bb%e5%9b%be%e7%89%87" class="anchor">🔗</a></h4><p>为了使用 <code>simple_neural_network.py</code> 这个脚本，请确保：</p>
 <ul>
 <li>使用完整代码</li>
-<li>下载  Kaggle Dogs vs. Cats [<a 
-    href="https://www.kaggle.com/c/dogs-vs-cats/data"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://www.kaggle.com/c/dogs-vs-cats/data
-</a>](<a 
-    href="https://www.kaggle.com/c/dogs-vs-cats/data"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://www.kaggle.com/c/dogs-vs-cats/data
-</a>)  的图像，并保存在某个目录如 kaggle_dogs_vs_cats</li>
+<li>下载  Kaggle Dogs vs. Cats [<a href="https://www.kaggle.com/c/dogs-vs-cats/data" target="_blank" rel="noopener">https://www.kaggle.com/c/dogs-vs-cats/data</a>](<a href="https://www.kaggle.com/c/dogs-vs-cats/data" target="_blank" rel="noopener">https://www.kaggle.com/c/dogs-vs-cats/data</a>)  的图像，并保存在某个目录如 kaggle_dogs_vs_cats</li>
 </ul>
 <p>完整代码如下：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-style:italic"># USAGE</span>
@@ -350,17 +331,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 <p>在上面的程序中，我们最终获得了 67.376％ 的精度，这也是比较高的精度了。当然，我们还可以很容易地通过使用卷积神经网络获得大于 95％ 的准确率。</p>
 <h4 id="5-总结">5. 总结 <a href="#5-%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h4><p>在上面的内容中，我示范了如何通过 Python and Keras 来构建和训练神经网络。我们将神经网络运用到了 Kaggle Dogs vs. Cats 的测试中，仅仅通过每张图片的原始像素强度，我们就最终得到了  67.376% 的精度。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/3"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/3
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/3" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/3</a></p>
 
     </div>
 
@@ -374,9 +345,10 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -396,7 +368,8 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -408,7 +381,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -426,7 +399,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -444,7 +417,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -474,7 +447,7 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -485,11 +458,16 @@ model<span style="color:#666">.</span>fit(trainData, trainLabels, nb_epoch<span 
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="Get Chinese Phonetic Syllable With JS">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -65,6 +82,10 @@
           3 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <h2 id="最终函数">最终函数 <a href="#%e6%9c%80%e7%bb%88%e5%87%bd%e6%95%b0" class="anchor">🔗</a></h2><p>最近在抓取 Rice 大学的博士生姓名，并从中获取到中国人的姓名。由于博士有中国人和外国人，而中国人的姓名是由拼音组成，所以最终需求是这样的，判断一个字符串是否是由拼音音节组成。于是写了下面这个函数：</p>
@@ -127,17 +148,7 @@
   }
 }
 </code></pre></div><h2 id="思路">思路 <a href="#%e6%80%9d%e8%b7%af" class="anchor">🔗</a></h2><h4 id="1-找到所有拼音音节表">1. 找到所有拼音音节表 <a href="#1-%e6%89%be%e5%88%b0%e6%89%80%e6%9c%89%e6%8b%bc%e9%9f%b3%e9%9f%b3%e8%8a%82%e8%a1%a8" class="anchor">🔗</a></h4><p>首先是找到所有的拼音列表，将其存入数组 <code>ist</code>。</p>
-<p>汉语的拼音音节共 399 个，可以在百度百科找到：<a 
-    href="http://baike.baidu.com/view/1253220.htm"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    汉语拼音音节
-</a></p>
+<p>汉语的拼音音节共 399 个，可以在百度百科找到：<a href="http://baike.baidu.com/view/1253220.htm" target="_blank" rel="noopener">汉语拼音音节</a></p>
 <h4 id="2-递归判断字符串">2. 递归判断字符串 <a href="#2-%e9%80%92%e5%bd%92%e5%88%a4%e6%96%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" class="anchor">🔗</a></h4><p>接下来要循环判断传入的字符串是否是拼音音节。也就是说，我们要判断所传入的字符串是否在 <code>lsit</code> 数组中，聪明的可能想到了，可以用 <code>indexOf()</code> 来判断。</p>
 <p>那么问题来了，我们所要判断的字符串是姓名，形如 <code>jianghang</code>，是由两个甚至更多的拼音音节组成的。所以不能直接 <code>list.indexOf('jianghang')</code>，而是要不断循环截取 <code>jianghang</code> 这个字符串，判读所截取的字符串是否在 <code>list</code> 数组中。如第一次循环截取的是 <code>j</code>，然后判断 <code>j</code> 是否在 <code>lsit</code> 里面，如果不在，则继续截取 <code>ji</code> 再判断；如果是，则又从字符串的第三位开始继续判断，直到判断完整个字符串。其实也就是递归。</p>
 <p>然后可能你又发现了，这么做还是有问题。因为 <code>ji</code> 是拼音音节，<code>jia</code>、<code>jian</code>、<code>jiang</code> 也都是拼音音节。所以这就涉及到一个最优的问题，我们要找到 <code>jiang</code> 而不是 <code>ji</code> 或其它。</p>
@@ -145,17 +156,7 @@
 <h4 id="3-还是递归">3. 还是递归 <a href="#3-%e8%bf%98%e6%98%af%e9%80%92%e5%bd%92" class="anchor">🔗</a></h4><p>这里需要注意的是 <code>return arguments.callee(lowerString);</code> 这一行。<code>arguments</code> 是一个类数组对象，它包含着传入函数的所有参数。这个对象有一个 <code>callee</code> 属性，该属性是一个指针，指向拥有 <code>arguments</code> 对象的函数。</p>
 <p>这里我们使用 <code>return  arguments.callee(lowerString)</code> 而不是用 <code>return is_pinyin(lowerString)</code> 的好处就是，当我们改变函数名的时候，我们仍然可以正确使用该函数。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/8"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/8
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/8" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/8</a></p>
 
     </div>
 
@@ -167,9 +168,10 @@
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -189,7 +191,8 @@
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -201,7 +204,7 @@
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -219,7 +222,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -237,7 +240,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -267,7 +270,7 @@
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -278,11 +281,16 @@
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="Eclipse JSP/Servlet 环境搭建 🔗本文假定你已安装了 JDK 环境，如未安装，可参阅： Ubuntu下JAVA开发环境的配置 Ubuntu 下 Tomcat 的配置 1. 踩过的坑 🔗1) Tomcat 版本过新 🔗最近 Tomcat">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,47 +83,21 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <h2 id="eclipse-jspservlet-环境搭建">Eclipse JSP/Servlet 环境搭建 <a href="#eclipse-jspservlet-%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba" class="anchor">🔗</a></h2><p>本文假定你已安装了 JDK 环境，如未安装，可参阅：</p>
 <ul>
-<li><a 
-    href="http://nodejh.com/post/how-to-install-java-on-ubuntu/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Ubuntu下JAVA开发环境的配置
-</a></li>
-<li><a 
-    href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Ubuntu 下 Tomcat 的配置
-</a></li>
+<li><a href="http://nodejh.com/post/how-to-install-java-on-ubuntu/" target="_blank" rel="noopener">Ubuntu下JAVA开发环境的配置</a></li>
+<li><a href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/" target="_blank" rel="noopener">Ubuntu 下 Tomcat 的配置</a></li>
 </ul>
 <h3 id="1-踩过的坑">1. 踩过的坑 <a href="#1-%e8%b8%a9%e8%bf%87%e7%9a%84%e5%9d%91" class="anchor">🔗</a></h3><h4 id="1-tomcat-版本过新">1) Tomcat 版本过新 <a href="#1-tomcat-%e7%89%88%e6%9c%ac%e8%bf%87%e6%96%b0" class="anchor">🔗</a></h4><p>最近 Tomcat 更新到了 9.0，为了求新我们安装了 Tomcat 9.0，但 Eclipse 目前最高只能识别 Tomcat 8 的版本。如图：</p>
 <p><p class="markdown-image">
   <img src="./images/install-eclipse-jsp-servlet-develop-environment-1.png" alt="ubuntu-eclipse-1.png"  />
 </p></p>
-<p>所以为了解决问题，我们就只能再安装一个 Tomcat 8.0 了。因为 Tomcat 的安装只需要解压到指定目录即可，所以安装多少个版本都是互不影响的。如果你还不知道怎么安装，请参考：<a 
-    href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Ubuntu 下 Tomcat 的配置
-</a>。</p>
+<p>所以为了解决问题，我们就只能再安装一个 Tomcat 8.0 了。因为 Tomcat 的安装只需要解压到指定目录即可，所以安装多少个版本都是互不影响的。如果你还不知道怎么安装，请参考：<a href="http://nodejh.com/post/how-to-install-tomcat-on-ubuntu/" target="_blank" rel="noopener">Ubuntu 下 Tomcat 的配置</a>。</p>
 <p>安装 8.0 和 9.0 的唯一区别是，下载的源码版本不同，即 <code>wget</code> 这一步不一样，安装 8.0 可以在链接下载：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget http://mirrors.cnnic.cn/apache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz
 </code></pre></div><p>下载后可以解压到 <code>/opt/tomcat8</code> 这个目录，以便和之前的 <code>/opt/tomcat</code> 作区分。然后启动 Tomcat 8 当然就使用 <code>sudo /opt/tomcat8/bin/catalina.sh start</code> 这个命令了。</p>
@@ -131,17 +122,7 @@ sudo chmod -R <span style="color:#666">775</span> tomcat8
   <img src="./images/install-eclipse-jsp-servlet-develop-environment-4.gif" alt="ubuntu-eclipse-4.gif"  />
 </p></p>
 <p>好了，可以看到现在 Eclipse 已经正常启动了。</p>
-<p>更多方法可参考：<a 
-    href="http://stackoverflow.com/questions/2030434/eclipse-no-java-jre-jdk-no-virtual-machine"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Eclipse - no Java (JRE) / (JDK) … no virtual machine
-</a></p>
+<p>更多方法可参考：<a href="http://stackoverflow.com/questions/2030434/eclipse-no-java-jre-jdk-no-virtual-machine" target="_blank" rel="noopener">Eclipse - no Java (JRE) / (JDK) … no virtual machine</a></p>
 <p>之所以举这两个例子，还有一点就是说明，解决一个问题的方法可能有很多种，仁者见仁，智者见智。</p>
 <h3 id="2-关联-eclispe-和-tomcat">2. 关联 Eclispe 和 Tomcat <a href="#2-%e5%85%b3%e8%81%94-eclispe-%e5%92%8c-tomcat" class="anchor">🔗</a></h3><p>假设我们上面是通过第一种方法解决的 Eclispe 不能使用 Tomcat 的问题。</p>
 <p>接下来启动 Tomcat</p>
@@ -270,17 +251,7 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
   <img src="./images/install-eclipse-jsp-servlet-develop-environment-13.gif" alt="ubuntu-eclipse-13.gif"  />
 </p></p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/19"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/19
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/19" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/19</a></p>
 
     </div>
 
@@ -292,9 +263,10 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -314,7 +286,8 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -326,7 +299,7 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -344,7 +317,7 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -362,7 +335,7 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -392,7 +365,7 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -403,11 +376,16 @@ META-INF:文件夹相当于一个信息包，目录中的文件和目录获得Ja
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

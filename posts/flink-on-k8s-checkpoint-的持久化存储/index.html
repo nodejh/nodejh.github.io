@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="将 Flink 应用部署到 k8s 上时，为了实现任务高可用，我们就需要将 checkpoint、savepoint 以及 Job Manager meta data 等数据持久化存储下来，而不是简单地">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -65,6 +82,10 @@
           8 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <p>将 Flink 应用部署到 k8s 上时，为了实现任务高可用，我们就需要将 checkpoint、savepoint 以及 Job Manager meta data 等数据持久化存储下来，而不是简单地存储在单个 Node 上，这时就需要配置 Pod 的持久化存储。
@@ -143,17 +164,7 @@
 ​</p>
 <p>这里需要注意的是，NAS 有通用型和极速型两个型号，极速型的 NAS <code>volumeAttributes.path</code>需要以 <code>/share</code> 为父目录。
 ​</p>
-<p>其他字段详细的含义可以参考 NAS 文档：<a 
-    href="https://help.aliyun.com/document_detail/134884.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    使用NAS静态存储卷
-</a> ，这里就不细讲了。
+<p>其他字段详细的含义可以参考 NAS 文档：<a href="https://help.aliyun.com/document_detail/134884.html" target="_blank" rel="noopener">使用NAS静态存储卷</a> ，这里就不细讲了。
 ​</p>
 <h2 id="在-pod-中挂载-nas">在 Pod 中挂载 NAS <a href="#%e5%9c%a8-pod-%e4%b8%ad%e6%8c%82%e8%bd%bd-nas" class="anchor">🔗</a></h2><p>下面是一个挂载 NAS 的 Job Manager 的 YAML 示例：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>batch/v1<span style="color:#bbb">
@@ -210,31 +221,11 @@
 </span><span style="color:#bbb">            </span><span style="color:#008000;font-weight:bold">claimName</span>:<span style="color:#bbb"> </span>pvc-flink<span style="color:#bbb">
 </span></code></pre></div><p>我们使用 <code>volumeMounts</code> 将 <code>/nas/flink</code> 目录挂载到 <code>volume-pvc-nas-flink</code> 卷，该卷对应的是 NAS 持久化存储卷。
 ​</p>
-<p>在该 Pod 中，镜像是基于<a 
-    href="https://github.com/apache/flink-docker"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-     Flink 官方 Docker 镜像
-</a> 的 <code>my-flink-job:latest</code> 。
+<p>在该 Pod 中，镜像是基于<a href="https://github.com/apache/flink-docker" target="_blank" rel="noopener"> Flink 官方 Docker 镜像</a> 的 <code>my-flink-job:latest</code> 。
 ​</p>
 <p>Flink 官方的 Docker 镜像中创建了 <code>flink</code> 用户组以及组内的 <code>flink</code>  用户，用户组和用户的 ID 均为 <code>9999</code>。 并且在官方镜像中，最终也是使用 <code>flink</code> 用户来启动 Job Manager 和 Task Manager。
 ​</p>
-<p>下面是 Flink 官方镜像 <a 
-    href="https://github.com/apache/flink-docker/blob/master/1.13/scala_2.12-java11-debian/Dockerfile"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Dockerfile
-</a> 的相关脚本：</p>
+<p>下面是 Flink 官方镜像 <a href="https://github.com/apache/flink-docker/blob/master/1.13/scala_2.12-java11-debian/Dockerfile" target="_blank" rel="noopener">Dockerfile</a> 的相关脚本：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">......
 
 ENV <span style="color:#b8860b">FLINK_HOME</span><span style="color:#666">=</span>/opt/flink
@@ -251,34 +242,14 @@ WORKDIR <span style="color:#b8860b">$FLINK_HOME</span>
 ​</p>
 <p>解决这个问题的方案有两种，一是使用 root 权限运行 flink 任务；二是修改所挂载的 NAS 目录的权限。通常为了安全起见，我们不会使用 root 权限运行 Pod，所以选择方案二。</p>
 <h2 id="初始化-nas-目录权限">初始化 NAS 目录权限 <a href="#%e5%88%9d%e5%a7%8b%e5%8c%96-nas-%e7%9b%ae%e5%bd%95%e6%9d%83%e9%99%90" class="anchor">🔗</a></h2><p>​</p>
-<p>要初始化 NAS 目录的权限， 我们可以使用 k8s 的<a 
-    href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-     Init 容器
-</a>。Init 容器是一个特殊的容器，可以在 Pod 内的应用容器启动前运行。所以我们可以基于 Init 容器做一些初始化工作，比如执行初始化脚本、设置目录权限等。
+<p>要初始化 NAS 目录的权限， 我们可以使用 k8s 的<a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/" target="_blank" rel="noopener"> Init 容器</a>。Init 容器是一个特殊的容器，可以在 Pod 内的应用容器启动前运行。所以我们可以基于 Init 容器做一些初始化工作，比如执行初始化脚本、设置目录权限等。
 ​</p>
 <p>要初始化 NAS 目录权限，就需要在 Init 容器中也挂载对应的 NAS 目录，以便 Init 容器能够访问该目录。然后通过 command 来执行 shell 命令，修改目录权限。
 ​</p>
 <p>将 <code>/nas/flink</code> 目录的所有者设置为 <code>flink</code> 用户的命令为：
 ​</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ chown -R 9999:9999 /nas/flink
-</code></pre></div><p>在 Init 容器中， 我们使用了 <a 
-    href="https://hub.docker.com/_/alpine"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    alpine 镜像
-</a>， 这是一个基于 Alpine Linux 的只有 5MB 的 Docker 镜像。</p>
+</code></pre></div><p>在 Init 容器中， 我们使用了 <a href="https://hub.docker.com/_/alpine" target="_blank" rel="noopener">alpine 镜像</a>， 这是一个基于 Alpine Linux 的只有 5MB 的 Docker 镜像。</p>
 <p>完成的 YAML 文件如下所示：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">apiVersion</span>:<span style="color:#bbb"> </span>batch/v1<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">kind</span>:<span style="color:#bbb"> </span>Job<span style="color:#bbb">
@@ -571,9 +542,10 @@ flink:x:9999:9999::/opt/flink:/bin/sh
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -593,7 +565,8 @@ flink:x:9999:9999::/opt/flink:/bin/sh
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -605,7 +578,7 @@ flink:x:9999:9999::/opt/flink:/bin/sh
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -623,7 +596,7 @@ flink:x:9999:9999::/opt/flink:/bin/sh
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -641,7 +614,7 @@ flink:x:9999:9999::/opt/flink:/bin/sh
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -671,7 +644,7 @@ flink:x:9999:9999::/opt/flink:/bin/sh
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -682,11 +655,16 @@ flink:x:9999:9999::/opt/flink:/bin/sh
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="首先关于 Shadowsocks 的使用说明在这里：Shadowsocks 使用说明。 使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            887 words
+            890 words
           
         </span>
         <span class="split">
@@ -66,18 +83,12 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
-      <p>首先关于 Shadowsocks 的使用说明在这里：<a 
-    href="https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%e4%bd%bf%e7%94%a8%e8%af%b4%e6%98%8e"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Shadowsocks 使用说明
-</a>。</p>
+      <p>首先关于 Shadowsocks 的使用说明在这里：<a href="https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%e4%bd%bf%e7%94%a8%e8%af%b4%e6%98%8e" target="_blank" rel="noopener">Shadowsocks 使用说明</a>。</p>
 <p>使用说明中描述的也非常详细。我主要是记录 在 Vultr 的 VPS 上安装 shadowsocks 安装使用过程中遇到的错误，以及错误解决办法。</p>
 <p>我的 VPS 系统版本是 Ubuntu 16.10：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat /etc/issue
@@ -100,17 +111,7 @@ Please install setuptools.
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ sudo pip install -U setuptools
 <span style="color:#080;font-style:italic"># 然后再安装 shadowsocks</span>
 $ sudo pip install shadowsocks
-</code></pre></div><p>更具体的内容可在 Github Issues 查看：<a 
-    href="https://github.com/pypa/pip/issues/1064"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    ImportError: No module named setuptools (add details to docs) 
-</a>。</p>
+</code></pre></div><p>更具体的内容可在 Github Issues 查看：<a href="https://github.com/pypa/pip/issues/1064" target="_blank" rel="noopener">ImportError: No module named setuptools (add details to docs) </a>。</p>
 <p>接下来配置 shadowsocks：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ sudo vim /etc/shadowsocks.json
 </code></pre></div><p>写入下面的配置：</p>
@@ -124,17 +125,7 @@ $ sudo pip install shadowsocks
     <span style="color:#008000;font-weight:bold">&#34;method&#34;</span>:<span style="color:#b44">&#34;chacha20&#34;</span>,
     <span style="color:#008000;font-weight:bold">&#34;fast_open&#34;</span>: <span style="color:#a2f;font-weight:bold">false</span>
 }
-</code></pre></div><p>Shadowsocks 的配置文件描述在 <a 
-    href="https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Configuration via Config File
-</a>。</p>
+</code></pre></div><p>Shadowsocks 的配置文件描述在 <a href="https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File" target="_blank" rel="noopener">Configuration via Config File</a>。</p>
 <p>我的加密算法设置的是 <code>chacha20</code>。之前主流的SS有两种加密算法：<code>RC4-MD5</code> 和 <code>aes-256-cfb</code>。</p>
 <p><code>aes-256-cfb</code> 是各种一键包默认的加密方法，但是由于路由器和手机性能的问题，这种算法还是多少会影响到一些速度的。<code>RC4-MD5</code> 主要是加密太简单了，在 GFW 面前加密不加密已经没有什么区别&hellip;所以我们需要密码强度比 <code>RC4-MD5</code> 高,但是速度比 <code>aes-256-cfb</code> 快的加密算法,那就是 <code>chacha20</code> 了。可以说是目前性价比比较高的加密算法。</p>
 <p>然后后台启动 shadowsocks：</p>
@@ -185,17 +176,7 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
 </code></pre></div><p>查看 shadowsocks 日志：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ tail -f /var/log/shadowsocks.log
 </code></pre></div><p>然后只需要配置好客户端，就可以愉快地番茄了。</p>
-<p>最后分享一下我的 vultr 邀请链接，通过该链接注册您将获得 <code>$20</code> ：<a 
-    href="http://www.vultr.com/?ref=7104654-3B"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    vultr
-</a>。</p>
+<p>最后分享一下我的 vultr 邀请链接，通过该链接注册您将获得 <code>$20</code> ：<a href="http://www.vultr.com/?ref=7104654-3B" target="_blank" rel="noopener">vultr</a>。</p>
 
     </div>
 
@@ -207,9 +188,10 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -229,7 +211,8 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -241,7 +224,7 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -259,7 +242,7 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -277,7 +260,7 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -307,7 +290,7 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -318,11 +301,16 @@ $ sudo make <span style="color:#666">&amp;&amp;</span> sudo make install
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

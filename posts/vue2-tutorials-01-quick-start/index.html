@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="Vue 的官方文档 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,30 +83,14 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
-      <p>Vue 的<a 
-    href="https://cn.vuejs.org/v2/guide/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    官方文档
-</a> 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧不能立即立即 vue-cli 创建的项目代码。所以本文 vue-cli 构建的项目为基础，详细解释其代码及对应的概念，并进行简单的实践。</p>
+      <p>Vue 的<a href="https://cn.vuejs.org/v2/guide/" target="_blank" rel="noopener">官方文档</a> 对 Vue 介绍非常详细，但官方文档使用在 HTML 中引入 vue 的方式进行讲解，而实际项目中一般使用脚手架如 vue-cli 初始化项目。以至于刚看完文档时，却依旧不能立即立即 vue-cli 创建的项目代码。所以本文 vue-cli 构建的项目为基础，详细解释其代码及对应的概念，并进行简单的实践。</p>
 <blockquote>
-<p>本文的代码在 <a 
-    href="https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart
-</a></p>
+<p>本文的代码在 <a href="https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart" target="_blank" rel="noopener">https://github.com/nodejh/vue2-tutorials/tree/master/01.QuickStart</a></p>
 </blockquote>
 <h2 id="命令行工具">命令行工具 <a href="#%e5%91%bd%e4%bb%a4%e8%a1%8c%e5%b7%a5%e5%85%b7" class="anchor">🔗</a></h2><h3 id="安装-vue-cli-并初始化项目">安装 vue-cli 并初始化项目 <a href="#%e5%ae%89%e8%a3%85-vue-cli-%e5%b9%b6%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h3><p>首先要全局安装 vue-cl：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ npm install --global vue-cli
@@ -142,31 +143,11 @@ $ npm run dev
 <h4 id="el">el <a href="#el" class="anchor">🔗</a></h4><p><code>el</code> 的值是 Vue 实例的挂载目标，这里是 <code>#app</code>，也就是 <code>demo/index.html</code> 中 <code>id=&quot;app&quot;</code> 这个元素：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;app&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
 </code></pre></div><p><code>el</code> 必须是一个已存在的元素。</p>
-<p><a 
-    href="https://cn.vuejs.org/v2/api/#el"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    api/#el
-</a></p>
+<p><a href="https://cn.vuejs.org/v2/api/#el" target="_blank" rel="noopener">api/#el</a></p>
 <h4 id="components">components <a href="#components" class="anchor">🔗</a></h4><p>在说 <code>template</code> 之前，先来看看 <code>components</code> 属性。</p>
 <p><code>components: { App }</code> 等价于 <code>components: { App: App }</code>，是一个包含了对 Vue 实例可见的组件的哈希表。只有在 <code>components</code> 里面列出来的组件，才可以在 <code>template</code> 里面使用。</p>
 <p>如果我们把 <code>components: { App }</code> 改为 <code>components: { App }</code> 改为 <code>components: { MyApp: App }</code>，那么在 <code>template</code> 里面就需要这样使用：<code>template: '&lt;my-app /&gt;'</code>。</p>
-<p>由于 HTML 标签不区分大小写，所以 <code>components</code> 里面的驼峰命名会自动转换为短横线。详见 <a 
-    href="https://cn.vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    camelCase vs. kebab-case
-</a></p>
+<p>由于 HTML 标签不区分大小写，所以 <code>components</code> 里面的驼峰命名会自动转换为短横线。详见 <a href="https://cn.vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case" target="_blank" rel="noopener">camelCase vs. kebab-case</a></p>
 <h4 id="template">template <a href="#template" class="anchor">🔗</a></h4><p><code>template</code> 就是挂载到页面的模板。</p>
 <p>这里的值是 <code>&lt;App/&gt;</code> 组件就是 <code>components</code> 属性中的 <code>App</code>，也就是通过 <code>import</code> 引入的 <code>App</code> 这个模板。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a2f;font-weight:bold">new</span> Vue({
@@ -176,17 +157,7 @@ $ npm run dev
   components<span style="color:#666">:</span> { App },
 });
 </code></pre></div><p>所以这段代码的含义就是，将 <code>&lt;App/&gt;</code> 这个模板挂载到元素 <code>#app</code> 上。</p>
-<h3 id="srcappvue">src/App.vue <a href="#srcappvue" class="anchor">🔗</a></h3><p><code>src/App.vue</code> 是一个典型的<a 
-    href="https://cn.vuejs.org/v2/guide/single-file-components.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    单文件组件
-</a>。实际在项目中，我们写的基本都是组件，再根据需要用组件组成页面，这其实就是组件化。组件与组件之间相互独立，项目结构更加清晰，也更有利于维护。</p>
+<h3 id="srcappvue">src/App.vue <a href="#srcappvue" class="anchor">🔗</a></h3><p><code>src/App.vue</code> 是一个典型的<a href="https://cn.vuejs.org/v2/guide/single-file-components.html" target="_blank" rel="noopener">单文件组件</a>。实际在项目中，我们写的基本都是组件，再根据需要用组件组成页面，这其实就是组件化。组件与组件之间相互独立，项目结构更加清晰，也更有利于维护。</p>
 <p>一个组件里面封装了 HTML、CSS 和 JS，有自己独立的样式和逻辑。</p>
 <p><code>&lt;template&gt;</code> 就是组件中的模板，模板的代码都在 <code>&lt;template&gt;</code> 标签中，除 <code>&lt;hello&gt;</code> 之外都是普通的 HTML。因为 <code>hello</code> 也是一个组件，然后通过标签的形式注入到模板中。</p>
 <p>为什么模板中能使用 <code>hello</code> 这个组件呢？</p>
@@ -374,27 +345,7 @@ $ npm run dev
 &lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
 </code></pre></div><p>这样我们就把数据和视图分开了，模板里面的代码也简洁了很多，不再需要写很多重复的代码。并且根据不同数据，我们也能展示出不同的 UI。</p>
 <h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>本文详细讲解了 vue-cli 初始化的项目代码，并且在讲解代码的过程中，介绍了构造 vue 对象的一些参数，以及 vue 的一些基本概念，比如模板语法中的插值和指令。最后通过修改代码对以上知识点进行实践。</p>
-<p>相信看到了这里，你对如何使用 vue 写一个项目已经有了初步了解。当然，看完本文，可能还有很多概念理解不清楚，这时推荐去看一下 vue 的<a 
-    href="https://cn.vuejs.org/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    官方文档
-</a>，这个时候再去看<a 
-    href="https://cn.vuejs.org/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    官方文档
-</a>，应该就会轻松很多了。</p>
+<p>相信看到了这里，你对如何使用 vue 写一个项目已经有了初步了解。当然，看完本文，可能还有很多概念理解不清楚，这时推荐去看一下 vue 的<a href="https://cn.vuejs.org/" target="_blank" rel="noopener">官方文档</a>，这个时候再去看<a href="https://cn.vuejs.org/" target="_blank" rel="noopener">官方文档</a>，应该就会轻松很多了。</p>
 
     </div>
 
@@ -406,9 +357,10 @@ $ npm run dev
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -428,7 +380,8 @@ $ npm run dev
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -440,7 +393,7 @@ $ npm run dev
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -458,7 +411,7 @@ $ npm run dev
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -476,7 +429,7 @@ $ npm run dev
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -506,7 +459,7 @@ $ npm run dev
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -517,11 +470,16 @@ $ npm run dev
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

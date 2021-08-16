@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="最近尝试将应用的页面 JS 错误报警功能通过 Serverless 来实现。本文主要介绍一下具体实现过程，以及遇到的一些问题。 报警功能的需求也很简单，就是定时（如每隔 1">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            5330 words
+            5353 words
           
         </span>
         <span class="split">
@@ -66,6 +83,10 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <p>最近尝试将应用的页面 JS 错误报警功能通过 Serverless 来实现。本文主要介绍一下具体实现过程，以及遇到的一些问题。</p>
 <p>报警功能的需求也很简单，就是定时（如每隔 1 分钟）去读取 ARMS 的错误日志，如果有错误日志，则通过钉钉消息发送错误详情进行报警。</p>
@@ -75,51 +96,11 @@
 <li>对于开发者，只需要关系业务逻辑的实现，不需要关心代码所运行的环境、硬件资源、以及运维</li>
 <li>节省成本</li>
 </ul>
-<p>通过 Serverless 实现前端日志报警，依赖的云服务是<a 
-    href="https://fc.console.aliyun.com"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    阿里云函数计算
-</a>，依赖的其他工具还有：</p>
+<p>通过 Serverless 实现前端日志报警，依赖的云服务是<a href="https://fc.console.aliyun.com" target="_blank" rel="noopener">阿里云函数计算</a>，依赖的其他工具还有：</p>
 <ul>
-<li>函数计算的命令行工具 <a 
-    href="https://github.com/aliyun/fun"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    fun
-</a>，用于本地调试、部署函数</li>
-<li>函数计算的可交互式工具 <a 
-    href="https://github.com/aliyun/fcli"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    fcli
-</a>，用于本地测试</li>
-<li>阿里云 JS SDK <a 
-    href="https://github.com/aliyun-UED/aliyun-sdk-js"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    aliyun-sdk-js
-</a>，用于读取 SLS 日志，ARMS 的日志是存储在 SLS 中的</li>
+<li>函数计算的命令行工具 <a href="https://github.com/aliyun/fun" target="_blank" rel="noopener">fun</a>，用于本地调试、部署函数</li>
+<li>函数计算的可交互式工具 <a href="https://github.com/aliyun/fcli" target="_blank" rel="noopener">fcli</a>，用于本地测试</li>
+<li>阿里云 JS SDK <a href="https://github.com/aliyun-UED/aliyun-sdk-js" target="_blank" rel="noopener">aliyun-sdk-js</a>，用于读取 SLS 日志，ARMS 的日志是存储在 SLS 中的</li>
 <li>编程语言使用 Node.js</li>
 </ul>
 <h2 id="安装和配置-fun">安装和配置 fun <a href="#%e5%ae%89%e8%a3%85%e5%92%8c%e9%85%8d%e7%bd%ae-fun" class="anchor">🔗</a></h2><p>初次使用需要先安装 <code>fun</code></p>
@@ -133,32 +114,12 @@
 ? The timeout in seconds <span style="color:#a2f;font-weight:bold">for</span> each SDK client invoking <span style="color:#666">60</span>
 ? The maximum number of retries <span style="color:#a2f;font-weight:bold">for</span> each SDK client <span style="color:#666">6</span>
 </code></pre></div><p><code>Aliyun Account ID</code> <code>Aliyun Access Key ID</code> <code>Aliyun Secret Access Key</code> 可以在阿里云的控制台中查找和设置。</p>
-<p><a 
-    href="https://account.console.aliyun.com/#/secure"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    <code>Aliyun Account ID</code>
-</a></p>
+<p><a href="https://account.console.aliyun.com/#/secure" target="_blank" rel="noopener"><code>Aliyun Account ID</code></a></p>
 <p>![Aliyun Account ID]
 <p class="markdown-image">
   <img src="./images/serverless-log-alarm-1.jpg" alt="accountid"  />
 </p></p>
-<p><a 
-    href="https://usercenter.console.aliyun.com/#/manage/ak"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    <code>Aliyun Access Key ID</code> <code>Aliyun Secret Access Key</code>
-</a></p>
+<p><a href="https://usercenter.console.aliyun.com/#/manage/ak" target="_blank" rel="noopener"><code>Aliyun Access Key ID</code> <code>Aliyun Secret Access Key</code></a></p>
 <p><p class="markdown-image">
   <img src="./images/serverless-log-alarm-2.jpg" alt="accesskey"  />
 </p></p>
@@ -203,17 +164,7 @@ finish rendering template.
 </span><span style="color:#bbb">        </span><span style="color:#008000;font-weight:bold">Runtime</span>:<span style="color:#bbb"> </span>nodejs8<span style="color:#bbb"> </span><span style="color:#080;font-style:italic"># 函数的运行环境</span><span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#008000;font-weight:bold">CodeUri</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#39;index.js&#39;</span><span style="color:#bbb"> </span><span style="color:#080;font-style:italic"># 代码的目录</span><span style="color:#bbb">
 </span></code></pre></div><p><code>alarm</code> 函数里面的 <code>Properties</code> 定义了函数的调用入口、运行环境等，如上面的注释所示。</p>
-<p>关于 <code>template.yml</code> 的配置详见 <a 
-    href="https://github.com/aliyun/fun/blob/master/docs/specs/2018-04-03-zh-cn.md"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Serverless Application Model
-</a>。</p>
+<p>关于 <code>template.yml</code> 的配置详见 <a href="https://github.com/aliyun/fun/blob/master/docs/specs/2018-04-03-zh-cn.md" target="_blank" rel="noopener">Serverless Application Model</a>。</p>
 <h3 id="indexjs">index.js <a href="#indexjs" class="anchor">🔗</a></h3><p><code>index.js</code> 文件就是函数的调用入口了。<code>index.handler</code> 就表示，函数的调用的是 <code>index.[extension]</code> 文件中的 <code>handler</code> 函数。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">module.exports.handler <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>(event, context, callback) { 
   console.log(<span style="color:#b44">&#39;hello world&#39;</span>);
@@ -243,17 +194,7 @@ finish rendering template.
 </ul>
 </li>
 </ul>
-<p>关于 <code>event</code> 和 <code>context</code>，详见 <a 
-    href="https://help.aliyun.com/document_detail/74757.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Nodejs 函数入口
-</a>。</p>
+<p>关于 <code>event</code> 和 <code>context</code>，详见 <a href="https://help.aliyun.com/document_detail/74757.html" target="_blank" rel="noopener">Nodejs 函数入口</a>。</p>
 <p>实现报警功能的主要逻辑，就写在 <code>index.js</code> 里面。具体的实现，就不细说，下面用伪代码来描述：</p>
 <p><code>alarm/alarm.js</code></p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">// alarm/alarm.js 
@@ -360,17 +301,7 @@ service yunzhi deploy success
   <img src="./images/serverless-log-alarm-3.jpg" alt="fcshow2"  />
 </p></p>
 <h2 id="触发器">触发器 <a href="#%e8%a7%a6%e5%8f%91%e5%99%a8" class="anchor">🔗</a></h2><p>对于应用到生产环境的函数，肯定不会像上面一样手动去执行它，而是通过配置触发器去执行。触发器就相当于是一个特定的事件，当函数计算接收到该事件的时候，就去调用对应的函数。</p>
-<p>阿里云的函数计算支持 HTTP 触发器（接收到 HTTP 请求之后调用函数）、定时触发器（定时调用函数）、OSS 触发器等等。详见 <a 
-    href="https://help.aliyun.com/document_detail/74707.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    触发器列表
-</a>。</p>
+<p>阿里云的函数计算支持 HTTP 触发器（接收到 HTTP 请求之后调用函数）、定时触发器（定时调用函数）、OSS 触发器等等。详见 <a href="https://help.aliyun.com/document_detail/74707.html" target="_blank" rel="noopener">触发器列表</a>。</p>
 <p>对于报警功能，需要用到的是定时触发器，因为需要间隔一定的时间就调用函数。</p>
 <p>触发器是配置到函数中的，可以通过函数的 <code>Event</code> 属性去配置</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#008000;font-weight:bold">ROSTemplateFormatVersion</span>:<span style="color:#bbb"> </span><span style="color:#b44">&#39;2015-09-01&#39;</span><span style="color:#bbb">
@@ -397,39 +328,9 @@ service yunzhi deploy success
 <p><p class="markdown-image">
   <img src="./images/serverless-log-alarm-4.jpg" alt="trigger"  />
 </p></p>
-<p>这里需要注意的是，阿里云函数计算服务目前支持的触发器，最小的间隔时间为 1 分钟。如果小于 1 分钟，则无法设置成功。定时触发器的详细介绍可参考文档 <a 
-    href="https://help.aliyun.com/document_detail/68172.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    定时触发函数
-</a>。</p>
+<p>这里需要注意的是，阿里云函数计算服务目前支持的触发器，最小的间隔时间为 1 分钟。如果小于 1 分钟，则无法设置成功。定时触发器的详细介绍可参考文档 <a href="https://help.aliyun.com/document_detail/68172.html" target="_blank" rel="noopener">定时触发函数</a>。</p>
 <h2 id="函数日志">函数日志 <a href="#%e5%87%bd%e6%95%b0%e6%97%a5%e5%bf%97" class="anchor">🔗</a></h2><p>对于 serverless 应用，虽然不用关心运维了，其实我们也并不知道我们的函数运行在哪台服务器上。这个时候，函数的日志就尤为重要了。没有日志，我们很难知道程序运行状态，遇到问题更是无从下手。</p>
-<p>所以接下来需要对函数配置日志。阿里云的函数计算可以使用<a 
-    href="https://sls.console.aliyun.com/#/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    阿里云日志服务 SLS
-</a>来存储日志。如果要存储日志，则需要先开通 <a 
-    href="https://sls.console.aliyun.com/#/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    日志服务
-</a>。</p>
+<p>所以接下来需要对函数配置日志。阿里云的函数计算可以使用<a href="https://sls.console.aliyun.com/#/" target="_blank" rel="noopener">阿里云日志服务 SLS</a>来存储日志。如果要存储日志，则需要先开通 <a href="https://sls.console.aliyun.com/#/" target="_blank" rel="noopener">日志服务</a>。</p>
 <h3 id="不存在日志库">不存在日志库 <a href="#%e4%b8%8d%e5%ad%98%e5%9c%a8%e6%97%a5%e5%bf%97%e5%ba%93" class="anchor">🔗</a></h3><p>如果是第一次使用日志服务，则肯定不存在日志库。可以在 <code>template.yml</code> 像定义函数服务一样，通过 Resource 来定义日志资源。</p>
 <p>前面也提到，函数日志是配置到对应的服务上的，具体配置也很简单，就是通过函数服务的 <code>LogConfig</code> 属性来配置。</p>
 <p>完整的 <code>template.yml</code> 如下</p>
@@ -551,28 +452,8 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
 <h3 id="经济成本">经济成本 <a href="#%e7%bb%8f%e6%b5%8e%e6%88%90%e6%9c%ac" class="anchor">🔗</a></h3><p>使用函数计算的经济成本，相比于购买云服务器部署应用，成本低了非常多。</p>
 <p>本文中涉及到函数计算和日志服务两个云产品，都有一定的免费额度。其中函数计算每月前 100 万次函数调用免费，日志服务每月也有 500M 的免费存储空间和读写流量。所以只用来测试或者实现一些调用量很小的功能，基本是免费的。</p>
 <ul>
-<li><a 
-    href="https://help.aliyun.com/document_detail/54301"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    函数计算计费方式
-</a></li>
-<li><a 
-    href="https://help.aliyun.com/document_detail/48220.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    日志服务产品定价
-</a></li>
+<li><a href="https://help.aliyun.com/document_detail/54301" target="_blank" rel="noopener">函数计算计费方式</a></li>
+<li><a href="https://help.aliyun.com/document_detail/48220.html" target="_blank" rel="noopener">日志服务产品定价</a></li>
 </ul>
 <h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>配置了函数的日志之后，将函数部署到函数计算上，就算是正式发布上线了。</p>
 <p>现在回过头来看，整个流程还算比较简单。但从零开始一步一步到部署上线的过程，还是遇到了很多问题。比如文中的许多注意事项，都是在不断尝试中得出的结论。</p>
@@ -588,9 +469,10 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -610,7 +492,8 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -622,7 +505,7 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -640,7 +523,7 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -658,7 +541,7 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -688,7 +571,7 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -699,11 +582,16 @@ PUT /services/yunzhi failed with 400. requestid: 6af2afb8-cbd9-0d3e-bf16-fe62383
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

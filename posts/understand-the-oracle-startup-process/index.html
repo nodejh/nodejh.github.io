@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="一. 常用启动步骤 🔗对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。 如果还需要使用 OEM 来监控数据库服务，则还要启动">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,23 +83,17 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <h2 id="一-常用启动步骤">一. 常用启动步骤 <a href="#%e4%b8%80-%e5%b8%b8%e7%94%a8%e5%90%af%e5%8a%a8%e6%ad%a5%e9%aa%a4" class="anchor">🔗</a></h2><p>对于普通用户，如果需要使用 Oracle 数据库，需要两个启动步骤：启动数据库和启动监听器。</p>
 <p>如果还需要使用 OEM 来监控数据库服务，则还要启动 OEM。</p>
 <h4 id="11-启动监听器">1.1. 启动监听器 <a href="#11-%e5%90%af%e5%8a%a8%e7%9b%91%e5%90%ac%e5%99%a8" class="anchor">🔗</a></h4><p>Oracle 监听器是一个独立的后台进程，用于监听客户端向数据库服务器端提出的连接请求，它是客户端和服务器端通讯的桥梁。</p>
 <p>启动监听器：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ lsnrctl start
-</code></pre></div><h4 id="12-启动数据库">1.2. 启动数据库 <a href="#12-%e5%90%af%e5%8a%a8%e6%95%b0%e6%8d%ae%e5%ba%93" class="anchor">🔗</a></h4><p>我们可以使用 <code>sqlplus</code> 来启动数据库。关于 <code>sqlplus</code> 的详细使用方法请参考 <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/31"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    《使用 SQL *Plus 管理 Oracle 数据库》
-</a>。</p>
+</code></pre></div><h4 id="12-启动数据库">1.2. 启动数据库 <a href="#12-%e5%90%af%e5%8a%a8%e6%95%b0%e6%8d%ae%e5%ba%93" class="anchor">🔗</a></h4><p>我们可以使用 <code>sqlplus</code> 来启动数据库。关于 <code>sqlplus</code> 的详细使用方法请参考 <a href="https://github.com/nodejh/nodejh.github.io/issues/31" target="_blank" rel="noopener">《使用 SQL *Plus 管理 Oracle 数据库》</a>。</p>
 <p>进入 <code>sqlplus</code> ：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ sqlplus / as sysdba
 </code></pre></div><p>启动数据库：</p>
@@ -483,108 +494,18 @@ ORA 12541: TNS:no listener
 </code></pre></div><hr>
 <p>参考：</p>
 <ul>
-<li><a 
-    href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/start001.htm#ADMIN10063"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Starting Up a Database
-</a></li>
-<li><a 
-    href="http://blog.itpub.net/9399028/viewspace-682015/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle SGA详解
-</a></li>
-<li><a 
-    href="http://blog.itpub.net/25264937/viewspace-694917/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle之内存结构（SGA、PGA）
-</a></li>
-<li><a 
-    href="http://www.dongcoder.com/detail-441242.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle 数据库启动过程
-</a></li>
-<li><a 
-    href="http://blog.itpub.net/29620680/viewspace-1153413/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    oracle数据库启动过程大揭秘 
-</a></li>
-<li><a 
-    href="http://www.zhaokongnuan.com/2015/01/03/Oracle%e5%ad%a6%e4%b9%a0%e4%ba%a4%e6%b5%81%ef%bc%88%e4%ba%8c%ef%bc%89-oracle%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e5%8f%8a%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle学习交流（二）&ndash;oracle体系结构及启动流程
-</a></li>
-<li><a 
-    href="http://blog.csdn.net/leshami/article/details/5542983"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle 数据库实例启动关闭过程
-</a></li>
-<li><a 
-    href="http://www.jellythink.com/archives/1007"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Oracle学习笔记——数据库启动原理
-</a></li>
+<li><a href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/start001.htm#ADMIN10063" target="_blank" rel="noopener">Starting Up a Database</a></li>
+<li><a href="http://blog.itpub.net/9399028/viewspace-682015/" target="_blank" rel="noopener">Oracle SGA详解</a></li>
+<li><a href="http://blog.itpub.net/25264937/viewspace-694917/" target="_blank" rel="noopener">Oracle之内存结构（SGA、PGA）</a></li>
+<li><a href="http://www.dongcoder.com/detail-441242.html" target="_blank" rel="noopener">Oracle 数据库启动过程</a></li>
+<li><a href="http://blog.itpub.net/29620680/viewspace-1153413/" target="_blank" rel="noopener">oracle数据库启动过程大揭秘 </a></li>
+<li><a href="http://www.zhaokongnuan.com/2015/01/03/Oracle%e5%ad%a6%e4%b9%a0%e4%ba%a4%e6%b5%81%ef%bc%88%e4%ba%8c%ef%bc%89-oracle%e4%bd%93%e7%b3%bb%e7%bb%93%e6%9e%84%e5%8f%8a%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b/" target="_blank" rel="noopener">Oracle学习交流（二）&ndash;oracle体系结构及启动流程</a></li>
+<li><a href="http://blog.csdn.net/leshami/article/details/5542983" target="_blank" rel="noopener">Oracle 数据库实例启动关闭过程</a></li>
+<li><a href="http://www.jellythink.com/archives/1007" target="_blank" rel="noopener">Oracle学习笔记——数据库启动原理</a></li>
 </ul>
 <hr>
 <blockquote>
-<p>Github Issues <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/35"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/35
-</a></p>
+<p>Github Issues <a href="https://github.com/nodejh/nodejh.github.io/issues/35" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/35</a></p>
 </blockquote>
 
     </div>
@@ -599,9 +520,10 @@ ORA 12541: TNS:no listener
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -621,7 +543,8 @@ ORA 12541: TNS:no listener
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -633,7 +556,7 @@ ORA 12541: TNS:no listener
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -651,7 +574,7 @@ ORA 12541: TNS:no listener
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -669,7 +592,7 @@ ORA 12541: TNS:no listener
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -699,7 +622,7 @@ ORA 12541: TNS:no listener
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -710,11 +633,16 @@ ORA 12541: TNS:no listener
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

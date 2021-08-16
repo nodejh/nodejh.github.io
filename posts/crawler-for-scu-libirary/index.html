@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉 对于爬虫程序，如果需要抓取的页面，需要登录后才能访问，这时">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            4523 words
+            4544 words
           
         </span>
         <span class="split">
@@ -65,6 +82,10 @@
           10 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <p>本文详细讲述如何模拟登录某某大学图书馆系统。为什么说是某某大学？往下看了就知道了 😉</p>
@@ -80,28 +101,8 @@
 <ul>
 <li>能抓取手机站就抓取手机站，因为手机网站一般比较容易</li>
 </ul>
-<h3 id="1-分析四川大学移动图书馆">1. 分析四川大学移动图书馆 <a href="#1-%e5%88%86%e6%9e%90%e5%9b%9b%e5%b7%9d%e5%a4%a7%e5%ad%a6%e7%a7%bb%e5%8a%a8%e5%9b%be%e4%b9%a6%e9%a6%86" class="anchor">🔗</a></h3><h4 id="11-分析">1.1. 分析 <a href="#11-%e5%88%86%e6%9e%90" class="anchor">🔗</a></h4><p>图书馆系统有一个手机网站，所以优先选择手机站作为目标。其链接是 <a 
-    href="http://m.5read.com/395"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://m.5read.com/395
-</a>。</p>
-<p>首先看到这个链接的时候，我也是比较奇怪，毕竟这个域名就比较奇怪，川大图书馆系统手机版的域名为什么不是 <a 
-    href="http://scu.edu.cn"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    scu.edu.cn
-</a> 的子域名，而且域名的 <code>PATH</code> 部分为什么是 <code>395</code>。</p>
+<h3 id="1-分析四川大学移动图书馆">1. 分析四川大学移动图书馆 <a href="#1-%e5%88%86%e6%9e%90%e5%9b%9b%e5%b7%9d%e5%a4%a7%e5%ad%a6%e7%a7%bb%e5%8a%a8%e5%9b%be%e4%b9%a6%e9%a6%86" class="anchor">🔗</a></h3><h4 id="11-分析">1.1. 分析 <a href="#11-%e5%88%86%e6%9e%90" class="anchor">🔗</a></h4><p>图书馆系统有一个手机网站，所以优先选择手机站作为目标。其链接是 <a href="http://m.5read.com/395" target="_blank" rel="noopener">http://m.5read.com/395</a>。</p>
+<p>首先看到这个链接的时候，我也是比较奇怪，毕竟这个域名就比较奇怪，川大图书馆系统手机版的域名为什么不是 <a href="http://scu.edu.cn" target="_blank" rel="noopener">scu.edu.cn</a> 的子域名，而且域名的 <code>PATH</code> 部分为什么是 <code>395</code>。</p>
 <p>域名打开后是 <code>四川大学移动图书馆</code>：</p>
 <p><p class="markdown-image">
   <img src="./images/Crawler-for-SCU-Libirary-01.jpg" alt="crawler-for-scu-lib-1-com-scu-lib.png"  />
@@ -181,27 +182,7 @@ Sat, 05-Nov-2016 22:37:57 GMT; Path=/&#39;,
 Host:mc.m.5read.com
 </code></pre></div><p>其中不包含 <code>JSESSIONID</code>，而响应头中返回了一个新的 <code>Set-Cookie:JSESSIONID=9C04830620D2783E63E852BC67AE031D.irdmbl72a; Path=/; HttpOnly</code> 字段。</p>
 <p><code>JSESSIONID</code> 是 Tomcat 中的 SESSIONID，主要作用是用来标识当前请求对应的用户。SESSIONID 是唯一的。当客户端访问服务器时，服务器（这里是 Tomcat）会生成一个唯一的 SESSIONID（这里是 JSESSIONID），并返回给客户端，客户端将 SESSIONID 保存在 cookie 中。之后客户端再发送 HTTP 请求时，就会在 HTTP Headers 中以 cookie 的形式发送 SESSIONID 到服务器。服务器接收到 SESSIONID 后，就可以根据 SESSIONID 来判断是哪一个客户端发送的请求。</p>
-<p>对于该图书馆系统，访问首页 <a 
-    href="http://m.5read.com/395"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://m.5read.com/395
-</a> 和访问登录页 <a 
-    href="http://mc.m.5read.com/user/login/showLogin.jspx"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    http://mc.m.5read.com/user/login/showLogin.jspx
-</a> 是生成的不同的 <code>JSESSIONID</code>，说明该系统认为访问这两个页面是不同的用户，即使事实上是同一个用户访问的。</p>
+<p>对于该图书馆系统，访问首页 <a href="http://m.5read.com/395" target="_blank" rel="noopener">http://m.5read.com/395</a> 和访问登录页 <a href="http://mc.m.5read.com/user/login/showLogin.jspx" target="_blank" rel="noopener">http://mc.m.5read.com/user/login/showLogin.jspx</a> 是生成的不同的 <code>JSESSIONID</code>，说明该系统认为访问这两个页面是不同的用户，即使事实上是同一个用户访问的。</p>
 <p>从 <code>JSESSIONID</code> 的作用来看，<code>JSESSIONID</code> 和用户登录没有直接关系。所以模拟登录的时候，依旧只需要使用访问首页时生成的 cookie 即可。怎么验证呢？可以在 Chrome 开发者工具的 <code>Application</code> 面板中，找到 cookie 里面的 <code>JSESSIONID</code> 字段，并删除，然后刷新页面，会发现又生成了另一个新的 <code>JSESSIONID</code>。所以不论 <code>JSESSIONID</code> 是什么值，我们都可以登录。所以 <code>JSESSIONID</code> 不会影响模拟登录。</p>
 <h4 id="22-结论">2.2 结论 <a href="#22-%e7%bb%93%e8%ae%ba" class="anchor">🔗</a></h4><ul>
 <li>进行模拟登录，和用户登录有关的 cookie 信息是访问首页时生成的 cookie</li>
@@ -423,17 +404,7 @@ const login = (number, password, callback) =&gt; {
 module.exports = login;
 
 </code></pre></div><h3 id="4-抓取借阅信息">4. 抓取借阅信息 <a href="#4-%e6%8a%93%e5%8f%96%e5%80%9f%e9%98%85%e4%bf%a1%e6%81%af" class="anchor">🔗</a></h3><p>为了验证登录后的 cookie 是不是最终正确，访问一下需要登录后才能访问的页面即可。</p>
-<p>所以下面就来抓取借阅信息。为了解析 HTML 文本，我们还需要用到 <a 
-    href="https://github.com/cheeriojs/cheerio"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    cheerio
-</a> 这个包。cheerio 就相当于是服务端的 jQuery，可以像使用 jQuery 选择器一样从一个 HTML 文本中取出想要的内容。</p>
+<p>所以下面就来抓取借阅信息。为了解析 HTML 文本，我们还需要用到 <a href="https://github.com/cheeriojs/cheerio" target="_blank" rel="noopener">cheerio</a> 这个包。cheerio 就相当于是服务端的 jQuery，可以像使用 jQuery 选择器一样从一个 HTML 文本中取出想要的内容。</p>
 <p>新建一个 <code>get_books.js</code> 文件，添加如下代码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// get_books.js
 const request = require(&#39;request&#39;);
@@ -577,17 +548,7 @@ response.statusCode:  200
 <p>由于很多很多大学的移动图书馆都使用同一个系统，所以这个程序具有通用性，所以本文的标题是《模拟登录某某大学图书馆系统》。</p>
 <p>不信你试试，说不定就有你的学校。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/6"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/6
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/6" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/6</a></p>
 
     </div>
 
@@ -599,9 +560,10 @@ response.statusCode:  200
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -621,7 +583,8 @@ response.statusCode:  200
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -633,7 +596,7 @@ response.statusCode:  200
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -651,7 +614,7 @@ response.statusCode:  200
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -669,7 +632,7 @@ response.statusCode:  200
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -699,7 +662,7 @@ response.statusCode:  200
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -710,11 +673,16 @@ response.statusCode:  200
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

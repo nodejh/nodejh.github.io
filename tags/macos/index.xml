@@ -31,7 +31,7 @@
       <pubDate>Thu, 27 Oct 2016 15:37:29 +0800</pubDate>
       
       <guid>https://nodejh.com/posts/install-mxnet-on-macos/</guid>
-      <description>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》 。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但</description>
+      <description>MXNet 是一个深度学习系统。关于 MXNet 的介绍可以看这篇文章：《MXNet设计和实现简介》。 在 macOS 上编译安装 MXNet 的大体步骤都是按照官方文档来进行安装即可。但</description>
     </item>
     
     <item>

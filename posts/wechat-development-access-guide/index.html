@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 公众平台开发者文档-接入指南 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -66,18 +83,12 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
-      <p>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 <a 
-    href="http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    公众平台开发者文档-接入指南
-</a> 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。</p>
+      <p>在进行微信公众平台开发之前，需要先接入微信公众平台。具体的步骤在 <a href="http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html" target="_blank" rel="noopener">公众平台开发者文档-接入指南</a> 已有详细介绍，文档中也提供了验证服务器的 PHP 示例代码。</p>
 <p>本文主要提供了 Node.js 版本的验证代码，同时把步骤细化，让开发者更方便地了解整个接入过程，对初学者更友好。</p>
 <h2 id="tldr">TL;DR <a href="#tldr" class="anchor">🔗</a></h2><p>在微信公众平台后台的 <code>开发者中心/填写服务器配置</code> 页面，配置好 URL 和 Token 后，复制下面的代码，修改 Token，在服务器运行，然后再在页面上点击提交即可进行接入验证。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#080;font-style:italic">// checkSignature.js
@@ -237,17 +248,7 @@ server.listen(port, () =&gt; {
   console.log(<span style="color:#b44">`Server is runnig ar port </span><span style="color:#b68;font-weight:bold">${</span>port<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">`</span>);
   console.log(<span style="color:#b44">&#39;Start Checking...&#39;</span>);
 });
-</code></pre></div><p>因为验证要使用 80(HTTP) 端口或 443(HTTPS) 端口，而 Node.js 一般不直接监听 80 端口，所以需要使用 Nginx 或其他程序将来自 <code>http://wechat.nodejh.com</code> 的请求转发到 Node.js 程序端口如上面的 3333。关于 Nginx 的配置，可以看我之前写的<a 
-    href="http://nodejh.com/post/Use-Nginx-Reverse-Proxy-Nodejs/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    《使用 Ngnix 给 Node.js 应用做反向代理》
-</a>。</p>
+</code></pre></div><p>因为验证要使用 80(HTTP) 端口或 443(HTTPS) 端口，而 Node.js 一般不直接监听 80 端口，所以需要使用 Nginx 或其他程序将来自 <code>http://wechat.nodejh.com</code> 的请求转发到 Node.js 程序端口如上面的 3333。关于 Nginx 的配置，可以看我之前写的<a href="http://nodejh.com/post/Use-Nginx-Reverse-Proxy-Nodejs/" target="_blank" rel="noopener">《使用 Ngnix 给 Node.js 应用做反向代理》</a>。</p>
 <p>这里也顺便给出该程序的 Nginx 配置</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">upstream nodejs {
     server 127.0.0.1:3333;
@@ -283,17 +284,7 @@ Check Success
 </code></pre></div><p>然后就可以依据接口文档实现业务逻辑了。</p>
 <p>后续我也还会更新一些关于微信公众平台开发的文章，欢迎关注。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/24"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/24
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/24" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/24</a></p>
 
     </div>
 
@@ -307,9 +298,10 @@ Check Success
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -329,7 +321,8 @@ Check Success
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -341,7 +334,7 @@ Check Success
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -359,7 +352,7 @@ Check Success
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -377,7 +370,7 @@ Check Success
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -407,7 +400,7 @@ Check Success
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -418,11 +411,16 @@ Check Success
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

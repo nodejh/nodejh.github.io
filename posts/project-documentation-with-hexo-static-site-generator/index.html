@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="当我们发布一个开源项目的时候，最重要的事情之一就是要创建项目文档。对使用项目的用户来说，文档是非常有必要的，通常我们可以使用下面这些方式来创">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            4360 words
+            4396 words
           
         </span>
         <span class="split">
@@ -66,33 +83,17 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <p>当我们发布一个开源项目的时候，最重要的事情之一就是要创建项目文档。对使用项目的用户来说，文档是非常有必要的，通常我们可以使用下面这些方式来创建文档：</p>
 <ul>
-<li><a 
-    href="https://help.github.com/articles/about-github-wikis/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    GitHub Wiki
-</a>：在 Github 上我们可以为每个项目都创建一个 wiki。Wiki 是由一系列的 Markdown 文件组成，所以我们可以用 wiki 来做项目文档。但这种方案也有一些缺点：wiki 的贡献者不会出现在项目贡献者列表中；文档的结构和布局都是有限制的，只能是 Github Wikis 的样式；文档存储在第三方平台上。</li>
+<li><a href="https://help.github.com/articles/about-github-wikis/" target="_blank" rel="noopener">GitHub Wiki</a>：在 Github 上我们可以为每个项目都创建一个 wiki。Wiki 是由一系列的 Markdown 文件组成，所以我们可以用 wiki 来做项目文档。但这种方案也有一些缺点：wiki 的贡献者不会出现在项目贡献者列表中；文档的结构和布局都是有限制的，只能是 Github Wikis 的样式；文档存储在第三方平台上。</li>
 <li>README：我们可以为项目创建一个 README.md 文件，它会直接展示在 Github（或 Gitlab、Coding 等 git 仓库）的项目页面。如果文档非常少，这中方案是非常适合的。但如果文档非常多，这个 README.md 文件就会非常大了。而且通常来说，README.md 是用来介绍项目，而不是展示文档。</li>
 <li>自建网站：当然，我们也可以创建一个文档网站，然后放在自己的服务器上。这样我们就可以随意编辑文档。但这种方案的缺点是不便于追踪文档的变化、开发网站和文档维护相比前两种方案麻烦非常多、而且还需要自建主机。</li>
-<li><a 
-    href="https://pages.github.com/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Github Pages
-</a>：Github 也提供了一个托管项目中静态文件的功能。我们可以为项目创建一个 <code>gh-pages</code> 分支，Github 就会将分支中的内容当做静态站点。这种方案好的一方面是文档维护是在一个单独的分支，虽然可能寻找起来比较麻烦。不好的一方面是文档编写是编写成静态文件（html/css/js），修改和维护起来比较麻烦。</li>
+<li><a href="https://pages.github.com/" target="_blank" rel="noopener">Github Pages</a>：Github 也提供了一个托管项目中静态文件的功能。我们可以为项目创建一个 <code>gh-pages</code> 分支，Github 就会将分支中的内容当做静态站点。这种方案好的一方面是文档维护是在一个单独的分支，虽然可能寻找起来比较麻烦。不好的一方面是文档编写是编写成静态文件（html/css/js），修改和维护起来比较麻烦。</li>
 </ul>
 <p>以上方案都不完美，所以需要一种综合以上所有优点的方案，简单来说就是：</p>
 <ul>
@@ -100,92 +101,22 @@
 <li>使用 hexo 将 MarkDown 文件生成成静态文件</li>
 <li>将静态文件发布到 github pages</li>
 </ul>
-<h2 id="hexo-简介">Hexo 简介 <a href="#hexo-%e7%ae%80%e4%bb%8b" class="anchor">🔗</a></h2><p><a 
-    href="https://hexo.io"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Hexo
-</a> 是一个 Node.js 编写的静态网站生成器。Hexo 主要用来做博客框架，同时 Hexo 也整合了将静态网站部署到 Github 的功能，所以也很适合用来做 Github 项目的文档。</p>
+<h2 id="hexo-简介">Hexo 简介 <a href="#hexo-%e7%ae%80%e4%bb%8b" class="anchor">🔗</a></h2><p><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 是一个 Node.js 编写的静态网站生成器。Hexo 主要用来做博客框架，同时 Hexo 也整合了将静态网站部署到 Github 的功能，所以也很适合用来做 Github 项目的文档。</p>
 <p>我们可以使用 Hexo，根据写好的 HTML 布局（既 Hexo 的主题），将 MarkDown 文件生成成主题对应的静态 html/css/js 文件。Hexo 提供了将静态文件部署到 Github 分支上的配置。也就是说，我们可以使用 MarkDown 来维护文档，当写好部署配置之后，使用一个命令就可以将文档生成并发布到 Github 的 gh-pages 分支上。</p>
 <h2 id="安装-hexo">安装 Hexo <a href="#%e5%ae%89%e8%a3%85-hexo" class="anchor">🔗</a></h2><p>Hexo 是通过 Node.js 编译的，所以需要安装 Node.js。Hexo 使用 Git 将文件部署到 Github，所以也需要安装 Git。</p>
-<h3 id="安装-nodejs">安装 Node.js <a href="#%e5%ae%89%e8%a3%85-nodejs" class="anchor">🔗</a></h3><p>推荐使用 Node.js 的版本管理器来安装，比如 <a 
-    href="http://nvm.sh/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    nvm
-</a>。当然，也有很多其他的 Node.js 版本管理工具，使用这些工具，我们能很方便地安装 Node.js，以及在不同的 Node.js 的版本中切换。</p>
+<h3 id="安装-nodejs">安装 Node.js <a href="#%e5%ae%89%e8%a3%85-nodejs" class="anchor">🔗</a></h3><p>推荐使用 Node.js 的版本管理器来安装，比如 <a href="http://nvm.sh/" target="_blank" rel="noopener">nvm</a>。当然，也有很多其他的 Node.js 版本管理工具，使用这些工具，我们能很方便地安装 Node.js，以及在不同的 Node.js 的版本中切换。</p>
 <p>目前 Node.js 最新的版本是 8.1.3，使用 nvm 来安装：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ nvm install v8.1.3
-</code></pre></div><p>安装完 Node.js 的同时也会安装对应的 <a 
-    href="https://github.com/npm/npm"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    npm
-</a>。</p>
+</code></pre></div><p>安装完 Node.js 的同时也会安装对应的 <a href="https://github.com/npm/npm" target="_blank" rel="noopener">npm</a>。</p>
 <h3 id="安装-git">安装 Git <a href="#%e5%ae%89%e8%a3%85-git" class="anchor">🔗</a></h3><p>我们还需要在系统上安装 Git。如果不确定系统中是否已经安装了 Git，使用下面的命令检查：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git --version
 </code></pre></div><p>如果出现了 Git 的版本号，则不需要再安装了。如果没有，则需要安装 Git。</p>
-<h4 id="windows">Windows <a href="#windows" class="anchor">🔗</a></h4><p>Windows 系统直接点此连接 <a 
-    href="https://git-scm.com/download/win"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://git-scm.com/download/win
-</a> 下载 Git 软件，然后运行即可。</p>
+<h4 id="windows">Windows <a href="#windows" class="anchor">🔗</a></h4><p>Windows 系统直接点此连接 <a href="https://git-scm.com/download/win" target="_blank" rel="noopener">https://git-scm.com/download/win</a> 下载 Git 软件，然后运行即可。</p>
 <h4 id="macos">macOS <a href="#macos" class="anchor">🔗</a></h4><p>在 macOS 上安装 Git 有多种不同的方式：</p>
 <ul>
-<li><a 
-    href="https://sourceforge.net/projects/git-osx-installer/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Git installer
-</a></li>
-<li><a 
-    href="http://brew.sh/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Homebrew
-</a>：运行 <code>brew install git</code></li>
-<li><a 
-    href="https://www.macports.org/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    MacPorts
-</a>：运行 <code>sudo port install git +doc +bash_completion +gitweb</code></li>
+<li><a href="https://sourceforge.net/projects/git-osx-installer/" target="_blank" rel="noopener">Git installer</a></li>
+<li><a href="http://brew.sh/" target="_blank" rel="noopener">Homebrew</a>：运行 <code>brew install git</code></li>
+<li><a href="https://www.macports.org/" target="_blank" rel="noopener">MacPorts</a>：运行 <code>sudo port install git +doc +bash_completion +gitweb</code></li>
 </ul>
 <p>我个人推荐使用 Homebrew 来安装软件。当然如果你更喜欢 MacPorts，也没有任何问题。</p>
 <h4 id="linux--ubuntu-or-debian">Linux – Ubuntu or Debian <a href="#linux--ubuntu-or-debian" class="anchor">🔗</a></h4><p>在 Ubuntu 或 Debian 上，我们可以使用 apt 来安装软件：</p>
@@ -200,17 +131,7 @@
 <h2 id="配置">配置 <a href="#%e9%85%8d%e7%bd%ae" class="anchor">🔗</a></h2><p>安装好 hexo 之后，现在我们就可以在 Github 的主分支上来创建我们的文档了。根据该文章，你可以：</p>
 <ul>
 <li>在一个已存在的项目中创建文档</li>
-<li>创建一个新的项目 <a 
-    href="https://github.com/new"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Create a new repository
-</a></li>
+<li>创建一个新的项目 <a href="https://github.com/new" target="_blank" rel="noopener">Create a new repository</a></li>
 </ul>
 <p>简单起见，假设你是新创建了一个名为 <code>hexo-documentation</code> 的项目，当然你也可以用一个已经存在的项目继续下面的操作。</p>
 <p>接下来使用下面的名令在本地 clone 项目：</p>
@@ -238,17 +159,7 @@ $ hexo server
   <img src="./images/Project-Documentation-with-Hexo-Static-Site-Generator-01.png" alt="Project-Documentation-with-Hexo-Static-Site-Generator-01"  />
 </p></p>
 <p>目前我们的网站看起来还是一个博客而不是文档，不过我们将要将其改成文档的样子。</p>
-<h2 id="创建一个主题">创建一个主题 <a href="#%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e4%b8%bb%e9%a2%98" class="anchor">🔗</a></h2><p>要改变网站的外观，我们需要创建一个 hexo 的主题。主题确定了 hexo 生成的网站的样式和布局。<a 
-    href="https://hexo.io/themes/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://hexo.io/themes/
-</a> 这个网站有很多免费的 hexo 主题可以使用。但在这篇文章里，我们要从零开始创建一个 hexo 主题。</p>
+<h2 id="创建一个主题">创建一个主题 <a href="#%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e4%b8%bb%e9%a2%98" class="anchor">🔗</a></h2><p>要改变网站的外观，我们需要创建一个 hexo 的主题。主题确定了 hexo 生成的网站的样式和布局。<a href="https://hexo.io/themes/" target="_blank" rel="noopener">https://hexo.io/themes/</a> 这个网站有很多免费的 hexo 主题可以使用。但在这篇文章里，我们要从零开始创建一个 hexo 主题。</p>
 <p>Hexo 有一个名为 landscape 的默认主题，在 <code>docs/themes</code> 这个目录里面。你可以在 <code>themes</code> 目录存放多个主题，但每次只能有一个主题被使用。接下来让我们创建自己的主题。在 themes 目录下创建一个名为 <code>documentation</code> 的目录。</p>
 <p>Hexo 的主题包含以下文件和目录：</p>
 <ul>
@@ -259,27 +170,7 @@ $ hexo server
 <li><code>source</code> 资源文件夹，里面的文件名以 <code>_</code> 开头外的所有文件都会被当作网站的静态资源</li>
 </ul>
 <p>我们将创建一个简单的静态主题，所以我们不需要 <code>scripts</code> 目录。然后目前仅以中文展示，所以也不需要 <code>languages</code> 目录。</p>
-<p>我们需要做的就是编写网站的布局，以及一些 CSS 代码。在本文中我将使<a 
-    href="http://sass-lang.com/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Sass
-</a> 来生成 CSS，但 hexo 并不能直接处理 Sass，但幸运的是有 <a 
-    href="https://github.com/knksmith57/hexo-renderer-sass"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    hexo-renderer-sass
-</a> 这个插件来帮助 hexo 处理 Sass。</p>
+<p>我们需要做的就是编写网站的布局，以及一些 CSS 代码。在本文中我将使<a href="http://sass-lang.com/" target="_blank" rel="noopener">Sass</a> 来生成 CSS，但 hexo 并不能直接处理 Sass，但幸运的是有 <a href="https://github.com/knksmith57/hexo-renderer-sass" target="_blank" rel="noopener">hexo-renderer-sass</a> 这个插件来帮助 hexo 处理 Sass。</p>
 <p>使用 npm 来安装 hexo-renderer-sass，在 <code>./docs</code>（注意不是在 themes 目录里面）运行下面的命令：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ npm install --save hexo-renderer-sass
 </code></pre></div><p>然后回到 themes 目录里面，配置 Sass，不然 hexo-renderer-sass 插件不会被加载。在 <code>docs/themes/documentation/_config.yml</code> 文件中加入下面的代码：</p>
@@ -287,28 +178,8 @@ $ hexo server
 </span><span style="color:#b8860b"></span>  <span style="color:#b8860b">outputStyle: </span>nested
   <span style="color:#b8860b">precision: </span><span style="color:#666">4</span>
   <span style="color:#b8860b">sourceComments: </span><span style="color:#a2f;font-weight:bold">false</span>
-</code></pre></div><p>Sass 的所有可配置在 <a 
-    href="https://github.com/sass/node-sass#options"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    node-sass
-</a></p>
-<p>接下来就可以编写 Sass 代码了。不过在本文中我不会详细介绍怎么写 Sass 样式，因为它和本文内容无关，而且范围太大，一时半会儿写不完。你可以在这里 <a 
-    href="https://github.com/nodejh/hexo-documentation"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/hexo-documentation
-</a> 找到这些文件，然后把他们复制到你的项目中，或者你也可以创建自己的样式。</p>
+</code></pre></div><p>Sass 的所有可配置在 <a href="https://github.com/sass/node-sass#options" target="_blank" rel="noopener">node-sass</a></p>
+<p>接下来就可以编写 Sass 代码了。不过在本文中我不会详细介绍怎么写 Sass 样式，因为它和本文内容无关，而且范围太大，一时半会儿写不完。你可以在这里 <a href="https://github.com/nodejh/hexo-documentation" target="_blank" rel="noopener">https://github.com/nodejh/hexo-documentation</a> 找到这些文件，然后把他们复制到你的项目中，或者你也可以创建自己的样式。</p>
 <p>让我们继续回到布局，开始编写代码之前，还有一个重要的事情就是选择模板引擎，如 swig、ejs 等。Hexo 默认使用的模版引擎是 swig，这也是我们将要使用的。</p>
 <p>接下来创建文件 <code>docs/themes/documentation/layout/post.swig</code>，并写入下面的代码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080">&lt;!DOCTYPE html&gt;</span>
@@ -369,28 +240,8 @@ $ hexo server
 &lt;/<span style="color:#008000;font-weight:bold">head</span>&gt;
 </code></pre></div><p>头部主要包括两部分：</p>
 <ul>
-<li><code>title</code> Hexo 提供了一些列的<a 
-    href="https://hexo.io/zh-cn/docs/variables.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    变量
-</a>，我们可以使用其中的 <code>config.title</code> 和 <code>page.title</code> 来组成我们的 title</li>
-<li><code>links</code> 链接里面包括 normalize CSS，使默认的样式保持跨浏览器的一致性；Google Fonts，使文本显示更友好；url_for，这是 Hexo 的一个<a 
-    href="https://hexo.io/zh-cn/docs/helpers.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    辅助函数
-</a>，可以在路径前加上根路径</li>
+<li><code>title</code> Hexo 提供了一些列的<a href="https://hexo.io/zh-cn/docs/variables.html" target="_blank" rel="noopener">变量</a>，我们可以使用其中的 <code>config.title</code> 和 <code>page.title</code> 来组成我们的 title</li>
+<li><code>links</code> 链接里面包括 normalize CSS，使默认的样式保持跨浏览器的一致性；Google Fonts，使文本显示更友好；url_for，这是 Hexo 的一个<a href="https://hexo.io/zh-cn/docs/helpers.html" target="_blank" rel="noopener">辅助函数</a>，可以在路径前加上根路径</li>
 </ul>
 <p>接下来看 body 部分，大体上还是 HTML。一些重点部分稍后会详细介绍。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">nav</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#39;menu-nav&#39;</span>&gt;
@@ -414,17 +265,7 @@ $ hexo server
   &lt;/<span style="color:#008000;font-weight:bold">ul</span>&gt;
   {% endfor %}
 &lt;/<span style="color:#008000;font-weight:bold">nav</span>&gt;
-</code></pre></div><p>上面的代码会生成网站的菜单部分，菜单项来自于 <code>site.data.nav</code> 这个对象，稍后我们会在 <code>docs/source/_data/nav.yml</code> 中创建。<code>source/_data</code> 是 Hexo 的<a 
-    href="https://hexo.io/zh-cn/docs/data-files.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    数据文件
-</a>。<code>site.data.nav</code> 即 <code>_data</code> 目录中的 <code>nav.yml</code> 文件。<code>nav.yml</code> 中是一个包含 <code> title</code> 和 <code>items</code> 对象的数组。</p>
+</code></pre></div><p>上面的代码会生成网站的菜单部分，菜单项来自于 <code>site.data.nav</code> 这个对象，稍后我们会在 <code>docs/source/_data/nav.yml</code> 中创建。<code>source/_data</code> 是 Hexo 的<a href="https://hexo.io/zh-cn/docs/data-files.html" target="_blank" rel="noopener">数据文件</a>。<code>site.data.nav</code> 即 <code>_data</code> 目录中的 <code>nav.yml</code> 文件。<code>nav.yml</code> 中是一个包含 <code> title</code> 和 <code>items</code> 对象的数组。</p>
 <p>接下来比较重要的是文章内容这部分：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;page-content&#34;</span>&gt;
   &lt;<span style="color:#008000;font-weight:bold">h1</span>&gt;{{ page.title }}&lt;/<span style="color:#008000;font-weight:bold">h1</span>&gt;
@@ -482,27 +323,7 @@ $ hexo server
 <li>installation.md</li>
 <li>using.md</li>
 </ul>
-<p>接下来就要往文件中写入内容。文件的开头部分是 <a 
-    href="https://hexo.io/zh-cn/docs/front-matter.html"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Front-matter
-</a>，里面是页面的一些设置，Front-matter 是包含在两个 <code>---</code> 之间的 <a 
-    href="http://yaml.org/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    YAML
-</a> 格式的。</p>
+<p>接下来就要往文件中写入内容。文件的开头部分是 <a href="https://hexo.io/zh-cn/docs/front-matter.html" target="_blank" rel="noopener">Front-matter</a>，里面是页面的一些设置，Front-matter 是包含在两个 <code>---</code> 之间的 <a href="http://yaml.org/" target="_blank" rel="noopener">YAML</a> 格式的。</p>
 <p>如 <code>what-is-it.md</code> 所示：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
 layout: default
@@ -532,17 +353,7 @@ $ hexo server
   <img src="./images/Project-Documentation-with-Hexo-Static-Site-Generator-02.png" alt="Project-Documentation-with-Hexo-Static-Site-Generator-02"  />
 </p></p>
 <h2 id="部署到-github-pages">部署到 GitHub Pages <a href="#%e9%83%a8%e7%bd%b2%e5%88%b0-github-pages" class="anchor">🔗</a></h2><p>现在我们的文档网站就全部做好了，接下来需要做的就是将其部署到 Github Pages 上。如果我们手动来实现，就需要创建 gh-pages 分支，生成静态网站，复制网站文件到 gp-pages 分支，commit 并且 push 代码到 GitHub。当修改文档之后，又得重复这些工作。</p>
-<p>幸运的是，Hexo 提供了一个很方便地将站点部署到 gh-pages 的方法。首先安装 <a 
-    href="https://github.com/hexojs/hexo-deployer-git"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    hexo-deployer-git
-</a> 这个包，在 <code>docs/</code> 目录下运行命令：</p>
+<p>幸运的是，Hexo 提供了一个很方便地将站点部署到 gh-pages 的方法。首先安装 <a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener">hexo-deployer-git</a> 这个包，在 <code>docs/</code> 目录下运行命令：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ npm install --save hexo-deployer-git
 </code></pre></div><p>然后打开 <code>docs/_config.yml</code>，在文档的最后面，修改部署配置信息，注意将其中的用户名（nodejh）修改为你的用户名：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-coffee" data-lang="coffee"><span style="color:#b8860b">deploy:
@@ -566,40 +377,21 @@ $ hexo server
 </code></pre></div><p>OK！现在就只剩下一件事情了，就是将网站部署到 Github 上，在终端上运行：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ hexo generate
 $ hexo deploy
-</code></pre></div><p>Hexo 将生成静态文件，并将其自动部署到 gh-pages 分支上。部署完成之后，我们就可以通过 <a 
-    href="https://nodejh.github.io/hexo-documentation"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://nodejh.github.io/hexo-documentation
-</a> 来访问了。</p>
+</code></pre></div><p>Hexo 将生成静态文件，并将其自动部署到 gh-pages 分支上。部署完成之后，我们就可以通过 <a href="https://nodejh.github.io/hexo-documentation" target="_blank" rel="noopener">https://nodejh.github.io/hexo-documentation</a> 来访问了。</p>
 <h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>如果你想要的项目被被人使用，文档是非常必要的。在 GitHub 上也有很多创建项目文档的方法。对于中大型项目来说，维护一个文档网站也是很有必要的。Hexo 不仅能生成静态网站，同时也提供了部署网站的方案，非常方便我们使用。</p>
 <hr>
 <ul>
-<li><a 
-    href="https://www.sitepoint.com/project-documentation-hexo/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Project Documentation with Hexo Static Site Generator
-</a></li>
+<li><a href="https://www.sitepoint.com/project-documentation-hexo/" target="_blank" rel="noopener">Project Documentation with Hexo Static Site Generator</a></li>
 </ul>
 
     </div>
 
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -619,7 +411,8 @@ $ hexo deploy
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -631,7 +424,7 @@ $ hexo deploy
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -649,7 +442,7 @@ $ hexo deploy
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -667,7 +460,7 @@ $ hexo deploy
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -697,7 +490,7 @@ $ hexo deploy
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -708,11 +501,16 @@ $ hexo deploy
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

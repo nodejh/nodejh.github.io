@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            1057 words
+            1059 words
           
         </span>
         <span class="split">
@@ -65,6 +82,10 @@
           3 minute read
         </span>
     </div>
+
+    
+    
+
 
     <div class="content">
       <p>本文介绍如何使不使用 JavaScript 只使用 CSS 实现一个响应式导航菜单。菜单可以左对齐、右对齐或者居中。当用户鼠标移动到菜单上时，菜单就自动显示或隐藏，这样对用户也更加友好。菜单上也会有一个指示器，用来表示当前选中的菜单。该导航菜单兼容所有手机和桌面浏览器，甚至 Internet Explorer。</p>
@@ -122,54 +143,14 @@
 .<span style="color:#00f">nav</span>.<span style="color:#00f">center</span> <span style="color:#008000;font-weight:bold">ul</span> {
 	<span style="color:#a2f;font-weight:bold">text-align</span>: <span style="color:#a2f;font-weight:bold">center</span>;
 }
-</code></pre></div><h2 id="支持-ie">支持 IE <a href="#%e6%94%af%e6%8c%81-ie" class="anchor">🔗</a></h2><p>IE8 以及更老的版本不支持HTML5 的 <code>&lt;nav&gt;</code> 标签和媒体查询，可以通过引入 <a 
-    href="https://code.google.com/archive/p/css3-mediaqueries-js/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    css3-mediaqueries-js
-</a> (或 <a 
-    href="https://github.com/scottjehl/Respond"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    respond.js
-</a>) 和 <a 
-    href="https://github.com/afarkas/html5shiv"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    html5shiv
-</a> 来支持。如果不想使用 html5shim.js，将 <code>&lt;nav&gt;</code> 标签替换为 <code>&lt;div&gt;</code> 标签就可以了。</p>
+</code></pre></div><h2 id="支持-ie">支持 IE <a href="#%e6%94%af%e6%8c%81-ie" class="anchor">🔗</a></h2><p>IE8 以及更老的版本不支持HTML5 的 <code>&lt;nav&gt;</code> 标签和媒体查询，可以通过引入 <a href="https://code.google.com/archive/p/css3-mediaqueries-js/" target="_blank" rel="noopener">css3-mediaqueries-js</a> (或 <a href="https://github.com/scottjehl/Respond" target="_blank" rel="noopener">respond.js</a>) 和 <a href="https://github.com/afarkas/html5shiv" target="_blank" rel="noopener">html5shiv</a> 来支持。如果不想使用 html5shim.js，将 <code>&lt;nav&gt;</code> 标签替换为 <code>&lt;div&gt;</code> 标签就可以了。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#080;font-style:italic">&lt;!--[if lt IE 9]&gt;
 </span><span style="color:#080;font-style:italic">	&lt;script src=&#34;http://css3-mediaqueries-js.googlecode.com/files/css3-mediaqueries.js&#34;&gt;&lt;/script&gt;
 </span><span style="color:#080;font-style:italic">	&lt;script src=&#34;http://html5shim.googlecode.com/svn/trunk/html5.js&#34;&gt;&lt;/script&gt;
 </span><span style="color:#080;font-style:italic">&lt;![endif]--&gt;</span>
 </code></pre></div><h2 id="响应式">响应式 <a href="#%e5%93%8d%e5%ba%94%e5%bc%8f" class="anchor">🔗</a></h2><p>接下来就是比较有趣的一部分了：使用媒体查询使菜单能够自适应。</p>
 <p>这里以 600px 作为断点，因为 <code>nav</code> 标签的定位是 <code>relative</code>，所以这里可以将 <code>&lt;ul&gt;</code> 菜单设置为 <code>absolute</code>，使其固定在 <code>nav</code> 的定部。然后通过 <code>display:none</code> 隐藏所有的 <code>li</code> 标签，使用 <code>.current</code> 这个类，将当前 <code>li</code> 显示为 <code>block</code>。</p>
-<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a 
-    href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    demo
-</a>。</p>
+<p>因前面将 <code>nav</code> 标签定位设置为了 <code>postion</code>，所以将 <code>&lt;ul&gt;</code> 标签定位设置为 <code>absolute</code> 之后它就会排列在 <code>nav</code> 的顶部。然后通过设置 <code>display:none</code> 隐藏所有的 <code>li</code> 标签。然后当鼠标移动到 <code>nav</code> 上时，就将所有 <code>li</code> 标签设置为 <code>display:block</code>，这样来显示所有的下拉选项。我在 <code>.current</code> 类所在的标签添加了一个小图标来标志当前选中到菜单。如果想要让菜单居中或居右，在 <code>ul</code> 上添加 <code>.right</code> 或者 <code>.left</code> 属性就可以了。具体可以查看最终的 <a href="http://nodejh.com/demo/demo/CSS-Responsive-Navigation-Menu/" target="_blank" rel="noopener">demo</a>。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">@<span style="color:#a2f;font-weight:bold">media</span> <span style="color:#008000;font-weight:bold">screen</span> <span style="color:#008000;font-weight:bold">and</span> <span style="color:#666">(</span><span style="color:#008000;font-weight:bold">max-width</span><span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">600px</span><span style="color:#666">)</span> {
 	.<span style="color:#00f">nav</span> {
 		<span style="color:#a2f;font-weight:bold">position</span>: <span style="color:#a2f;font-weight:bold">relative</span>;
@@ -231,17 +212,7 @@
 </code></pre></div><hr>
 <p>参考：</p>
 <ul>
-<li><a 
-    href="http://webdesignerwall.com/tutorials/css-responsive-navigation-menu"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    CSS Responsive Navigation Menu
-</a></li>
+<li><a href="http://webdesignerwall.com/tutorials/css-responsive-navigation-menu" target="_blank" rel="noopener">CSS Responsive Navigation Menu</a></li>
 </ul>
 
     </div>
@@ -254,9 +225,10 @@
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -276,7 +248,8 @@
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -288,7 +261,7 @@
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -306,7 +279,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -324,7 +297,7 @@
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -354,7 +327,7 @@
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -365,11 +338,16 @@
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

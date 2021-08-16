@@ -6,15 +6,32 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
 <meta name="viewport" content="width=device-width,minimum-scale=1">
-<meta name="description" content="AJAX: XHR, jQuery and Fetch API">
+<meta name="description" content="前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或">
 <meta name="generator" content="Hugo 0.82.0" />
 
 
-  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
 
 
 <link rel="stylesheet" href="/css/style.css">
+
+
+
 <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 
 
@@ -35,7 +52,7 @@
 	
 
 	
-	<a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
 	
 </nav>
 
@@ -55,7 +72,7 @@
         </span>
         <span>
           
-            5606 words
+            5637 words
           
         </span>
         <span class="split">
@@ -66,35 +83,19 @@
         </span>
     </div>
 
+    
+    
+
+
     <div class="content">
       <p>前言：每次搭建开发环境真的是一件很麻烦的事情，但随着时间的推移和系统环境的差异，网上的教程自己曾经安装的经验经常不合时宜，总会出现一些这样或那样的问题。</p>
 <p>通过几番搜寻，我终于找到一篇完善的教程，将其翻译成了中文。我也会持续更新这篇文章，不断完善并记录遇到的或新或旧的问题。希望这篇文章可以终结在 macOS 上安装 PHP 开发环境的话题。</p>
 <blockquote>
-<p>本文主要内容翻译自<a 
-    href="https://getgrav.org/blog/macos-sierra-apache-multiple-php-versions"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》
-</a>，并加入了自己的实践。</p>
+<p>本文主要内容翻译自<a href="https://getgrav.org/blog/macos-sierra-apache-multiple-php-versions" target="_blank" rel="noopener">《macOS 10.12 Sierra Apache Setup: Multiple PHP Versions》</a>，并加入了自己的实践。</p>
 </blockquote>
 <p>关于如何在 macOS 10.12 上搭建 Web 开发环境，原作者一共写了三篇文章。这是第一篇。</p>
 <p>当前的操作系统是 macOS 10.12，这篇教程讲述的环境搭建和一般 PHP 安装最大的不同是，我们不使用系统自带的 Apache（macOS 自带了 apache、python、ruby 等一些列开发工具），而是使用 Homebrew 的 Apache。当然，系统自带的 Apaceh 也是可以工作的。</p>
-<p>在 macOs 上进行 Web 开发，确实是一件很令人愉快的事情。目前也有很多集成开发工具可以方便地搭建开发环境，比如 <a 
-    href="http://www.mamp.info/en/mamp-pro/"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    MAMP PRO
-</a>，它具有非常漂亮的一个 UI 界面，并且集成了 Apache、PHP 和 MySQL 三个软件，非常适合新手使用。但是有时候，由于其配置模板有限，软件没有及时升级，使用它的时候可能会遇到软件版本不能及时更新、配置不够方便灵活等问题。</p>
+<p>在 macOs 上进行 Web 开发，确实是一件很令人愉快的事情。目前也有很多集成开发工具可以方便地搭建开发环境，比如 <a href="http://www.mamp.info/en/mamp-pro/" target="_blank" rel="noopener">MAMP PRO</a>，它具有非常漂亮的一个 UI 界面，并且集成了 Apache、PHP 和 MySQL 三个软件，非常适合新手使用。但是有时候，由于其配置模板有限，软件没有及时升级，使用它的时候可能会遇到软件版本不能及时更新、配置不够方便灵活等问题。</p>
 <p>于是很多人就开始寻找替代方案。幸运的是，这篇文章就是一个替代方案。并且文章给出了简单直接的安装配置步骤。</p>
 <h2 id="1-安装-homebrew">1. 安装 Homebrew <a href="#1-%e5%ae%89%e8%a3%85-homebrew" class="anchor">🔗</a></h2><p>以下所有软件的安装都依赖于 macOS 上的一个包管理工具 Homebrew。使用 <code>brew</code> 命令，我们可以方便地在 mac 上安装各种功能各异的软件，当然，首先的安装 homebrew。安装步骤也非常简单，打开终端然后输入下面的代码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ruby -e <span style="color:#b44">&#34;</span><span style="color:#a2f;font-weight:bold">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span style="color:#a2f;font-weight:bold">)</span><span style="color:#b44">&#34;</span>
@@ -193,17 +194,7 @@ checking bundled sqlite3 library... yes
 checking for ZLIB support... yes
 checking if the location of ZLIB install directory is defined... no
 configure: error: Cannot find libz
-</code></pre></div><p>最终在 Github 上找到了该 ISSUE <a 
-    href="https://github.com/Homebrew/homebrew-php/issues/1946"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Cannot find libz when install php56 #1946
-
+</code></pre></div><p>最终在 Github 上找到了该 ISSUE <a href="https://github.com/Homebrew/homebrew-php/issues/1946" target="_blank" rel="noopener">Cannot find libz when install php56 #1946
 </a>。</p>
 <p>其原因可能是 Xcode 的 Command Line Tool 没有正确安装。解决问题的方法是运行下面的命令来重新安装：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ xcode-select --install
@@ -255,17 +246,7 @@ phpinfo();
   <img src="./images/macOS-Sierra-Apache-Multiple-PHP-versions-php-information-page.png" alt="php information page"  />
 </p></p>
 <p>如果能够看到类似的页面，就说明 Apache 和 PHP 已经成功运行了。你可以通过注释 <code>LoadModule ... php56 ...</code> 来测试其他版本的 PHP。修改配置后，重启 Apache 并刷新页面就能看到类似的页面了。</p>
-<h3 id="33-php-版本切换脚本">3.3 PHP 版本切换脚本 <a href="#33-php-%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2%e8%84%9a%e6%9c%ac" class="anchor">🔗</a></h3><p>在开发中，如果每次都通过修改 <code>/usr/local/etc/apache2/2.4/httpd.conf</code> 文件去切换 PHP 版本，显然太麻烦了。有没有更容易的方法呢？幸运的是，一些勤劳的开发者已经写好了这样的一个脚本 <a 
-    href="https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-     PHP switcher script
-</a>。</p>
+<h3 id="33-php-版本切换脚本">3.3 PHP 版本切换脚本 <a href="#33-php-%e7%89%88%e6%9c%ac%e5%88%87%e6%8d%a2%e8%84%9a%e6%9c%ac" class="anchor">🔗</a></h3><p>在开发中，如果每次都通过修改 <code>/usr/local/etc/apache2/2.4/httpd.conf</code> 文件去切换 PHP 版本，显然太麻烦了。有没有更容易的方法呢？幸运的是，一些勤劳的开发者已经写好了这样的一个脚本 <a href="https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11" target="_blank" rel="noopener"> PHP switcher script</a>。</p>
 <p>接下来我们将添加 sphp 到 brew 的 /usr/local/bin 里面。原文给的方法是使用下面的命令：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl -L https://gist.github.com/w00fz/142b6b19750ea6979137b963df959d11/raw &gt; /usr/local/bin/sphp
 $ chmod +x /usr/local/bin/sphp
@@ -437,38 +418,8 @@ Conflicts with: php53, php54, php56, php70, php71
 </code></pre></div><p>比如上面的 PHP 5.5 版本的只有一个可用版本 5.5.38。</p>
 <p>然后可以使用 brew 来切换到一个具体的版本：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ brew switch php55 5.5.38
-</code></pre></div><p>到此，这篇文章就结束了。你已经完成掌握了 Apache 2.4 和各个版本 PHP 的安装，并且能够在 5.5 5.6 7.0 7.1 中快速切换 PHP 版本。原作者还写了两外两篇文章，分别是 <a 
-    href="https://getgrav.org/blog/macos-sierra-apache-mysql-vhost-apc"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    macOS 10.12 Sierra Apache Setup: MySQL, APC &amp; More
-</a> 和 <a 
-    href="https://getgrav.org/blog/macos-sierra-apache-ssl"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    macOS 10.12 Sierra Apache Setup: SSL
-</a>，近期内我也会将它们翻译成中文，并加入自己的实践总结。</p>
-<h2 id="4-更新">4. 更新 <a href="#4-%e6%9b%b4%e6%96%b0" class="anchor">🔗</a></h2><h3 id="41-homebrewdupes-was-deprecated">4.1 homebrew/dupes was deprecated <a href="#41-homebrewdupes-was-deprecated" class="anchor">🔗</a></h3><p>在 1.1 需要添加第三方库 <code>brew tap homebrew/dupes</code> 的时候，由于有些软件 macOS 已经有了，有一些移动到了 <code>homebrew-core</code> 所以不再需要添加了。详见 <a 
-    href="https://github.com/Homebrew/homebrew-dupes"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    Homebrew/homebrew-dupes
-</a>。</p>
+</code></pre></div><p>到此，这篇文章就结束了。你已经完成掌握了 Apache 2.4 和各个版本 PHP 的安装，并且能够在 5.5 5.6 7.0 7.1 中快速切换 PHP 版本。原作者还写了两外两篇文章，分别是 <a href="https://getgrav.org/blog/macos-sierra-apache-mysql-vhost-apc" target="_blank" rel="noopener">macOS 10.12 Sierra Apache Setup: MySQL, APC &amp; More</a> 和 <a href="https://getgrav.org/blog/macos-sierra-apache-ssl" target="_blank" rel="noopener">macOS 10.12 Sierra Apache Setup: SSL</a>，近期内我也会将它们翻译成中文，并加入自己的实践总结。</p>
+<h2 id="4-更新">4. 更新 <a href="#4-%e6%9b%b4%e6%96%b0" class="anchor">🔗</a></h2><h3 id="41-homebrewdupes-was-deprecated">4.1 homebrew/dupes was deprecated <a href="#41-homebrewdupes-was-deprecated" class="anchor">🔗</a></h3><p>在 1.1 需要添加第三方库 <code>brew tap homebrew/dupes</code> 的时候，由于有些软件 macOS 已经有了，有一些移动到了 <code>homebrew-core</code> 所以不再需要添加了。详见 <a href="https://github.com/Homebrew/homebrew-dupes" target="_blank" rel="noopener">Homebrew/homebrew-dupes</a>。</p>
 <blockquote>
 <p>These formulae were those that duplicated software provided by macOS.
 All formulae were migrated to Homebrew/homebrew-core or deleted.</p>
@@ -488,17 +439,7 @@ Warning: homebrew/versions was deprecated. This tap is now empty as all its form
 Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option so it will be ignored!</p>
 <h3 id="44-apache-和-php-的配置---第二部分">4.4 Apache 和 PHP 的配置 - 第二部分 <a href="#44-apache-%e5%92%8c-php-%e7%9a%84%e9%85%8d%e7%bd%ae---%e7%ac%ac%e4%ba%8c%e9%83%a8%e5%88%86" class="anchor">🔗</a></h3><p>在 <code>3.5. Apache 和 PHP 的配置 - 第二部分</code> 部分，不修改配置文件也可以。</p>
 <hr>
-<p>Github Issue: <a 
-    href="https://github.com/nodejh/nodejh.github.io/issues/25"
-    
-    
-     
-      target="_blank" 
-      rel="noopener"
-    
->
-    https://github.com/nodejh/nodejh.github.io/issues/25
-</a></p>
+<p>Github Issue: <a href="https://github.com/nodejh/nodejh.github.io/issues/25" target="_blank" rel="noopener">https://github.com/nodejh/nodejh.github.io/issues/25</a></p>
 
     </div>
 
@@ -510,9 +451,10 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
         </div>
     
     
-    <div id="comment">
-  
-  <div id="disqus_thread"></div>
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
 <script type="application/javascript">
     var disqus_config = function () {
     
@@ -532,7 +474,8 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+  </div>
+
 
 </section>
 
@@ -544,7 +487,7 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
         <div id="social">
 
 
-    <a class="symbol" href="https://github.com/nodejh" target="_blank">
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -562,7 +505,7 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
 </svg>
     </a>
 
-    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" target="_blank">
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
@@ -580,7 +523,7 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
 </svg>
     </a>
 
-    <a class="symbol" href="https://twitter.com/nodejh" target="_blank">
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
         
         <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
@@ -610,7 +553,7 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
 
     
 
-    <p class="copyright">
+    <div class="copyright">
     
        © Copyright 
        2021 
@@ -621,11 +564,16 @@ Warning: homebrew/apache/httpd24: this formula has no &ndash;with-nghttp2 option
        </span>
        Hang Jiang
     
-    </p>
-    <p class="powerby">
+    </div>
+
+    
+      <div class="powerby">
         Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
-    </p>
+      </div>
+    
 </footer>
+
+
 
   </body>
 </html>

@@ -1,5 +1,6 @@
 ## Blog
 
+- [使用 Kubernetes 进行 Leader 选举](https://github.com/nodejh/nodejh.github.io/issues/58)
 - [Flink on k8s: Checkpoint 的持久化存储](https://github.com/nodejh/nodejh.github.io/issues/57)
 - [Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查](https://github.com/nodejh/nodejh.github.io/issues/56)
 - [从零编写第一个 Flink 应用](https://github.com/nodejh/nodejh.github.io/issues/55)

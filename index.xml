@@ -6,7 +6,16 @@
     <description>Recent content on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 02 Aug 2021 19:30:00 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Sep 2021 14:33:33 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Kubernetes 进行 Leader 选举</title>
+      <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-kubernetes-%E8%BF%9B%E8%A1%8C-leader-%E9%80%89%E4%B8%BE/</link>
+      <pubDate>Thu, 16 Sep 2021 14:33:33 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-kubernetes-%E8%BF%9B%E8%A1%8C-leader-%E9%80%89%E4%B8%BE/</guid>
+      <description>概述 🔗k8s 简化了我们在集群上部署、运维应用的流程。在 k8s 上，我们可以很方便地部署一个分布式应用。以 Deployment 为例，应用就由多个 Pod 组成，基于 Pod 的伸缩能</description>
+    </item>
+    
     <item>
       <title>Flink on k8s: Checkpoint 的持久化存储</title>
       <link>https://nodejh.com/posts/flink-on-k8s-checkpoint-%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/</link>

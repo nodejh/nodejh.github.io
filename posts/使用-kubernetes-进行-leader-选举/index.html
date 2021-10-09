@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>使用 Kubernetes 进行 Leader 选举 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="概述 🔗k8s 简化了我们在集群上部署、运维应用的流程。在 k8s 上，我们可以很方便地部署一个分布式应用。以 Deployment 为例，应用就由多个 Pod 组成，基于 Pod 的伸缩能">
+<meta name="generator" content="Hugo 0.82.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">使用 Kubernetes 进行 Leader 选举</h1>
+
+    <div class="tip">
+        <time datetime="2021-09-16 14:33:33 &#43;0800 CST">2021年09月16日</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          1705字
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          4分钟
+        </span>
+    </div>
+
+    
+    
+
+
+    <div class="content">
+      <h2 id="概述">概述 <a href="#%e6%a6%82%e8%bf%b0" class="anchor">🔗</a></h2><p>k8s 简化了我们在集群上部署、运维应用的流程。在 k8s 上，我们可以很方便地部署一个分布式应用。以 Deployment 为例，应用就由多个 Pod 组成，基于 Pod 的伸缩能力，应用天然就具备应用的高可用性和可扩展性。但在分布式系统中，通常我们需要指定其中一个 Pod 为 leader，负责协调所有 Pod 或执行特定任务。</p>
+<p>一般提到 Leader 选举，我们都会想到利用 ZooKeeper 或 Redis 等软件的分布式锁来实现，所有 Pod 不断争抢锁，抢到锁的 Pod 就成为 Leader，并且 Leader 不断进行 “心跳” 对锁进行续期。其他 Pod 依旧不断强锁，保证 之前 Leader 出现异常后能快速选举出新的 Leader。
+​</p>
+<p>但使用 ZooKeeper 或 Redis 等，需要我们额外部署一个软件。那在 k8s 中能不能不使用外部软件，实现 Leader 选举呢？</p>
+<p>k8s 本身为了保证资源（如 Endpoint、ConfigMap 等）的一致性，在资源的 metadata 中定义了资源版本，并版本信息维护在了分布式存储 etcd 中，通过乐观锁的方式更新资源，保证并发更新资源时，资源只能被更新一次。因此我们也可以利用这个特点，通过在 Pod 内争抢更新某个资源来实现 Leader 选举。</p>
+<p>更方便的是，k8s 的  Client 已经封装了 Leader 选举的逻辑，我们直接使用即可。接下来就以 k8s 的 Java Client （  <a href="https://github.com/kubernetes-client/java" target="_blank" rel="noopener">kubernetes-client/java</a> ） 为例，介绍如何实现 Leader 选举。</p>
+<h2 id="代码实现">代码实现 <a href="#%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0" class="anchor">🔗</a></h2><p>首先需要引入 Java Client ，以 maven 为例，在 <code>pom.xml</code> 中添加相关依赖：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#008000;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;groupId&gt;</span>io.kubernetes<span style="color:#008000;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;artifactId&gt;</span>client-java<span style="color:#008000;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;version&gt;</span>13.0.0<span style="color:#008000;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#008000;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#008000;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;groupId&gt;</span>io.kubernetes<span style="color:#008000;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;artifactId&gt;</span>client-java-extended<span style="color:#008000;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;version&gt;</span>13.0.0<span style="color:#008000;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#008000;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p><code>client-java</code> 封装了 k8s 的基础 API，要使用 Leader 选举类，还需要引入 <code>client-java-extended</code> 。</p>
+<p>下面是一段 Leader 选举的代码示例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.extended.leaderelection.LeaderElectionConfig</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.extended.leaderelection.LeaderElector</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.extended.leaderelection.resourcelock.ConfigMapLock</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.openapi.ApiClient</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.openapi.Configuration</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">io.kubernetes.client.util.Config</span><span style="color:#666">;</span>
+
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">java.net.InetAddress</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">java.time.Duration</span><span style="color:#666">;</span>
+
+<span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">LeaderElectionExample</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">static</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">main</span><span style="color:#666">(</span>String<span style="color:#666">[]</span> args<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+        ApiClient client <span style="color:#666">=</span> Config<span style="color:#666">.</span><span style="color:#b44">defaultClient</span><span style="color:#666">();</span>
+        Configuration<span style="color:#666">.</span><span style="color:#b44">setDefaultApiClient</span><span style="color:#666">(</span>client<span style="color:#666">);</span>
+
+        String appNamespace <span style="color:#666">=</span> <span style="color:#b44">&#34;default&#34;</span><span style="color:#666">;</span>
+        String appName <span style="color:#666">=</span> <span style="color:#b44">&#34;leader-election-ip&#34;</span><span style="color:#666">;</span>
+
+        <span style="color:#080;font-style:italic">// 使用 IP 作为 Identity
+</span><span style="color:#080;font-style:italic"></span>        String lockHolderIdentityName <span style="color:#666">=</span> InetAddress<span style="color:#666">.</span><span style="color:#b44">getLocalHost</span><span style="color:#666">().</span><span style="color:#b44">getHostAddress</span><span style="color:#666">();</span>
+        <span style="color:#080;font-style:italic">// 创建 ConfigMap 锁
+</span><span style="color:#080;font-style:italic"></span>        ConfigMapLock lock <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> ConfigMapLock<span style="color:#666">(</span>appNamespace<span style="color:#666">,</span> appName<span style="color:#666">,</span> lockHolderIdentityName<span style="color:#666">);</span>
+		<span style="color:#080;font-style:italic">// Leader 选举的配置
+</span><span style="color:#080;font-style:italic"></span>        LeaderElectionConfig leaderElectionConfig <span style="color:#666">=</span>
+                <span style="color:#a2f;font-weight:bold">new</span> LeaderElectionConfig<span style="color:#666">(</span>lock<span style="color:#666">,</span>
+                        Duration<span style="color:#666">.</span><span style="color:#b44">ofMillis</span><span style="color:#666">(</span>10000<span style="color:#666">),</span>
+                        Duration<span style="color:#666">.</span><span style="color:#b44">ofMillis</span><span style="color:#666">(</span>8000<span style="color:#666">),</span>
+                        Duration<span style="color:#666">.</span><span style="color:#b44">ofMillis</span><span style="color:#666">(</span>2000<span style="color:#666">));</span>
+
+        <span style="color:#080;font-style:italic">// 初始化 LeaderElector
+</span><span style="color:#080;font-style:italic"></span>        LeaderElector leaderElector <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> LeaderElector<span style="color:#666">(</span>leaderElectionConfig<span style="color:#666">);</span>
+        <span style="color:#080;font-style:italic">// 选举 Leader
+</span><span style="color:#080;font-style:italic"></span>        leaderElector<span style="color:#666">.</span><span style="color:#b44">run</span><span style="color:#666">(</span>
+                <span style="color:#666">()</span> <span style="color:#666">-&gt;</span> <span style="color:#666">{</span>
+                    System<span style="color:#666">.</span><span style="color:#b44">out</span><span style="color:#666">.</span><span style="color:#b44">println</span><span style="color:#666">(</span><span style="color:#b44">&#34;Do something when getting leadership.&#34;</span><span style="color:#666">);</span>
+                <span style="color:#666">},</span>
+                <span style="color:#666">()</span> <span style="color:#666">-&gt;</span> <span style="color:#666">{</span>
+                    System<span style="color:#666">.</span><span style="color:#b44">out</span><span style="color:#666">.</span><span style="color:#b44">println</span><span style="color:#666">(</span><span style="color:#b44">&#34;Do something when losing leadership.&#34;</span><span style="color:#666">);</span>
+                <span style="color:#666">});</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>​</p>
+<p>首先初始化了 ApiClient。如果是本地开发，则默认会使用本地 <code>${HOME}/.kube/config</code> 中的 kubeconfig 配置来访问集群。
+​</p>
+<p>然后创建了一个 ConfigMapLock，该锁就是 Leader 选举时争抢的资源锁，本质上是一个 ConfigMap。在上面代码中，锁的 Identity 是 Pod 的 IP，这样我们就可以根据锁内容判断当前哪个 Pod 是 Leader。除了 ConfigMap，还可以使用 Endpoints 和 Lease 等资源，在 Java Client 中也分别实现了对应的 EndpointsLock 和 LeaseLock。
+​</p>
+<p>接下来就是创建一个 LeaderElectionConfig ，该配置主要包含以下属性：</p>
+<ul>
+<li>lock：资源锁，如 ConfigMapLock、EndpointsLock 等；</li>
+<li>leaseDuration：Leader 持有锁的时长；</li>
+<li>renewDeadline：续约时间间隔，每隔一段时间 Leader 就需要对锁进行续约；</li>
+<li>retryPeriod：重试时间间隔，其他 Pod 不断争抢锁的时间间隔。</li>
+</ul>
+<p>​</p>
+<p>​</p>
+<p>然后就根据 LeaderElectionConfig 创建一个 LeaderElector 实例，并调用其 <code>run</code> 方法进行抢锁。调用 <code>run</code> 方法后，Pod 会尝试更新锁资源。示例代码中是 ConfigMapLock，所以 Pod 会尝试创建或更新 ConfigMap，一旦更新成功，就会将当前 Pod 的 IP 写入到 ConfigMap 的 <code>metadata.annotations</code>，写入成功后该 Pod 就成为了 Leader。
+​</p>
+<p>下面就是 Leader 选举后的 ConfigMap 示例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get configmap leader-election-ip -o<span style="color:#666">=</span>json
+<span style="color:#666">{</span>
+    <span style="color:#b44">&#34;apiVersion&#34;</span>: <span style="color:#b44">&#34;v1&#34;</span>,
+    <span style="color:#b44">&#34;kind&#34;</span>: <span style="color:#b44">&#34;ConfigMap&#34;</span>,
+    <span style="color:#b44">&#34;metadata&#34;</span>: <span style="color:#666">{</span>
+        <span style="color:#b44">&#34;annotations&#34;</span>: <span style="color:#666">{</span>
+            <span style="color:#b44">&#34;control-plane.alpha.kubernetes.io/leader&#34;</span>: <span style="color:#b44">&#34;{\&#34;holderIdentity\&#34;:\&#34;127.0.0.1\&#34;,\&#34;leaseDurationSeconds\&#34;:10,\&#34;acquireTime\&#34;:\&#34;2021-09-16T07:28:46.958Z\&#34;,\&#34;renewTime\&#34;:\&#34;2021-09-16T07:28:53.029Z\&#34;,\&#34;leaderTransitions\&#34;:0}&#34;</span>
+        <span style="color:#666">}</span>,
+        <span style="color:#b44">&#34;creationTimestamp&#34;</span>: <span style="color:#b44">&#34;2021-09-16T07:28:47Z&#34;</span>,
+        <span style="color:#b44">&#34;name&#34;</span>: <span style="color:#b44">&#34;leader-election-ip&#34;</span>,
+        <span style="color:#b44">&#34;namespace&#34;</span>: <span style="color:#b44">&#34;default&#34;</span>,
+        <span style="color:#b44">&#34;resourceVersion&#34;</span>: <span style="color:#b44">&#34;2197494621&#34;</span>,
+        <span style="color:#b44">&#34;selfLink&#34;</span>: <span style="color:#b44">&#34;/api/v1/namespaces/default/configmaps/leader-election-ip&#34;</span>,
+        <span style="color:#b44">&#34;uid&#34;</span>: <span style="color:#b44">&#34;d2966aac-5962-403c-9d07-99e0e1c712ed&#34;</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>LeaderElector 的 <code>run</code> 方法提供了几个抢锁相关的 hook：</p>
+<ul>
+<li>startLeadingHook：LeaderElector 客户端成为 Leader 后调用；</li>
+<li>stopLeadingHook：LeaderElector 客户端不再是 Leader 后调用；</li>
+<li>onNewLeaderHook：有新 Leader 后调用，其参数是新 Leader 的 Identity；</li>
+</ul>
+<h3 id="heading"> <a href="#heading" class="anchor">🔗</a></h3><p>在分布式系统中，我们可能只需要 Leader 处理特定任务，这时也可以很方便地判断某个 Pod 是否是 Leader：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#080;font-style:italic">// 当前的 Pod IP
+</span><span style="color:#080;font-style:italic"></span>String identity <span style="color:#666">=</span> InetAddress<span style="color:#666">.</span><span style="color:#b44">getLocalHost</span><span style="color:#666">().</span><span style="color:#b44">getHostAddress</span><span style="color:#666">();</span>
+<span style="color:#080;font-style:italic">// 创建 ConfigMap 锁
+</span><span style="color:#080;font-style:italic"></span>ConfigMapLock lock <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> ConfigMapLock<span style="color:#666">(</span>namespace<span style="color:#666">,</span> configMapName<span style="color:#666">,</span> identity<span style="color:#666">);</span>
+<span style="color:#080;font-style:italic">// 当前的 LeaderElectionRecord
+</span><span style="color:#080;font-style:italic"></span>LeaderElectionRecord record <span style="color:#666">=</span> lock<span style="color:#666">.</span><span style="color:#b44">get</span><span style="color:#666">();</span>
+<span style="color:#080;font-style:italic">// 当前 Leader 的 Identity
+</span><span style="color:#080;font-style:italic"></span>String leaderIdentity <span style="color:#666">=</span> record<span style="color:#666">.</span><span style="color:#b44">getHolderIdentity</span><span style="color:#666">();</span>
+
+<span style="color:#080;font-style:italic">// 如果当前 Leader 的 Identity 等于当前 Pod 的 IP，则表示当前 Pod 是 leader；否则不是
+</span><span style="color:#080;font-style:italic"></span><span style="color:#0b0;font-weight:bold">boolean</span> isLeader <span style="color:#666">=</span> leaderIdentity<span style="color:#666">.</span><span style="color:#b44">equals</span><span style="color:#666">(</span>ip<span style="color:#666">);</span>
+</code></pre></div><p>整体来看，由于 k8s Client 封装了 Leader 选举的相关逻辑，所以我们使用起来非常简单。关于 LeaderElection 的具体实现，其实也比较简单易懂，就是不断抢锁、续约，感兴趣的可以直接阅读 <a href="https://github.com/kubernetes-client/java" target="_blank" rel="noopener">kubernetes-client/java</a> 的相关源码。</p>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>由此可见，基于 k8s 的 Leader 选举是非常简单方便的，并且运用也非常广泛。比如将 Flink 部署到 k8s 上时，Flink 为了实现高可用就使用了基于 k8s 的 Leader 选举机制，保证同时只有一个 jobmanager 负责任务的调度（即作为 Leader），并且 Leader 出现问题时，其他能候补 Pod 够快速晋升为 Leader。</p>
+<h2 id="参考">参考 <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h2><ul>
+<li><a href="https://kubernetes.io/blog/2016/01/simple-leader-election-with-kubernetes/?spm=ata.21736010.0.0.f2e337ab5v0VXH" target="_blank" rel="noopener">Simple leader election with Kubernetes and Docker</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+                <a href="https://nodejh.com/tags/kubernetes">Kubernetes</a>
+            
+        </div>
+    
+    
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </div>
+
+    
+      <div class="powerby">
+        Powered by <a href='http://www.gohugo.io/'>Hugo</a> Theme By <a href='https://github.com/nodejh/hugo-theme-cactus-plus'>nodejh</a>
+      </div>
+    
+</footer>
+
+
+
+  </body>
+</html>

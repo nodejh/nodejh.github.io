@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 16 Sep 2021 14:33:33 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Oct 2021 10:20:01 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Prometheus &#43; Grafana 监控 k8s 上的 Spring Boot 应用</title>
+      <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-prometheus-grafana-%E7%9B%91%E6%8E%A7-k8s-%E4%B8%8A%E7%9A%84-spring-boot-%E5%BA%94%E7%94%A8/</link>
+      <pubDate>Tue, 26 Oct 2021 10:20:01 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-prometheus-grafana-%E7%9B%91%E6%8E%A7-k8s-%E4%B8%8A%E7%9A%84-spring-boot-%E5%BA%94%E7%94%A8/</guid>
+      <description>背景 🔗​ 本文主要介绍如何使用 Prometheus 和 Grafana 可视化监控运行在 k8s 上的 Spring Boot 应用，监控指标包括 CPU、内存、线程信息、日志信息、HTTP 请求、JVM 等。 技术</description>
+    </item>
+    
     <item>
       <title>使用 Kubernetes 进行 Leader 选举</title>
       <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-kubernetes-%E8%BF%9B%E8%A1%8C-leader-%E9%80%89%E4%B8%BE/</link>

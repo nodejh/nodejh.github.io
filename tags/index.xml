@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 16 Sep 2021 14:33:33 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Oct 2021 10:20:01 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JAVA</title>
       <link>https://nodejh.com/tags/java/</link>
-      <pubDate>Thu, 16 Sep 2021 14:33:33 +0800</pubDate>
+      <pubDate>Tue, 26 Oct 2021 10:20:01 +0800</pubDate>
       
       <guid>https://nodejh.com/tags/java/</guid>
       <description></description>
@@ -19,9 +19,18 @@
     <item>
       <title>Kubernetes</title>
       <link>https://nodejh.com/tags/kubernetes/</link>
-      <pubDate>Thu, 16 Sep 2021 14:33:33 +0800</pubDate>
+      <pubDate>Tue, 26 Oct 2021 10:20:01 +0800</pubDate>
       
       <guid>https://nodejh.com/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Prometheus</title>
+      <link>https://nodejh.com/tags/prometheus/</link>
+      <pubDate>Tue, 26 Oct 2021 10:20:01 +0800</pubDate>
+      
+      <guid>https://nodejh.com/tags/prometheus/</guid>
       <description></description>
     </item>
     

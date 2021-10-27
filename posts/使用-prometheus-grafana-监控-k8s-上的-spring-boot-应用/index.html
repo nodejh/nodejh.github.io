@@ -69,7 +69,7 @@ if (!doNotTrack) {
           ·
         </span>
         <span>
-          1629字
+          1739字
         </span>
         <span class="split">
           ·
@@ -126,7 +126,11 @@ if (!doNotTrack) {
 </code></pre></div><p>​</p>
 <p>然后修改 <code>application.yaml</code> 中添加 Spring Boot Actuator 相关配置：
 ​</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">management</span>:<span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#008000;font-weight:bold">spring</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">application</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">name</span>:<span style="color:#bbb"> </span>spring-boot-demo<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">management</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">endpoints</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">web</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">exposure</span>:<span style="color:#bbb">
@@ -137,6 +141,8 @@ if (!doNotTrack) {
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">export</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">prometheus</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#008000;font-weight:bold">enable</span>:<span style="color:#bbb"> </span><span style="color:#a2f;font-weight:bold">true</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">tags</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">application</span>:<span style="color:#bbb"> </span>spring-boot-demo<span style="color:#bbb">
 </span></code></pre></div><p>​</p>
 <p>至此，应用配置就完成了，可以通过 <code>/actuator/prometheus</code> 接口查看配置是否正确：
 ​</p>
@@ -226,12 +232,15 @@ if (!doNotTrack) {
 </span><span style="color:#bbb"></span><span style="color:#008000;font-weight:bold">spec</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">endpoints</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>- <span style="color:#008000;font-weight:bold">interval</span>:<span style="color:#bbb"> </span>30s<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#080;font-style:italic"># Prometheus Exporter 对应的 Path 的值</span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">path</span>:<span style="color:#bbb"> </span>/actuator/prometheus<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#080;font-style:italic"># service.yaml 中 Prometheus Exporter 对应的 Port 的 Name 字段的值</span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">port</span>:<span style="color:#bbb"> </span>spring-boot-exporter<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">namespaceSelector</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">any</span>:<span style="color:#bbb"> </span><span style="color:#a2f;font-weight:bold">true</span><span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#008000;font-weight:bold">selector</span>:<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#008000;font-weight:bold">matchLabels</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">      </span><span style="color:#080;font-style:italic"># service.yaml 的 Label 字段的值以定位目标 service.yaml</span><span style="color:#bbb">
 </span><span style="color:#bbb">      </span><span style="color:#008000;font-weight:bold">app</span>:<span style="color:#bbb"> </span>spring-boot-demo-exporter<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span></code></pre></div><p>​</p>

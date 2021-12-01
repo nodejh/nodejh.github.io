@@ -69,7 +69,7 @@ if (!doNotTrack) {
           ·
         </span>
         <span>
-          4155字
+          4185字
         </span>
         <span class="split">
           ·
@@ -413,10 +413,12 @@ Hello, Docker! &lt;<span style="color:#666">3</span>
 </code></pre></div><p>接下来就可以通过 <code>make</code> 命令进行测试或构建了。</p>
 <p>例如：</p>
 <ul>
+<li><code>make</code>：执行 <code>all</code> 中定义的命令</li>
 <li><code>make test</code>：执行单元测试</li>
 <li><code>make build-docker</code>：构建 Docker 镜像</li>
 <li><code>build-docker-multistage</code>：多阶段构建镜像，构建的镜像通常用于生产环境</li>
 </ul>
+<p>当然你也可以在 Makefile 中定义其他命令。</p>
 <h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>在本文中，我们首先开发了一个简单的 Go REST 服务应用，然后针对该应用详细讲解了如何构建 Docker 镜像。要构建镜像首先需要编写 Dockerfile，但基础的 Dockerfile 体积过大，所以我们又学习了如何通过多阶段构建减小镜像体积。在多阶段构建时，由于构建机和部署服务器可能存在操作系统和 CPU 架构的差异，又学习了如何通过交叉编译构建出可在其他平台直接使用的二进制文件。最后由于整个构建流程涉及命令比较多，真实 Go 项目可能构建流程会更复杂，所以学习了如何通过 Makefile 简化构建流程。</p>
 <p>最后感谢你的阅读，希望本文的内容能让你有所收获。</p>
 <h2 id="参考">参考 <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h2><ul>

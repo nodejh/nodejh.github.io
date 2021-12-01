@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on Hang Jiang</title>
+    <link>https://nodejh.com/tags/go/</link>
+    <description>Recent content in Go on Hang Jiang</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 30 Nov 2021 15:07:46 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何构建 Go 应用的 Docker 镜像</title>
+      <link>https://nodejh.com/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Tue, 30 Nov 2021 15:07:46 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/</guid>
+      <description>在部署 Go 应用时，我们通常会使用 Docker 镜像来部署，那么如何构建一个 Go 应用的 Docker 镜像呢？镜像构建过程中有没有什么最佳实践呢？ 这正是本文想要讲解的内容。</description>
+    </item>
+    
+  </channel>
+</rss>

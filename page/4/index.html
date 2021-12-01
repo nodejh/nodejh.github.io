@@ -82,6 +82,22 @@ if (!doNotTrack) {
         
         <section class="item">
           <div>
+            <h1 class="title"><a href='/posts/get-the-max-number-in-array/'>找出一个数组中的最大值</a></h1>
+            <div class ="date">
+                <time datetime="2016-10-24 19:20:03 &#43;0800 CST">2016/10/24</time>  
+            </div>
+          </div>
+
+          
+              <div class="summary">本文介绍 JavaScript 的几种从数组中找出最大值的方法。 使用递归函数 🔗var arr = [9,8,55,66,49,68,109,55,33,6,2,1]; var max = arr[0]; function findMax( i ){ if( i == arr.length ) return max; if( max &lt; arr[i] ) max = arr[i]; findMax(i&#43;1); } findMax(1); console.log(max); 使用 for 循环遍历 🔗v</div>
+          
+
+        </section>
+    
+        
+        
+        <section class="item">
+          <div>
             <h1 class="title"><a href='/posts/check-parameters-in-express-router/'>检测 Express 路由中的参数合法性</a></h1>
             <div class ="date">
                 <time datetime="2016-10-15 06:46:05 &#43;0800 CST">2016/10/15</time>  
@@ -218,22 +234,6 @@ if (!doNotTrack) {
 
           
               <div class="summary">今天使用 MySQL 的时候，莫名奇妙除了很多问题。在 Google 和 StackOverflow 搜索了一大堆，也没有找到很好解决办法。Anyway，最终机智的我还是把问题解决。 在此记录下整</div>
-          
-
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/use-nginx-reverse-proxy-nodejs/'>使用 Ngnix 给 Node.js 应用做反向代理</a></h1>
-            <div class ="date">
-                <time datetime="2016-04-30 17:19:20 &#43;0800 CST">2016/04/30</time>  
-            </div>
-          </div>
-
-          
-              <div class="summary">一般来说使用 node.js 开发的 webapp 都不会是默认的80端口，以官方文档演示为例： const http = require(&#39;http&#39;); const hostname = &#39;127.0.0.1&#39;; const port = 3000; const server = http.createServer((req, res) =&gt; { res.statusCode = 200; res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;); res.end(&#39;Hello World\n&#39;); }); server.listen(port, hostname, () =&gt; { console.log(`Server running at http://${hostname}:${port}/`); });</div>
           
 
         </section>

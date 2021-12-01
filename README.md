@@ -1,5 +1,6 @@
 ## Blog
 
+- [如何构建 Go 应用的 Docker 镜像](https://github.com/nodejh/nodejh.github.io/issues/60)
 - [使用 Prometheus + Grafana 监控 k8s 上的 Spring Boot 应用](https://github.com/nodejh/nodejh.github.io/issues/59)
 - [使用 Kubernetes 进行 Leader 选举](https://github.com/nodejh/nodejh.github.io/issues/58)
 - [Flink on k8s: Checkpoint 的持久化存储](https://github.com/nodejh/nodejh.github.io/issues/57)

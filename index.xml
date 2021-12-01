@@ -6,7 +6,16 @@
     <description>Recent content on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 26 Oct 2021 10:20:01 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Nov 2021 15:07:46 +0800</lastBuildDate><atom:link href="https://nodejh.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何构建 Go 应用的 Docker 镜像</title>
+      <link>https://nodejh.com/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Tue, 30 Nov 2021 15:07:46 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/</guid>
+      <description>在部署 Go 应用时，我们通常会使用 Docker 镜像来部署，那么如何构建一个 Go 应用的 Docker 镜像呢？镜像构建过程中有没有什么最佳实践呢？ 这正是本文想要讲解的内容。</description>
+    </item>
+    
     <item>
       <title>使用 Prometheus &#43; Grafana 监控 k8s 上的 Spring Boot 应用</title>
       <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-prometheus-grafana-%E7%9B%91%E6%8E%A7-k8s-%E4%B8%8A%E7%9A%84-spring-boot-%E5%BA%94%E7%94%A8/</link>

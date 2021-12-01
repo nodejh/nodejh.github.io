@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>如何构建 Go 应用的 Docker 镜像 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="在部署 Go 应用时，我们通常会使用 Docker 镜像来部署，那么如何构建一个 Go 应用的 Docker 镜像呢？镜像构建过程中有没有什么最佳实践呢？ 这正是本文想要讲解的内容。">
+<meta name="generator" content="Hugo 0.82.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">如何构建 Go 应用的 Docker 镜像</h1>
+
+    <div class="tip">
+        <time datetime="2021-11-30 15:07:46 &#43;0800 CST">2021年11月30日</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          4155字
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          9分钟
+        </span>
+    </div>
+
+    
+    
+        
+  
+    <aside class="toc">
+      <details>
+          <summary>Table of Contents
+          </summary>
+          <div>
+              <nav id="TableOfContents">
+  <ul>
+    <li><a href="#创建一个简单的-go-应用">创建一个简单的 Go 应用</a>
+      <ul>
+        <li><a href="#方式一下载源码">方式一：下载源码</a></li>
+        <li><a href="#方式二从零编写-go-应用">方式二：从零编写 Go 应用</a></li>
+        <li><a href="#测试-go-应用">测试 Go 应用</a></li>
+      </ul>
+    </li>
+    <li><a href="#为-go-应用创建一个-dockerfile">为 Go 应用创建一个 Dockerfile</a>
+      <ul>
+        <li><a href="#从零创建-dockerfile">从零创建 Dockerfile</a></li>
+        <li><a href="#完整的-dockerfile">完整的 Dockerfile</a></li>
+      </ul>
+    </li>
+    <li><a href="#构建镜像">构建镜像</a>
+      <ul>
+        <li><a href="#构建镜像-1">构建镜像</a></li>
+        <li><a href="#为镜像设置标签">为镜像设置标签</a></li>
+      </ul>
+    </li>
+    <li><a href="#单元测试">单元测试</a></li>
+    <li><a href="#多阶段构建">多阶段构建</a>
+      <ul>
+        <li><a href="#多阶段构建-dockerfile">多阶段构建 Dockerfile</a></li>
+        <li><a href="#交叉编译">交叉编译</a></li>
+        <li><a href="#构建镜像-2">构建镜像</a></li>
+      </ul>
+    </li>
+    <li><a href="#运行-go-镜像">运行 Go 镜像</a></li>
+    <li><a href="#使用-makefile-简化构建流程">使用 Makefile 简化构建流程</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+          </div>
+      </details>
+    </aside>
+  
+
+
+    
+
+
+    <div class="content">
+      <p>在部署 Go 应用时，我们通常会使用 Docker 镜像来部署，那么如何构建一个 Go 应用的 Docker 镜像呢？镜像构建过程中有没有什么最佳实践呢？</p>
+<p>这正是本文想要讲解的内容。总的来说，本文会包含 Dockerfile 编写、镜像构建、多阶段构建、交叉编译以及使用 Makefile 简化构建流程等知识点。</p>
+<h2 id="创建一个简单的-go-应用">创建一个简单的 Go 应用 <a href="#%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e7%ae%80%e5%8d%95%e7%9a%84-go-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h2><p>为了说明整个镜像构建流程，让我们先从一个简单的 Go REST 应用开始。</p>
+<p>该应用主要有以下功能：</p>
+<ul>
+<li>访问 <code>/</code>，返回  <code>Hello, Docker! &lt;3</code>；</li>
+<li>访问 <code>/ping</code> ，返回 JSON 字符串 <code>{&quot;Status&quot;:&quot;OK&quot;}</code>；</li>
+<li>可以通过环境变量设置 HTTP_PORT，默认值为8080。</li>
+</ul>
+<p>应用源码地址在 <a href="https://github.com/nodejh/docker-go-server-ping" target="_blank" rel="noopener">https://github.com/nodejh/docker-go-server-ping</a> ，你可以直接下载使用，也可以按照下面的步骤从零开始编写代码。</p>
+<h3 id="方式一下载源码">方式一：下载源码 <a href="#%e6%96%b9%e5%bc%8f%e4%b8%80%e4%b8%8b%e8%bd%bd%e6%ba%90%e7%a0%81" class="anchor">🔗</a></h3><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git clone git@github.com:nodejh/docker-go-server-ping.git
+</code></pre></div><p>安装依赖模块：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ go mod download
+</code></pre></div><h3 id="方式二从零编写-go-应用">方式二：从零编写 Go 应用 <a href="#%e6%96%b9%e5%bc%8f%e4%ba%8c%e4%bb%8e%e9%9b%b6%e7%bc%96%e5%86%99-go-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h3><p>新建一个 <code>docker-go-server-ping</code> 目录，然后初始化 Go 模块：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir docker-go-server-ping <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f">cd</span> docker-go-server-ping
+$ go mod init github.com/nodejh/docker-go-server-ping
+</code></pre></div><p>安装 <a href="https://github.com/labstack/echo" target="_blank" rel="noopener">Echo</a> 模块：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ go get github.com/labstack/echo/v4
+</code></pre></div><p>接下来创建一个 <code>main.go</code> 文件，并实现一个简单的 Go 服务：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a2f;font-weight:bold">package</span> main
+
+<span style="color:#a2f;font-weight:bold">import</span> (
+	<span style="color:#b44">&#34;net/http&#34;</span>
+	<span style="color:#b44">&#34;os&#34;</span>
+
+	<span style="color:#b44">&#34;github.com/labstack/echo/v4&#34;</span>
+	<span style="color:#b44">&#34;github.com/labstack/echo/v4/middleware&#34;</span>
+)
+
+<span style="color:#a2f;font-weight:bold">func</span> <span style="color:#00a000">main</span>() {
+
+	e <span style="color:#666">:=</span> echo.<span style="color:#00a000">New</span>()
+
+	e.<span style="color:#00a000">Use</span>(middleware.<span style="color:#00a000">Logger</span>())
+	e.<span style="color:#00a000">Use</span>(middleware.<span style="color:#00a000">Recover</span>())
+
+	e.<span style="color:#00a000">GET</span>(<span style="color:#b44">&#34;/&#34;</span>, <span style="color:#a2f;font-weight:bold">func</span>(c echo.Context) <span style="color:#0b0;font-weight:bold">error</span> {
+		<span style="color:#a2f;font-weight:bold">return</span> c.<span style="color:#00a000">HTML</span>(http.StatusOK, <span style="color:#b44">&#34;Hello, Docker! &lt;3&#34;</span>)
+	})
+
+	e.<span style="color:#00a000">GET</span>(<span style="color:#b44">&#34;/ping&#34;</span>, <span style="color:#a2f;font-weight:bold">func</span>(c echo.Context) <span style="color:#0b0;font-weight:bold">error</span> {
+		<span style="color:#a2f;font-weight:bold">return</span> c.<span style="color:#00a000">JSON</span>(http.StatusOK, <span style="color:#a2f;font-weight:bold">struct</span>{ Status <span style="color:#0b0;font-weight:bold">string</span> }{Status: <span style="color:#b44">&#34;OK&#34;</span>})
+	})
+
+	httpPort <span style="color:#666">:=</span> os.<span style="color:#00a000">Getenv</span>(<span style="color:#b44">&#34;HTTP_PORT&#34;</span>)
+	<span style="color:#a2f;font-weight:bold">if</span> httpPort <span style="color:#666">==</span> <span style="color:#b44">&#34;&#34;</span> {
+		httpPort = <span style="color:#b44">&#34;8080&#34;</span>
+	}
+
+	e.Logger.<span style="color:#00a000">Fatal</span>(e.<span style="color:#00a000">Start</span>(<span style="color:#b44">&#34;:&#34;</span> <span style="color:#666">+</span> httpPort))
+}
+</code></pre></div><p>接下来可能需要执行 <code>go mod tidy</code> 来确保 <code>go.mod</code> 和源码中的模块一致：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ go mod tidy
+</code></pre></div><h3 id="测试-go-应用">测试 Go 应用 <a href="#%e6%b5%8b%e8%af%95-go-%e5%ba%94%e7%94%a8" class="anchor">🔗</a></h3><p>让我们启动我们的 Go 应用并确保它正常运行。进入项目目录并通过 <code>go run</code> 命令执行源码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ go run main.go 
+
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ <span style="color:#b62;font-weight:bold">\/</span> _ <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>/___/<span style="color:#b62;font-weight:bold">\_</span>_/_//_/<span style="color:#b62;font-weight:bold">\_</span>__/ v4.6.1
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O<span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>⇨ http server started on <span style="color:#666">[</span>::<span style="color:#666">]</span>:8080
+</code></pre></div><p>让我们对应用进行一个简单的测试，打开一个新的终端，使用 curl 命令或在浏览器打开 <code>http://localhost:8080/</code> 进行测试。以 <code>curl</code> 为例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ curl http://localhost:8080/
+Hello, Docker! &lt;<span style="color:#666">3</span>
+</code></pre></div><p>可以看到应用正常返回了，正如开头描述的那样。</p>
+<p>确定服务器正在运行并且可以访问后，我们就可以继续针对应用构建 Docker 镜像了。</p>
+<h2 id="为-go-应用创建一个-dockerfile">为 Go 应用创建一个 Dockerfile <a href="#%e4%b8%ba-go-%e5%ba%94%e7%94%a8%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa-dockerfile" class="anchor">🔗</a></h2><p>Dockerfile 是 Docker 镜像的描述文件，是一个文本文件。当我们执行 <code>docker build</code> 构建镜像时，Docker 就会读取 Dockerfile 中的指令来创建 Docker 镜像。</p>
+<h3 id="从零创建-dockerfile">从零创建 Dockerfile <a href="#%e4%bb%8e%e9%9b%b6%e5%88%9b%e5%bb%ba-dockerfile" class="anchor">🔗</a></h3><p>让我们先来看一下创建 Dockerfile 的详细过程。</p>
+<p>在项目根目录中创建一个名为 Dockerfile 的文件并在编辑器中打开。</p>
+<p>添加到 Dockerfile 的第一行是 <code># syntax</code> 解析器指令，这是一个可选项，表示 Docker 构建器在解析 Dockerfile 时使用什么语法。解析器指令必须在 Dockerfile 其他任何注释、空格或指令之前，并且应该是 Dockerfile 的第一行。建议使用 <code>docker/dockerfile:1</code> ，它始终指向版本 <code>1</code> 语法的最新版本。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#080;font-style:italic"># syntax=docker/dockerfile:1</span><span style="">
+</span></code></pre></div><p>接下来在 Dockerfile 中再添加一行，告诉 Docker 我们的应用使用什么基础镜像：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#080;font-style:italic"># syntax=docker/dockerfile:1</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">FROM</span><span style="color:#b44"> golang:1.16-alpine</span><span style="">
+</span></code></pre></div><p>这里我们使用了 <a href="https://hub.docker.com/_/golang" target="_blank" rel="noopener">Golang 官方镜像</a> 中的 <code>1.16-alpine</code> 版本作为基础镜像，alpine 是专门为容器设计的小型 Linux 发行版。使用基础镜像的好处是，基础镜像中内置了 Go 运行环境和工具，我们就不用自己再去安装了。</p>
+<p>为了更好地在镜像中管理我们的应用程序，让我们在镜像中创建一个工作目录，之后源码或编译产物都存放在该目录中：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">WORKDIR</span><span style="color:#b44"> /app</span><span style="">
+</span></code></pre></div><p>接下来我们就需要在镜像中编译 Go 应用，这样做是为了保证编译和最终运行的环境一致。</p>
+<p>通常我们编译 Go 应用的第一步是安装依赖，所以要先把 <code>go.mod</code> 和 <code>go.sum</code> 复制到镜像中：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">COPY</span> go.mod ./<span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> go.sum ./<span style="">
+</span></code></pre></div><p><code>COPY</code> 命令可以把文件复制到镜像中，这里的 <code>./</code> 对应的目录就是上一个命令 <code>WORKDIR</code> 指定的 <code>/app</code> 目录。</p>
+<p>然后通过 <code>RUN</code> 命令在镜像中执行 <code>go mod download</code> 安装依赖，这与我们在本机直接运行命令的作用完全相同，不同的是这次会将依赖安装在镜像中：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">RUN</span> go mod download<span style="">
+</span></code></pre></div><p>此时我们已经有了一个基于 Go 1.16 的镜像，并安装了 Go 应用所需的依赖。下一步要做的就是把源码复制到镜像中：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">RUN</span> COPY *.go ./<span style="">
+</span></code></pre></div><p>该 COPY 命令使用通配符将本机当前目录（即 Dockerfile 所在目录）中后缀为 <code>.go</code> 的文件全部复制到镜像中。</p>
+<p>接下来我们就可以编译 Go 应用了，依然使用熟悉的 <code>RUN</code> 命令：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">RUN</span> go build -o /docker-go-server-ping<span style="">
+</span></code></pre></div><p>该命令的结果就是产生一个名为 <code>docker-go-server-ping</code> 的二进制文件，并存放在镜像的系统根目录中。当然你也可以将二进制文件放在其他任何位置，根目录在这里没有特殊意义，只是它的路径较短且保持了可读性，使用起来更方便。</p>
+<p>现在，剩下要做的就是告诉 Docker 当我们用该镜像来启动容器时要执行什么命令，这时可以使用 CMD 命令：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#a2f;font-weight:bold">CMD</span> [ <span style="color:#b44">&#34;/docker-go-server-ping&#34;</span> ]<span style="">
+</span></code></pre></div><h3 id="完整的-dockerfile">完整的 Dockerfile <a href="#%e5%ae%8c%e6%95%b4%e7%9a%84-dockerfile" class="anchor">🔗</a></h3><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#080;font-style:italic"># syntax=docker/dockerfile:1</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">FROM</span><span style="color:#b44"> golang:1.16-alpine</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">WORKDIR</span><span style="color:#b44"> /app</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> go.mod ./<span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> go.sum ./<span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">RUN</span> go mod download<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> *.go ./<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">RUN</span> go build -o /docker-go-server-ping<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">EXPOSE</span><span style="color:#b44"> 8080</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">CMD</span> [ <span style="color:#b44">&#34;/docker-go-server-ping&#34;</span> ]<span style="">
+</span></code></pre></div><h2 id="构建镜像">构建镜像 <a href="#%e6%9e%84%e5%bb%ba%e9%95%9c%e5%83%8f" class="anchor">🔗</a></h2><p>Dockerfile 编写完成后就可以使用 <code>docker build</code> 命令来构建镜像了。</p>
+<h3 id="构建镜像-1">构建镜像 <a href="#%e6%9e%84%e5%bb%ba%e9%95%9c%e5%83%8f-1" class="anchor">🔗</a></h3><p>让我们进入 Dockerfile 所在目录构建镜像，并通过可选的 <code>--tag</code> 给镜像定义一个方便阅读和识别的名字和标签，格式为 <code>&lt;镜像名称&gt;:&lt;标签&gt;</code>，默认是标签 latest：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker build --tag docker-go-server-ping:latest .
+<span style="color:#666">[</span>+<span style="color:#666">]</span> Building 32.2s <span style="color:#666">(</span>16/16<span style="color:#666">)</span> <span style="color:#b8860b">FINISHED</span> 
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load build definition from Dockerfile                                                                             0.1s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; transferring dockerfile: 37B                                                                                              0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load .dockerignore                                                                                                0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; transferring context: 2B                                                                                                  0.0s
+ <span style="color:#666">=</span>&gt; resolve image config <span style="color:#a2f;font-weight:bold">for</span> docker.io/docker/dockerfile:1                                                                      15.2s
+ <span style="color:#666">=</span>&gt; CACHED docker-image://docker.io/docker/dockerfile:1@sha256:42399d4635eddd7a9b8a24be879d2f9a930d0ed040a61324cfdf59ef1357b3b2  0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load build definition from Dockerfile                                                                             0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load .dockerignore                                                                                                0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load metadata <span style="color:#a2f;font-weight:bold">for</span> docker.io/library/golang:1.16-alpine                                                           15.6s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>1/7<span style="color:#666">]</span> FROM docker.io/library/golang:1.16-alpine@sha256:45412fe3f5016509fc448b83faefc34e6f9e9bcc8ca1db1c54505d5528264e16      0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">[</span>internal<span style="color:#666">]</span> load build context                                                                                                0.1s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; transferring context: 80B                                                                                                 0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>2/7<span style="color:#666">]</span> WORKDIR /app                                                                                                    0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>3/7<span style="color:#666">]</span> COPY go.mod ./                                                                                                  0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>4/7<span style="color:#666">]</span> COPY go.sum ./                                                                                                  0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>5/7<span style="color:#666">]</span> RUN go mod download                                                                                             0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>6/7<span style="color:#666">]</span> COPY *.go ./                                                                                                    0.0s
+ <span style="color:#666">=</span>&gt; CACHED <span style="color:#666">[</span>7/7<span style="color:#666">]</span> RUN go build -o /docker-go-server-ping                                                                          0.0s
+ <span style="color:#666">=</span>&gt; exporting to image                                                                                                           0.1s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; exporting layers                                                                                                          0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; writing image sha256:17fa05342ccef20e73abc48210fff449cc49683ffd817ccc6aef35500cf91ae2                                     0.0s
+ <span style="color:#666">=</span>&gt; <span style="color:#666">=</span>&gt; naming to docker.io/library/docker-go-server-ping  
+</code></pre></div><p>构建完成后可以通过 <code>docker image ls</code> （或 <code>docker images</code> 简写）来查看镜像列表：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image ls
+REPOSITORY                   TAG            IMAGE ID       CREATED         SIZE
+docker-go-server-ping        latest         17fa05342cce   <span style="color:#666">9</span> minutes ago   407MB
+</code></pre></div><h3 id="为镜像设置标签">为镜像设置标签 <a href="#%e4%b8%ba%e9%95%9c%e5%83%8f%e8%ae%be%e7%bd%ae%e6%a0%87%e7%ad%be" class="anchor">🔗</a></h3><p>我们也可以通过 <code>docker image tag</code> 命令来为镜像设置新的标签，例如：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image tag docker-go-server-ping:latest docker-go-server-ping:v1.0.0
+</code></pre></div><p>这时通过 <code>docker image ls</code> 就可以看到 docker-go-server-ping 镜像的两个标签：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image ls
+REPOSITORY                   TAG            IMAGE ID       CREATED         SIZE
+docker-go-server-ping        latest         17fa05342cce   <span style="color:#666">12</span> minutes ago   407MB
+docker-go-server-ping        v1.0.0         17fa05342cce   <span style="color:#666">1</span> minutes ago   407MB
+</code></pre></div><p>我们还可以通过 <code>docker image rm</code> （简写为 <code>docker rmi</code>）删除镜像：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image rm docker-go-server-ping:v1.0.0
+Untagged: docker-go-server-ping:v1.0.0
+</code></pre></div><p>这时再查看镜像列表，<code>v1.0.0</code> 版本的镜像已被删除，只剩下 <code>latest</code> 版本了：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image ls
+REPOSITORY                   TAG            IMAGE ID       CREATED         SIZE
+docker-go-server-ping        latest         17fa05342cce   <span style="color:#666">15</span> minutes ago   407MB
+</code></pre></div><h2 id="单元测试">单元测试 <a href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95" class="anchor">🔗</a></h2><p>既然本文主要将 Go 的 Docker 镜像，这样就顺便简单说明如何使用 <a href="https://github.com/ory/dockertest/" target="_blank" rel="noopener">dockertest</a> 对 Go 应用进行单元测试。</p>
+<p><a href="https://github.com/ory/dockertest/" target="_blank" rel="noopener">dockertest</a> 可以在 Docker 容器中启动 Go 应用镜像并执行测试用例。</p>
+<p>相关测试用例可以参考 <a href="https://github.com/nodejh/docker-go-server-ping/blob/main/main_test.go" target="_blank" rel="noopener">main_test.go</a> 。</p>
+<p>在 main_test.go 中我们使用了 <code>docker-go-server-ping:latest</code> 镜像来运行 Go 应用：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">	resource, err <span style="color:#666">:=</span> pool.<span style="color:#00a000">Run</span>(<span style="color:#b44">&#34;docker-go-server-ping&#34;</span>, <span style="color:#b44">&#34;latest&#34;</span>, []<span style="color:#0b0;font-weight:bold">string</span>{})
+</code></pre></div><p>所以在执行 <code>go test</code> 之前，需要先构建 <code>docker-go-server-ping:latest</code> 镜像：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker build --tag docker-go-server-ping:latest .
+...
+$ go <span style="color:#a2f">test</span> -v ./
+<span style="color:#666">===</span> RUN   TestRespondsWithLove
+body
+Hello, Docker! &lt;<span style="color:#666">3</span>
+--- PASS: TestRespondsWithLove <span style="color:#666">(</span>1.12s<span style="color:#666">)</span>
+<span style="color:#666">===</span> RUN   TestHealthCheck
+    main_test.go:85: container not ready, waiting...
+--- PASS: TestHealthCheck <span style="color:#666">(</span>1.66s<span style="color:#666">)</span>
+PASS
+ok      command-line-arguments  2.799s
+</code></pre></div><h2 id="多阶段构建">多阶段构建 <a href="#%e5%a4%9a%e9%98%b6%e6%ae%b5%e6%9e%84%e5%bb%ba" class="anchor">🔗</a></h2><p>可能你已经注意到了，docker-go-server-ping 镜像的大小有 407MB，这着实有点大，并且镜像中还有全套的 Go 工具、Go 应用的依赖等，但实际我们应用运行时不需要这些文件，只需要编译后的二进制文件。那么能不能减小镜像的体积呢？</p>
+<p>要减小镜像体积，我们可以使用多阶段构建。Docker 在 17.05 版本以后，新增了多阶段构建功能。多阶段构建实际上是允许一个 Dockerfile 中出现多个 FROM 指令。通常我们使用多阶段构建时，会先使用一个（或多个）镜像来构建一些中间制品，然后再将中间制品放入另一个最新且更小的镜像中，这个最新的镜像就只包含最终需要的构建制品。</p>
+<h3 id="多阶段构建-dockerfile">多阶段构建 Dockerfile <a href="#%e5%a4%9a%e9%98%b6%e6%ae%b5%e6%9e%84%e5%bb%ba-dockerfile" class="anchor">🔗</a></h3><p>我们先创建一个多阶段构建的 Dockerfile，名为 <code>Dockerfile.multistage</code>，文件名中的 <code>multistage</code> 没有特殊含义，只是为了和之前的 Dockerfile 作区分，下面是完整的 Dockerfile：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#080;font-style:italic"># syntax=docker/dockerfile:1</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">##</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">## Build</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">##</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">FROM</span><span style="color:#b44"> golang:1.16-alpine AS build</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">WORKDIR</span><span style="color:#b44"> /app</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> go.mod ./<span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> go.sum ./<span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">RUN</span> go mod download<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> *.go ./<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">RUN</span> <span style="color:#b8860b">CGO_ENABLED</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">GOOS</span><span style="color:#666">=</span>linux go build -o /docker-go-server-ping<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">##</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">## Deploy</span><span style="">
+</span><span style=""></span><span style="color:#080;font-style:italic">##</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">FROM</span><span style="color:#b44"> scratch</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">WORKDIR</span><span style="color:#b44"> /</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">COPY</span> --from<span style="color:#666">=</span>build /docker-go-server-ping /docker-go-server-ping<span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">EXPOSE</span><span style="color:#b44"> 8080</span><span style="">
+</span><span style="">
+</span><span style=""></span><span style="color:#a2f;font-weight:bold">ENTRYPOINT</span> [<span style="color:#b44">&#34;/docker-go-server-ping&#34;</span>]<span style="">
+</span></code></pre></div><p>在 <code>Dockerfile.multistage</code> 中使用了两次 FROM 指令，分别对应两个构建阶段。第一个阶段构建的 FROM 指令依然使用 <code>golang:1.16-alpine</code> 作为基础镜像，并将该阶段命名为 <code>build</code>。第二个构建阶段的 FROM 指令使用 <code>scratch</code> 作为基础镜像，告诉 Docker 接下来从一个全新的基础镜像开始构建，scratch 镜像是 Docker 项目预定义的最小的镜像。第二阶段构建主要是将上个阶段中编译好的二进制文件复制到新的镜像中。</p>
+<p>在 Go 应用中，多阶段构建非常常见，可以减小镜像的体积、节省大量的存储空间。</p>
+<p>在 <code>Dockerfile.multistage</code> 中需要额外关注的是 <code>RUN</code> 指令，这里使用到了交叉编译。</p>
+<h3 id="交叉编译">交叉编译 <a href="#%e4%ba%a4%e5%8f%89%e7%bc%96%e8%af%91" class="anchor">🔗</a></h3><p>交叉编译是指在一个平台上生成另一个平台的可执行程序。</p>
+<p>在其他编程语言中进行交叉编译可能要借助第三方工具，但 Go 内置了交叉编译工具，使用起来非常方便，通常设置 CGO_ENABLED、GOOS 和 GOARCH 这几个环境变量就够了。</p>
+<h4 id="cgo_enabled">CGO_ENABLED <a href="#cgo_enabled" class="anchor">🔗</a></h4><p>默认值是 <code>1</code>，即默认开启 cgo，允许在 Go 代码中调用 C 代码。</p>
+<ul>
+<li>当 <code>CGO_ENABLED=1</code> 进行编译时，会将文件中引用 libc 的库（比如常用的 net 包）以动态链接的方式生成目标文件；</li>
+<li>当 <code>CGO_ENABLED=0</code> 进行编译时，则会把在目标文件中未定义的符号（如外部函数）一起链接到可执行文件中。</li>
+</ul>
+<p>所以交叉编译时，我们需要将 CGO_ENABLED 设置为 0。</p>
+<h4 id="goos-和-goarch">GOOS 和 GOARCH <a href="#goos-%e5%92%8c-goarch" class="anchor">🔗</a></h4><p>GOOS 是目标平台的操作系统，如 linux、windows，注意 macOS 的值是 darwin。默认是当前操作系统。</p>
+<p>GOARCH 是目标平台的 CPU 架构，如 amd64、arm、386 等。默认值是当前平台的 CPU 架构。</p>
+<p>Go 支持的所有操作系统和 CPU 架构可以查看 <a href="https://github.com/golang/go/blob/master/src/go/build/syslist.go" target="_blank" rel="noopener">syslist.go</a> 。</p>
+<p>我们可以使用 <code>go env</code> 命令获取当前 GOOS 和 GOARCH 的值。例如我当前的操作系统是 macOS：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ go env GOOS GOARCH
+darwin
+amd64
+</code></pre></div><p>所以在本文的多阶段构建 <code>Dockerfile.multistage</code> 中，构建命令是：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#b8860b">CGO_ENABLED</span><span style="color:#666">=</span><span style="color:#666">0</span> <span style="color:#b8860b">GOOS</span><span style="color:#666">=</span>linux <span style="color:#b8860b">GOARCH</span><span style="color:#666">=</span>amd64 go build -o /docker-go-server-ping
+</code></pre></div><h3 id="构建镜像-2">构建镜像 <a href="#%e6%9e%84%e5%bb%ba%e9%95%9c%e5%83%8f-2" class="anchor">🔗</a></h3><p>由于我们现在有两个 Dockerfile，所以我们必须告诉 Docker 我们要使用新的 Dockerfile 进行构建。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker build -t docker-go-server-ping:multistage -f Dockerfile.multistage . 
+</code></pre></div><p>构建完成后，你会发现 docker-go-server-ping:multistage 只有不到 8MB，比 docker-go-server-ping:latest 小了几十倍。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker image ls
+REPOSITORY                   TAG            IMAGE ID       CREATED         SIZE
+docker-go-server-ping        latest         17fa05342cce   <span style="color:#666">20</span> minutes ago   407MB
+docker-go-server-ping        multistage     55fa4ded3360   <span style="color:#666">1</span> minutes ago    7.93MB
+</code></pre></div><h2 id="运行-go-镜像">运行 Go 镜像 <a href="#%e8%bf%90%e8%a1%8c-go-%e9%95%9c%e5%83%8f" class="anchor">🔗</a></h2><p>现在我们有了 Go 应用的镜像，接下来就可以运行 Go 镜像查看应用程序是否正常运行。</p>
+<p>要在 Docker 容器中运行镜像，我们可以使用 <code>docker run</code> 命令，参数是镜像名称：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker run -p 8080:8080 docker-go-server-ping:multistage
+
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ <span style="color:#b62;font-weight:bold">\/</span> _ <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>/___/<span style="color:#b62;font-weight:bold">\_</span>_/_//_/<span style="color:#b62;font-weight:bold">\_</span>__/ v4.6.1
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O<span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span>⇨ http server started on <span style="color:#666">[</span>::<span style="color:#666">]</span>:8080
+</code></pre></div><p>可以看到 Go 应用成功启动了。</p>
+<p>让我们再打开一个新的终端，通过 curl 向 Go 服务器发起一个请求：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ curl http://localhost:8080
+Hello, Docker! &lt;<span style="color:#666">3</span>
+</code></pre></div><h2 id="使用-makefile-简化构建流程">使用 Makefile 简化构建流程 <a href="#%e4%bd%bf%e7%94%a8-makefile-%e7%ae%80%e5%8c%96%e6%9e%84%e5%bb%ba%e6%b5%81%e7%a8%8b" class="anchor">🔗</a></h2><p>在前面的步骤中，我们使用到了非常多的命令，维护起来非常麻烦，这时我们就可以使用 make 来简化构建流程。</p>
+<p>make 是一个自动化构建工具，会在根据当前目录下名为 Makefile（或 makefile）的文件来执行相应的构建任务。</p>
+<p>所以让我们先创建一个 Makefile 文件，内容如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Makefile" data-lang="Makefile"><span style="color:#b8860b">APP</span><span style="color:#666">=</span>docker-go-server-ping
+
+<span style="color:#00a000">all</span><span style="color:#666">:</span> clean test build-docker-multistage
+
+<span style="color:#00a000">test</span><span style="color:#666">:</span>
+	go <span style="color:#a2f">test</span> -v ./
+
+<span style="color:#00a000">run</span><span style="color:#666">:</span> clean
+	go build -o <span style="color:#b68;font-weight:bold">${</span><span style="color:#b8860b">APP</span><span style="color:#b68;font-weight:bold">}</span>
+	./<span style="color:#b68;font-weight:bold">${</span><span style="color:#b8860b">APP</span><span style="color:#b68;font-weight:bold">}</span>
+
+<span style="color:#00a000">deps</span><span style="color:#666">:</span>
+	go mod download
+
+<span style="color:#00a000">clean</span><span style="color:#666">:</span>
+	go clean
+
+<span style="color:#00a000">build-docker</span><span style="color:#666">:</span>
+	docker build -t <span style="color:#b68;font-weight:bold">${</span><span style="color:#b8860b">APP</span><span style="color:#b68;font-weight:bold">}</span>:latest -f Dockerfile .
+
+<span style="color:#00a000">build-docker-multistage</span><span style="color:#666">:</span>
+	docker build -t <span style="color:#b68;font-weight:bold">${</span><span style="color:#b8860b">APP</span><span style="color:#b68;font-weight:bold">}</span>:multistage -f Dockerfile.multistage .
+</code></pre></div><p>接下来就可以通过 <code>make</code> 命令进行测试或构建了。</p>
+<p>例如：</p>
+<ul>
+<li><code>make test</code>：执行单元测试</li>
+<li><code>make build-docker</code>：构建 Docker 镜像</li>
+<li><code>build-docker-multistage</code>：多阶段构建镜像，构建的镜像通常用于生产环境</li>
+</ul>
+<h2 id="总结">总结 <a href="#%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>在本文中，我们首先开发了一个简单的 Go REST 服务应用，然后针对该应用详细讲解了如何构建 Docker 镜像。要构建镜像首先需要编写 Dockerfile，但基础的 Dockerfile 体积过大，所以我们又学习了如何通过多阶段构建减小镜像体积。在多阶段构建时，由于构建机和部署服务器可能存在操作系统和 CPU 架构的差异，又学习了如何通过交叉编译构建出可在其他平台直接使用的二进制文件。最后由于整个构建流程涉及命令比较多，真实 Go 项目可能构建流程会更复杂，所以学习了如何通过 Makefile 简化构建流程。</p>
+<p>最后感谢你的阅读，希望本文的内容能让你有所收获。</p>
+<h2 id="参考">参考 <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h2><ul>
+<li><a href="https://docs.docker.com/language/golang/build-images/#meet-the-example-application" target="_blank" rel="noopener">Docker docks - Build your Go image</a></li>
+<li><a href="https://github.com/olliefr/docker-gs-ping" target="_blank" rel="noopener">olliefr/docker-gs-ping</a></li>
+<li><a href="https://github.com/nodejh/docker-go-server-ping" target="_blank" rel="noopener">nodejh/docker-go-server-ping</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/go">Go</a>
+            
+                <a href="https://nodejh.com/tags/docker">Docker</a>
+            
+        </div>
+    
+    
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </div>
+
+    
+      <div class="powerby">
+        Powered by <a href='http://www.gohugo.io/'>Hugo</a> Theme By <a href='https://github.com/nodejh/hugo-theme-cactus-plus'>nodejh</a>
+      </div>
+    
+</footer>
+
+
+
+  </body>
+</html>

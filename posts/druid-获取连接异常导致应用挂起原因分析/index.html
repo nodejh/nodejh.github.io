@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>Druid 获取连接异常导致应用挂起原因分析 | Hang Jiang</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="1. 背景 🔗1.1 现象 🔗2021.12.16 凌晨，我们的应用数据库因故发生了主备切换，之后某个 Pod 就持续报错 GetConnectionTimeou">
+<meta name="generator" content="Hugo 0.82.0" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-84989670-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	  <a class="button" href="https://nodejh.com/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Druid 获取连接异常导致应用挂起原因分析</h1>
+
+    <div class="tip">
+        <time datetime="2021-12-20 19:53:13 &#43;0800 CST">2021年12月20日</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          8377字
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          17分钟
+        </span>
+    </div>
+
+    
+    
+        
+  
+    <aside class="toc">
+      <details>
+          <summary>Table of Contents
+          </summary>
+          <div>
+              <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-背景">1. 背景</a>
+      <ul>
+        <li><a href="#11-现象">1.1 现象</a></li>
+        <li><a href="#12-报错信息">1.2 报错信息</a></li>
+        <li><a href="#213-druid-配置">2.1.3 Druid 配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-关键变量">2. 关键变量</a>
+      <ul>
+        <li><a href="#21-配置项">2.1 配置项</a></li>
+        <li><a href="#22-druiddatasource">2.2 DruidDataSource</a></li>
+        <li><a href="#23-druidconnectionholder">2.3 DruidConnectionHolder</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-源码分析">2. 源码分析</a>
+      <ul>
+        <li><a href="#221-异常是如何抛出的">2.2.1 异常是如何抛出的？</a></li>
+        <li><a href="#22-连接是如何创建的">2.2 连接是如何创建的？</a></li>
+        <li><a href="#23-连接是如何释放的">2.3 连接是如何释放的？</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-问题复现">3. 问题复现</a>
+      <ul>
+        <li><a href="#31-复现代码">3.1 复现代码</a></li>
+        <li><a href="#32-时间线">3.2 时间线</a></li>
+        <li><a href="#heading"></a></li>
+        <li><a href="#33-小结">3.3 小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-问题修复">4. 问题修复</a></li>
+    <li><a href="#5-总结">5. 总结</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+          </div>
+      </details>
+    </aside>
+  
+
+
+    
+
+
+    <div class="content">
+      <h2 id="1-背景">1. 背景 <a href="#1-%e8%83%8c%e6%99%af" class="anchor">🔗</a></h2><h3 id="11-现象">1.1 现象 <a href="#11-%e7%8e%b0%e8%b1%a1" class="anchor">🔗</a></h3><p>2021.12.16 凌晨，我们的应用数据库因故发生了主备切换，之后某个 Pod 就持续报错 <code>GetConnectionTimeoutException</code>，并且该 Pod 的进程一直挂起，无法正常提供服务。</p>
+<p>不过比较奇怪的是，当时连接同一数据库的其他 Pod 虽然也有几条报错（主要是数据库连接超时的报错），但很快其他 Pod 都恢复了正常，就只有这一个 Pod 一直没有恢复。</p>
+<h3 id="12-报错信息">1.2 报错信息 <a href="#12-%e6%8a%a5%e9%94%99%e4%bf%a1%e6%81%af" class="anchor">🔗</a></h3><p>​</p>
+<p>异常 Pod 的部分报错信息如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#666">[</span>2021-12-16 02:10:06.617<span style="color:#666">]</span> <span style="color:#666">[</span>ERROR<span style="color:#666">]</span> <span style="color:#666">[</span>thread-30849<span style="color:#666">]</span> com.alibaba.druid.pool.DruidPooledStatement errorCheck:367 - CommunicationsException, druid version 1.2.5, jdbcUrl : jdbc:mysql://xxx:3306/xxx?useUnicode<span style="color:#666">=</span>true&amp;<span style="color:#b8860b">characterEncoding</span><span style="color:#666">=</span>UTF-8&amp;<span style="color:#b8860b">allowMultiQueries</span><span style="color:#666">=</span>true, testWhileIdle true, idle millis 1785, minIdle 5, poolingCount 0, timeBetweenEvictionRunsMillis 300000, lastValidIdleMillis 1785, driver com.mysql.cj.jdbc.Driver, exceptionSorter com.alibaba.druid.pool.vendor.MySqlExceptionSorter
+ 
+ ......
+ 
+2021-12-16 02:10:06.617<span style="color:#666">]</span> <span style="color:#666">[</span>ERROR<span style="color:#666">]</span> thread-30849<span style="color:#666">]</span> Caused by: com.alibaba.druid.pool.GetConnectionTimeoutException: <span style="color:#a2f">wait</span> millis 100000, active 399, maxActive 100, creating <span style="color:#666">0</span>
+	at com.alibaba.druid.pool.DruidDataSource.getConnectionInternal<span style="color:#666">(</span>DruidDataSource.java:1745<span style="color:#666">)</span>
+	at com.alibaba.druid.pool.DruidDataSource.getConnectionDirect<span style="color:#666">(</span>DruidDataSource.java:1415<span style="color:#666">)</span>
+	at com.alibaba.druid.pool.DruidDataSource.getConnection<span style="color:#666">(</span>DruidDataSource.java:1395<span style="color:#666">)</span>
+	at com.alibaba.druid.pool.DruidDataSource.getConnection<span style="color:#666">(</span>DruidDataSource.java:1385<span style="color:#666">)</span>
+	at com.alibaba.druid.pool.DruidDataSource.getConnection<span style="color:#666">(</span>DruidDataSource.java:100<span style="color:#666">)</span>
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection<span style="color:#666">(</span>DataSourceUtils.java:158<span style="color:#666">)</span>
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection<span style="color:#666">(</span>DataSourceUtils.java:116<span style="color:#666">)</span>
+	at org.springframework.orm.ibatis.SqlMapClientTemplate.execute<span style="color:#666">(</span>SqlMapClientTemplate.java:182<span style="color:#666">)</span>
+	... <span style="color:#666">26</span> common frames omitted
+</code></pre></div><p>​</p>
+<p>从报错信息来看， GetConnectionTimeoutException 即获取连接超时。但数据库和网络都是正常的，为什么获取数据库连接超时呢？
+​</p>
+<p>此外错误栈中的 <code>active</code> 居然比 <code>maxActive</code> 大，最大连接数 <code>maxActive</code> 是 100，为什么活跃连接数能达到 399？
+​</p>
+<p>在 Druid 的 issues 中， <code>GetConnectionTimeoutException</code> 也是一个非常常见的问题，那这个异常到底是怎么产生的呢，又该如何避免呢？
+​</p>
+<p>接下来就让我们带着这些疑问，通过阅读 Druid 源码进行深入的分析。</p>
+<h3 id="213-druid-配置">2.1.3 Druid 配置 <a href="#213-druid-%e9%85%8d%e7%bd%ae" class="anchor">🔗</a></h3><p>在进行问题分析前，先看一下当前的 Druid 配置。Druid 的版本为 1.2.5，因此在接下来的内容中，我都将根据 1.2.5 版本的源码进行分析。Druid 的具体配置如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#008000;font-weight:bold">&lt;bean</span> <span style="color:#b44">id=</span><span style="color:#b44">&#34;dataSource&#34;</span> <span style="color:#b44">class=</span><span style="color:#b44">&#34;com.alibaba.druid.pool.DruidDataSource&#34;</span> <span style="color:#b44">init-method=</span><span style="color:#b44">&#34;init&#34;</span> <span style="color:#b44">destroy-method=</span><span style="color:#b44">&#34;close&#34;</span><span style="color:#008000;font-weight:bold">&gt;</span> 
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;url&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;${jdbc_url}&#34;</span> <span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;username&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;${jdbc_user}&#34;</span> <span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;password&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;${jdbc_password}&#34;</span> <span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;maxActive&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;100&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;initialSize&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;1&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;maxWait&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;100000&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;minIdle&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;1&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;timeBetweenEvictionRunsMillis&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;300000&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;validationQuery&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;SELECT 1&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;testWhileIdle&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;true&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;removeAbandoned&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;false&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+    <span style="color:#008000;font-weight:bold">&lt;property</span> <span style="color:#b44">name=</span><span style="color:#b44">&#34;removeAbandonedTimeout&#34;</span> <span style="color:#b44">value=</span><span style="color:#b44">&#34;600&#34;</span><span style="color:#008000;font-weight:bold">/&gt;</span>
+<span style="color:#008000;font-weight:bold">&lt;/bean&gt;</span>
+</code></pre></div><h2 id="2-关键变量">2. 关键变量 <a href="#2-%e5%85%b3%e9%94%ae%e5%8f%98%e9%87%8f" class="anchor">🔗</a></h2><p>在错误栈中，我们看到了 <code>pollingCount</code> 、<code>active</code> 、<code>maxActive</code> 等变量，那这些变量到底是什么含义呢？
+​</p>
+<p>这一章节就先来了解一下。同时了解了这些变量的含义，也更利于后续阅读源码分析问题。
+​</p>
+<h3 id="21-配置项">2.1 配置项 <a href="#21-%e9%85%8d%e7%bd%ae%e9%a1%b9" class="anchor">🔗</a></h3><p>这里列出一些本文会涉的及关键配置，更多配置可参考 <a href="https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener">DruidDataSource配置属性列表</a> 。</p>
+<h4 id="211-minidle">2.1.1 minIdle <a href="#211-minidle" class="anchor">🔗</a></h4><p>连接池中至少需要保持的连接数。
+​</p>
+<h4 id="212-maxactive">2.1.2 maxActive <a href="#212-maxactive" class="anchor">🔗</a></h4><p>连接池中最大连接数。
+​</p>
+<h4 id="213-maxwait">2.1.3 maxWait <a href="#213-maxwait" class="anchor">🔗</a></h4><p>​</p>
+<p>单次获取连接的最长等待时间。</p>
+<h3 id="22-druiddatasource">2.2 DruidDataSource <a href="#22-druiddatasource" class="anchor">🔗</a></h3><p>DruidDataSource 是数据源，每个数据源都有一个对应的 DruidDataSource 实例。
+​</p>
+<h4 id="221-activecount">2.2.1 activeCount <a href="#221-activecount" class="anchor">🔗</a></h4><p>当前活跃连接数。每当成功获取到一个连接后，activeCount 都会加一，同时也会将 <code>holder</code> 的 <code>active</code> 属性设置为 true。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidPooledConnection <span style="color:#00a000">getConnectionInternal</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> maxWait<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder<span style="color:#666">.</span><span style="color:#b44">discard</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+            <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+        activeCount<span style="color:#666">++;</span>
+        holder<span style="color:#666">.</span><span style="color:#b44">active</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<h4 id="222-connections">2.2.2 connections <a href="#222-connections" class="anchor">🔗</a></h4><p> 
+当前所数据源拥有的连接池。其类型是 <code>DruidConnectionHolder[]</code> 。</p>
+<h4 id="223-poolingcount">2.2.3 poolingCount <a href="#223-poolingcount" class="anchor">🔗</a></h4><p> 
+连接池中的的连接数。
+​</p>
+<p>每当放入连接到连接池中，就会将 poolingCount 加一，例如：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> <span style="color:#0b0;font-weight:bold">boolean</span> <span style="color:#00a000">put</span><span style="color:#666">(</span>DruidConnectionHolder holder<span style="color:#666">,</span> <span style="color:#0b0;font-weight:bold">long</span> createTaskId<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> holder<span style="color:#666">;</span>
+    incrementPoolingCount<span style="color:#666">();</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">}</span>
+
+<span style="color:#a2f;font-weight:bold">private</span> <span style="color:#a2f;font-weight:bold">final</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">incrementPoolingCount</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+    poolingCount<span style="color:#666">++;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>每当将连接从连接池中取出，就会将 poolingCount 减一，例如：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidConnectionHolder <span style="color:#00a000">pollLast</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> nanos<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> InterruptedException<span style="color:#666">,</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    decrementPoolingCount<span style="color:#666">();</span>
+    DruidConnectionHolder last <span style="color:#666">=</span> connections<span style="color:#666">[</span>poolingCount<span style="color:#666">];</span>
+    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">;</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> last<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+
+<span style="color:#a2f;font-weight:bold">private</span> <span style="color:#a2f;font-weight:bold">final</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">decrementPoolingCount</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+    poolingCount<span style="color:#666">--;</span>
+<span style="color:#666">}</span>
+
+
+</code></pre></div><h3 id="23-druidconnectionholder">2.3 DruidConnectionHolder <a href="#23-druidconnectionholder" class="anchor">🔗</a></h3><p>​</p>
+<p>数据库连接以及相关属性。
+​</p>
+<h4 id="231-conn">2.3.1 conn <a href="#231-conn" class="anchor">🔗</a></h4><p>数据库连接，类型为 Connection。
+​</p>
+<h4 id="232-active">2.3.2 active <a href="#232-active" class="anchor">🔗</a></h4><p>用来标记连接是否活跃。</p>
+<h4 id="233-lastactivetimemillis">2.3.3 lastActiveTimeMillis <a href="#233-lastactivetimemillis" class="anchor">🔗</a></h4><p> 
+连接上次活跃时间。
+​</p>
+<h4 id="234-lastkeeptimemillis">2.3.4 lastKeepTimeMillis <a href="#234-lastkeeptimemillis" class="anchor">🔗</a></h4><p>连接上次保持活跃的时间。每次通过 keepAlive 保持连接活跃，就会更新此时间。
+​</p>
+<h2 id="2-源码分析">2. 源码分析 <a href="#2-%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90" class="anchor">🔗</a></h2><p>接下来，就让我们从错误栈开始深入源码，一层一层寻找问题的根源。</p>
+<h3 id="221-异常是如何抛出的">2.2.1 异常是如何抛出的？ <a href="#221-%e5%bc%82%e5%b8%b8%e6%98%af%e5%a6%82%e4%bd%95%e6%8a%9b%e5%87%ba%e7%9a%84" class="anchor">🔗</a></h3><p>首先 <code>GetConnectionTimeoutException</code> 是由 <code>getConnectionInternal</code> 方法抛出的，该方法的主要作用就是获取数据库连接，当前没有获取到连接也就是 <code>holder</code> 为 <code>null</code> 的时候，就会抛出异常，同时打印出当前  <code>active</code> 和 <code>maxActive</code> 的值。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder <span style="color:#666">==</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+  <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>  StringBuilder buf <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> StringBuilder<span style="color:#666">(</span>128<span style="color:#666">);</span>
+  buf<span style="color:#666">.</span><span style="color:#b44">append</span><span style="color:#666">(</span><span style="color:#b44">&#34;wait millis &#34;</span><span style="color:#666">)</span><span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#666">.</span><span style="color:#b44">append</span><span style="color:#666">(</span>waitNanos <span style="color:#666">/</span> <span style="color:#666">(</span>1000 <span style="color:#666">*</span> 1000<span style="color:#666">))</span><span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#666">.</span><span style="color:#b44">append</span><span style="color:#666">(</span><span style="color:#b44">&#34;, active &#34;</span><span style="color:#666">).</span><span style="color:#b44">append</span><span style="color:#666">(</span>activeCount<span style="color:#666">)</span><span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#666">.</span><span style="color:#b44">append</span><span style="color:#666">(</span><span style="color:#b44">&#34;, maxActive &#34;</span><span style="color:#666">).</span><span style="color:#b44">append</span><span style="color:#666">(</span>maxActive<span style="color:#666">)</span><span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#666">.</span><span style="color:#b44">append</span><span style="color:#666">(</span><span style="color:#b44">&#34;, creating &#34;</span><span style="color:#666">).</span><span style="color:#b44">append</span><span style="color:#666">(</span>creatingCount<span style="color:#666">)</span><span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#666">;</span>
+
+  <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>  String errorMessage <span style="color:#666">=</span> buf<span style="color:#666">.</span><span style="color:#b44">toString</span><span style="color:#666">();</span>
+
+  <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">.</span><span style="color:#b44">createError</span> <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">throw</span> <span style="color:#a2f;font-weight:bold">new</span> GetConnectionTimeoutException<span style="color:#666">(</span>errorMessage<span style="color:#666">,</span> createError<span style="color:#666">);</span>
+  <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">throw</span> <span style="color:#a2f;font-weight:bold">new</span> GetConnectionTimeoutException<span style="color:#666">(</span>errorMessage<span style="color:#666">);</span>
+  <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p><code>holder</code> 是 <code>DruidConnectionHolder</code> 的实例。那为什么 <code>holder</code> 为 <code>null</code> 呢？接下来就让我们再看一下 <code>holder</code> 是如何创建的。</p>
+<h3 id="22-连接是如何创建的">2.2 连接是如何创建的？ <a href="#22-%e8%bf%9e%e6%8e%a5%e6%98%af%e5%a6%82%e4%bd%95%e5%88%9b%e5%bb%ba%e7%9a%84" class="anchor">🔗</a></h3><p>接下来就看  <code>holder</code> 是如何创建的。
+​</p>
+<p>在 <code>getConnectionInternal</code> 中， <code>holder</code> 的创建是在 for 循环中进行的，一旦创建成功则退出循环。
+​</p>
+<p>在创建 <code>holder</code> 时，有同步和异步两种方式。
+​</p>
+<h4 id="221-同步创建连接">2.2.1 同步创建连接 <a href="#221-%e5%90%8c%e6%ad%a5%e5%88%9b%e5%bb%ba%e8%bf%9e%e6%8e%a5" class="anchor">🔗</a></h4><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createScheduler <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span>
+    <span style="color:#666">&amp;&amp;</span> poolingCount <span style="color:#666">==</span> 0
+    <span style="color:#666">&amp;&amp;</span> activeCount <span style="color:#666">&lt;</span> maxActive
+		<span style="color:#666">&amp;&amp;</span> creatingCountUpdater<span style="color:#666">.</span><span style="color:#b44">get</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">)</span> <span style="color:#666">==</span> 0
+    <span style="color:#666">&amp;&amp;</span> createScheduler <span style="color:#a2f;font-weight:bold">instanceof</span> ScheduledThreadPoolExecutor<span style="color:#666">)</span> <span style="color:#666">{</span>
+  ScheduledThreadPoolExecutor executor <span style="color:#666">=</span> <span style="color:#666">(</span>ScheduledThreadPoolExecutor<span style="color:#666">)</span> createScheduler<span style="color:#666">;</span>
+  <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>executor<span style="color:#666">.</span><span style="color:#b44">getQueue</span><span style="color:#666">().</span><span style="color:#b44">size</span><span style="color:#666">()</span> <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+    createDirect <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+    <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+  <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>如果需要同步创建连接，需要同时满足以下几个条件：</p>
+<ul>
+<li>不配置创建连接的线程池，即 <code>createScheduler != null</code></li>
+<li>目前连接池中没有可用连接，即 <code>poolingCount == 0</code></li>
+<li>目前活跃的连接数小于最大连接数，即 <code>activeCount &lt; maxActive</code></li>
+<li>目前没有正在同步创建的连接，也就是统一时刻只能存在一个线程在同步创建连接，即 <code>creatingCountUpdater.get(this) == 0</code></li>
+</ul>
+<p>满足上述条件后，<code>createDirect</code> 会被设置为 <code>true</code>，然后在下一次循环中就会同步创建连接。也正因为有上述条件在，所以只有很少的线程会进入到同步创建连接的流程中。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidPooledConnection <span style="color:#00a000">getConnectionInternal</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> maxWait<span style="color:#666">)</span> <span style="color:#666">{</span>
+	<span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createDirect<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>creatingCountUpdater<span style="color:#666">.</span><span style="color:#b44">compareAndSet</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">,</span> 0<span style="color:#666">,</span> 1<span style="color:#666">))</span> <span style="color:#666">{</span>
+            PhysicalConnectionInfo pyConnInfo <span style="color:#666">=</span> DruidDataSource<span style="color:#666">.</span><span style="color:#b44">this</span><span style="color:#666">.</span><span style="color:#b44">createPhysicalConnection</span><span style="color:#666">();</span>
+            holder <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> DruidConnectionHolder<span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">,</span> pyConnInfo<span style="color:#666">);</span>
+            holder<span style="color:#666">.</span><span style="color:#b44">lastActiveTimeMillis</span> <span style="color:#666">=</span> System<span style="color:#666">.</span><span style="color:#b44">currentTimeMillis</span><span style="color:#666">();</span>
+            <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>            <span style="color:#0b0;font-weight:bold">boolean</span> discard <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+            lock<span style="color:#666">.</span><span style="color:#b44">lock</span><span style="color:#666">();</span>
+            <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+                <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">&lt;</span> maxActive<span style="color:#666">)</span> <span style="color:#666">{</span>
+                    activeCount<span style="color:#666">++;</span>
+                    holder<span style="color:#666">.</span><span style="color:#b44">active</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+                    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">&gt;</span> activePeak<span style="color:#666">)</span> <span style="color:#666">{</span>
+                        activePeak <span style="color:#666">=</span> activeCount<span style="color:#666">;</span>
+                        activePeakTime <span style="color:#666">=</span> System<span style="color:#666">.</span><span style="color:#b44">currentTimeMillis</span><span style="color:#666">();</span>
+                    <span style="color:#666">}</span>
+                    <span style="color:#a2f;font-weight:bold">break</span><span style="color:#666">;</span>
+                <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#666">{</span>
+                    discard <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+                <span style="color:#666">}</span>
+            <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">finally</span> <span style="color:#666">{</span>
+                lock<span style="color:#666">.</span><span style="color:#b44">unlock</span><span style="color:#666">();</span>
+            <span style="color:#666">}</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><h4 id="222-异步创建连接">2.2.2 异步创建连接 <a href="#222-%e5%bc%82%e6%ad%a5%e5%88%9b%e5%bb%ba%e8%bf%9e%e6%8e%a5" class="anchor">🔗</a></h4><p>如果没有同步创建连接，则接下来会通过 <code>pollLast(nanos)</code> 或 <code>takeLast()</code> 异步创建连接。</p>
+<p><code>nanos</code> 是根据 <code>maxWait</code> 计算出来的，如果设置了 <code>maxWait</code> 就会调用 <code>pollLast(nanos)</code>，否则调用 <code>takeLast()</code> 。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidPooledConnection <span style="color:#00a000">getConnectionInternal</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> maxWait<span style="color:#666">)</span> <span style="color:#666">{</span>
+
+    <span style="color:#a2f;font-weight:bold">final</span> <span style="color:#0b0;font-weight:bold">long</span> nanos <span style="color:#666">=</span> TimeUnit<span style="color:#666">.</span><span style="color:#b44">MILLISECONDS</span><span style="color:#666">.</span><span style="color:#b44">toNanos</span><span style="color:#666">(</span>maxWait<span style="color:#666">);</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>maxWait <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+        holder <span style="color:#666">=</span> pollLast<span style="color:#666">(</span>nanos<span style="color:#666">);</span>
+    <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#666">{</span>
+        holder <span style="color:#666">=</span> takeLast<span style="color:#666">();</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><h4 id="223-polllast-和-takelast">2.2.3 <code>pollLast</code> 和 <code>takeLast</code> <a href="#223-polllast-%e5%92%8c-takelast" class="anchor">🔗</a></h4><p>在 <code>pollLast</code> 方法中，如果当前连接池中的连接数 poolingCount 为 0，则调用 <code>emptySignal</code> 使用信号量 <code>empty</code>，并创建异步线程去创建连接。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidConnectionHolder <span style="color:#00a000">pollLast</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> nanos<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> InterruptedException<span style="color:#666">,</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#0b0;font-weight:bold">long</span> estimate <span style="color:#666">=</span> nanos<span style="color:#666">;</span>
+
+    <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(;;)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">==</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+            emptySignal<span style="color:#666">();</span> <span style="color:#080;font-style:italic">// send signal to CreateThread create connection
+</span><span style="color:#080;font-style:italic"></span>            <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>然后，<code>pollLast</code> 自己再使用 <code>notEmpty</code> 信号量进入等待：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">estimate <span style="color:#666">=</span> notEmpty<span style="color:#666">.</span><span style="color:#b44">awaitNanos</span><span style="color:#666">(</span>estimate<span style="color:#666">);</span> <span style="color:#080;font-style:italic">// signal by
+</span><span style="color:#080;font-style:italic"></span>                                        <span style="color:#080;font-style:italic">// recycle or
+</span><span style="color:#080;font-style:italic"></span>                                        <span style="color:#080;font-style:italic">// creator
+</span></code></pre></div><p>本次等待的最长时间 <code>estimate</code> 就是根据 <code>maxWait</code> 计算出来的。</p>
+<p>在有连接被回收，会新创建出来后，就会被唤醒。如果唤醒后本线程没有成功创建连接，并且目前总的等待时间还没到<code>maxWait</code>，就会再次进入 await。</p>
+<p>如果等待时间到了 <code>maxWait</code> ，但依旧没有成功创建连接，即 poolingCount 为 0，则会返回 null。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">==</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>estimate <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">return</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>通过信号创建的连接会被放入到连接池 connections 中，然后 <code>pollLast(nanos)</code> 收到创建成功的信号后，就可以从连接池中取出连接并返回了：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> DruidConnectionHolder <span style="color:#00a000">pollLast</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> nanos<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> InterruptedException<span style="color:#666">,</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    decrementPoolingCount<span style="color:#666">();</span>
+    DruidConnectionHolder last <span style="color:#666">=</span> connections<span style="color:#666">[</span>poolingCount<span style="color:#666">];</span>
+    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">;</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> last<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>无参的 <code>takeLast()</code> 就简单很多了，它的流程和 <code>pollLast(nanos)</code> 几乎一致，唯一不同的是它没有等待超时时间，只有等待回收线程，会创建线程唤醒后，才会继续执行。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DruidConnectionHolder <span style="color:#00a000">takeLast</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> InterruptedException<span style="color:#666">,</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">while</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">==</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+            emptySignal<span style="color:#666">();</span> <span style="color:#080;font-style:italic">// send signal to CreateThread create connection
+</span><span style="color:#080;font-style:italic"></span>
+            <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+                notEmpty<span style="color:#666">.</span><span style="color:#b44">await</span><span style="color:#666">();</span> <span style="color:#080;font-style:italic">// signal by recycle or creator
+</span><span style="color:#080;font-style:italic"></span>            <span style="color:#666">}</span> 
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+
+    decrementPoolingCount<span style="color:#666">();</span>
+    DruidConnectionHolder last <span style="color:#666">=</span> connections<span style="color:#666">[</span>poolingCount<span style="color:#666">];</span>
+    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">;</span>
+    <span style="color:#a2f;font-weight:bold">return</span> last<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><h4 id="224-emptysignal">2.2.4 emptySignal <a href="#224-emptysignal" class="anchor">🔗</a></h4><p>使用信号异步创建连接的 <code>emptySignal()</code> 方法代码如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">emptySignal</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createScheduler <span style="color:#666">==</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        empty<span style="color:#666">.</span><span style="color:#b44">signal</span><span style="color:#666">();</span>
+        <span style="color:#a2f;font-weight:bold">return</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createTaskCount <span style="color:#666">&gt;=</span> maxCreateTaskCount<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">return</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">+</span> poolingCount <span style="color:#666">+</span> createTaskCount <span style="color:#666">&gt;=</span> maxActive<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">return</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+    submitCreateTask<span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">);</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>如果设置的创建线程池 createScheduler 为 null，则会发送一个信号去创建连接。否则创建一个  <code>CreateConnectionTask</code> 来创建连接。</p>
+<p>这里发出的创建信号会被 <code>CreateConnectionThread</code> 接收，<code>CreateConnectionThread</code> 会在数据源初始化的时候创建。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">init</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    createAndStartCreatorThread<span style="color:#666">();</span>
+    createAndStartDestroyThread<span style="color:#666">();</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>收到信号后，会判断当前活跃连接数以及连接池中的连接数是否大于 maxActive，如果大于则不创建，避免创建出超过 maxActive 数量的连接；如果小于，则创建了物理连接，然后在调用 DruidDataSource 的 put 方法将连接放入连接池中。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">run</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+
+    <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(;;)</span> <span style="color:#666">{</span>
+        <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+            <span style="color:#0b0;font-weight:bold">boolean</span> emptyWait <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+
+            <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createError <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span>
+                <span style="color:#666">&amp;&amp;</span> poolingCount <span style="color:#666">==</span> 0
+                <span style="color:#666">&amp;&amp;</span> <span style="color:#666">!</span>discardChanged<span style="color:#666">)</span> <span style="color:#666">{</span>
+                emptyWait <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+            <span style="color:#666">}</span>
+
+            <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>emptyWait
+                <span style="color:#666">&amp;&amp;</span> asyncInit <span style="color:#666">&amp;&amp;</span> createCount <span style="color:#666">&lt;</span> initialSize<span style="color:#666">)</span> <span style="color:#666">{</span>
+                emptyWait <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+            <span style="color:#666">}</span>
+
+            <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>emptyWait<span style="color:#666">)</span> <span style="color:#666">{</span>
+                <span style="color:#080;font-style:italic">// 必须存在线程等待，才创建连接
+</span><span style="color:#080;font-style:italic"></span>                <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">&gt;=</span> notEmptyWaitThreadCount <span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>                    <span style="color:#666">&amp;&amp;</span> <span style="color:#666">(!(</span>keepAlive <span style="color:#666">&amp;&amp;</span> activeCount <span style="color:#666">+</span> poolingCount <span style="color:#666">&lt;</span> minIdle<span style="color:#666">))</span>
+                    <span style="color:#666">&amp;&amp;</span> <span style="color:#666">!</span>isFailContinuous<span style="color:#666">()</span>
+                   <span style="color:#666">)</span> <span style="color:#666">{</span>
+                    empty<span style="color:#666">.</span><span style="color:#b44">await</span><span style="color:#666">();</span>
+                <span style="color:#666">}</span>
+
+                <span style="color:#080;font-style:italic">// 防止创建超过maxActive数量的连接
+</span><span style="color:#080;font-style:italic"></span>                <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">+</span> poolingCount <span style="color:#666">&gt;=</span> maxActive<span style="color:#666">)</span> <span style="color:#666">{</span>
+                    empty<span style="color:#666">.</span><span style="color:#b44">await</span><span style="color:#666">();</span>
+                    <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+                <span style="color:#666">}</span>
+            <span style="color:#666">}</span>
+
+        <span style="color:#666">}</span> 
+        <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        PhysicalConnectionInfo connection <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">;</span>
+
+        <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+            connection <span style="color:#666">=</span> createPhysicalConnection<span style="color:#666">();</span>
+        <span style="color:#666">}</span> 
+        <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        <span style="color:#0b0;font-weight:bold">boolean</span> result <span style="color:#666">=</span> put<span style="color:#666">(</span>connection<span style="color:#666">);</span>
+
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p><code>CreateConnectionTask</code> 也是类似的逻辑。
+ </p>
+<h4 id="225-druiddatasourceput">2.2.5 DruidDataSource#put <a href="#225-druiddatasourceput" class="anchor">🔗</a></h4><p>在 put 方法中，首先会判断当前连接数是否大于最大连接数，如果小于，则会将连接放入到 <code>connections</code> 中，然后将 poolingCount 的值加一。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> <span style="color:#0b0;font-weight:bold">boolean</span> <span style="color:#00a000">put</span><span style="color:#666">(</span>DruidConnectionHolder holder<span style="color:#666">,</span> <span style="color:#0b0;font-weight:bold">long</span> createTaskId<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">&gt;=</span> maxActive<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>createScheduler <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+            clearCreateTask<span style="color:#666">(</span>createTaskId<span style="color:#666">);</span>
+        <span style="color:#666">}</span>
+        <span style="color:#a2f;font-weight:bold">return</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> holder<span style="color:#666">;</span>
+    incrementPoolingCount<span style="color:#666">();</span>
+    <span style="color:#080;font-style:italic">//... 
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">}</span>
+</code></pre></div><h4 id="226-小结">2.2.6 小结 <a href="#226-%e5%b0%8f%e7%bb%93" class="anchor">🔗</a></h4><p>以上便是便是大致的连接创建流程。
+​</p>
+<p>总的来说就是，应用需要执行 SQL 的时候，就通过 <code>getConnectionInternal</code> 获取连接，其中创建连接分为同步和异步，异步则通过信号量创建连接。成功获取连接后还会将 <code>activeCount</code> 加一。</p>
+<p>结合 1.2.1 中的异常信息，报错时 <code>poolingCount</code> 为 0， 所以会调用 <code>emptySignal()</code> 创建连接。但<code>activeCount + poolingCount + createTaskCount</code> 显然是大于 <code>maxActive</code> 的，因此 <code>pollLast</code> 最终会等待 <code>maxWait</code> 然后超时。所以最终 <code>getConnectionInternal</code> 抛出了 <code>GetConnectionTimeoutException</code> 异常。</p>
+<p>所以接下来问题的关键就是，为什么 activeCount 会大于 maxActive？</p>
+<h3 id="23-连接是如何释放的">2.3 连接是如何释放的？ <a href="#23-%e8%bf%9e%e6%8e%a5%e6%98%af%e5%a6%82%e4%bd%95%e9%87%8a%e6%94%be%e7%9a%84" class="anchor">🔗</a></h3><p>要解答这个问题，我们就需要先知道 activeCount 什么时候减少。
+​</p>
+<p>前面已经知道了 activeCount 会在获取到连接后增加，那相应的，activeCount 也会在释放连接时减少。所以接下来就详细了解连接时如何释放的。
+​</p>
+<h4 id="231-应用主动关闭连接">2.3.1 应用主动关闭连接 <a href="#231-%e5%ba%94%e7%94%a8%e4%b8%bb%e5%8a%a8%e5%85%b3%e9%97%ad%e8%bf%9e%e6%8e%a5" class="anchor">🔗</a></h4><p>提到连接释放，首先想到的应该是我们在应用中主动调用 <code>connection.close()</code>方法来释放连接。</p>
+<p>那 <code>connection.close()</code> 会立即释放物理连接吗？显然是不会的。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">close</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    recycle<span style="color:#666">();</span>
+<span style="color:#666">}</span>
+
+<span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">recycle</span><span style="color:#666">()</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(!</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">.</span><span style="color:#b44">abandoned</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        DruidAbstractDataSource dataSource <span style="color:#666">=</span> holder<span style="color:#666">.</span><span style="color:#b44">getDataSource</span><span style="color:#666">();</span>
+        dataSource<span style="color:#666">.</span><span style="color:#b44">recycle</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">);</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p><code>connection.close()</code> 会最终会调用 <code>dataSource.recycle(DruidPooledConnection pooledConnection)</code>释放连接。 那 <code>dataSource.recycle</code> 又是怎么实现的呢？
+​</p>
+<h4 id="232-recycle">2.3.2 recycle <a href="#232-recycle" class="anchor">🔗</a></h4><p>​</p>
+<p>在 recyle 中会有一些列的连接状态判断，如物理连接是否已关闭等，然后决定是否立即释放连接。不过大部分情况下会运行到下面的逻辑，即如果连接状态是活跃的，则将 activeCount 减一，并将状态再设置为 false。最后再调用 <code>putLast</code>。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#080;font-style:italic">/**
+</span><span style="color:#080;font-style:italic">     * 回收连接
+</span><span style="color:#080;font-style:italic">     */</span>
+<span style="color:#a2f;font-weight:bold">protected</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">recycle</span><span style="color:#666">(</span>DruidPooledConnection pooledConnection<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder<span style="color:#666">.</span><span style="color:#b44">active</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        activeCount<span style="color:#666">--;</span>
+        holder<span style="color:#666">.</span><span style="color:#b44">active</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+    result <span style="color:#666">=</span> putLast<span style="color:#666">(</span>holder<span style="color:#666">,</span> currentTimeMillis<span style="color:#666">);</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">}</span>
+</code></pre></div><p>在 putLast 中则会更新连接的上次活跃时间，然后将连接再度放回到连接池中，并将 <code>poolingcount</code> 加一。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#0b0;font-weight:bold">boolean</span> <span style="color:#00a000">putLast</span><span style="color:#666">(</span>DruidConnectionHolder e<span style="color:#666">,</span> <span style="color:#0b0;font-weight:bold">long</span> lastActiveTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">&gt;=</span> maxActive <span style="color:#666">||</span> e<span style="color:#666">.</span><span style="color:#b44">discard</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">return</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+
+    e<span style="color:#666">.</span><span style="color:#b44">lastActiveTimeMillis</span> <span style="color:#666">=</span> lastActiveTimeMillis<span style="color:#666">;</span>
+    connections<span style="color:#666">[</span>poolingCount<span style="color:#666">]</span> <span style="color:#666">=</span> e<span style="color:#666">;</span>
+    incrementPoolingCount<span style="color:#666">();</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">return</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>也就是说，通过 <code>.close</code> 方法主动释放连接，不会真的释放，而是将连接还回到连接池中。
+​</p>
+<h4 id="233-连接释放">2.3.3 连接释放 <a href="#233-%e8%bf%9e%e6%8e%a5%e9%87%8a%e6%94%be" class="anchor">🔗</a></h4><p>既然前面的 <code>recycle</code> 不会关闭连接，但连接池也不可能无限大，那连接到底是如何回收的呢？这就要提到 Druid 的连接释放任务了。
+​</p>
+<p>通 <code>CreateConnectionThread</code> 一样， Druid 在初始化数据源时会创建释放连接的线程 <code>DestroyThread</code> ，然后创建释放任务 DestroyTask。
+​</p>
+<p>​</p>
+<p>当应用设置的释放线程池 destroyScheduler 不为空时，就会在 destroyScheduler 中运行 DestroyTask；否则会创建一个消费连接的线程池，然后在该线程池中运行释放连接的任务。与 createScheduler 类似，大部分情况下我们不会设置 destroyScheduler。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">protected</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">createAndStartDestroyThread</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+    destroyTask <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> DestroyTask<span style="color:#666">();</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>destroyScheduler <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        destroySchedulerFuture <span style="color:#666">=</span> destroyScheduler<span style="color:#666">.</span><span style="color:#b44">scheduleAtFixedRate</span><span style="color:#666">(</span>destroyTask<span style="color:#666">,</span> period<span style="color:#666">,</span> period<span style="color:#666">,</span>
+                                                                      TimeUnit<span style="color:#666">.</span><span style="color:#b44">MILLISECONDS</span><span style="color:#666">);</span>
+        <span style="color:#a2f;font-weight:bold">return</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    destroyConnectionThread <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> DestroyConnectionThread<span style="color:#666">(</span>threadName<span style="color:#666">);</span>
+    destroyConnectionThread<span style="color:#666">.</span><span style="color:#b44">start</span><span style="color:#666">();</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>​</p>
+<p>DestroyConnectionThread 本质上就是一个死循环，在循环中每隔 <code>timeBetweenEvictionRunsMillis</code> 执行一次释放连接的任务。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">DestroyConnectionThread</span> <span style="color:#a2f;font-weight:bold">extends</span> Thread <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">run</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(;;)</span> <span style="color:#666">{</span>
+            <span style="color:#080;font-style:italic">// 从前面开始删除
+</span><span style="color:#080;font-style:italic"></span>            <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+                <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>                <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>timeBetweenEvictionRunsMillis <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+                    Thread<span style="color:#666">.</span><span style="color:#b44">sleep</span><span style="color:#666">(</span>timeBetweenEvictionRunsMillis<span style="color:#666">);</span>
+                <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#666">{</span>
+                    Thread<span style="color:#666">.</span><span style="color:#b44">sleep</span><span style="color:#666">(</span>1000<span style="color:#666">);</span> <span style="color:#080;font-style:italic">//
+</span><span style="color:#080;font-style:italic"></span>                <span style="color:#666">}</span>
+
+                destroyTask<span style="color:#666">.</span><span style="color:#b44">run</span><span style="color:#666">();</span>
+            <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">catch</span> <span style="color:#666">(</span>InterruptedException e<span style="color:#666">)</span> <span style="color:#666">{</span>
+                <span style="color:#a2f;font-weight:bold">break</span><span style="color:#666">;</span>
+            <span style="color:#666">}</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>释放连接的关键逻辑就在 DestroyTask 中。</p>
+<h4 id="234-destroytask">2.3.4 DestroyTask <a href="#234-destroytask" class="anchor">🔗</a></h4><p>在 DestroyTask 中，主要是通过 <code>shrink</code> 方法来释放连接。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">DestroyTask</span> <span style="color:#a2f;font-weight:bold">implements</span> Runnable <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#00a000">DestroyTask</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+
+        <span style="color:#666">}</span>
+
+        <span style="color:#a2f">@Override</span>
+        <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">run</span><span style="color:#666">()</span> <span style="color:#666">{</span>
+            shrink<span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">,</span> keepAlive<span style="color:#666">);</span>
+
+            <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>isRemoveAbandoned<span style="color:#666">())</span> <span style="color:#666">{</span>
+                removeAbandoned<span style="color:#666">();</span>
+            <span style="color:#666">}</span>
+        <span style="color:#666">}</span>
+
+    <span style="color:#666">}</span>
+</code></pre></div><p>所以接下来的关键就是 <code>shrink(boolean checkTime, boolean keepAlive)</code>  方法。</p>
+<h4 id="235-destroytaskshrink">2.3.5 DestroyTask#shrink <a href="#235-destroytaskshrink" class="anchor">🔗</a></h4><p><code>shrink</code> 接收两个参数：</p>
+<ul>
+<li><code>checkTime</code> 是否校验连接的时间，如连接空闲时间等；</li>
+<li><code>keepAlive</code> 是否开启了 keepAlive</li>
+</ul>
+<p>​</p>
+<p> 
+在 <code>shrink</code> 中，首先会通过 for 循环，依次遍历连接池中的所有连接并进行处理。
+​</p>
+<p>在循环中，首先会判断当前是否有 fatalError，如果有，则会将连接放入 keepAliveConnections 列表中，keepAliveConnections 存储了需要保持活跃的连接。什么时候会出现 fatalError 呢？主要是执行 SQL 时可能出现，比如数据库断网、数据库重启等。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">int</span> i <span style="color:#666">=</span> 0<span style="color:#666">;</span> i <span style="color:#666">&lt;</span> poolingCount<span style="color:#666">;</span> <span style="color:#666">++</span>i<span style="color:#666">)</span> <span style="color:#666">{</span>
+    DruidConnectionHolder connection <span style="color:#666">=</span> connections<span style="color:#666">[</span>i<span style="color:#666">];</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">((</span>onFatalError <span style="color:#666">||</span> fatalErrorIncrement <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#666">(</span>lastFatalErrorTimeMillis <span style="color:#666">&gt;</span> connection<span style="color:#666">.</span><span style="color:#b44">connectTimeMillis</span><span style="color:#666">))</span>  <span style="color:#666">{</span>
+        keepAliveConnections<span style="color:#666">[</span>keepAliveCount<span style="color:#666">++]</span> <span style="color:#666">=</span> connection<span style="color:#666">;</span>
+        <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>如果没有 fatalError 并且开启了 <code>checkTime</code> 为 true，则会继续根据连接时间判断连接应该被放入 keepAliveConnections 还是 evictConnections 队列。
+​</p>
+<p>具体逻辑如下：
+​</p>
+<ol>
+<li>首先判断物理连接是否超时，如果超时则放入 evictConnections，默认 phyTimeoutMillis 为 <code>-1</code> ；</li>
+<li>然后判断连接空闲时间是否同时小于 minEvictableIdleTimeMillis 和 keepAliveBetweenTimeMillis，如果不满足条件，则退出本次释放任务，也就是连接池中的其他连接都不会被释放了；</li>
+<li>如果连接空闲时间大于 minEvictableIdleTimeMillis，则判断该连接释放应该被释放，判断条件是 <code>i &lt; checkCount</code> ，也就是如果当前连接池数量小于 minIdle，则连接池前面的连接不会被释放，而是从连接池后面的连接开始释放；</li>
+<li>如果不满足条件 3，并且开启了 keepAlive，连接空闲时间也大于 keepAliveBetweenTimeMillis，则将连接放入 keepAliveConnections 队列。结合条件 3，也就是说，连接池前面的连接会被保持活跃。</li>
+</ol>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">final</span> <span style="color:#0b0;font-weight:bold">int</span> checkCount <span style="color:#666">=</span> poolingCount <span style="color:#666">-</span> minIdle<span style="color:#666">;</span>
+<span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span><span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">int</span> i <span style="color:#666">=</span> 0<span style="color:#666">;</span> i <span style="color:#666">&lt;</span> poolingCount<span style="color:#666">;</span> <span style="color:#666">++</span>i<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>phyTimeoutMillis <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+	    <span style="color:#0b0;font-weight:bold">long</span> phyConnectTimeMillis <span style="color:#666">=</span> currentTimeMillis <span style="color:#666">-</span> connection<span style="color:#666">.</span><span style="color:#b44">connectTimeMillis</span><span style="color:#666">;</span>
+    	<span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>phyConnectTimeMillis <span style="color:#666">&gt;</span> phyTimeoutMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+        	evictConnections<span style="color:#666">[</span>evictCount<span style="color:#666">++]</span> <span style="color:#666">=</span> connection<span style="color:#666">;</span>
+	        <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#0b0;font-weight:bold">long</span> idleMillis <span style="color:#666">=</span> currentTimeMillis <span style="color:#666">-</span> connection<span style="color:#666">.</span><span style="color:#b44">lastActiveTimeMillis</span><span style="color:#666">;</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>idleMillis <span style="color:#666">&lt;</span> minEvictableIdleTimeMillis
+        <span style="color:#666">&amp;&amp;</span> idleMillis <span style="color:#666">&lt;</span> keepAliveBetweenTimeMillis
+    <span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">break</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>idleMillis <span style="color:#666">&gt;=</span> minEvictableIdleTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>checkTime <span style="color:#666">&amp;&amp;</span> i <span style="color:#666">&lt;</span> checkCount<span style="color:#666">)</span> <span style="color:#666">{</span>
+            evictConnections<span style="color:#666">[</span>evictCount<span style="color:#666">++]</span> <span style="color:#666">=</span> connection<span style="color:#666">;</span>
+            <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>idleMillis <span style="color:#666">&gt;</span> maxEvictableIdleTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+            evictConnections<span style="color:#666">[</span>evictCount<span style="color:#666">++]</span> <span style="color:#666">=</span> connection<span style="color:#666">;</span>
+            <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>keepAlive <span style="color:#666">&amp;&amp;</span> idleMillis <span style="color:#666">&gt;=</span> keepAliveBetweenTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+        keepAliveConnections<span style="color:#666">[</span>keepAliveCount<span style="color:#666">++]</span> <span style="color:#666">=</span> connection<span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><p>正常情况下，connections 中的连接都是按 lastActiveTimeMillis 先后顺序排列的，因此释放连接时，从前往后释放，一旦发现连接空闲时间小于 minEvictableIdleTimeMillis 和 keepAliveBetweenTimeMillis 就结束本次释放流程，这样就可以减少循环次数，提高性能。并且连接保活时，也是从前往后进行保活，因为前面的连接更可能超时。这也正是 Druid 设计的巧妙之处。
+​</p>
+<p>当然，这里是“正常情况”，那必然也会有异常情况，异常情况是什么样呢？这里暂时先不展开，后面会详细讲解。
+​</p>
+<p>在确定了需要释放和保持活跃的连接数量之后，下一步就是从连接池中将连接删除，删除的方式就是将 connections 中前 removeCount 个连接删掉，然后将剩余连接再依次从前往后放入到 connections，最后再用 null 填充 connections，以便后续存储保活的连接。
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#0b0;font-weight:bold">int</span> removeCount <span style="color:#666">=</span> evictCount <span style="color:#666">+</span> keepAliveCount<span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>removeCount <span style="color:#666">&gt;</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+    System<span style="color:#666">.</span><span style="color:#b44">arraycopy</span><span style="color:#666">(</span>connections<span style="color:#666">,</span> removeCount<span style="color:#666">,</span> connections<span style="color:#666">,</span> 0<span style="color:#666">,</span> poolingCount <span style="color:#666">-</span> removeCount<span style="color:#666">);</span>
+    Arrays<span style="color:#666">.</span><span style="color:#b44">fill</span><span style="color:#666">(</span>connections<span style="color:#666">,</span> poolingCount <span style="color:#666">-</span> removeCount<span style="color:#666">,</span> poolingCount<span style="color:#666">,</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">);</span>
+    poolingCount <span style="color:#666">-=</span> removeCount<span style="color:#666">;</span>
+<span style="color:#666">}</span>
+
+</code></pre></div><p>接下来对于 evictConnections 中的连接，就可以直接关闭了。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DruidConnectionHolder item <span style="color:#666">=</span> evictConnections<span style="color:#666">[</span>i<span style="color:#666">];</span>
+Connection connection <span style="color:#666">=</span> item<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+JdbcUtils<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">(</span>connection<span style="color:#666">);</span>
+destroyCountUpdater<span style="color:#666">.</span><span style="color:#b44">incrementAndGet</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">);</span>
+</code></pre></div><p>对于 keepAliveConnections 中的连接，则先判断连接是否可用，如果连接可用，则调用 <code>put</code> 方法将连接再放回连接池。和前面应用主动释放连接时调用的 <code>putLast</code> 不同的是，<code>put</code> 不会更新连接的 lastActiveTimeMillis 。
+​</p>
+<p>如果连接不可用，则 再调用 <code>emptySignal()</code> 通过信号创建一个新的连接。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DruidConnectionHolder holer <span style="color:#666">=</span> keepAliveConnections<span style="color:#666">[</span>i<span style="color:#666">];</span>
+Connection connection <span style="color:#666">=</span> holer<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+holer<span style="color:#666">.</span><span style="color:#b44">incrementKeepAliveCheckCount</span><span style="color:#666">();</span>
+
+<span style="color:#0b0;font-weight:bold">boolean</span> validate <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">.</span><span style="color:#b44">validateConnection</span><span style="color:#666">(</span>connection<span style="color:#666">);</span>
+    validate <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+<span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">catch</span> <span style="color:#666">(</span>Throwable error<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// skip
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">}</span>
+
+<span style="color:#0b0;font-weight:bold">boolean</span> discard <span style="color:#666">=</span> <span style="color:#666">!</span>validate<span style="color:#666">;</span>
+<span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>validate<span style="color:#666">)</span> <span style="color:#666">{</span>
+    holer<span style="color:#666">.</span><span style="color:#b44">lastKeepTimeMillis</span> <span style="color:#666">=</span> System<span style="color:#666">.</span><span style="color:#b44">currentTimeMillis</span><span style="color:#666">();</span>
+    <span style="color:#0b0;font-weight:bold">boolean</span> putOk <span style="color:#666">=</span> put<span style="color:#666">(</span>holer<span style="color:#666">,</span> 0L<span style="color:#666">);</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(!</span>putOk<span style="color:#666">)</span> <span style="color:#666">{</span>
+        discard <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+
+<span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>discard<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+        connection<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+    <span style="color:#666">}</span>
+    
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">+</span> poolingCount <span style="color:#666">&lt;=</span> minIdle<span style="color:#666">)</span> <span style="color:#666">{</span>
+            emptySignal<span style="color:#666">();</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span><span style="color:#666">}</span>
+</code></pre></div><p>进行连接保活时，优先将时间更早的连接进行保活。但有时候我们可能期望一个连接不要太长时间空闲，比如连接空闲 1 分钟后，即使连接可用也要释放，这时应该怎么办呢？
+​</p>
+<p>Druid 也考虑到了这个问题，可通过设置 <code>testWhileIdle</code> 为 true 进行空闲连接释放。</p>
+<h4 id="236-空闲连接释放">2.3.6 空闲连接释放 <a href="#236-%e7%a9%ba%e9%97%b2%e8%bf%9e%e6%8e%a5%e9%87%8a%e6%94%be" class="anchor">🔗</a></h4><p>在应用中我们会通过 <code>getConnection</code> 获取连接，<code>getConnection</code> 会调用 <code>getConnectionDirect</code>，<code>getConnectionDirect</code> 继续调用 <code>getConnectionInternal</code>。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> DruidPooledConnection <span style="color:#00a000">getConnectionDirect</span><span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">long</span> maxWaitMillis<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> SQLException <span style="color:#666">{</span>
+    	<span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>        <span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(;;)</span> <span style="color:#666">{</span>
+            <span style="color:#080;font-style:italic">// handle notFullTimeoutRetry
+</span><span style="color:#080;font-style:italic"></span>            DruidPooledConnection poolableConnection<span style="color:#666">;</span>
+            <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+                poolableConnection <span style="color:#666">=</span> getConnectionInternal<span style="color:#666">(</span>maxWaitMillis<span style="color:#666">);</span>
+            <span style="color:#666">}</span>
+            
+            <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>testOnBorrow<span style="color:#666">)</span> <span style="color:#666">{</span>
+                <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>            <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#666">{</span>
+                <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>                <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>testWhileIdle<span style="color:#666">)</span> <span style="color:#666">{</span>
+                    <span style="color:#a2f;font-weight:bold">final</span> DruidConnectionHolder holder <span style="color:#666">=</span> poolableConnection<span style="color:#666">.</span><span style="color:#b44">holder</span><span style="color:#666">;</span>
+                    <span style="color:#0b0;font-weight:bold">long</span> currentTimeMillis             <span style="color:#666">=</span> System<span style="color:#666">.</span><span style="color:#b44">currentTimeMillis</span><span style="color:#666">();</span>
+                    <span style="color:#0b0;font-weight:bold">long</span> lastActiveTimeMillis          <span style="color:#666">=</span> holder<span style="color:#666">.</span><span style="color:#b44">lastActiveTimeMillis</span><span style="color:#666">;</span>
+                    <span style="color:#0b0;font-weight:bold">long</span> lastExecTimeMillis            <span style="color:#666">=</span> holder<span style="color:#666">.</span><span style="color:#b44">lastExecTimeMillis</span><span style="color:#666">;</span>
+                    <span style="color:#0b0;font-weight:bold">long</span> lastKeepTimeMillis            <span style="color:#666">=</span> holder<span style="color:#666">.</span><span style="color:#b44">lastKeepTimeMillis</span><span style="color:#666">;</span>
+
+                    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>checkExecuteTime
+                            <span style="color:#666">&amp;&amp;</span> lastExecTimeMillis <span style="color:#666">!=</span> lastActiveTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+                        lastActiveTimeMillis <span style="color:#666">=</span> lastExecTimeMillis<span style="color:#666">;</span>
+                    <span style="color:#666">}</span>
+
+                    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>lastKeepTimeMillis <span style="color:#666">&gt;</span> lastActiveTimeMillis<span style="color:#666">)</span> <span style="color:#666">{</span>
+                        lastActiveTimeMillis <span style="color:#666">=</span> lastKeepTimeMillis<span style="color:#666">;</span>
+                    <span style="color:#666">}</span>
+
+                    <span style="color:#0b0;font-weight:bold">long</span> idleMillis                    <span style="color:#666">=</span> currentTimeMillis <span style="color:#666">-</span> lastActiveTimeMillis<span style="color:#666">;</span>
+
+                    <span style="color:#0b0;font-weight:bold">long</span> timeBetweenEvictionRunsMillis <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">this</span><span style="color:#666">.</span><span style="color:#b44">timeBetweenEvictionRunsMillis</span><span style="color:#666">;</span>
+
+                    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>timeBetweenEvictionRunsMillis <span style="color:#666">&lt;=</span> 0<span style="color:#666">)</span> <span style="color:#666">{</span>
+                        timeBetweenEvictionRunsMillis <span style="color:#666">=</span> DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS<span style="color:#666">;</span>
+                    <span style="color:#666">}</span>
+
+                    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>idleMillis <span style="color:#666">&gt;=</span> timeBetweenEvictionRunsMillis
+                            <span style="color:#666">||</span> idleMillis <span style="color:#666">&lt;</span> 0 <span style="color:#080;font-style:italic">// unexcepted branch
+</span><span style="color:#080;font-style:italic"></span>                            <span style="color:#666">)</span> <span style="color:#666">{</span>
+                        <span style="color:#0b0;font-weight:bold">boolean</span> validate <span style="color:#666">=</span> testConnectionInternal<span style="color:#666">(</span>poolableConnection<span style="color:#666">.</span><span style="color:#b44">holder</span><span style="color:#666">,</span> poolableConnection<span style="color:#666">.</span><span style="color:#b44">conn</span><span style="color:#666">);</span>
+                        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(!</span>validate<span style="color:#666">)</span> <span style="color:#666">{</span>
+                            discardConnection<span style="color:#666">(</span>poolableConnection<span style="color:#666">.</span><span style="color:#b44">holder</span><span style="color:#666">);</span>
+                             <span style="color:#a2f;font-weight:bold">continue</span><span style="color:#666">;</span>
+                        <span style="color:#666">}</span>
+                    <span style="color:#666">}</span>
+                <span style="color:#666">}</span>
+            <span style="color:#666">}</span>   
+
+            <span style="color:#a2f;font-weight:bold">return</span> poolableConnection<span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span>
+</code></pre></div><p>在 <code>getConnectionDirect</code> 中，获取到连接后，如果开启了 <code>testWhileIdle</code> ，则会继续判断连接是否空闲，如果是，则会调用 <code>discardConnection </code> 释放连接，然后再进行下一次循环创建新的连接。连接是否空闲，主要根据 <code>lastActiveTimeMillis</code> 和 <code>timeBetweenEvictionRunsMillis</code> 进行判断。
+​</p>
+<p>在 discardConnection 中，如果连接 active 状态为 true，则会将 activeCount 减一，并将 active 设置为 false。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">discardConnection</span><span style="color:#666">(</span>DruidConnectionHolder holder<span style="color:#666">)</span> <span style="color:#666">{</span>
+    <span style="color:#080;font-style:italic">// ...
+</span><span style="color:#080;font-style:italic"></span>    Connection conn <span style="color:#666">=</span> holder<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>conn <span style="color:#666">!=</span> <span style="color:#a2f;font-weight:bold">null</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+        JdbcUtils<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">(</span>conn<span style="color:#666">);</span>
+    <span style="color:#666">}</span>
+
+    lock<span style="color:#666">.</span><span style="color:#b44">lock</span><span style="color:#666">();</span>
+    <span style="color:#a2f;font-weight:bold">try</span> <span style="color:#666">{</span>
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder<span style="color:#666">.</span><span style="color:#b44">discard</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+            <span style="color:#a2f;font-weight:bold">return</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>holder<span style="color:#666">.</span><span style="color:#b44">active</span><span style="color:#666">)</span> <span style="color:#666">{</span>
+            activeCount<span style="color:#666">--;</span>
+            holder<span style="color:#666">.</span><span style="color:#b44">active</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span><span style="color:#666">;</span>
+        <span style="color:#666">}</span>
+        discardCount<span style="color:#666">++;</span>
+
+        holder<span style="color:#666">.</span><span style="color:#b44">discard</span> <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">;</span>
+
+        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>activeCount <span style="color:#666">&lt;=</span> minIdle<span style="color:#666">)</span> <span style="color:#666">{</span>
+            emptySignal<span style="color:#666">();</span>
+        <span style="color:#666">}</span>
+    <span style="color:#666">}</span> <span style="color:#a2f;font-weight:bold">finally</span> <span style="color:#666">{</span>
+        lock<span style="color:#666">.</span><span style="color:#b44">unlock</span><span style="color:#666">();</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+</code></pre></div><h4 id="237-小结">2.3.7 小结 <a href="#237-%e5%b0%8f%e7%bb%93" class="anchor">🔗</a></h4><p>以上便是便是连接释放的流程。
+​</p>
+<p>当应用主动调用 <code>.close</code> 时，并不会真的是否连接，而是更新连接的 lastActiveTimeMillis，然后将连接返回到连接池，然后将 <code>activeCount</code> 减一。</p>
+<p>然后 DestroyTask 再定期清理连接，判断连接应该被释放还是被保活。如果连接应该被保活，则再将连接放回到连接池。
+​</p>
+<p>此外应用获取连接时，也会判断连接的空闲时间，如果连接是空闲的，也会释放连接，并将 <code>activeCount</code> 减一。
+​</p>
+<p>那为什么 <code>activeCount</code> 会大于 <code>maxActive</code> 呢？可能唯一的解释就是 <code>activeCount</code> 不准确。
+​</p>
+<p>这里先说结论，的确如此。这是 Druid 1.2.8 之前版本的一个 BUG。
+​</p>
+<p>通过前面的分析，我们可以大概推测：当连接池中存在两个相同连接时，<code>activeCount</code> 就会少减一。因为当应用第一次释放连接时，会将连接的 <code>active</code> 设置为 false 并执行 <code>activeCount--</code>，第二次释放时，由于 <code>active</code> 已经为 false 了，因此就不会再执行 <code>activeCount--</code> 了。<br>
+​</p>
+<p>那么如何证明推测的正确性呢？
+​</p>
+<h2 id="3-问题复现">3. 问题复现 <a href="#3-%e9%97%ae%e9%a2%98%e5%a4%8d%e7%8e%b0" class="anchor">🔗</a></h2><p>为了证明前面的推测，我写了一段代码来验证。
+​</p>
+<h3 id="31-复现代码">3.1 复现代码 <a href="#31-%e5%a4%8d%e7%8e%b0%e4%bb%a3%e7%a0%81" class="anchor">🔗</a></h3><p>​</p>
+<p>代码如下，Druid 版本为 1.2.5 ：
+​</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">Test</span> <span style="color:#666">{</span>
+    <span style="color:#a2f;font-weight:bold">public</span> <span style="color:#a2f;font-weight:bold">static</span> <span style="color:#0b0;font-weight:bold">void</span> <span style="color:#00a000">main</span><span style="color:#666">(</span>String<span style="color:#666">[]</span> args<span style="color:#666">)</span> <span style="color:#a2f;font-weight:bold">throws</span> Exception <span style="color:#666">{</span>
+        String jdbcUrl <span style="color:#666">=</span> <span style="color:#b44">&#34;jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&#34;</span><span style="color:#666">;</span>
+        String user <span style="color:#666">=</span> <span style="color:#b44">&#34;root&#34;</span><span style="color:#666">;</span>
+        String password <span style="color:#666">=</span> <span style="color:#b44">&#34;11111111&#34;</span><span style="color:#666">;</span>
+
+        DruidDataSource druidDataSource <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> DruidDataSource<span style="color:#666">();</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setUsername</span><span style="color:#666">(</span>user<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setPassword</span><span style="color:#666">(</span>password<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setUrl</span><span style="color:#666">(</span>jdbcUrl<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setValidationQuery</span><span style="color:#666">(</span><span style="color:#b44">&#34;select 1&#34;</span><span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setMinEvictableIdleTimeMillis</span><span style="color:#666">(</span>10 <span style="color:#666">*</span> 1000<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setMaxEvictableIdleTimeMillis</span><span style="color:#666">(</span>DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setKeepAliveBetweenTimeMillis</span><span style="color:#666">(</span>12 <span style="color:#666">*</span> 1000<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setMinIdle</span><span style="color:#666">(</span>2<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setMaxWait</span><span style="color:#666">(</span>1000<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setMaxActive</span><span style="color:#666">(</span>4<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setTimeBetweenEvictionRunsMillis</span><span style="color:#666">(</span>7 <span style="color:#666">*</span> 1000<span style="color:#666">);</span>
+        druidDataSource<span style="color:#666">.</span><span style="color:#b44">setKeepAlive</span><span style="color:#666">(</span><span style="color:#a2f;font-weight:bold">true</span><span style="color:#666">);</span>
+        DruidPooledConnection connection1 <span style="color:#666">=</span> druidDataSource<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+        DruidPooledConnection connection2 <span style="color:#666">=</span> druidDataSource<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+        connection2<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+        Thread<span style="color:#666">.</span><span style="color:#b44">sleep</span><span style="color:#666">(</span>9 <span style="color:#666">*</span> 1000<span style="color:#666">);</span>
+        connection1<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+        Thread<span style="color:#666">.</span><span style="color:#b44">sleep</span><span style="color:#666">(</span>14 <span style="color:#666">*</span> 1000<span style="color:#666">);</span>
+        DruidPooledConnection connection3 <span style="color:#666">=</span> druidDataSource<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+        DruidPooledConnection connection4 <span style="color:#666">=</span> druidDataSource<span style="color:#666">.</span><span style="color:#b44">getConnection</span><span style="color:#666">();</span>
+        System<span style="color:#666">.</span><span style="color:#b44">out</span><span style="color:#666">.</span><span style="color:#b44">println</span><span style="color:#666">(</span>connection3<span style="color:#666">.</span><span style="color:#b44">getConnectionHolder</span><span style="color:#666">()</span> <span style="color:#666">==</span> connection4<span style="color:#666">.</span><span style="color:#b44">getConnectionHolder</span><span style="color:#666">());</span>
+        connection3<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+        connection4<span style="color:#666">.</span><span style="color:#b44">close</span><span style="color:#666">();</span>
+    <span style="color:#666">}</span>
+<span style="color:#666">}</span>
+
+</code></pre></div><p>​</p>
+<p>最终会输出 <code>true</code>，也就是  <code>connection3</code> 和 <code>connection4</code> 获取到的连接是一样的。
+​</p>
+<p>为什么为 true 呢？接下来就结合前面的源码理解，梳理一下整个时间线。
+​</p>
+<h3 id="32-时间线">3.2 时间线 <a href="#32-%e6%97%b6%e9%97%b4%e7%ba%bf" class="anchor">🔗</a></h3><h3 id="heading"> <a href="#heading" class="anchor">🔗</a></h3><h4 id="321-时间点-00初始化并关闭-connection2">3.2.1 时间点 00：初始化并关闭 connection2 <a href="#321-%e6%97%b6%e9%97%b4%e7%82%b9-00%e5%88%9d%e5%a7%8b%e5%8c%96%e5%b9%b6%e5%85%b3%e9%97%ad-connection2" class="anchor">🔗</a></h4><p>​</p>
+<p>获取 connection1 和 connection2，其 holder 如下：</p>
+<ul>
+<li>connection1  <code>{id: 110, useCount: 1, lastActiveTime: 00, active: true}</code></li>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, active: true}</code></li>
+</ul>
+<p>然后关闭 connection2，此时 connections 为 <code>[connection2]</code>：</p>
+<ul>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, active: false}</code></li>
+</ul>
+<p>最终 activeAcount 为 1。
+​</p>
+<h4 id="322-时间点-07第一次回收">3.2.2 时间点 07：第一次回收 <a href="#322-%e6%97%b6%e9%97%b4%e7%82%b9-07%e7%ac%ac%e4%b8%80%e6%ac%a1%e5%9b%9e%e6%94%b6" class="anchor">🔗</a></h4><p>​</p>
+<p>DestroyTask 第一次执行，此时 connection2 的空闲时间均小于 <code>minEvictableIdleTimeMillis</code> 和<code>keepAliveBetweenTimeMillis</code>，跳过回收。
+​</p>
+<h4 id="323-时间点-09关闭-connection1">3.2.3 时间点 09：关闭 connection1 <a href="#323-%e6%97%b6%e9%97%b4%e7%82%b9-09%e5%85%b3%e9%97%ad-connection1" class="anchor">🔗</a></h4><p>​</p>
+<p>关闭 connection1，connection1 返回连接池，此时 connections 为 <code>[connection2,connection1]</code>，connections 中的连接空闲时间是递减的：</p>
+<ul>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, active: false}</code></li>
+<li>connection1 <code>{id: 110, useCount: 1, lastActiveTime: 09, active: false}</code></li>
+</ul>
+<p>​</p>
+<p>最终 activeAcount 为 0。
+​</p>
+<h4 id="324-时间点-14第二次回收">3.2.4 时间点 14：第二次回收 <a href="#324-%e6%97%b6%e9%97%b4%e7%82%b9-14%e7%ac%ac%e4%ba%8c%e6%ac%a1%e5%9b%9e%e6%94%b6" class="anchor">🔗</a></h4><p>DestroyTask 执行，此时 <code>connection2</code> 空闲时间大于 <code>minEvictableIdleTimeMillis</code>，但 checkCount 为 0（poolingCount - minIdle ），不满足 <code>i &lt; checkCount</code> ，<code>connection2</code> 会被放入 keepAliveConnections 列表。
+​</p>
+<p>而 <code>connection1</code> 的空闲时间均小于 <code>minEvictableIdleTimeMillis</code> 和<code>keepAliveBetweenTimeMillis</code> ，不处理。
+​</p>
+<p>最终 connections 为 <code>[connection1,connection2]</code> ：</p>
+<ul>
+<li>connection1 <code>{id: 110, useCount: 1, lastActiveTime: 09, active: false}</code></li>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
+</ul>
+<p>​</p>
+<p>此时 activeAcount 依旧为 0。但 connections 中的 lastActiveTime 就不是按时间顺序排列的了。
+​</p>
+<h4 id="325-时间点-21第三次回收">3.2.5 时间点 21：第三次回收 <a href="#325-%e6%97%b6%e9%97%b4%e7%82%b9-21%e7%ac%ac%e4%b8%89%e6%ac%a1%e5%9b%9e%e6%94%b6" class="anchor">🔗</a></h4><p>DestroyTask 再次执行，此时 connection1 空闲时间为 11s，由于不满足条件，即不放入 evictConnections， 也不放入 keepAliveConnections，connection2 空闲时间为 21s，大于 keepAliveBetweenTimeMillis，因此放入 keepAliveConnections。
+​</p>
+<p>由于 removeCount 为 1（ removeCount = evictCount + keepAliveCount），所以接下来会删掉 connections 的第 0 个元素，也就是 connection1，然后将 keepAliveConnections 添加到 connections 中。
+​</p>
+<p>最终 connections 为  <code>[connection2,connection2]</code> ：
+​</p>
+<ul>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
+</ul>
+<p>​</p>
+<p> </p>
+<h4 id="326-时间点-23获取-connection3">3.2.6 时间点 23：获取 connection3 <a href="#326-%e6%97%b6%e9%97%b4%e7%82%b9-23%e8%8e%b7%e5%8f%96-connection3" class="anchor">🔗</a></h4><p>这时继续获取 conenction3，优先从 connections 末尾获取。
+​</p>
+<p>获取到 <code>id</code> 为 100 的连接后，继续判断连接的空闲时间。由于 lastActiveTime 小于 lastKeepTime，所以会用 lastKeepTime 来计算空闲时间，空闲时间为 9，小于 timeBetweenEvictionRunsMillis，因此认为连接可用，并返回。
+​</p>
+<p>所以 conenction3 为 <code>{id: 100, useCount: 2, lastActiveTime: 00, lastKeepTime: 14, active: true}</code>
+​</p>
+<p>同时也会 activeCount 加一，最终 activeCount 为  1。
+​</p>
+<p>此时 connections 为：</p>
+<ul>
+<li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
+</ul>
+<p>​</p>
+<h4 id="327-时间点-23获取-connection4">3.2.7 时间点 23：获取 connection4 <a href="#327-%e6%97%b6%e9%97%b4%e7%82%b9-23%e8%8e%b7%e5%8f%96-connection4" class="anchor">🔗</a></h4><p> 
+同理，获取到 conenction4 为 <code>{id: 100, useCount: 3, lastActiveTime: 00, lastKeepTime: 14, active: true}</code> ，并且也会将 activeCount 加一，最终 activeCount 为  2。</p>
+<p>所以 connection3 和 connection4 本质上是同一个 holder。
+​</p>
+<p>另外，此时 connections 为空。</p>
+<p> </p>
+<h4 id="328-时间点-23关闭-connection3">3.2.8 时间点 23：关闭 connection3 <a href="#328-%e6%97%b6%e9%97%b4%e7%82%b9-23%e5%85%b3%e9%97%ad-connection3" class="anchor">🔗</a></h4><p>紧接着调用 close 方法关闭 connection3，将连接返回连接池，同时将 activeCount 减一。执行完毕后connections 为 <code>[connections3]</code> ：</p>
+<ul>
+<li>connection3 <code>{id: 100, useCount: 3, lastActiveTime: 23, lastKeepTime: 14, active: false}</code></li>
+</ul>
+<p>最终 activeCount 为 1，并且 holder 的 active 属性为 false。
+​</p>
+<h4 id="329-时间点-23关闭-connection4">3.2.9 时间点 23：关闭 connection4 <a href="#329-%e6%97%b6%e9%97%b4%e7%82%b9-23%e5%85%b3%e9%97%ad-connection4" class="anchor">🔗</a></h4><p>​</p>
+<p>在关闭 connection3 之后，立即又关闭 connection4， 但由于其 holder 的 active 已经是 false 了，所以 activeCount 不会再减一了。
+​</p>
+<p>最终虽然连接会被释放，但 activeCount 少减了一次。
+​</p>
+<h3 id="33-小结">3.3 小结 <a href="#33-%e5%b0%8f%e7%bb%93" class="anchor">🔗</a></h3><p>​</p>
+<p>由此可见，在某些特定条件下，由于 keepAlive 机制会将连接再放回连接池，可能会导致 connections 中会存在多个完全相同的连接 holder，并且该 holder 又可能刚好被多个应用线程获取到了，然后关闭连接时，由于最早关闭的线程已经将 holder 的 active 标记为 false 了，所以其他线程关闭连接时，就不会再把 activeCount 减一。最终导致了 activeCount 不准确。
+​</p>
+<p>那什么时候会触发这个 BUG 呢？这个 BUG 是个小概率事件，以下几种情况会提升 BUG 出现的概率：</p>
+<ul>
+<li>数据库异常，如网络中断、主备切换、异常重启等，这时可能就会导致 fatalError，进而导致连接回收的 shrink 方法中所有链接都会被放入 keepAliveConnections，进而造成连接池中有多个相同的 holder；</li>
+<li>timeBetweenEvictionRunsMillis 大于 keepAliveBetweenTimeMillis，可能导致获取连接时，连接空闲时间判断错误，最终导致连接不能正常回收；</li>
+<li>minEvictableIdleTimeMillis 小于 keepAliveBetweenTimeMillis，可能导致获取连接时，连接空闲时间判断错误，最终导致连接不能正常回收。</li>
+</ul>
+<p> 
+​</p>
+<h2 id="4-问题修复">4. 问题修复 <a href="#4-%e9%97%ae%e9%a2%98%e4%bf%ae%e5%a4%8d" class="anchor">🔗</a></h2><p>那这个问题如何修复呢？只要保证 connections 中不能存在两个完全相同的 holder 就可以了。由于问题是有 keepAlive 机制在放回连接时触发的，所以可以在此加个判断，如果连接已经存在连接池中，就不放入。
+​</p>
+<p>官方在 1.2.8 这个版本也修复了该问题，详细修复代码参考 <a href="https://github.com/alibaba/druid/compare/1.2.5...1.2.8" target="_blank" rel="noopener">druid/compare/1.2.5&hellip;1.2.8</a> 。
+​</p>
+<p><p class="markdown-image">
+  <img src="./images/druid-1.png" alt="image.png"  />
+</p></p>
+<p>因此我们应用中的终极修复方式就是，将 Druid 升级到 1.2.8。
+​</p>
+<h2 id="5-总结">5. 总结 <a href="#5-%e6%80%bb%e7%bb%93" class="anchor">🔗</a></h2><p>通过对源码的一层层深入分析，终于弄清楚了为什么会应用报错后会一直挂起，为什么 activeCount 不准确，以及如何解决。
+​</p>
+<p>表面上看是获取连接超时，实际上时 activeCount 计算不准确导致无法创建出新的连接。
+​</p>
+<p>导致 activeCount 计算不准确的原因是连接池中存在多个相同的连接，因此连接释放时，多次释放相同连接只会执行一次 activeCount&ndash;。
+​</p>
+<p>之所以连接池可能存在多个相同连接，主要是数据库异常或 Druid 参数配置有误时，刚好导致 keepAlive 将连接重复放入连接池。并且再次获取该连接时，刚好连接空闲时间判断错误，导致连接不被释放而是返回给了应用使用。
+​</p>
+<p>本质上是 Druid 1.2.8 之前的一个 BUG，数据库异常以及配置导致的空闲时间判断错误等种种巧合，触发了这个 BUG。但出现问题后通过重启又能解决问题，所以很难定位。</p>
+<p>最后，将 Druid 升级到 1.2.8 吧，这样才能彻底解决问题。另外也需要注意以下 Druid 配置：</p>
+<ul>
+<li>JDBC URL 增加 connectTimeout  和 socketTimeout 配置</li>
+<li>设置 maxWait</li>
+<li>timeBetweenEvictionRunsMillis 小于 keepAliveBetweenTimeMillis</li>
+<li>keepAliveBetweenTimeMillis 小于 minEvictableIdleTimeMillis</li>
+</ul>
+<p>​</p>
+<p>至此，本文结束。感谢阅读！</p>
+<h2 id="参考">参考 <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h2><ul>
+<li><a href="https://github.com/alibaba/druid" target="_blank" rel="noopener">https://github.com/alibaba/druid</a></li>
+<li><a href="https://github.com/alibaba/druid/compare/1.2.5...1.2.8" target="_blank" rel="noopener">https://github.com/alibaba/druid/compare/1.2.5&hellip;1.2.8</a></li>
+<li><a href="https://github.com/alibaba/druid/releases/tag/1.2.8" target="_blank" rel="noopener">https://github.com/alibaba/druid/releases/tag/1.2.8</a></li>
+<li><a href="https://github.com/alibaba/druid/issues/4316" target="_blank" rel="noopener">https://github.com/alibaba/druid/issues/4316</a></li>
+<li><a href="https://github.com/alibaba/druid/issues/4438" target="_blank" rel="noopener">https://github.com/alibaba/druid/issues/4438</a></li>
+</ul>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://nodejh.com/tags/java">Java</a>
+            
+        </div>
+    
+    
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nodejh" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://stackoverflow.com/users/4518882/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://twitter.com/nodejh" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2021 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Hang Jiang
+    
+    </div>
+
+    
+      <div class="powerby">
+        Powered by <a href='http://www.gohugo.io/'>Hugo</a> Theme By <a href='https://github.com/nodejh/hugo-theme-cactus-plus'>nodejh</a>
+      </div>
+    
+</footer>
+
+
+
+  </body>
+</html>

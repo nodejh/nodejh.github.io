@@ -37,13 +37,16 @@ if (!doNotTrack) {
 
 
 
+  
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Hang Jiang" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="Hang Jiang" />
+  
+
 
   </head>
 
   <body>
     <nav class="navigation">
-	
-		<a href="/"> <span class="arrow">←</span>首页</a>
 	
 	<a href="/posts">归档</a>
 	<a href="/tags">标签</a>
@@ -59,118 +62,54 @@ if (!doNotTrack) {
 
     <main class="main">
       
+<header class="profile">
+    
+        <img class="avatar" alt="avatar" src="/images/avatar.png" />
+    
 
-<div id="page-404">
-  <div class="text">
-      
-          <h1>404</h1>
-      
+    <h1>Hang Jiang</h1>
+    
+    
+      <h2>Software Engineer / Serverless / Kubernetes</h2>
+    
+</header>
 
-      
-          <div>页面不存在</div>
-      
-    </div>
+<div id="list-page">
+    
+    
+    
+        
+        
+        <section class="item">
+          <div>
+            <h1 class="title"><a href='/posts/linux-users-and-groups/'>Linux 用户和用户组的管理</a></h1>
+            <div class ="date">
+                <time datetime="2015-01-23 20:33:29 &#43;0800 CST">2015/01/23</time>  
+            </div>
+          </div>
 
-  
-      <h2 class="read-more">更多内容</h2> 
-  
+          
+              <div class="summary">Linux系统是一个多用户多任务的分时操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系</div>
+          
 
-  
+        </section>
+    
+
+    
+        <div class="pagination">
+          
+              <span class="prev">
+                  <a href="/page/5/">
+                      <span class="arrow">←</span> 下一页
+                  </a>
+            </span>
+          
+          
+          
+        </div>
+    
 
 
-    
-    
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/druid-%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5%E5%BC%82%E5%B8%B8%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E6%8C%82%E8%B5%B7%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/'>Druid 获取连接异常导致应用挂起原因分析</a></h1>   
-            <div class="date">Dec 20, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/'>如何构建 Go 应用的 Docker 镜像</a></h1>   
-            <div class="date">Nov 30, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/%E4%BD%BF%E7%94%A8-prometheus-grafana-%E7%9B%91%E6%8E%A7-k8s-%E4%B8%8A%E7%9A%84-spring-boot-%E5%BA%94%E7%94%A8/'>使用 Prometheus &#43; Grafana 监控 k8s 上的 Spring Boot 应用</a></h1>   
-            <div class="date">Oct 26, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/%E4%BD%BF%E7%94%A8-kubernetes-%E8%BF%9B%E8%A1%8C-leader-%E9%80%89%E4%B8%BE/'>使用 Kubernetes 进行 Leader 选举</a></h1>   
-            <div class="date">Sep 16, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/flink-on-k8s-checkpoint-%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/'>Flink on k8s: Checkpoint 的持久化存储</a></h1>   
-            <div class="date">Aug 2, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/flink-%E4%BB%BB%E5%8A%A1%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%AF%BC%E8%87%B4%E9%A2%91%E7%B9%81-full-fc-%E5%AF%BC%E8%87%B4-cpu-%E6%9A%B4%E5%A2%9E%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/'>Flink 任务内存泄漏导致频繁 Full FC 导致 CPU 暴增问题排查</a></h1>   
-            <div class="date">Jul 30, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/%E4%BB%8E%E9%9B%B6%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA-flink-%E5%BA%94%E7%94%A8/'>从零编写第一个 Flink 应用</a></h1>   
-            <div class="date">Mar 3, 2021</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/serverless-%E5%B0%86%E4%BD%BF%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BB%8E%E5%88%86%E7%A6%BB%E5%86%8D%E5%BA%A6%E8%B5%B0%E5%90%91%E8%9E%8D%E5%90%88/'>Serverless 将使前后端从分离再度走向融合</a></h1>   
-            <div class="date">May 17, 2019</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/serverless-%E6%8E%80%E8%B5%B7%E6%96%B0%E7%9A%84%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%8F%98%E9%9D%A9/'>Serverless 掀起新的前端技术变革</a></h1>   
-            <div class="date">May 15, 2019</div>
-          </div>
-        </section>
-    
-        
-        
-        <section class="item">
-          <div>
-            <h1 class="title"><a href='/posts/wechat-scan-qr-code-to-login/'>基于公众号的微信扫码登陆实现</a></h1>   
-            <div class="date">Dec 9, 2017</div>
-          </div>
-        </section>
-    
 </div>
 
     </main>

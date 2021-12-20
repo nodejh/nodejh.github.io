@@ -6,7 +6,16 @@
     <description>Recent content in JAVA on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 26 Oct 2021 10:20:01 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Dec 2021 19:53:13 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Druid 获取连接异常导致应用挂起原因分析</title>
+      <link>https://nodejh.com/posts/druid-%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5%E5%BC%82%E5%B8%B8%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E6%8C%82%E8%B5%B7%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 20 Dec 2021 19:53:13 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/druid-%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5%E5%BC%82%E5%B8%B8%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E6%8C%82%E8%B5%B7%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/</guid>
+      <description>1. 背景 🔗1.1 现象 🔗2021.12.16 凌晨，我们的应用数据库因故发生了主备切换，之后某个 Pod 就持续报错 GetConnectionTimeou</description>
+    </item>
+    
     <item>
       <title>使用 Prometheus &#43; Grafana 监控 k8s 上的 Spring Boot 应用</title>
       <link>https://nodejh.com/posts/%E4%BD%BF%E7%94%A8-prometheus-grafana-%E7%9B%91%E6%8E%A7-k8s-%E4%B8%8A%E7%9A%84-spring-boot-%E5%BA%94%E7%94%A8/</link>

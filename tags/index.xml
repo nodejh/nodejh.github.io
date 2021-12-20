@@ -6,7 +6,16 @@
     <description>Recent content in Tags on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 30 Nov 2021 15:07:46 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Dec 2021 19:53:13 +0800</lastBuildDate><atom:link href="https://nodejh.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JAVA</title>
+      <link>https://nodejh.com/tags/java/</link>
+      <pubDate>Mon, 20 Dec 2021 19:53:13 +0800</pubDate>
+      
+      <guid>https://nodejh.com/tags/java/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Docker</title>
       <link>https://nodejh.com/tags/docker/</link>
@@ -22,15 +31,6 @@
       <pubDate>Tue, 30 Nov 2021 15:07:46 +0800</pubDate>
       
       <guid>https://nodejh.com/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>JAVA</title>
-      <link>https://nodejh.com/tags/java/</link>
-      <pubDate>Tue, 26 Oct 2021 10:20:01 +0800</pubDate>
-      
-      <guid>https://nodejh.com/tags/java/</guid>
       <description></description>
     </item>
     

@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Hang Jiang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 30 Nov 2021 15:07:46 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Dec 2021 19:53:13 +0800</lastBuildDate><atom:link href="https://nodejh.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Druid 获取连接异常导致应用挂起原因分析</title>
+      <link>https://nodejh.com/posts/druid-%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5%E5%BC%82%E5%B8%B8%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E6%8C%82%E8%B5%B7%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 20 Dec 2021 19:53:13 +0800</pubDate>
+      
+      <guid>https://nodejh.com/posts/druid-%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5%E5%BC%82%E5%B8%B8%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E6%8C%82%E8%B5%B7%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/</guid>
+      <description>1. 背景 🔗1.1 现象 🔗2021.12.16 凌晨，我们的应用数据库因故发生了主备切换，之后某个 Pod 就持续报错 GetConnectionTimeou</description>
+    </item>
+    
     <item>
       <title>如何构建 Go 应用的 Docker 镜像</title>
       <link>https://nodejh.com/posts/%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-go-%E5%BA%94%E7%94%A8%E7%9A%84-docker-%E9%95%9C%E5%83%8F/</link>

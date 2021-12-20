@@ -69,7 +69,7 @@ if (!doNotTrack) {
           ·
         </span>
         <span>
-          8377字
+          8365字
         </span>
         <span class="split">
           ·
@@ -201,10 +201,8 @@ if (!doNotTrack) {
     <span style="color:#666">}</span>
 <span style="color:#666">}</span>
 </code></pre></div><p>​</p>
-<h4 id="222-connections">2.2.2 connections <a href="#222-connections" class="anchor">🔗</a></h4><p> 
-当前所数据源拥有的连接池。其类型是 <code>DruidConnectionHolder[]</code> 。</p>
-<h4 id="223-poolingcount">2.2.3 poolingCount <a href="#223-poolingcount" class="anchor">🔗</a></h4><p> 
-连接池中的的连接数。
+<h4 id="222-connections">2.2.2 connections <a href="#222-connections" class="anchor">🔗</a></h4><p>当前所数据源拥有的连接池。其类型是 <code>DruidConnectionHolder[]</code> 。</p>
+<h4 id="223-poolingcount">2.2.3 poolingCount <a href="#223-poolingcount" class="anchor">🔗</a></h4><p>连接池中的的连接数。
 ​</p>
 <p>每当放入连接到连接池中，就会将 poolingCount 加一，例如：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> <span style="color:#0b0;font-weight:bold">boolean</span> <span style="color:#00a000">put</span><span style="color:#666">(</span>DruidConnectionHolder holder<span style="color:#666">,</span> <span style="color:#0b0;font-weight:bold">long</span> createTaskId<span style="color:#666">)</span> <span style="color:#666">{</span>
@@ -239,8 +237,7 @@ if (!doNotTrack) {
 <h4 id="231-conn">2.3.1 conn <a href="#231-conn" class="anchor">🔗</a></h4><p>数据库连接，类型为 Connection。
 ​</p>
 <h4 id="232-active">2.3.2 active <a href="#232-active" class="anchor">🔗</a></h4><p>用来标记连接是否活跃。</p>
-<h4 id="233-lastactivetimemillis">2.3.3 lastActiveTimeMillis <a href="#233-lastactivetimemillis" class="anchor">🔗</a></h4><p> 
-连接上次活跃时间。
+<h4 id="233-lastactivetimemillis">2.3.3 lastActiveTimeMillis <a href="#233-lastactivetimemillis" class="anchor">🔗</a></h4><p>连接上次活跃时间。
 ​</p>
 <h4 id="234-lastkeeptimemillis">2.3.4 lastKeepTimeMillis <a href="#234-lastkeeptimemillis" class="anchor">🔗</a></h4><p>连接上次保持活跃的时间。每次通过 keepAlive 保持连接活跃，就会更新此时间。
 ​</p>
@@ -460,8 +457,7 @@ if (!doNotTrack) {
 
     <span style="color:#666">}</span>
 <span style="color:#666">}</span>
-</code></pre></div><p><code>CreateConnectionTask</code> 也是类似的逻辑。
- </p>
+</code></pre></div><p><code>CreateConnectionTask</code> 也是类似的逻辑。</p>
 <h4 id="225-druiddatasourceput">2.2.5 DruidDataSource#put <a href="#225-druiddatasourceput" class="anchor">🔗</a></h4><p>在 put 方法中，首先会判断当前连接数是否大于最大连接数，如果小于，则会将连接放入到 <code>connections</code> 中，然后将 poolingCount 的值加一。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">private</span> <span style="color:#0b0;font-weight:bold">boolean</span> <span style="color:#00a000">put</span><span style="color:#666">(</span>DruidConnectionHolder holder<span style="color:#666">,</span> <span style="color:#0b0;font-weight:bold">long</span> createTaskId<span style="color:#666">)</span> <span style="color:#666">{</span>
     <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#666">(</span>poolingCount <span style="color:#666">&gt;=</span> maxActive<span style="color:#666">)</span> <span style="color:#666">{</span>
@@ -598,8 +594,7 @@ if (!doNotTrack) {
 <li><code>keepAlive</code> 是否开启了 keepAlive</li>
 </ul>
 <p>​</p>
-<p> 
-在 <code>shrink</code> 中，首先会通过 for 循环，依次遍历连接池中的所有连接并进行处理。
+<p>在 <code>shrink</code> 中，首先会通过 for 循环，依次遍历连接池中的所有连接并进行处理。
 ​</p>
 <p>在循环中，首先会判断当前是否有 fatalError，如果有，则会将连接放入 keepAliveConnections 列表中，keepAliveConnections 存储了需要保持活跃的连接。什么时候会出现 fatalError 呢？主要是执行 SQL 时可能出现，比如数据库断网、数据库重启等。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a2f;font-weight:bold">for</span> <span style="color:#666">(</span><span style="color:#0b0;font-weight:bold">int</span> i <span style="color:#666">=</span> 0<span style="color:#666">;</span> i <span style="color:#666">&lt;</span> poolingCount<span style="color:#666">;</span> <span style="color:#666">++</span>i<span style="color:#666">)</span> <span style="color:#666">{</span>
@@ -901,26 +896,23 @@ holer<span style="color:#666">.</span><span style="color:#b44">incrementKeepAliv
 <li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
 </ul>
 <p>​</p>
-<p> </p>
 <h4 id="326-时间点-23获取-connection3">3.2.6 时间点 23：获取 connection3 <a href="#326-%e6%97%b6%e9%97%b4%e7%82%b9-23%e8%8e%b7%e5%8f%96-connection3" class="anchor">🔗</a></h4><p>这时继续获取 conenction3，优先从 connections 末尾获取。
 ​</p>
 <p>获取到 <code>id</code> 为 100 的连接后，继续判断连接的空闲时间。由于 lastActiveTime 小于 lastKeepTime，所以会用 lastKeepTime 来计算空闲时间，空闲时间为 9，小于 timeBetweenEvictionRunsMillis，因此认为连接可用，并返回。
 ​</p>
 <p>所以 conenction3 为 <code>{id: 100, useCount: 2, lastActiveTime: 00, lastKeepTime: 14, active: true}</code>
 ​</p>
-<p>同时也会 activeCount 加一，最终 activeCount 为  1。
+<p>同时也会 activeCount 加一，最终 activeCount 为 1。
 ​</p>
 <p>此时 connections 为：</p>
 <ul>
 <li>connection2 <code>{id: 100, useCount: 1, lastActiveTime: 00, lastKeepTime: 14, active: false}</code></li>
 </ul>
 <p>​</p>
-<h4 id="327-时间点-23获取-connection4">3.2.7 时间点 23：获取 connection4 <a href="#327-%e6%97%b6%e9%97%b4%e7%82%b9-23%e8%8e%b7%e5%8f%96-connection4" class="anchor">🔗</a></h4><p> 
-同理，获取到 conenction4 为 <code>{id: 100, useCount: 3, lastActiveTime: 00, lastKeepTime: 14, active: true}</code> ，并且也会将 activeCount 加一，最终 activeCount 为  2。</p>
+<h4 id="327-时间点-23获取-connection4">3.2.7 时间点 23：获取 connection4 <a href="#327-%e6%97%b6%e9%97%b4%e7%82%b9-23%e8%8e%b7%e5%8f%96-connection4" class="anchor">🔗</a></h4><p>同理，获取到 conenction4 为 <code>{id: 100, useCount: 3, lastActiveTime: 00, lastKeepTime: 14, active: true}</code> ，并且也会将 activeCount 加一，最终 activeCount 为  2。</p>
 <p>所以 connection3 和 connection4 本质上是同一个 holder。
 ​</p>
 <p>另外，此时 connections 为空。</p>
-<p> </p>
 <h4 id="328-时间点-23关闭-connection3">3.2.8 时间点 23：关闭 connection3 <a href="#328-%e6%97%b6%e9%97%b4%e7%82%b9-23%e5%85%b3%e9%97%ad-connection3" class="anchor">🔗</a></h4><p>紧接着调用 close 方法关闭 connection3，将连接返回连接池，同时将 activeCount 减一。执行完毕后connections 为 <code>[connections3]</code> ：</p>
 <ul>
 <li>connection3 <code>{id: 100, useCount: 3, lastActiveTime: 23, lastKeepTime: 14, active: false}</code></li>
@@ -941,8 +933,7 @@ holer<span style="color:#666">.</span><span style="color:#b44">incrementKeepAliv
 <li>timeBetweenEvictionRunsMillis 大于 keepAliveBetweenTimeMillis，可能导致获取连接时，连接空闲时间判断错误，最终导致连接不能正常回收；</li>
 <li>minEvictableIdleTimeMillis 小于 keepAliveBetweenTimeMillis，可能导致获取连接时，连接空闲时间判断错误，最终导致连接不能正常回收。</li>
 </ul>
-<p> 
-​</p>
+<p>​</p>
 <h2 id="4-问题修复">4. 问题修复 <a href="#4-%e9%97%ae%e9%a2%98%e4%bf%ae%e5%a4%8d" class="anchor">🔗</a></h2><p>那这个问题如何修复呢？只要保证 connections 中不能存在两个完全相同的 holder 就可以了。由于问题是有 keepAlive 机制在放回连接时触发的，所以可以在此加个判断，如果连接已经存在连接池中，就不放入。
 ​</p>
 <p>官方在 1.2.8 这个版本也修复了该问题，详细修复代码参考 <a href="https://github.com/alibaba/druid/compare/1.2.5...1.2.8" target="_blank" rel="noopener">druid/compare/1.2.5&hellip;1.2.8</a> 。
@@ -974,8 +965,6 @@ holer<span style="color:#666">.</span><span style="color:#b44">incrementKeepAliv
 <li><a href="https://github.com/alibaba/druid" target="_blank" rel="noopener">https://github.com/alibaba/druid</a></li>
 <li><a href="https://github.com/alibaba/druid/compare/1.2.5...1.2.8" target="_blank" rel="noopener">https://github.com/alibaba/druid/compare/1.2.5&hellip;1.2.8</a></li>
 <li><a href="https://github.com/alibaba/druid/releases/tag/1.2.8" target="_blank" rel="noopener">https://github.com/alibaba/druid/releases/tag/1.2.8</a></li>
-<li><a href="https://github.com/alibaba/druid/issues/4316" target="_blank" rel="noopener">https://github.com/alibaba/druid/issues/4316</a></li>
-<li><a href="https://github.com/alibaba/druid/issues/4438" target="_blank" rel="noopener">https://github.com/alibaba/druid/issues/4438</a></li>
 </ul>
 
     </div>

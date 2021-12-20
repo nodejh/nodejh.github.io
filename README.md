@@ -1,5 +1,6 @@
 ## Blog
 
+- [Druid 获取连接异常导致应用挂起原因分析](https://github.com/nodejh/nodejh.github.io/issues/63)
 - [Druid 获取连接异常导致应用挂起原因分析](https://github.com/nodejh/nodejh.github.io/issues/62)
 - [如何构建 Go 应用的 Docker 镜像](https://github.com/nodejh/nodejh.github.io/issues/60)
 - [使用 Prometheus + Grafana 监控 k8s 上的 Spring Boot 应用](https://github.com/nodejh/nodejh.github.io/issues/59)
